@@ -2,9 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Professional customs clearance company design system */
 
 @layer base {
   :root {
@@ -17,24 +15,35 @@ All colors MUST be HSL.
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Professional blue palette for logistics/shipping */
+    --primary: 214 84% 28%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 214 84% 35%;
+    --primary-glow: 214 84% 45%;
 
-    --secondary: 210 40% 96.1%;
+    --secondary: 210 20% 98%;
     --secondary-foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 29 85% 53%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --ring: 214 84% 28%;
+
+    /* Design system tokens */
+    --hero-overlay: 222.2 84% 4.9% / 0.7;
+    --gradient-primary: linear-gradient(135deg, hsl(214 84% 28%), hsl(214 84% 35%));
+    --gradient-hero: linear-gradient(135deg, hsl(222.2 84% 4.9% / 0.8), hsl(214 84% 28% / 0.6));
+    --shadow-card: 0 4px 6px -1px hsl(222.2 84% 4.9% / 0.1);
+    --shadow-hover: 0 10px 15px -3px hsl(214 84% 28% / 0.2);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --radius: 0.5rem;
 

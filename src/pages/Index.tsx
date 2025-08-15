@@ -1,12 +1,46 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import { Hero } from '@/components/Hero';
+import { About } from '@/components/About';
+import { Services } from '@/components/Services';
+import { Pricing } from '@/components/Pricing';
+import { Contact } from '@/components/Contact';
+import { Footer } from '@/components/Footer';
+import { LanguageToggle, Language } from '@/components/LanguageToggle';
 
 const Index = () => {
+  const [language, setLanguage] = useState<Language>('ru');
+
+  const handleSectionClick = (section: string) => {
+    // Scroll to section logic is handled in Footer component
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="min-h-screen">
+      {/* Language Toggle - Fixed position */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageToggle 
+          currentLanguage={language}
+          onLanguageChange={setLanguage}
+        />
       </div>
+
+      {/* Hero Section */}
+      <Hero language={language} />
+      
+      {/* About Section */}
+      <About language={language} />
+      
+      {/* Services Section */}
+      <Services language={language} />
+      
+      {/* Pricing Section */}
+      <Pricing language={language} />
+      
+      {/* Contact Section */}
+      <Contact language={language} />
+      
+      {/* Footer */}
+      <Footer language={language} onSectionClick={handleSectionClick} />
     </div>
   );
 };
