@@ -48,7 +48,7 @@ export function Hero({ language }: HeroProps) {
         </h1>
         <Button 
           size="lg"
-          className="bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-lg font-semibold shadow-hover transition-all duration-300 hover:scale-105 animate-float"
+          className="bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-lg font-semibold shadow-hover"
           onClick={() => window.open('https://t.me/innovedbroker', '_blank')}
         >
           {text.button}
