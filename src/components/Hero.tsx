@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import portVideo from '@/assets/port-activity.jpg';
+import heroImage from '@/assets/hero-bg.jpg';
 
 interface HeroProps {
   language: 'ru' | 'en';
@@ -21,22 +21,11 @@ export function Hero({ language }: HeroProps) {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Video */}
-      <video 
-        className="absolute inset-0 w-full h-full object-cover"
-        autoPlay
-        loop
-        muted
-        playsInline
-        poster={portVideo}
-      >
-        <source src="https://player.vimeo.com/external/371433846.sd.mp4?s=236fb8a2b0e3e01b66b3a4a99cb5e32ab7d94860&profile_id=164" type="video/mp4" />
-        {/* Fallback to image if video fails */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${portVideo})` }}
-        />
-      </video>
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${heroImage})` }}
+      />
       
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-hero" />
