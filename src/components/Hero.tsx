@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import heroVideo from '@/assets/hero-bg.mp4';
+import heroVideo from '@/assets/hero-bg-v2.mp4';
 
 interface HeroProps {
   language: 'ru' | 'en';
