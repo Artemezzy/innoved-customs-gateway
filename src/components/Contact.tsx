@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mail, Phone, MessageCircle, Send, Building } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -25,10 +26,11 @@ const content = {
       inn: 'ИНН компании',
       phone: 'Номер телефона для связи',
       email: 'Почта',
-      submit: 'Отправить заявку'
+      submit: 'Отправить заявку',
+      consent: 'Я согласен на обработку персональных данных'
     },
     success: 'Заявка отправлена успешно!',
-    error: 'Пожалуйста, заполните все обязательные поля.'
+    error: 'Пожалуйста, заполните все обязательные поля и дайте согласие на обработку данных.'
   },
   en: {
     title: 'Contacts',
@@ -44,10 +46,11 @@ const content = {
       inn: 'Company TIN',
       phone: 'Contact Phone',
       email: 'Email',
-      submit: 'Send Request'
+      submit: 'Send Request',
+      consent: 'I agree to the processing of personal data'
     },
     success: 'Request sent successfully!',
-    error: 'Please fill in all required fields.'
+    error: 'Please fill in all required fields and give consent to data processing.'
   },
   zh: {
     title: '联系我们',
@@ -63,10 +66,11 @@ const content = {
       inn: '公司税号',
       phone: '联系电话',
       email: '邮箱',
-      submit: '提交申请'
+      submit: '提交申请',
+      consent: '我同意处理个人数据'
     },
     success: '申请提交成功！',
-    error: '请填写所有必填字段。'
+    error: '请填写所有必填字段并同意数据处理。'
   }
 };
 
@@ -77,13 +81,14 @@ export function Contact({ language }: ContactProps) {
     name: '',
     inn: '',
     phone: '',
-    email: ''
+    email: '',
+    consent: false
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.inn || !formData.phone || !formData.email) {
+    if (!formData.name || !formData.inn || !formData.phone || !formData.email || !formData.consent) {
       toast({
         title: "Ошибка",
         description: text.error,
@@ -103,7 +108,8 @@ export function Contact({ language }: ContactProps) {
       name: '',
       inn: '',
       phone: '',
-      email: ''
+      email: '',
+      consent: false
     });
   };
 
@@ -220,6 +226,18 @@ export function Contact({ language }: ContactProps) {
                     required
                     className="transition-all duration-300 focus:ring-2 focus:ring-primary"
                   />
+                </div>
+
+                <div className="flex items-center space-x-2 mt-4">
+                  <Checkbox
+                    id="consent"
+                    checked={formData.consent}
+                    onCheckedChange={(checked) => setFormData({...formData, consent: checked as boolean})}
+                    required
+                  />
+                  <Label htmlFor="consent" className="text-sm text-muted-foreground">
+                    {text.form.consent} *
+                  </Label>
                 </div>
 
                 <Button 

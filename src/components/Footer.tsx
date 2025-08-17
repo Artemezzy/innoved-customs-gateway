@@ -5,7 +5,7 @@ interface FooterProps {
 
 const content = {
   ru: {
-    copyright: '© ИННОВЭД',
+    copyright: `© ИННОВЭД ${new Date().getFullYear()}`,
     links: {
       about: 'О компании',
       services: 'Услуги',
@@ -14,7 +14,7 @@ const content = {
     }
   },
   en: {
-    copyright: '© INNOVED',
+    copyright: `© INNOVED ${new Date().getFullYear()}`,
     links: {
       about: 'About',
       services: 'Services',
@@ -23,7 +23,7 @@ const content = {
     }
   },
   zh: {
-    copyright: '© INNOVED',
+    copyright: `© INNOVED ${new Date().getFullYear()}`,
     links: {
       about: '关于我们',
       services: '服务',
