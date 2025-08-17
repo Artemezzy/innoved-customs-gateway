@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
 import { About } from '@/components/About';
 import { Services } from '@/components/Services';
@@ -16,6 +17,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      {/* Header Navigation */}
+      <Header language={language} />
+      
       {/* Language Toggle - Fixed position */}
       <div className="fixed top-4 right-4 z-50">
         <LanguageToggle 

@@ -20,7 +20,7 @@ const content = {
       telegram: 'Telegram'
     },
     form: {
-      title: 'Форма обратной связи',
+      title: 'Оставить заявку',
       name: 'Имя',
       inn: 'ИНН компании',
       phone: 'Номер телефона для связи',
@@ -39,7 +39,7 @@ const content = {
       telegram: 'Telegram'
     },
     form: {
-      title: 'Contact Form',
+      title: 'Leave Request',
       name: 'Name',
       inn: 'Company TIN',
       phone: 'Contact Phone',
