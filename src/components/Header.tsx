@@ -13,7 +13,7 @@ const content = {
     }
   },
   en: {
-    logo: 'INNOVVED',
+    logo: 'INNOVED',
     links: {
       about: 'About',
       services: 'Services',
@@ -22,7 +22,7 @@ const content = {
     }
   },
   zh: {
-    logo: 'INNOVVED',
+    logo: 'INNOVED',
     links: {
       about: '关于我们',
       services: '服务',

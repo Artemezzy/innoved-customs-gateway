@@ -14,7 +14,7 @@ const content = {
     }
   },
   en: {
-    copyright: '© INNOVVED',
+    copyright: '© INNOVED',
     links: {
       about: 'About',
       services: 'Services',
@@ -23,7 +23,7 @@ const content = {
     }
   },
   zh: {
-    copyright: '© INNOVVED',
+    copyright: '© INNOVED',
     links: {
       about: '关于我们',
       services: '服务',

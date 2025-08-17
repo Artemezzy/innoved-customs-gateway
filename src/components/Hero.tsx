@@ -11,11 +11,11 @@ const content = {
     button: 'Упростить логистику'
   },
   en: {
-    title: 'INNOVVED',
+    title: 'INNOVED',
     button: 'Simplify Logistics'
   },
   zh: {
-    title: 'INNOVVED',
+    title: 'INNOVED',
     button: '简化物流'
   }
 };
