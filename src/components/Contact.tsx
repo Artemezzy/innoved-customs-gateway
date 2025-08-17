@@ -134,8 +134,8 @@ export function Contact({ language }: ContactProps) {
                 <Phone className="w-5 h-5 text-primary" />
                 <div>
                   <p className="text-sm text-muted-foreground">{text.companyInfo.phone}</p>
-                  <a href="tel:88001112233" className="text-lg font-semibold text-foreground hover:text-primary transition-colors">
-                    8 800 111 22 33
+                  <a href="tel:89331881009" className="text-lg font-semibold text-foreground hover:text-primary transition-colors">
+                    8 933 188 10 09
                   </a>
                 </div>
               </div>
@@ -144,8 +144,8 @@ export function Contact({ language }: ContactProps) {
                 <Mail className="w-5 h-5 text-primary" />
                 <div>
                   <p className="text-sm text-muted-foreground">{text.companyInfo.email}</p>
-                  <a href="mailto:broker@innovedbroker.ru" className="text-lg font-semibold text-foreground hover:text-primary transition-colors">
-                    broker@innovedbroker.ru
+                  <a href="mailto:info@innovedbroker.ru" className="text-lg font-semibold text-foreground hover:text-primary transition-colors">
+                    info@innovedbroker.ru
                   </a>
                 </div>
               </div>
