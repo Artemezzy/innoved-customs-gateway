@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import heroVideo from '@/assets/hero-bg.mp4';
+import heroImage from '@/assets/hero-bg.jpg';
 
 interface HeroProps {
   language: 'ru' | 'en';
@@ -21,16 +21,11 @@ export function Hero({ language }: HeroProps) {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Video */}
-      <video 
-        className="absolute inset-0 w-full h-full object-cover"
-        autoPlay
-        muted
-        loop
-        playsInline
-      >
-        <source src={heroVideo} type="video/mp4" />
-      </video>
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${heroImage})` }}
+      />
       
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-hero" />
