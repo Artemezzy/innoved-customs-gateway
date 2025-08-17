@@ -2,10 +2,8 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, Phone, MessageCircle, Send } from 'lucide-react';
+import { Mail, Phone, MessageCircle, Send, Building } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface ContactProps {
@@ -15,31 +13,41 @@ interface ContactProps {
 const content = {
   ru: {
     title: 'Контакты',
-    form: {
-      email: 'Электронная почта',
+    companyInfo: {
+      title: 'Информация о компании',
       phone: 'Телефон',
-      whatsapp: 'WhatsApp',
-      telegram: 'Telegram',
-      message: 'Сообщение',
-      consent: 'Я согласен на обработку персональных данных',
+      email: 'Email',
+      telegram: 'Telegram'
+    },
+    form: {
+      title: 'Форма обратной связи',
+      name: 'Имя',
+      inn: 'ИНН компании',
+      phone: 'Номер телефона для связи',
+      email: 'Почта',
       submit: 'Отправить заявку'
     },
     success: 'Заявка отправлена успешно!',
-    error: 'Пожалуйста, заполните все обязательные поля и дайте согласие на обработку данных.'
+    error: 'Пожалуйста, заполните все обязательные поля.'
   },
   en: {
     title: 'Contacts',
-    form: {
-      email: 'Email',
+    companyInfo: {
+      title: 'Company Information',
       phone: 'Phone',
-      whatsapp: 'WhatsApp',
-      telegram: 'Telegram',
-      message: 'Message',
-      consent: 'I agree to the processing of personal data',
+      email: 'Email',
+      telegram: 'Telegram'
+    },
+    form: {
+      title: 'Contact Form',
+      name: 'Name',
+      inn: 'Company TIN',
+      phone: 'Contact Phone',
+      email: 'Email',
       submit: 'Send Request'
     },
     success: 'Request sent successfully!',
-    error: 'Please fill in all required fields and give consent to data processing.'
+    error: 'Please fill in all required fields.'
   }
 };
 
@@ -47,18 +55,16 @@ export function Contact({ language }: ContactProps) {
   const text = content[language];
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    email: '',
+    name: '',
+    inn: '',
     phone: '',
-    whatsapp: '',
-    telegram: '',
-    message: '',
-    consent: false
+    email: ''
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.email || !formData.phone || !formData.consent) {
+    if (!formData.name || !formData.inn || !formData.phone || !formData.email) {
       toast({
         title: "Ошибка",
         description: text.error,
@@ -75,12 +81,10 @@ export function Contact({ language }: ContactProps) {
 
     // Reset form
     setFormData({
-      email: '',
+      name: '',
+      inn: '',
       phone: '',
-      whatsapp: '',
-      telegram: '',
-      message: '',
-      consent: false
+      email: ''
     });
   };
 
@@ -90,104 +94,118 @@ export function Contact({ language }: ContactProps) {
         <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-12 animate-fade-in">
           {text.title}
         </h2>
-        <div className="max-w-2xl mx-auto">
+        
+        <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Company Information */}
+          <Card className="animate-slide-in-left shadow-card hover:shadow-hover transition-all duration-300">
+            <CardHeader>
+              <CardTitle className="text-xl font-semibold text-primary flex items-center gap-2">
+                <Building className="w-5 h-5" />
+                {text.companyInfo.title}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center gap-3">
+                <Phone className="w-5 h-5 text-primary" />
+                <div>
+                  <p className="text-sm text-muted-foreground">{text.companyInfo.phone}</p>
+                  <a href="tel:88001112233" className="text-lg font-semibold text-foreground hover:text-primary transition-colors">
+                    8 800 111 22 33
+                  </a>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <Mail className="w-5 h-5 text-primary" />
+                <div>
+                  <p className="text-sm text-muted-foreground">{text.companyInfo.email}</p>
+                  <a href="mailto:broker@innovedbroker.ru" className="text-lg font-semibold text-foreground hover:text-primary transition-colors">
+                    broker@innovedbroker.ru
+                  </a>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-3">
+                <Send className="w-5 h-5 text-primary" />
+                <div>
+                  <p className="text-sm text-muted-foreground">{text.companyInfo.telegram}</p>
+                  <a href="https://t.me/innovedbroker" target="_blank" rel="noopener noreferrer" className="text-lg font-semibold text-foreground hover:text-primary transition-colors">
+                    @innovedbroker
+                  </a>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Contact Form */}
           <Card className="animate-slide-in-right shadow-card hover:shadow-hover transition-all duration-300">
             <CardHeader>
-              <CardTitle className="text-center text-xl font-semibold text-primary flex items-center justify-center gap-2">
-                <Send className="w-5 h-5" />
-                {text.title}
+              <CardTitle className="text-xl font-semibold text-primary flex items-center gap-2">
+                <MessageCircle className="w-5 h-5" />
+                {text.form.title}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="email" className="flex items-center gap-2">
-                      <Mail className="w-4 h-4" />
-                      {text.form.email} *
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => setFormData({...formData, email: e.target.value})}
-                      required
-                      className="transition-all duration-300 focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="phone" className="flex items-center gap-2">
-                      <Phone className="w-4 h-4" />
-                      {text.form.phone} *
-                    </Label>
-                    <Input
-                      id="phone"
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      required
-                      className="transition-all duration-300 focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="whatsapp" className="flex items-center gap-2">
-                      <MessageCircle className="w-4 h-4" />
-                      {text.form.whatsapp}
-                    </Label>
-                    <Input
-                      id="whatsapp"
-                      type="tel"
-                      value={formData.whatsapp}
-                      onChange={(e) => setFormData({...formData, whatsapp: e.target.value})}
-                      className="transition-all duration-300 focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="telegram" className="flex items-center gap-2">
-                      <Send className="w-4 h-4" />
-                      {text.form.telegram}
-                    </Label>
-                    <Input
-                      id="telegram"
-                      type="text"
-                      value={formData.telegram}
-                      onChange={(e) => setFormData({...formData, telegram: e.target.value})}
-                      className="transition-all duration-300 focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
-                </div>
-
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="message">
-                    {text.form.message}
+                  <Label htmlFor="name" className="text-sm font-medium">
+                    {text.form.name} *
                   </Label>
-                  <Textarea
-                    id="message"
-                    value={formData.message}
-                    onChange={(e) => setFormData({...formData, message: e.target.value})}
-                    rows={4}
+                  <Input
+                    id="name"
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    required
                     className="transition-all duration-300 focus:ring-2 focus:ring-primary"
                   />
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="consent"
-                    checked={formData.consent}
-                    onCheckedChange={(checked) => setFormData({...formData, consent: checked as boolean})}
-                    required
-                  />
-                  <Label htmlFor="consent" className="text-sm text-muted-foreground">
-                    {text.form.consent} *
+                <div className="space-y-2">
+                  <Label htmlFor="inn" className="text-sm font-medium">
+                    {text.form.inn} *
                   </Label>
+                  <Input
+                    id="inn"
+                    type="text"
+                    value={formData.inn}
+                    onChange={(e) => setFormData({...formData, inn: e.target.value})}
+                    required
+                    className="transition-all duration-300 focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="text-sm font-medium">
+                    {text.form.phone} *
+                  </Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    required
+                    className="transition-all duration-300 focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-sm font-medium">
+                    {text.form.email} *
+                  </Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    required
+                    className="transition-all duration-300 focus:ring-2 focus:ring-primary"
+                  />
                 </div>
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-primary hover:bg-primary-hover text-primary-foreground font-semibold py-3 transition-all duration-300 hover:scale-105"
+                  className="w-full bg-primary hover:bg-primary-hover text-primary-foreground font-semibold py-3 transition-all duration-300"
                 >
                   {text.form.submit}
                 </Button>
