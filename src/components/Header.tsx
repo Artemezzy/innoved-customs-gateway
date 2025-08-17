@@ -1,5 +1,5 @@
 interface HeaderProps {
-  language: 'ru' | 'en';
+  language: 'ru' | 'en' | 'zh';
 }
 
 const content = {
@@ -19,6 +19,15 @@ const content = {
       services: 'Services',
       pricing: 'Pricing',
       contact: 'Contacts'
+    }
+  },
+  zh: {
+    logo: 'INNOVVED',
+    links: {
+      about: '关于我们',
+      services: '服务',
+      pricing: '价格',
+      contact: '联系我们'
     }
   }
 };

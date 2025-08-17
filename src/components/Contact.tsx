@@ -7,7 +7,7 @@ import { Mail, Phone, MessageCircle, Send, Building } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface ContactProps {
-  language: 'ru' | 'en';
+  language: 'ru' | 'en' | 'zh';
 }
 
 const content = {
@@ -48,6 +48,25 @@ const content = {
     },
     success: 'Request sent successfully!',
     error: 'Please fill in all required fields.'
+  },
+  zh: {
+    title: '联系我们',
+    companyInfo: {
+      title: '公司信息',
+      phone: '电话',
+      email: '邮箱',
+      telegram: 'Telegram'
+    },
+    form: {
+      title: '提交申请',
+      name: '姓名',
+      inn: '公司税号',
+      phone: '联系电话',
+      email: '邮箱',
+      submit: '提交申请'
+    },
+    success: '申请提交成功！',
+    error: '请填写所有必填字段。'
   }
 };
 

@@ -2,7 +2,7 @@ import { ServiceCard } from './ServiceCard';
 import { Truck, FileSearch, UserCheck, Shield } from 'lucide-react';
 
 interface ServicesProps {
-  language: 'ru' | 'en';
+  language: 'ru' | 'en' | 'zh';
 }
 
 const content = {
@@ -44,6 +44,27 @@ const content = {
       },
       {
         title: 'Organization of Certificates and Declaration of Conformity',
+        icon: <Shield />
+      }
+    ]
+  },
+  zh: {
+    title: '我们的服务',
+    services: [
+      {
+        title: '进出口登记',
+        icon: <Truck />
+      },
+      {
+        title: 'HS代码确定',
+        icon: <FileSearch />
+      },
+      {
+        title: '联邦海关总署个人账户进口商注册',
+        icon: <UserCheck />
+      },
+      {
+        title: '证书获取和合规声明组织',
         icon: <Shield />
       }
     ]

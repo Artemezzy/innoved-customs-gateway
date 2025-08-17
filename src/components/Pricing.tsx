@@ -9,7 +9,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface PricingProps {
-  language: 'ru' | 'en';
+  language: 'ru' | 'en' | 'zh';
 }
 
 const content = {
@@ -54,6 +54,28 @@ const content = {
       {
         service: 'Organization of Certificates and Declaration of Conformity',
         price: 'by agreement'
+      }
+    ]
+  },
+  zh: {
+    title: '价格',
+    tableHeaders: ['服务', '费用'],
+    pricing: [
+      {
+        service: '进出口登记',
+        price: '10000 ₽起'
+      },
+      {
+        service: 'HS代码确定',
+        price: '1000 ₽起'
+      },
+      {
+        service: '联邦海关总署个人账户进口商注册',
+        price: '5000 ₽起'
+      },
+      {
+        service: '证书获取和合规声明组织',
+        price: '面议'
       }
     ]
   }

@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import heroVideo from '@/assets/hero-bg-v2.mp4';
 
 interface HeroProps {
-  language: 'ru' | 'en';
+  language: 'ru' | 'en' | 'zh';
 }
 
 const content = {
@@ -13,6 +13,10 @@ const content = {
   en: {
     title: 'INNOVVED',
     button: 'Simplify Logistics'
+  },
+  zh: {
+    title: 'INNOVVED',
+    button: '简化物流'
   }
 };
 

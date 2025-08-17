@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 
-export type Language = 'ru' | 'en';
+export type Language = 'ru' | 'en' | 'zh';
 
 interface LanguageToggleProps {
   onLanguageChange: (lang: Language) => void;
@@ -26,6 +26,14 @@ export function LanguageToggle({ onLanguageChange, currentLanguage }: LanguageTo
         className="text-xs"
       >
         EN
+      </Button>
+      <Button
+        variant={currentLanguage === 'zh' ? 'default' : 'outline'}
+        size="sm"
+        onClick={() => onLanguageChange('zh')}
+        className="text-xs"
+      >
+        中文
       </Button>
     </div>
   );
