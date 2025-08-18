@@ -6,6 +6,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mail, Phone, MessageCircle, Send, Building } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ContactProps {
   language: 'ru' | 'en' | 'zh';
@@ -84,8 +85,9 @@ export function Contact({ language }: ContactProps) {
     email: '',
     consent: false
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.name || !formData.inn || !formData.phone || !formData.email || !formData.consent) {
@@ -97,20 +99,51 @@ export function Contact({ language }: ContactProps) {
       return;
     }
 
-    // Here you would normally send the data to your backend
-    toast({
-      title: "Успех",
-      description: text.success,
-    });
+    setIsSubmitting(true);
 
-    // Reset form
-    setFormData({
-      name: '',
-      inn: '',
-      phone: '',
-      email: '',
-      consent: false
-    });
+    try {
+      const { data, error } = await supabase.functions.invoke('send-contact-email', {
+        body: {
+          name: formData.name,
+          inn: formData.inn,
+          phone: formData.phone,
+          email: formData.email,
+          language: language
+        }
+      });
+
+      if (error) {
+        console.error('Error sending email:', error);
+        throw new Error(error.message);
+      }
+
+      if (data?.success) {
+        toast({
+          title: "Успех",
+          description: text.success,
+        });
+
+        // Reset form
+        setFormData({
+          name: '',
+          inn: '',
+          phone: '',
+          email: '',
+          consent: false
+        });
+      } else {
+        throw new Error(data?.error || 'Unknown error occurred');
+      }
+    } catch (error: any) {
+      console.error('Error submitting form:', error);
+      toast({
+        title: "Ошибка",
+        description: `Не удалось отправить заявку: ${error.message}`,
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -242,9 +275,14 @@ export function Contact({ language }: ContactProps) {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-primary hover:bg-primary-hover text-primary-foreground font-semibold py-3 transition-all duration-300"
+                  disabled={isSubmitting}
+                  className="w-full bg-primary hover:bg-primary-hover text-primary-foreground font-semibold py-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {text.form.submit}
+                  {isSubmitting ? (
+                    language === 'ru' ? 'Отправка...' : 
+                    language === 'en' ? 'Sending...' : 
+                    '发送中...'
+                  ) : text.form.submit}
                 </Button>
               </form>
             </CardContent>
