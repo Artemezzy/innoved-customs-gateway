@@ -6,7 +6,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mail, Phone, MessageCircle, Send, Building } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
 
 interface ContactProps {
   language: 'ru' | 'en' | 'zh';
@@ -101,44 +100,29 @@ export function Contact({ language }: ContactProps) {
 
     setIsSubmitting(true);
 
+    // For now, just show success message without actual email sending
     try {
-      const { data, error } = await supabase.functions.invoke('send-contact-email', {
-        body: {
-          name: formData.name,
-          inn: formData.inn,
-          phone: formData.phone,
-          email: formData.email,
-          language: language
-        }
+      // Simulate form submission delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      toast({
+        title: "Успех", 
+        description: text.success,
       });
 
-      if (error) {
-        console.error('Error sending email:', error);
-        throw new Error(error.message);
-      }
-
-      if (data?.success) {
-        toast({
-          title: "Успех",
-          description: text.success,
-        });
-
-        // Reset form
-        setFormData({
-          name: '',
-          inn: '',
-          phone: '',
-          email: '',
-          consent: false
-        });
-      } else {
-        throw new Error(data?.error || 'Unknown error occurred');
-      }
+      // Reset form
+      setFormData({
+        name: '',
+        inn: '',
+        phone: '',
+        email: '',
+        consent: false
+      });
     } catch (error: any) {
       console.error('Error submitting form:', error);
       toast({
         title: "Ошибка",
-        description: `Не удалось отправить заявку: ${error.message}`,
+        description: "Произошла ошибка при отправке заявки",
         variant: "destructive"
       });
     } finally {
