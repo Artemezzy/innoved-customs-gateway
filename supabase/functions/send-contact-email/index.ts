@@ -125,7 +125,7 @@ const serve_handler = async (req: Request): Promise<Response> => {
     console.log("Sending email to info@innovedbroker.ru");
 
     const emailResponse = await resend.emails.send({
-      from: "Innoved Broker <onboarding@resend.dev>",
+      from: "Innoved Broker <noreply@innovedbroker.ru>",
       to: ["info@innovedbroker.ru"],
       subject: subject,
       html: emailHtml,
