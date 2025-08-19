@@ -100,10 +100,28 @@ export function Contact({ language }: ContactProps) {
 
     setIsSubmitting(true);
 
-    // For now, just show success message without actual email sending
     try {
-      // Simulate form submission delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-telegram-message`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
+          body: JSON.stringify({
+            name: formData.name,
+            inn: formData.inn,
+            phone: formData.phone,
+            email: formData.email,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to send message');
+      }
       
       toast({
         title: "Успех", 
