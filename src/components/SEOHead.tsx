@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { analytics } from '../utils/analytics';
 
 interface SEOHeadProps {
   language: 'ru' | 'en' | 'zh';
@@ -139,14 +140,10 @@ export function SEOHead({ language, page = 'home' }: SEOHeadProps) {
     script.textContent = JSON.stringify(jsonLd);
     document.head.appendChild(script);
 
-    // Track page view with analytics
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('config', 'GA_MEASUREMENT_ID', {
-        page_title: content.title,
-        page_location: window.location.href,
-        page_language: language,
-        custom_map: {'custom_parameter_1': page}
-      });
+    // Initialize and configure Google Analytics
+    analytics.init();
+    if (typeof window !== 'undefined') {
+      analytics.pageView(window.location.pathname, content.title);
     }
   }, [language, page, content]);
 
