@@ -29,6 +29,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Default chat ID - you can also make this configurable
     const chatId = Deno.env.get('TELEGRAM_CHAT_ID') || '@your_channel_or_chat_id';
+    const threadId = Deno.env.get('TELEGRAM_THREAD_ID'); // Optional thread ID for forum groups
     
     const telegramMessage = `
 🔔 *Новая заявка с сайта*
@@ -53,6 +54,7 @@ ${message ? `💬 *Сообщение:* ${message}` : ''}
         chat_id: chatId,
         text: telegramMessage,
         parse_mode: 'Markdown',
+        ...(threadId && { message_thread_id: parseInt(threadId) }),
       }),
     });
 
