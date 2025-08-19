@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mail, Phone, MessageCircle, Send, Building } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
@@ -26,6 +27,8 @@ const content = {
       inn: 'ИНН компании',
       phone: 'Номер телефона для связи',
       email: 'Почта',
+      additionalInfo: 'Дополнительная информация',
+      additionalInfoPlaceholder: 'Опишите подробно вашу потребность, требования к логистике, особенности груза и другие важные детали...',
       submit: 'Отправить заявку',
       consent: 'Я согласен на обработку персональных данных'
     },
@@ -46,6 +49,8 @@ const content = {
       inn: 'Company TIN',
       phone: 'Contact Phone',
       email: 'Email',
+      additionalInfo: 'Additional Information',
+      additionalInfoPlaceholder: 'Please describe your needs, logistics requirements, cargo specifics and other important details...',
       submit: 'Send Request',
       consent: 'I agree to the processing of personal data'
     },
@@ -66,6 +71,8 @@ const content = {
       inn: '公司税号',
       phone: '联系电话',
       email: '邮箱',
+      additionalInfo: '附加信息',
+      additionalInfoPlaceholder: '请详细描述您的需求、物流要求、货物特殊性和其他重要细节...',
       submit: '提交申请',
       consent: '我同意处理个人数据'
     },
@@ -82,6 +89,7 @@ export function Contact({ language }: ContactProps) {
     inn: '',
     phone: '',
     email: '',
+    additionalInfo: '',
     consent: false
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -114,6 +122,7 @@ export function Contact({ language }: ContactProps) {
             inn: formData.inn,
             phone: formData.phone,
             email: formData.email,
+            message: formData.additionalInfo,
           }),
         }
       );
@@ -134,6 +143,7 @@ export function Contact({ language }: ContactProps) {
         inn: '',
         phone: '',
         email: '',
+        additionalInfo: '',
         consent: false
       });
     } catch (error: any) {
@@ -260,6 +270,20 @@ export function Contact({ language }: ContactProps) {
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
                     required
                     className="transition-all duration-300 focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="additionalInfo" className="text-sm font-medium">
+                    {text.form.additionalInfo}
+                  </Label>
+                  <Textarea
+                    id="additionalInfo"
+                    value={formData.additionalInfo}
+                    onChange={(e) => setFormData({...formData, additionalInfo: e.target.value})}
+                    placeholder={text.form.additionalInfoPlaceholder}
+                    rows={4}
+                    className="transition-all duration-300 focus:ring-2 focus:ring-primary resize-none"
                   />
                 </div>
 
