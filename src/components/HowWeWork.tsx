@@ -157,8 +157,8 @@ export const HowWeWork = ({ language }: HowWeWorkProps) => {
                       </h3>
                       <p className={`text-xs leading-relaxed transition-all duration-500 ${
                         index === activeStep 
-                          ? 'text-foreground opacity-100 max-h-20' 
-                          : 'text-muted-foreground opacity-60 max-h-12 overflow-hidden'
+                          ? 'text-foreground opacity-100' 
+                          : 'text-muted-foreground opacity-60'
                       }`}>
                         {step.description}
                       </p>
