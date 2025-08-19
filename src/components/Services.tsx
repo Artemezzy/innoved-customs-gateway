@@ -1,5 +1,5 @@
 import { ServiceCard } from './ServiceCard';
-import { Truck, FileSearch, UserCheck, Shield } from 'lucide-react';
+import { Truck, FileSearch, UserCheck, Shield, FileText, Eye, Languages, Download, Upload } from 'lucide-react';
 
 interface ServicesProps {
   language: 'ru' | 'en' | 'zh';
@@ -10,8 +10,12 @@ const content = {
     title: 'Наши услуги',
     services: [
       {
-        title: 'Оформление импорта и экспорта',
-        icon: <Truck />
+        title: 'Оформление импорта',
+        icon: <Download />
+      },
+      {
+        title: 'Оформление экспорта',
+        icon: <Upload />
       },
       {
         title: 'Определение кода ТН ВЭД',
@@ -24,6 +28,18 @@ const content = {
       {
         title: 'Организация получения сертификатов и декларация соответствия',
         icon: <Shield />
+      },
+      {
+        title: 'Подготовка писем в таможенные органы',
+        icon: <FileText />
+      },
+      {
+        title: 'Организация досмотра товаров',
+        icon: <Eye />
+      },
+      {
+        title: 'Перевод документов',
+        icon: <Languages />
       }
     ]
   },
@@ -31,8 +47,12 @@ const content = {
     title: 'Our Services',
     services: [
       {
-        title: 'Import and Export Registration',
-        icon: <Truck />
+        title: 'Import Registration',
+        icon: <Download />
+      },
+      {
+        title: 'Export Registration',
+        icon: <Upload />
       },
       {
         title: 'HS Code Determination',
@@ -45,6 +65,18 @@ const content = {
       {
         title: 'Organization of Certificates and Declaration of Conformity',
         icon: <Shield />
+      },
+      {
+        title: 'Preparation of Letters to Customs Authorities',
+        icon: <FileText />
+      },
+      {
+        title: 'Organization of Goods Inspection',
+        icon: <Eye />
+      },
+      {
+        title: 'Document Translation',
+        icon: <Languages />
       }
     ]
   },
@@ -52,8 +84,12 @@ const content = {
     title: '我们的服务',
     services: [
       {
-        title: '进出口登记',
-        icon: <Truck />
+        title: '进口登记',
+        icon: <Download />
+      },
+      {
+        title: '出口登记',
+        icon: <Upload />
       },
       {
         title: 'HS代码确定',
@@ -66,6 +102,18 @@ const content = {
       {
         title: '证书获取和合规声明组织',
         icon: <Shield />
+      },
+      {
+        title: '海关机关信件准备',
+        icon: <FileText />
+      },
+      {
+        title: '货物检查组织',
+        icon: <Eye />
+      },
+      {
+        title: '文件翻译',
+        icon: <Languages />
       }
     ]
   }
