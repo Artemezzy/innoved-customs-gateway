@@ -103,6 +103,42 @@ export function SEOHead({ language, page = 'home' }: SEOHeadProps) {
       twitterDescription.setAttribute('content', content.description);
     }
     
+    // Add JSON-LD structured data
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": language === 'ru' ? 'ИННОВЭД' : 'INNOVED',
+      "url": "https://innovedbroker.ru",
+      "logo": "https://innovedbroker.ru/logo.png",
+      "sameAs": [
+        "https://t.me/innovedbroker"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+7-933-188-10-09",
+        "email": "info@innovedbroker.ru",
+        "contactType": "customer service",
+        "availableLanguage": ["Russian", "English", "Chinese"]
+      },
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "RU"
+      },
+      "description": content.description
+    };
+
+    // Remove existing JSON-LD script
+    const existingScript = document.querySelector('script[type="application/ld+json"]');
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    // Add new JSON-LD script
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(jsonLd);
+    document.head.appendChild(script);
+
     // Track page view with analytics
     if (typeof window !== 'undefined' && window.gtag) {
       window.gtag('config', 'GA_MEASUREMENT_ID', {
