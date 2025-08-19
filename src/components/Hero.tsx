@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
 import heroVideo from '@/assets/hero-bg-v2.mp4';
+import { analytics } from '@/utils/analytics';
 
 interface HeroProps {
   language: 'ru' | 'en' | 'zh';
@@ -22,6 +23,11 @@ const content = {
 
 export function Hero({ language }: HeroProps) {
   const text = content[language];
+
+  const handleButtonClick = () => {
+    analytics.contactClick('telegram');
+    window.open('https://t.me/innovedbroker', '_blank');
+  };
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -47,7 +53,7 @@ export function Hero({ language }: HeroProps) {
         <Button 
           size="lg"
           className="bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-lg font-semibold shadow-hover"
-          onClick={() => window.open('https://t.me/innovedbroker', '_blank')}
+          onClick={handleButtonClick}
         >
           {text.button}
         </Button>

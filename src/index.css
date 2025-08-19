@@ -111,4 +111,48 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Performance optimizations */
+  img {
+    @apply transition-smooth;
+  }
+  
+  /* Lazy loading styles */
+  img[loading="lazy"] {
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  img[loading="lazy"].loaded {
+    opacity: 1;
+  }
+}
+
+/* Custom animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    text-shadow: 0 0 20px hsl(var(--primary-glow) / 0.5);
+  }
+  50% {
+    text-shadow: 0 0 30px hsl(var(--primary-glow) / 0.8);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.8s ease-out;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
 }

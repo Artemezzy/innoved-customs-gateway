@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
 import { About } from '@/components/About';
@@ -7,9 +7,21 @@ import { Pricing } from '@/components/Pricing';
 import { Contact } from '@/components/Contact';
 import { Footer } from '@/components/Footer';
 import { LanguageToggle, Language } from '@/components/LanguageToggle';
+import { SEOHead } from '@/components/SEOHead';
+import { analytics } from '@/utils/analytics';
 
 const Index = () => {
   const [language, setLanguage] = useState<Language>('ru');
+
+  useEffect(() => {
+    // Track page view
+    analytics.pageView('/', 'ИННОВЭД - Главная страница');
+  }, []);
+
+  const handleLanguageChange = (newLanguage: Language) => {
+    setLanguage(newLanguage);
+    analytics.languageChange(newLanguage);
+  };
 
   const handleSectionClick = (section: string) => {
     // Scroll to section logic is handled in Footer component
@@ -17,6 +29,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      <SEOHead language={language} page="home" />
+      
       {/* Header Navigation */}
       <Header language={language} />
       
@@ -24,7 +38,7 @@ const Index = () => {
       <div className="fixed top-4 right-4 z-50">
         <LanguageToggle 
           currentLanguage={language}
-          onLanguageChange={setLanguage}
+          onLanguageChange={handleLanguageChange}
         />
       </div>
 
