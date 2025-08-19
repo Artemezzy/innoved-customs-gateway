@@ -25,8 +25,11 @@ export function Hero({ language }: HeroProps) {
   const text = content[language];
 
   const handleButtonClick = () => {
-    analytics.contactClick('telegram');
-    window.open('https://t.me/innovedbroker', '_blank');
+    analytics.contactClick('contact-form');
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   return (
