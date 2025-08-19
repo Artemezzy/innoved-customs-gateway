@@ -3,6 +3,7 @@ import { Header } from '@/components/Header';
 import { Hero } from '@/components/Hero';
 import { About } from '@/components/About';
 import { Services } from '@/components/Services';
+import { HowWeWork } from '@/components/HowWeWork';
 import { Pricing } from '@/components/Pricing';
 import { Contact } from '@/components/Contact';
 import { Footer } from '@/components/Footer';
@@ -50,6 +51,9 @@ const Index = () => {
       
       {/* Services Section */}
       <Services language={language} />
+      
+      {/* How We Work Section */}
+      <HowWeWork language={language} />
       
       {/* Pricing Section */}
       <Pricing language={language} />
