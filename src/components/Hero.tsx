@@ -63,7 +63,7 @@ export function Hero({ language }: HeroProps) {
             delay={2000}
             speed={80}
             pauseBetween={3000}
-            className="text-xl md:text-2xl lg:text-3xl text-primary-foreground/90 font-medium"
+            className="text-xl md:text-2xl lg:text-3xl text-primary-foreground/70 font-medium"
           />
         </div>
         <Button 
