@@ -1,5 +1,5 @@
 import { ServiceCard } from './ServiceCard';
-import { Truck, Ship, FileSearch, UserPlus, Shield, Mail, ScanLine, Languages } from 'lucide-react';
+import { Truck, FileSearch, UserPlus, Shield, Mail, ScanLine, Languages, Package, Plane } from 'lucide-react';
 
 interface ServicesProps {
   language: 'ru' | 'en' | 'zh';
@@ -11,11 +11,11 @@ const content = {
     services: [
       {
         title: 'Оформление импорта',
-        icon: <Truck />
+        icon: <Package />
       },
       {
         title: 'Оформление экспорта',
-        icon: <Ship />
+        icon: <Plane />
       },
       {
         title: 'Определение кода ТН ВЭД',
@@ -48,11 +48,11 @@ const content = {
     services: [
       {
         title: 'Import Registration',
-        icon: <Truck />
+        icon: <Package />
       },
       {
         title: 'Export Registration',
-        icon: <Ship />
+        icon: <Plane />
       },
       {
         title: 'HS Code Determination',
@@ -85,11 +85,11 @@ const content = {
     services: [
       {
         title: '进口登记',
-        icon: <Truck />
+        icon: <Package />
       },
       {
         title: '出口登记',
-        icon: <Ship />
+        icon: <Plane />
       },
       {
         title: 'HS代码确定',

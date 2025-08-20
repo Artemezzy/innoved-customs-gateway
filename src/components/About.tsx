@@ -1,4 +1,4 @@
-import teamImage from '@/assets/vladivostok-port-real.jpg';
+import teamImage from '@/assets/team-professionals.jpg';
 
 interface AboutProps {
   language: 'ru' | 'en' | 'zh';
@@ -59,7 +59,7 @@ export function About({ language }: AboutProps) {
           <div className="animate-slide-in-right">
             <img
               src={teamImage}
-              alt="Владивостокский торговый порт - логистический терминал"
+              alt="Professional customs clearance team"
               className="w-full h-auto rounded-lg shadow-card hover:shadow-hover transition-all duration-300"
             />
           </div>
