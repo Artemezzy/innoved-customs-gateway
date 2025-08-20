@@ -1,16 +1,22 @@
 import { useState, useEffect } from 'react';
 
 interface TypewriterTextProps {
-  text: string;
+  texts: string[];
   delay?: number;
   speed?: number;
+  pauseBetween?: number;
   className?: string;
 }
 
-export function TypewriterText({ text, delay = 1000, speed = 50, className = "" }: TypewriterTextProps) {
+export function TypewriterText({ texts, delay = 1000, speed = 50, pauseBetween = 2000, className = "" }: TypewriterTextProps) {
   const [displayText, setDisplayText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [isStarted, setIsStarted] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
+
+  const currentText = texts[currentTextIndex];
 
   useEffect(() => {
     const startTimer = setTimeout(() => {
@@ -21,15 +27,40 @@ export function TypewriterText({ text, delay = 1000, speed = 50, className = "" 
   }, [delay]);
 
   useEffect(() => {
-    if (!isStarted || currentIndex >= text.length) return;
+    if (!isStarted) return;
 
-    const timer = setTimeout(() => {
-      setDisplayText(text.slice(0, currentIndex + 1));
-      setCurrentIndex(currentIndex + 1);
-    }, speed);
+    if (isPaused) {
+      const pauseTimer = setTimeout(() => {
+        setIsPaused(false);
+        setIsDeleting(true);
+      }, pauseBetween);
+      return () => clearTimeout(pauseTimer);
+    }
 
-    return () => clearTimeout(timer);
-  }, [currentIndex, text, speed, isStarted]);
+    if (isDeleting) {
+      if (currentIndex > 0) {
+        const timer = setTimeout(() => {
+          setDisplayText(currentText.slice(0, currentIndex - 1));
+          setCurrentIndex(currentIndex - 1);
+        }, speed / 2);
+        return () => clearTimeout(timer);
+      } else {
+        setIsDeleting(false);
+        setCurrentTextIndex((prev) => (prev + 1) % texts.length);
+        setCurrentIndex(0);
+      }
+    } else {
+      if (currentIndex < currentText.length) {
+        const timer = setTimeout(() => {
+          setDisplayText(currentText.slice(0, currentIndex + 1));
+          setCurrentIndex(currentIndex + 1);
+        }, speed);
+        return () => clearTimeout(timer);
+      } else {
+        setIsPaused(true);
+      }
+    }
+  }, [currentIndex, currentText, speed, isStarted, isDeleting, isPaused, pauseBetween, texts.length]);
 
   return (
     <span className={className}>

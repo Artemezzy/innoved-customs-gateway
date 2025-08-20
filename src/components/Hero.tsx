@@ -10,17 +10,17 @@ interface HeroProps {
 const content = {
   ru: {
     title: 'ИННОВЭД',
-    subtitle: 'Таможенное оформление под ключ',
+    subtitles: ['Таможенное оформление под ключ', 'Таможенное оформление с нами'],
     button: 'Упростить логистику'
   },
   en: {
     title: 'INNOVED',
-    subtitle: 'Comprehensive Customs Clearance',
+    subtitles: ['Comprehensive Customs Clearance', 'Customs Clearance With Us'],
     button: 'Simplify Logistics'
   },
   zh: {
     title: 'INNOVED',
-    subtitle: '全面海关清关服务',
+    subtitles: ['全面海关清关服务', '与我们一起清关'],
     button: '简化物流'
   }
 };
@@ -59,9 +59,10 @@ export function Hero({ language }: HeroProps) {
         </h1>
         <div className="mb-8 h-12 flex items-center justify-center">
           <TypewriterText 
-            text={text.subtitle}
+            texts={text.subtitles}
             delay={2000}
             speed={80}
+            pauseBetween={3000}
             className="text-xl md:text-2xl lg:text-3xl text-primary-foreground/90 font-medium"
           />
         </div>
