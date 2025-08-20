@@ -1,5 +1,5 @@
 import { ServiceCard } from './ServiceCard';
-import { Truck, FileSearch, UserCheck, Shield, FileText, Eye, Languages, Download, Upload } from 'lucide-react';
+import { Truck, FileSearch, UserPlus, Shield, Mail, ScanLine, Languages, Package, Plane } from 'lucide-react';
 
 interface ServicesProps {
   language: 'ru' | 'en' | 'zh';
@@ -11,11 +11,11 @@ const content = {
     services: [
       {
         title: 'Оформление импорта',
-        icon: <Download />
+        icon: <Package />
       },
       {
         title: 'Оформление экспорта',
-        icon: <Upload />
+        icon: <Plane />
       },
       {
         title: 'Определение кода ТН ВЭД',
@@ -23,7 +23,7 @@ const content = {
       },
       {
         title: 'Регистрация импортёра в ЛК ФТС',
-        icon: <UserCheck />
+        icon: <UserPlus />
       },
       {
         title: 'Организация получения сертификатов и декларация соответствия',
@@ -31,11 +31,11 @@ const content = {
       },
       {
         title: 'Подготовка писем в таможенные органы',
-        icon: <FileText />
+        icon: <Mail />
       },
       {
         title: 'Организация досмотра товаров',
-        icon: <Eye />
+        icon: <ScanLine />
       },
       {
         title: 'Перевод документов',
@@ -48,11 +48,11 @@ const content = {
     services: [
       {
         title: 'Import Registration',
-        icon: <Download />
+        icon: <Package />
       },
       {
         title: 'Export Registration',
-        icon: <Upload />
+        icon: <Plane />
       },
       {
         title: 'HS Code Determination',
@@ -60,7 +60,7 @@ const content = {
       },
       {
         title: 'Importer Registration in FCS Personal Account',
-        icon: <UserCheck />
+        icon: <UserPlus />
       },
       {
         title: 'Organization of Certificates and Declaration of Conformity',
@@ -68,11 +68,11 @@ const content = {
       },
       {
         title: 'Preparation of Letters to Customs Authorities',
-        icon: <FileText />
+        icon: <Mail />
       },
       {
         title: 'Organization of Goods Inspection',
-        icon: <Eye />
+        icon: <ScanLine />
       },
       {
         title: 'Document Translation',
@@ -85,11 +85,11 @@ const content = {
     services: [
       {
         title: '进口登记',
-        icon: <Download />
+        icon: <Package />
       },
       {
         title: '出口登记',
-        icon: <Upload />
+        icon: <Plane />
       },
       {
         title: 'HS代码确定',
@@ -97,7 +97,7 @@ const content = {
       },
       {
         title: '联邦海关总署个人账户进口商注册',
-        icon: <UserCheck />
+        icon: <UserPlus />
       },
       {
         title: '证书获取和合规声明组织',
@@ -105,11 +105,11 @@ const content = {
       },
       {
         title: '海关机关信件准备',
-        icon: <FileText />
+        icon: <Mail />
       },
       {
         title: '货物检查组织',
-        icon: <Eye />
+        icon: <ScanLine />
       },
       {
         title: '文件翻译',
