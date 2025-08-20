@@ -1,4 +1,4 @@
-import teamImage from '@/assets/team-professionals.jpg';
+import containerShipImage from '@/assets/container-ship.jpg';
 
 interface AboutProps {
   language: 'ru' | 'en' | 'zh';
@@ -58,8 +58,8 @@ export function About({ language }: AboutProps) {
           </div>
           <div className="animate-slide-in-right">
             <img
-              src={teamImage}
-              alt="Professional customs clearance team"
+              src={containerShipImage}
+              alt="Container ship for customs clearance and logistics"
               className="w-full h-auto rounded-lg shadow-card hover:shadow-hover transition-all duration-300"
             />
           </div>
