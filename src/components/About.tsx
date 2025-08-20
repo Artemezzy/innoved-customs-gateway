@@ -1,4 +1,4 @@
-import containerImage from '@/assets/container.jpg';
+import teamImage from '@/assets/team-professionals.jpg';
 
 interface AboutProps {
   language: 'ru' | 'en' | 'zh';
@@ -11,8 +11,6 @@ const content = {
 
 Благодаря современным технологиям и отлаженным дистанционным процессам взаимодействия, «ИННОВЭД» предоставляет услуги быстро и эффективно, независимо от географического положения клиента. Мы ценим время и доверие наших заказчиков, поэтому ставим в приоритет скорость и точность в работе.
 
-Особое внимание в нашей деятельности уделяется защите конфиденциальной информации – мы гарантируем надежную сохранность данных и безопасность ваших документов от доступа третьих лиц.
-
 Став нашим клиентом, вы получаете профессиональное сопровождение, минимизацию рисков, а также уверенность в том, что ваши грузы будут оформлены в полном соответствии с действующим законодательством и международными стандартами.
 
 «ИННОВЭД» — ваш бизнес — без преград, таможня — без забот.`
@@ -23,8 +21,6 @@ const content = {
 
 Thanks to modern technologies and well-established remote interaction processes, INNOVED provides services quickly and efficiently, regardless of the client's geographical location. We value the time and trust of our customers, so we prioritize speed and accuracy in our work.
 
-Special attention in our activities is paid to the protection of confidential information - we guarantee reliable data preservation and security of your documents from third-party access.
-
 By becoming our client, you get professional support, risk minimization, and confidence that your cargo will be processed in full compliance with current legislation and international standards.
 
 INNOVED - your business without barriers, customs without worries.`
@@ -34,8 +30,6 @@ INNOVED - your business without barriers, customs without worries.`
     text: `INNOVED公司是俄罗斯全境货物清关领域的可靠合作伙伴。我们汇集了一支拥有十多年经验的专业团队，为客户在清关各个环节提供最高效优质的服务。
 
 凭借现代化技术和完善的远程互动流程，INNOVED能够快速高效地提供服务，无论客户身在何处。我们珍视客户的时间和信任，因此将速度和准确性作为工作重点。
-
-我们特别重视机密信息保护——我们保证数据的可靠保存和文件安全，防止第三方访问。
 
 成为我们的客户，您将获得专业支持、风险最小化，以及货物将完全按照现行法律法规和国际标准进行清关的保证。
 
@@ -64,8 +58,8 @@ export function About({ language }: AboutProps) {
           </div>
           <div className="animate-slide-in-right">
             <img
-              src={containerImage}
-              alt="Professional shipping container"
+              src={teamImage}
+              alt="Professional customs clearance team"
               className="w-full h-auto rounded-lg shadow-card hover:shadow-hover transition-all duration-300"
             />
           </div>
