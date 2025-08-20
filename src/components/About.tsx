@@ -1,4 +1,4 @@
-import teamImage from '@/assets/vladivostok-port.jpg';
+import teamImage from '@/assets/vladivostok-port-real.jpg';
 
 interface AboutProps {
   language: 'ru' | 'en' | 'zh';
