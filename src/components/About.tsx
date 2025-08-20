@@ -1,4 +1,4 @@
-import teamImage from '@/assets/team-professionals.jpg';
+import teamImage from '@/assets/business-team-realistic.jpg';
 
 interface AboutProps {
   language: 'ru' | 'en' | 'zh';
