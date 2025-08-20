@@ -7,7 +7,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Mail, Phone, MessageCircle, Send, Building } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { analytics } from '@/utils/analytics';
 
 interface ContactProps {
   language: 'ru' | 'en' | 'zh';
@@ -137,9 +136,6 @@ export function Contact({ language }: ContactProps) {
         title: "Успех", 
         description: text.success,
       });
-
-      // Track form submission
-      analytics.formSubmit('contact');
 
       // Reset form
       setFormData({

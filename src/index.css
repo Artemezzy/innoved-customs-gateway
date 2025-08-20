@@ -128,11 +128,6 @@
   }
 }
 
-/* Scroll margin for fixed header */
-[id] {
-  scroll-margin-top: 4.5rem;
-}
-
 /* Custom animations */
 @keyframes fade-in {
   from {

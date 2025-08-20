@@ -1,5 +1,4 @@
 import { Send, Mail, Phone } from 'lucide-react';
-import { analytics } from '@/utils/analytics';
 
 interface HeaderProps {
   language: 'ru' | 'en' | 'zh';
@@ -57,8 +56,6 @@ export function Header({ language }: HeaderProps) {
               rel="noopener noreferrer"
               className="text-primary-foreground hover:text-primary-glow transition-colors duration-300 p-2 rounded-full hover:bg-white/10"
               title="Telegram"
-              aria-label="Открыть Telegram @innovedbroker"
-              onClick={() => analytics.contactClick('telegram')}
             >
               <Send className="w-4 h-4" />
             </a>
@@ -66,8 +63,6 @@ export function Header({ language }: HeaderProps) {
               href="mailto:info@innovedbroker.ru"
               className="text-primary-foreground hover:text-primary-glow transition-colors duration-300 p-2 rounded-full hover:bg-white/10"
               title="Email"
-              aria-label="Отправить письмо на info@innovedbroker.ru"
-              onClick={() => analytics.contactClick('email')}
             >
               <Mail className="w-4 h-4" />
             </a>
@@ -75,8 +70,6 @@ export function Header({ language }: HeaderProps) {
               href="tel:89331881009"
               className="flex items-center text-primary-foreground hover:text-primary-glow transition-colors duration-300 text-sm font-medium"
               title="Телефон"
-              aria-label="Позвонить 8 933 188 10 09"
-              onClick={() => analytics.contactClick('phone')}
             >
               <Phone className="w-4 h-4 mr-2" />
               8 933 188 10 09
@@ -120,24 +113,18 @@ export function Header({ language }: HeaderProps) {
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-primary-foreground hover:text-primary-glow transition-colors duration-300 p-2 rounded-full hover:bg-white/10"
-                aria-label="Открыть Telegram @innovedbroker"
-                onClick={() => analytics.contactClick('telegram')}
               >
                 <Send className="w-4 h-4" />
               </a>
               <a 
                 href="mailto:info@innovedbroker.ru"
                 className="text-primary-foreground hover:text-primary-glow transition-colors duration-300 p-2 rounded-full hover:bg-white/10"
-                aria-label="Отправить письмо на info@innovedbroker.ru"
-                onClick={() => analytics.contactClick('email')}
               >
                 <Mail className="w-4 h-4" />
               </a>
               <a 
                 href="tel:89331881009"
                 className="text-primary-foreground hover:text-primary-glow transition-colors duration-300 p-2 rounded-full hover:bg-white/10"
-                aria-label="Позвонить 8 933 188 10 09"
-                onClick={() => analytics.contactClick('phone')}
               >
                 <Phone className="w-4 h-4" />
               </a>
