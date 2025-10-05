@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, Phone, MessageCircle, Send, Building } from 'lucide-react';
+import { Mail, Phone, MessageCircle, Send, Building, Download } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { analytics } from '@/utils/analytics';
 
@@ -110,6 +110,23 @@ export function Contact({ language }: ContactProps) {
     setIsSubmitting(true);
 
     try {
+      // Save to localStorage
+      const contactRequest = {
+        id: crypto.randomUUID(),
+        name: formData.name,
+        inn: formData.inn,
+        phone: formData.phone,
+        email: formData.email,
+        additionalInfo: formData.additionalInfo,
+        language,
+        createdAt: new Date().toISOString(),
+      };
+
+      const existingRequests = JSON.parse(localStorage.getItem('contactRequests') || '[]');
+      existingRequests.push(contactRequest);
+      localStorage.setItem('contactRequests', JSON.stringify(existingRequests));
+
+      // Send to Telegram
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-telegram-message`,
         {
@@ -162,12 +179,49 @@ export function Contact({ language }: ContactProps) {
     }
   };
 
+  const handleExportJSON = () => {
+    const requests = JSON.parse(localStorage.getItem('contactRequests') || '[]');
+    
+    if (requests.length === 0) {
+      toast({
+        title: "Предупреждение",
+        description: "Нет заявок для экспорта",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const dataStr = JSON.stringify(requests, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `contact-requests-${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Успех",
+      description: `Экспортировано ${requests.length} заявок`,
+    });
+  };
+
   return (
     <section id="contact" className="py-16 bg-background">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-12 animate-fade-in">
-          {text.title}
-        </h2>
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground animate-fade-in">
+            {text.title}
+          </h2>
+          <Button
+            onClick={handleExportJSON}
+            variant="outline"
+            className="animate-fade-in gap-2"
+          >
+            <Download className="h-4 w-4" />
+            {language === 'ru' ? 'Экспорт заявок' : language === 'en' ? 'Export Requests' : '导出申请'}
+          </Button>
+        </div>
         
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Company Information */}
