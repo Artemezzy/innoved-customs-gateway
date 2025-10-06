@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, Phone, MessageCircle, Send, Building, Download } from 'lucide-react';
+import { Mail, Phone, MessageCircle, Send, Building, Download, Settings } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { analytics } from '@/utils/analytics';
 
@@ -94,6 +94,27 @@ export function Contact({ language }: ContactProps) {
     consent: false
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [webhookUrl, setWebhookUrl] = useState('');
+  const [showSettings, setShowSettings] = useState(false);
+
+  useEffect(() => {
+    // Load webhook URL from localStorage
+    const savedWebhook = localStorage.getItem('makeWebhookUrl');
+    if (savedWebhook) {
+      setWebhookUrl(savedWebhook);
+    }
+  }, []);
+
+  const handleSaveWebhook = () => {
+    if (webhookUrl) {
+      localStorage.setItem('makeWebhookUrl', webhookUrl);
+      toast({
+        title: "Успех",
+        description: "Webhook URL сохранен",
+      });
+      setShowSettings(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -126,28 +147,24 @@ export function Contact({ language }: ContactProps) {
       existingRequests.push(contactRequest);
       localStorage.setItem('contactRequests', JSON.stringify(existingRequests));
 
-      // Send to Telegram
-      const response = await fetch(
-        'https://cogwmxobltnarqugrsks.supabase.co/functions/v1/send-telegram-message',
-        {
+      // Send to Make.com webhook
+      if (webhookUrl) {
+        await fetch(webhookUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNvZ3dteG9ibHRuYXJxdWdyc2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU0NDExNjQsImV4cCI6MjA3MTAxNzE2NH0.YgpiTXw4nac4IPZAVakfx-NM34kLvALmOJjzlxNc2Jw',
           },
+          mode: 'no-cors', // Handle CORS for webhooks
           body: JSON.stringify({
             name: formData.name,
             inn: formData.inn,
             phone: formData.phone,
             email: formData.email,
             message: formData.additionalInfo,
+            language: language,
+            timestamp: new Date().toISOString(),
           }),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to send message');
+        });
       }
       
       toast({
@@ -213,15 +230,58 @@ export function Contact({ language }: ContactProps) {
           <h2 className="text-3xl md:text-4xl font-bold text-foreground animate-fade-in">
             {text.title}
           </h2>
-          <Button
-            onClick={handleExportJSON}
-            variant="outline"
-            className="animate-fade-in gap-2"
-          >
-            <Download className="h-4 w-4" />
-            {language === 'ru' ? 'Экспорт заявок' : language === 'en' ? 'Export Requests' : '导出申请'}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => setShowSettings(!showSettings)}
+              variant="outline"
+              className="animate-fade-in gap-2"
+            >
+              <Settings className="h-4 w-4" />
+              {language === 'ru' ? 'Настройки' : language === 'en' ? 'Settings' : '设置'}
+            </Button>
+            <Button
+              onClick={handleExportJSON}
+              variant="outline"
+              className="animate-fade-in gap-2"
+            >
+              <Download className="h-4 w-4" />
+              {language === 'ru' ? 'Экспорт заявок' : language === 'en' ? 'Export Requests' : '导出申请'}
+            </Button>
+          </div>
         </div>
+
+        {/* Settings Panel */}
+        {showSettings && (
+          <Card className="mb-8 animate-fade-in">
+            <CardHeader>
+              <CardTitle className="text-lg">
+                {language === 'ru' ? 'Настройки Make.com Webhook' : language === 'en' ? 'Make.com Webhook Settings' : 'Make.com Webhook 设置'}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="webhook">Webhook URL</Label>
+                <Input
+                  id="webhook"
+                  type="url"
+                  value={webhookUrl}
+                  onChange={(e) => setWebhookUrl(e.target.value)}
+                  placeholder="https://hook.eu2.make.com/..."
+                />
+                <p className="text-sm text-muted-foreground">
+                  {language === 'ru' 
+                    ? 'Создайте сценарий в Make.com с триггером "Webhook" и вставьте URL сюда' 
+                    : language === 'en' 
+                    ? 'Create a scenario in Make.com with a "Webhook" trigger and paste the URL here'
+                    : '在 Make.com 中创建带有"Webhook"触发器的场景，并将 URL 粘贴到此处'}
+                </p>
+              </div>
+              <Button onClick={handleSaveWebhook}>
+                {language === 'ru' ? 'Сохранить' : language === 'en' ? 'Save' : '保存'}
+              </Button>
+            </CardContent>
+          </Card>
+        )}
         
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Company Information */}
