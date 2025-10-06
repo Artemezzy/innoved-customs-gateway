@@ -128,12 +128,12 @@ export function Contact({ language }: ContactProps) {
 
       // Send to Telegram
       const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/send-telegram-message`,
+        'https://cogwmxobltnarqugrsks.supabase.co/functions/v1/send-telegram-message',
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNvZ3dteG9ibHRuYXJxdWdyc2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU0NDExNjQsImV4cCI6MjA3MTAxNzE2NH0.YgpiTXw4nac4IPZAVakfx-NM34kLvALmOJjzlxNc2Jw',
           },
           body: JSON.stringify({
             name: formData.name,
