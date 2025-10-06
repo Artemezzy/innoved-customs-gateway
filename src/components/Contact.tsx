@@ -99,7 +99,7 @@ export function Contact({ language }: ContactProps) {
 
   useEffect(() => {
     // Load webhook URL from localStorage
-    const savedWebhook = localStorage.getItem('makeWebhookUrl');
+    const savedWebhook = localStorage.getItem('pipedreamWebhookUrl');
     if (savedWebhook) {
       setWebhookUrl(savedWebhook);
     }
@@ -107,7 +107,7 @@ export function Contact({ language }: ContactProps) {
 
   const handleSaveWebhook = () => {
     if (webhookUrl) {
-      localStorage.setItem('makeWebhookUrl', webhookUrl);
+      localStorage.setItem('pipedreamWebhookUrl', webhookUrl);
       toast({
         title: "Успех",
         description: "Webhook URL сохранен",
@@ -147,24 +147,28 @@ export function Contact({ language }: ContactProps) {
       existingRequests.push(contactRequest);
       localStorage.setItem('contactRequests', JSON.stringify(existingRequests));
 
-      // Send to Make.com webhook
+      // Send to Pipedream webhook
       if (webhookUrl) {
-        await fetch(webhookUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          mode: 'no-cors', // Handle CORS for webhooks
-          body: JSON.stringify({
-            name: formData.name,
-            inn: formData.inn,
-            phone: formData.phone,
-            email: formData.email,
-            message: formData.additionalInfo,
-            language: language,
-            timestamp: new Date().toISOString(),
-          }),
-        });
+        try {
+          await fetch(webhookUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              name: formData.name,
+              inn: formData.inn,
+              phone: formData.phone,
+              email: formData.email,
+              message: formData.additionalInfo,
+              language: language,
+              timestamp: new Date().toISOString(),
+            }),
+          });
+        } catch (error) {
+          console.error('Webhook error:', error);
+          // Continue even if webhook fails
+        }
       }
       
       toast({
@@ -255,7 +259,7 @@ export function Contact({ language }: ContactProps) {
           <Card className="mb-8 animate-fade-in">
             <CardHeader>
               <CardTitle className="text-lg">
-                {language === 'ru' ? 'Настройки Make.com Webhook' : language === 'en' ? 'Make.com Webhook Settings' : 'Make.com Webhook 设置'}
+                {language === 'ru' ? 'Настройки Pipedream Webhook' : language === 'en' ? 'Pipedream Webhook Settings' : 'Pipedream Webhook 设置'}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -266,15 +270,44 @@ export function Contact({ language }: ContactProps) {
                   type="url"
                   value={webhookUrl}
                   onChange={(e) => setWebhookUrl(e.target.value)}
-                  placeholder="https://hook.eu2.make.com/..."
+                  placeholder="https://eoxxx.m.pipedream.net"
                 />
-                <p className="text-sm text-muted-foreground">
-                  {language === 'ru' 
-                    ? 'Создайте сценарий в Make.com с триггером "Webhook" и вставьте URL сюда' 
-                    : language === 'en' 
-                    ? 'Create a scenario in Make.com with a "Webhook" trigger and paste the URL here'
-                    : '在 Make.com 中创建带有"Webhook"触发器的场景，并将 URL 粘贴到此处'}
-                </p>
+                <div className="text-sm text-muted-foreground space-y-2">
+                  <p className="font-semibold">
+                    {language === 'ru' 
+                      ? 'Как настроить Pipedream:' 
+                      : language === 'en' 
+                      ? 'How to setup Pipedream:'
+                      : '如何设置 Pipedream:'}
+                  </p>
+                  <ol className="list-decimal list-inside space-y-1 ml-2">
+                    <li>
+                      {language === 'ru' 
+                        ? 'Зарегистрируйтесь на pipedream.com (бесплатно)' 
+                        : 'Sign up at pipedream.com (free)'}
+                    </li>
+                    <li>
+                      {language === 'ru' 
+                        ? 'Создайте новый workflow' 
+                        : 'Create a new workflow'}
+                    </li>
+                    <li>
+                      {language === 'ru' 
+                        ? 'Добавьте триггер "HTTP / Webhook"' 
+                        : 'Add "HTTP / Webhook" trigger'}
+                    </li>
+                    <li>
+                      {language === 'ru' 
+                        ? 'Скопируйте Webhook URL и вставьте сюда' 
+                        : 'Copy Webhook URL and paste here'}
+                    </li>
+                    <li>
+                      {language === 'ru' 
+                        ? 'Добавьте шаг "Telegram Bot API" → "Send Message"' 
+                        : 'Add "Telegram Bot API" → "Send Message" step'}
+                    </li>
+                  </ol>
+                </div>
               </div>
               <Button onClick={handleSaveWebhook}>
                 {language === 'ru' ? 'Сохранить' : language === 'en' ? 'Save' : '保存'}
