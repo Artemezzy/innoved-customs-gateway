@@ -149,8 +149,9 @@ export function Contact({ language }: ContactProps) {
 
       // Send to Pipedream webhook
       if (webhookUrl) {
+        console.log('Sending to webhook:', webhookUrl);
         try {
-          await fetch(webhookUrl, {
+          const response = await fetch(webhookUrl, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -165,10 +166,29 @@ export function Contact({ language }: ContactProps) {
               timestamp: new Date().toISOString(),
             }),
           });
+          
+          console.log('Webhook response status:', response.status);
+          
+          if (!response.ok) {
+            throw new Error(`Webhook failed with status: ${response.status}`);
+          }
+          
+          console.log('Webhook sent successfully');
         } catch (error) {
           console.error('Webhook error:', error);
-          // Continue even if webhook fails
+          toast({
+            title: "Предупреждение",
+            description: "Заявка сохранена локально, но не отправлена в Telegram. Проверьте настройки webhook.",
+            variant: "destructive"
+          });
         }
+      } else {
+        console.warn('Webhook URL not configured');
+        toast({
+          title: "Предупреждение",
+          description: "Webhook URL не настроен. Заявка сохранена только локально.",
+          variant: "destructive"
+        });
       }
       
       toast({
