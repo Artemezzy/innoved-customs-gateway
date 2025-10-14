@@ -250,91 +250,11 @@ export function Contact({ language }: ContactProps) {
   return (
     <section id="contact" className="py-16 bg-background">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground animate-fade-in">
+        <div className="mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground animate-fade-in text-center">
             {text.title}
           </h2>
-          <div className="flex gap-2">
-            <Button
-              onClick={() => setShowSettings(!showSettings)}
-              variant="outline"
-              className="animate-fade-in gap-2"
-            >
-              <Settings className="h-4 w-4" />
-              {language === 'ru' ? 'Настройки' : language === 'en' ? 'Settings' : '设置'}
-            </Button>
-            <Button
-              onClick={handleExportJSON}
-              variant="outline"
-              className="animate-fade-in gap-2"
-            >
-              <Download className="h-4 w-4" />
-              {language === 'ru' ? 'Экспорт заявок' : language === 'en' ? 'Export Requests' : '导出申请'}
-            </Button>
-          </div>
         </div>
-
-        {/* Settings Panel */}
-        {showSettings && (
-          <Card className="mb-8 animate-fade-in">
-            <CardHeader>
-              <CardTitle className="text-lg">
-                {language === 'ru' ? 'Настройки Pipedream Webhook' : language === 'en' ? 'Pipedream Webhook Settings' : 'Pipedream Webhook 设置'}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="webhook">Webhook URL</Label>
-                <Input
-                  id="webhook"
-                  type="url"
-                  value={webhookUrl}
-                  onChange={(e) => setWebhookUrl(e.target.value)}
-                  placeholder="https://eoxxx.m.pipedream.net"
-                />
-                <div className="text-sm text-muted-foreground space-y-2">
-                  <p className="font-semibold">
-                    {language === 'ru' 
-                      ? 'Как настроить Pipedream:' 
-                      : language === 'en' 
-                      ? 'How to setup Pipedream:'
-                      : '如何设置 Pipedream:'}
-                  </p>
-                  <ol className="list-decimal list-inside space-y-1 ml-2">
-                    <li>
-                      {language === 'ru' 
-                        ? 'Зарегистрируйтесь на pipedream.com (бесплатно)' 
-                        : 'Sign up at pipedream.com (free)'}
-                    </li>
-                    <li>
-                      {language === 'ru' 
-                        ? 'Создайте новый workflow' 
-                        : 'Create a new workflow'}
-                    </li>
-                    <li>
-                      {language === 'ru' 
-                        ? 'Добавьте триггер "HTTP / Webhook"' 
-                        : 'Add "HTTP / Webhook" trigger'}
-                    </li>
-                    <li>
-                      {language === 'ru' 
-                        ? 'Скопируйте Webhook URL и вставьте сюда' 
-                        : 'Copy Webhook URL and paste here'}
-                    </li>
-                    <li>
-                      {language === 'ru' 
-                        ? 'Добавьте шаг "Telegram Bot API" → "Send Message"' 
-                        : 'Add "Telegram Bot API" → "Send Message" step'}
-                    </li>
-                  </ol>
-                </div>
-              </div>
-              <Button onClick={handleSaveWebhook}>
-                {language === 'ru' ? 'Сохранить' : language === 'en' ? 'Save' : '保存'}
-              </Button>
-            </CardContent>
-          </Card>
-        )}
         
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Company Information */}
