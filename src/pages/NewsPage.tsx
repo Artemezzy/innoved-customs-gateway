@@ -1,0 +1,99 @@
+import { Link } from 'react-router-dom';
+import { SEOHead } from '@/components/SEOHead';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useEffect } from 'react';
+import { analytics } from '@/utils/analytics';
+import { newsItems } from '@/data/news-items';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CalendarDays, ArrowRight } from 'lucide-react';
+
+const content = {
+  ru: {
+    title: 'Новости',
+    subtitle: 'Новости и события компании ИННОВЭД',
+    readMore: 'Читать далее'
+  },
+  en: {
+    title: 'News',
+    subtitle: 'News and events from INNOVED',
+    readMore: 'Read more'
+  },
+  zh: {
+    title: '新闻',
+    subtitle: 'INNOVED的新闻和活动',
+    readMore: '阅读更多'
+  }
+};
+
+export default function NewsPage() {
+  const { language } = useLanguage();
+  const text = content[language];
+
+  useEffect(() => {
+    analytics.pageView('/news', 'ИННОВЭД - Новости');
+  }, []);
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(language === 'ru' ? 'ru-RU' : language === 'zh' ? 'zh-CN' : 'en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  return (
+    <>
+      <SEOHead language={language} page="home" />
+      
+      {/* Hero Section */}
+      <section className="bg-primary text-primary-foreground py-20">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">
+            {text.title}
+          </h1>
+          <p className="text-xl opacity-90 animate-fade-in">
+            {text.subtitle}
+          </p>
+        </div>
+      </section>
+
+      {/* News Items */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto space-y-6">
+            {newsItems.map((item, index) => (
+              <Card 
+                key={item.slug}
+                className="hover:shadow-hover transition-all duration-300 animate-fade-in"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <CardHeader>
+                  <div className="flex items-center text-muted-foreground text-sm mb-2">
+                    <CalendarDays className="w-4 h-4 mr-1" />
+                    {formatDate(item.date)}
+                  </div>
+                  <CardTitle className="text-xl">
+                    {item.title[language]}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground mb-4">
+                    {item.excerpt[language]}
+                  </p>
+                  <Link 
+                    to={`/news/${item.slug}`}
+                    className="inline-flex items-center text-primary hover:text-primary/80 font-medium transition-colors"
+                  >
+                    {text.readMore}
+                    <ArrowRight className="w-4 h-4 ml-1" />
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}

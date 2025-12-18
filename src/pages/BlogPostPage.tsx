@@ -1,0 +1,112 @@
+import { useParams, Link, Navigate } from 'react-router-dom';
+import { SEOHead } from '@/components/SEOHead';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useEffect } from 'react';
+import { analytics } from '@/utils/analytics';
+import { blogPosts, blogCategories } from '@/data/blog-posts';
+import { Badge } from '@/components/ui/badge';
+import { CalendarDays, ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+
+const backText = {
+  ru: 'Назад к блогу',
+  en: 'Back to blog',
+  zh: '返回博客'
+};
+
+export default function BlogPostPage() {
+  const { slug } = useParams<{ slug: string }>();
+  const { language } = useLanguage();
+  
+  const post = blogPosts.find(p => p.slug === slug);
+
+  useEffect(() => {
+    if (post) {
+      analytics.pageView(`/blog/${slug}`, post.title[language]);
+    }
+  }, [slug, post, language]);
+
+  if (!post) {
+    return <Navigate to="/blog" replace />;
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(language === 'ru' ? 'ru-RU' : language === 'zh' ? 'zh-CN' : 'en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  return (
+    <>
+      <SEOHead language={language} page="home" />
+      
+      {/* Hero Section */}
+      <section className="bg-primary text-primary-foreground py-20">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <Link to="/blog">
+              <Button variant="ghost" className="mb-4 text-primary-foreground hover:text-primary-foreground/80 hover:bg-white/10">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                {backText[language]}
+              </Button>
+            </Link>
+            <div className="flex items-center gap-4 mb-4">
+              <Badge variant="secondary" className="bg-white/20 text-primary-foreground">
+                {blogCategories[post.category as keyof typeof blogCategories]?.[language] || post.category}
+              </Badge>
+              <div className="flex items-center text-sm opacity-90">
+                <CalendarDays className="w-4 h-4 mr-1" />
+                {formatDate(post.date)}
+              </div>
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold animate-fade-in">
+              {post.title[language]}
+            </h1>
+          </div>
+        </div>
+      </section>
+
+      {/* Content */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <article className="max-w-4xl mx-auto prose prose-lg dark:prose-invert">
+            {post.content[language].split('\n\n').map((paragraph, index) => {
+              if (paragraph.startsWith('## ')) {
+                return (
+                  <h2 key={index} className="text-2xl font-bold text-foreground mt-8 mb-4">
+                    {paragraph.replace('## ', '')}
+                  </h2>
+                );
+              }
+              if (paragraph.startsWith('### ')) {
+                return (
+                  <h3 key={index} className="text-xl font-semibold text-foreground mt-6 mb-3">
+                    {paragraph.replace('### ', '')}
+                  </h3>
+                );
+              }
+              if (paragraph.startsWith('- ')) {
+                const items = paragraph.split('\n').filter(line => line.startsWith('- '));
+                return (
+                  <ul key={index} className="list-disc list-inside text-muted-foreground space-y-2 my-4">
+                    {items.map((item, i) => (
+                      <li key={i}>{item.replace('- ', '')}</li>
+                    ))}
+                  </ul>
+                );
+              }
+              return (
+                <p key={index} className="text-muted-foreground leading-relaxed mb-4">
+                  {paragraph}
+                </p>
+              );
+            })}
+          </article>
+        </div>
+      </section>
+    </>
+  );
+}

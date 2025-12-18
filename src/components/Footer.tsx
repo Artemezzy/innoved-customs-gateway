@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 
 interface FooterProps {
   language: 'ru' | 'en' | 'zh';
-  onSectionClick: (section: string) => void;
 }
 
 const content = {
@@ -11,8 +10,11 @@ const content = {
     links: {
       about: 'О компании',
       services: 'Услуги',
-      pricing: 'Цены',
-      contact: 'Контакты'
+      howWeWork: 'Как мы работаем',
+      contact: 'Контакты',
+      blog: 'Блог',
+      news: 'Новости',
+      faq: 'FAQ'
     },
     legal: {
       privacy: 'Политика конфиденциальности',
@@ -24,8 +26,11 @@ const content = {
     links: {
       about: 'About',
       services: 'Services',
-      pricing: 'Pricing',
-      contact: 'Contacts'
+      howWeWork: 'How We Work',
+      contact: 'Contact',
+      blog: 'Blog',
+      news: 'News',
+      faq: 'FAQ'
     },
     legal: {
       privacy: 'Privacy Policy',
@@ -37,8 +42,11 @@ const content = {
     links: {
       about: '关于我们',
       services: '服务',
-      pricing: '价格',
-      contact: '联系我们'
+      howWeWork: '我们如何工作',
+      contact: '联系我们',
+      blog: '博客',
+      news: '新闻',
+      faq: '常见问题'
     },
     legal: {
       privacy: '隐私政策',
@@ -47,65 +55,32 @@ const content = {
   }
 };
 
-export function Footer({ language, onSectionClick }: FooterProps) {
+export function Footer({ language }: FooterProps) {
   const text = content[language];
-
-  const handleLinkClick = (section: string) => {
-    onSectionClick(section);
-    const element = document.getElementById(section);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   return (
     <footer className="bg-primary text-primary-foreground py-8">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-start space-y-6 md:space-y-0">
           <div className="flex flex-col space-y-2">
-            <p className="text-sm font-semibold">
-              {text.copyright}
-            </p>
+            <p className="text-sm font-semibold">{text.copyright}</p>
             <div className="flex flex-wrap gap-4 text-xs">
-              <Link
-                to="/privacy"
-                className="hover:text-primary-glow transition-colors duration-300 underline-offset-4 hover:underline"
-              >
+              <Link to="/privacy" className="hover:text-primary-glow transition-colors duration-300 underline-offset-4 hover:underline">
                 {text.legal.privacy}
               </Link>
-              <Link
-                to="/terms"
-                className="hover:text-primary-glow transition-colors duration-300 underline-offset-4 hover:underline"
-              >
+              <Link to="/terms" className="hover:text-primary-glow transition-colors duration-300 underline-offset-4 hover:underline">
                 {text.legal.terms}
               </Link>
             </div>
           </div>
-          <nav className="flex flex-wrap gap-6">
-            <button
-              onClick={() => handleLinkClick('about')}
-              className="text-sm hover:text-primary-glow transition-colors duration-300 underline-offset-4 hover:underline"
-            >
-              {text.links.about}
-            </button>
-            <button
-              onClick={() => handleLinkClick('services')}
-              className="text-sm hover:text-primary-glow transition-colors duration-300 underline-offset-4 hover:underline"
-            >
-              {text.links.services}
-            </button>
-            <button
-              onClick={() => handleLinkClick('pricing')}
-              className="text-sm hover:text-primary-glow transition-colors duration-300 underline-offset-4 hover:underline"
-            >
-              {text.links.pricing}
-            </button>
-            <button
-              onClick={() => handleLinkClick('contact')}
-              className="text-sm hover:text-primary-glow transition-colors duration-300 underline-offset-4 hover:underline"
-            >
-              {text.links.contact}
-            </button>
+          <nav className="flex flex-wrap gap-4 md:gap-6">
+            <Link to="/about" className="text-sm hover:text-primary-glow transition-colors duration-300">{text.links.about}</Link>
+            <Link to="/services" className="text-sm hover:text-primary-glow transition-colors duration-300">{text.links.services}</Link>
+            <Link to="/how-we-work" className="text-sm hover:text-primary-glow transition-colors duration-300">{text.links.howWeWork}</Link>
+            <Link to="/blog" className="text-sm hover:text-primary-glow transition-colors duration-300">{text.links.blog}</Link>
+            <Link to="/news" className="text-sm hover:text-primary-glow transition-colors duration-300">{text.links.news}</Link>
+            <Link to="/faq" className="text-sm hover:text-primary-glow transition-colors duration-300">{text.links.faq}</Link>
+            <Link to="/contact" className="text-sm hover:text-primary-glow transition-colors duration-300">{text.links.contact}</Link>
           </nav>
         </div>
       </div>
