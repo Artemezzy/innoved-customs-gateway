@@ -1,8 +1,6 @@
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
-import { LanguageToggle, Language } from '@/components/LanguageToggle';
+import { Layout } from '@/components/Layout';
 import { SEOHead } from '@/components/SEOHead';
-import { useState } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const content = {
   ru: {
@@ -83,23 +81,14 @@ const content = {
 };
 
 const Privacy = () => {
-  const [language, setLanguage] = useState<Language>('ru');
+  const { language } = useLanguage();
   const text = content[language];
 
   return (
-    <div className="min-h-screen">
+    <Layout>
       <SEOHead language={language} page="privacy" />
       
-      <Header language={language} />
-      
-      <div className="fixed top-4 right-4 z-50">
-        <LanguageToggle 
-          currentLanguage={language}
-          onLanguageChange={setLanguage}
-        />
-      </div>
-
-      <main className="pt-20 pb-12">
+      <div className="py-12">
         <div className="container mx-auto px-4 max-w-4xl">
           <h1 className="text-4xl font-bold text-primary mb-8">{text.title}</h1>
           
@@ -116,10 +105,8 @@ const Privacy = () => {
             ))}
           </div>
         </div>
-      </main>
-
-      <Footer language={language} onSectionClick={() => {}} />
-    </div>
+      </div>
+    </Layout>
   );
 };
 
