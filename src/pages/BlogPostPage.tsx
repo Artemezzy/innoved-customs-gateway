@@ -3,8 +3,10 @@ import { SEOHead } from '@/components/SEOHead';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEffect } from 'react';
 import { analytics } from '@/utils/analytics';
-import { blogPosts, blogCategories } from '@/data/blog-posts';
+import { blogCategories } from '@/data/blog-posts';
+import { useBlogPost } from '@/hooks/useBlogPosts';
 import { Badge } from '@/components/ui/badge';
+import { Skeleton } from '@/components/ui/skeleton';
 import { CalendarDays, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -18,15 +20,15 @@ export default function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
   const { language } = useLanguage();
   
-  const post = blogPosts.find(p => p.slug === slug);
+  const { data: post, isLoading } = useBlogPost(language, slug || '');
 
   useEffect(() => {
     if (post) {
-      analytics.pageView(`/blog/${slug}`, post.title[language]);
+      analytics.pageView(`/blog/${slug}`, post.title);
     }
-  }, [slug, post, language]);
+  }, [slug, post]);
 
-  if (!post) {
+  if (!isLoading && !post) {
     return <Navigate to="/blog" replace />;
   }
 
@@ -38,6 +40,37 @@ export default function BlogPostPage() {
       day: 'numeric'
     });
   };
+
+  if (isLoading) {
+    return (
+      <>
+        <SEOHead language={language} page="home" />
+        <section className="bg-primary text-primary-foreground py-20">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <Skeleton className="h-10 w-32 mb-4 bg-white/20" />
+              <Skeleton className="h-6 w-48 mb-4 bg-white/20" />
+              <Skeleton className="h-12 w-full bg-white/20" />
+            </div>
+          </div>
+        </section>
+        <section className="py-16 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto space-y-4">
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-3/4" />
+              <Skeleton className="h-8 w-1/2 mt-8" />
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-full" />
+            </div>
+          </div>
+        </section>
+      </>
+    );
+  }
+
+  if (!post) return null;
 
   return (
     <>
@@ -63,7 +96,7 @@ export default function BlogPostPage() {
               </div>
             </div>
             <h1 className="text-3xl md:text-4xl font-bold animate-fade-in">
-              {post.title[language]}
+              {post.title}
             </h1>
           </div>
         </div>
@@ -73,7 +106,7 @@ export default function BlogPostPage() {
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <article className="max-w-4xl mx-auto prose prose-lg dark:prose-invert">
-            {post.content[language].split('\n\n').map((paragraph, index) => {
+            {post.content.split('\n\n').map((paragraph, index) => {
               if (paragraph.startsWith('## ')) {
                 return (
                   <h2 key={index} className="text-2xl font-bold text-foreground mt-8 mb-4">
