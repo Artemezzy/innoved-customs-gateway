@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SEOHead } from '@/components/SEOHead';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useEffect } from 'react';
 import { analytics } from '@/utils/analytics';
-import { faqItems, faqCategories } from '@/data/faq-items';
+import { faqCategories } from '@/data/faq-items';
+import { useFaqItems } from '@/hooks/useFaqItems';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const content = {
   ru: {
@@ -29,6 +30,8 @@ export default function FAQPage() {
   const { language } = useLanguage();
   const text = content[language];
   const [activeCategory, setActiveCategory] = useState<string>('all');
+  
+  const { data: faqItems = [], isLoading } = useFaqItems(language);
 
   useEffect(() => {
     analytics.pageView('/faq', 'ИННОВЭД - FAQ');
@@ -82,28 +85,42 @@ export default function FAQPage() {
               ))}
             </div>
 
+            {/* Loading State */}
+            {isLoading && (
+              <div className="space-y-4">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="bg-card rounded-lg border p-6">
+                    <Skeleton className="h-6 w-3/4 mb-2" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                ))}
+              </div>
+            )}
+
             {/* FAQ Accordion */}
-            <Accordion type="single" collapsible className="space-y-4">
-              {filteredItems.map((item, index) => (
-                <AccordionItem 
-                  key={item.id} 
-                  value={item.id}
-                  className="bg-card rounded-lg border shadow-sm animate-fade-in"
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  <AccordionTrigger className="px-6 py-4 text-left hover:no-underline">
-                    <span className="text-foreground font-medium pr-4">
-                      {item.question[language]}
-                    </span>
-                  </AccordionTrigger>
-                  <AccordionContent className="px-6 pb-4">
-                    <p className="text-muted-foreground leading-relaxed">
-                      {item.answer[language]}
-                    </p>
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
+            {!isLoading && (
+              <Accordion type="single" collapsible className="space-y-4">
+                {filteredItems.map((item, index) => (
+                  <AccordionItem 
+                    key={item.id} 
+                    value={item.id}
+                    className="bg-card rounded-lg border shadow-sm animate-fade-in"
+                    style={{ animationDelay: `${index * 50}ms` }}
+                  >
+                    <AccordionTrigger className="px-6 py-4 text-left hover:no-underline">
+                      <span className="text-foreground font-medium pr-4">
+                        {item.question}
+                      </span>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-6 pb-4">
+                      <p className="text-muted-foreground leading-relaxed">
+                        {item.answer}
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
+            )}
           </div>
         </div>
       </section>

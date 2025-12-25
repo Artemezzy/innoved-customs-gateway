@@ -3,8 +3,9 @@ import { SEOHead } from '@/components/SEOHead';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEffect } from 'react';
 import { analytics } from '@/utils/analytics';
-import { newsItems } from '@/data/news-items';
+import { useNewsItems } from '@/hooks/useNewsItems';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { CalendarDays, ArrowRight } from 'lucide-react';
 
 const content = {
@@ -28,6 +29,8 @@ const content = {
 export default function NewsPage() {
   const { language } = useLanguage();
   const text = content[language];
+  
+  const { data: newsItems = [], isLoading } = useNewsItems(language);
 
   useEffect(() => {
     analytics.pageView('/news', 'ИННОВЭД - Новости');
@@ -62,7 +65,26 @@ export default function NewsPage() {
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto space-y-6">
-            {newsItems.map((item, index) => (
+            {/* Loading State */}
+            {isLoading && (
+              <>
+                {[1, 2, 3].map((i) => (
+                  <Card key={i}>
+                    <CardHeader>
+                      <Skeleton className="h-4 w-32 mb-2" />
+                      <Skeleton className="h-6 w-3/4" />
+                    </CardHeader>
+                    <CardContent>
+                      <Skeleton className="h-4 w-full mb-2" />
+                      <Skeleton className="h-4 w-2/3" />
+                    </CardContent>
+                  </Card>
+                ))}
+              </>
+            )}
+
+            {/* News Items List */}
+            {!isLoading && newsItems.map((item, index) => (
               <Card 
                 key={item.slug}
                 className="hover:shadow-hover transition-all duration-300 animate-fade-in"
@@ -74,12 +96,12 @@ export default function NewsPage() {
                     {formatDate(item.date)}
                   </div>
                   <CardTitle className="text-xl">
-                    {item.title[language]}
+                    {item.title}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground mb-4">
-                    {item.excerpt[language]}
+                    {item.excerpt}
                   </p>
                   <Link 
                     to={`/news/${item.slug}`}

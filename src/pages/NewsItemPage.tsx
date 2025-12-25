@@ -3,7 +3,8 @@ import { SEOHead } from '@/components/SEOHead';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEffect } from 'react';
 import { analytics } from '@/utils/analytics';
-import { newsItems } from '@/data/news-items';
+import { useNewsItem } from '@/hooks/useNewsItems';
+import { Skeleton } from '@/components/ui/skeleton';
 import { CalendarDays, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -17,15 +18,15 @@ export default function NewsItemPage() {
   const { slug } = useParams<{ slug: string }>();
   const { language } = useLanguage();
   
-  const item = newsItems.find(n => n.slug === slug);
+  const { data: item, isLoading } = useNewsItem(language, slug || '');
 
   useEffect(() => {
     if (item) {
-      analytics.pageView(`/news/${slug}`, item.title[language]);
+      analytics.pageView(`/news/${slug}`, item.title);
     }
-  }, [slug, item, language]);
+  }, [slug, item]);
 
-  if (!item) {
+  if (!isLoading && !item) {
     return <Navigate to="/news" replace />;
   }
 
@@ -37,6 +38,34 @@ export default function NewsItemPage() {
       day: 'numeric'
     });
   };
+
+  if (isLoading) {
+    return (
+      <>
+        <SEOHead language={language} page="home" />
+        <section className="bg-primary text-primary-foreground py-20">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <Skeleton className="h-10 w-40 mb-4 bg-white/20" />
+              <Skeleton className="h-6 w-32 mb-4 bg-white/20" />
+              <Skeleton className="h-12 w-full bg-white/20" />
+            </div>
+          </div>
+        </section>
+        <section className="py-16 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto space-y-4">
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-full" />
+              <Skeleton className="h-6 w-3/4" />
+            </div>
+          </div>
+        </section>
+      </>
+    );
+  }
+
+  if (!item) return null;
 
   return (
     <>
@@ -57,7 +86,7 @@ export default function NewsItemPage() {
               {formatDate(item.date)}
             </div>
             <h1 className="text-3xl md:text-4xl font-bold animate-fade-in">
-              {item.title[language]}
+              {item.title}
             </h1>
           </div>
         </div>
@@ -67,7 +96,7 @@ export default function NewsItemPage() {
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <article className="max-w-4xl mx-auto">
-            {item.content[language].split('\n\n').map((paragraph, index) => {
+            {item.content.split('\n\n').map((paragraph, index) => {
               if (paragraph.startsWith('## ')) {
                 return (
                   <h2 key={index} className="text-2xl font-bold text-foreground mt-8 mb-4">
