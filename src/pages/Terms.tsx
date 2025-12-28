@@ -60,35 +60,6 @@ const content = {
         content: 'INNOVED has the right to make changes to this agreement by notifying users on the website.'
       }
     ]
-  },
-  zh: {
-    title: '服务条款',
-    sections: [
-      {
-        title: '1. 协议主题',
-        content: '本协议规定使用INNOVED网站和接受海关清关服务的条款。'
-      },
-      {
-        title: '2. 服务',
-        content: 'INNOVED提供专业的海关清关服务，包括在俄罗斯联邦境内的进口、出口和过境业务。'
-      },
-      {
-        title: '3. 双方义务',
-        content: '客户有义务提供准确的货物信息和必要的文件。INNOVED有义务在规定时间内优质地提供服务。'
-      },
-      {
-        title: '4. 责任',
-        content: '双方根据俄罗斯联邦现行法律承担责任。INNOVED不对第三方行为负责。'
-      },
-      {
-        title: '5. 服务费用',
-        content: '服务费用根据现行关税确定，并在工作开始前与客户协商。'
-      },
-      {
-        title: '6. 协议变更',
-        content: 'INNOVED有权通过在网站上通知用户来修改本协议。'
-      }
-    ]
   }
 };
 
