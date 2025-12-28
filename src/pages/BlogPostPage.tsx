@@ -125,13 +125,21 @@ export default function BlogPostPage() {
                 }
               };
 
+              let isInListContext = false;
+
               lines.forEach((line, index) => {
-                // Check if line starts with a bullet-like pattern
-                const isBullet = /^[-•·]/.test(line.trim()) || 
-                                 /^[а-яa-z]/.test(line.trim()) && lines[index - 1]?.includes(':');
+                const trimmedLine = line.trim();
+                
+                // Detect explicit bullet markers
+                const hasExplicitBullet = /^[-•·—]\s/.test(trimmedLine);
+                
+                // Detect list items: lines ending with ";" or "." that follow a ":" line
+                const endsWithSemicolon = trimmedLine.endsWith(';');
+                const isLastListItem = isInListContext && !endsWithSemicolon && listItems.length > 0;
                 
                 if (line.startsWith('## ')) {
                   flushList();
+                  isInListContext = false;
                   elements.push(
                     <h2 key={index} className="text-2xl font-bold text-foreground mt-8 mb-4">
                       {line.replace('## ', '')}
@@ -139,22 +147,33 @@ export default function BlogPostPage() {
                   );
                 } else if (line.startsWith('### ')) {
                   flushList();
+                  isInListContext = false;
                   elements.push(
                     <h3 key={index} className="text-xl font-semibold text-foreground mt-6 mb-3">
                       {line.replace('### ', '')}
                     </h3>
                   );
-                } else if (line.endsWith(':')) {
+                } else if (trimmedLine.endsWith(':')) {
                   flushList();
+                  isInListContext = true;
                   elements.push(
                     <p key={index} className="text-foreground font-medium mt-6 mb-2">
                       {line}
                     </p>
                   );
-                } else if (isBullet) {
-                  listItems.push(line.replace(/^[-•·]\s*/, ''));
+                } else if (hasExplicitBullet) {
+                  listItems.push(trimmedLine.replace(/^[-•·—]\s*/, ''));
+                } else if (isInListContext && (endsWithSemicolon || isLastListItem)) {
+                  // Add to list if we're in list context and line ends with ; or is the last item
+                  listItems.push(trimmedLine);
+                  if (!endsWithSemicolon) {
+                    // This was the last list item, flush and exit context
+                    flushList();
+                    isInListContext = false;
+                  }
                 } else {
                   flushList();
+                  isInListContext = false;
                   elements.push(
                     <p key={index} className="text-muted-foreground leading-relaxed mb-4">
                       {line}
