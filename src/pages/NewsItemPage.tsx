@@ -91,6 +91,21 @@ export default function NewsItemPage() {
         </div>
       </section>
 
+      {/* Featured Image */}
+      {item.image?.url && (
+        <section className="bg-background pt-8">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <img 
+                src={item.image.url} 
+                alt={item.title}
+                className="w-full h-auto rounded-lg shadow-lg"
+              />
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Content */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">

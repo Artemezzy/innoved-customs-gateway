@@ -117,6 +117,9 @@ export const GET_NEWS_ITEMS = gql`
       date
       title
       excerpt
+      image {
+        url
+      }
       isPublished
     }
   }
@@ -132,6 +135,9 @@ export const GET_NEWS_ITEM_BY_SLUG = gql`
       excerpt
       content {
         text
+      }
+      image {
+        url
       }
       isPublished
     }
