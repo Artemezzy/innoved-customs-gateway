@@ -63,6 +63,9 @@ export interface HygraphNewsItem {
   title: string;
   excerpt: string;
   content: string | { text: string };
+  image?: {
+    url: string;
+  };
   isPublished: boolean;
 }
 

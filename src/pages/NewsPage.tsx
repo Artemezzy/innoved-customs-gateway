@@ -82,30 +82,44 @@ export default function NewsPage() {
             {!isLoading && newsItems.map((item, index) => (
               <Card 
                 key={item.slug}
-                className="hover:shadow-hover transition-all duration-300 animate-fade-in"
+                className="hover:shadow-hover transition-all duration-300 animate-fade-in overflow-hidden"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <CardHeader>
-                  <div className="flex items-center text-muted-foreground text-sm mb-2">
-                    <CalendarDays className="w-4 h-4 mr-1" />
-                    {formatDate(item.date)}
+                <div className="flex flex-col md:flex-row">
+                  {/* Image thumbnail */}
+                  {item.image?.url && (
+                    <div className="md:w-48 md:min-w-48 h-48 md:h-auto">
+                      <img 
+                        src={item.image.url} 
+                        alt={item.title}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <CardHeader>
+                      <div className="flex items-center text-muted-foreground text-sm mb-2">
+                        <CalendarDays className="w-4 h-4 mr-1" />
+                        {formatDate(item.date)}
+                      </div>
+                      <CardTitle className="text-xl">
+                        {item.title}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-muted-foreground mb-4">
+                        {item.excerpt}
+                      </p>
+                      <Link 
+                        to={`/news/${item.slug}`}
+                        className="inline-flex items-center text-primary hover:text-primary/80 font-medium transition-colors"
+                      >
+                        {text.readMore}
+                        <ArrowRight className="w-4 h-4 ml-1" />
+                      </Link>
+                    </CardContent>
                   </div>
-                  <CardTitle className="text-xl">
-                    {item.title}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground mb-4">
-                    {item.excerpt}
-                  </p>
-                  <Link 
-                    to={`/news/${item.slug}`}
-                    className="inline-flex items-center text-primary hover:text-primary/80 font-medium transition-colors"
-                  >
-                    {text.readMore}
-                    <ArrowRight className="w-4 h-4 ml-1" />
-                  </Link>
-                </CardContent>
+                </div>
               </Card>
             ))}
           </div>
