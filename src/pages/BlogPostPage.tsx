@@ -104,32 +104,68 @@ export default function BlogPostPage() {
       {/* Content */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
-          <article className="max-w-4xl mx-auto prose prose-lg dark:prose-invert">
-            {(typeof post.content === 'string' ? post.content : post.content?.text || '')
-              .replace(/\\n/g, '\n')
-              .split('\n')
-              .filter(line => line.trim())
-              .map((paragraph, index) => {
-                if (paragraph.startsWith('## ')) {
-                  return (
+          <article className="max-w-4xl mx-auto">
+            {(() => {
+              const content = (typeof post.content === 'string' ? post.content : post.content?.text || '')
+                .replace(/\\n/g, '\n');
+              const lines = content.split('\n').filter(line => line.trim());
+              const elements: React.ReactNode[] = [];
+              let listItems: string[] = [];
+
+              const flushList = () => {
+                if (listItems.length > 0) {
+                  elements.push(
+                    <ul key={`list-${elements.length}`} className="list-disc list-inside text-muted-foreground space-y-2 my-4 ml-4">
+                      {listItems.map((item, i) => (
+                        <li key={i}>{item}</li>
+                      ))}
+                    </ul>
+                  );
+                  listItems = [];
+                }
+              };
+
+              lines.forEach((line, index) => {
+                // Check if line starts with a bullet-like pattern
+                const isBullet = /^[-•·]/.test(line.trim()) || 
+                                 /^[а-яa-z]/.test(line.trim()) && lines[index - 1]?.includes(':');
+                
+                if (line.startsWith('## ')) {
+                  flushList();
+                  elements.push(
                     <h2 key={index} className="text-2xl font-bold text-foreground mt-8 mb-4">
-                      {paragraph.replace('## ', '')}
+                      {line.replace('## ', '')}
                     </h2>
                   );
-                }
-                if (paragraph.startsWith('### ')) {
-                  return (
+                } else if (line.startsWith('### ')) {
+                  flushList();
+                  elements.push(
                     <h3 key={index} className="text-xl font-semibold text-foreground mt-6 mb-3">
-                      {paragraph.replace('### ', '')}
+                      {line.replace('### ', '')}
                     </h3>
                   );
+                } else if (line.endsWith(':')) {
+                  flushList();
+                  elements.push(
+                    <p key={index} className="text-foreground font-medium mt-6 mb-2">
+                      {line}
+                    </p>
+                  );
+                } else if (isBullet) {
+                  listItems.push(line.replace(/^[-•·]\s*/, ''));
+                } else {
+                  flushList();
+                  elements.push(
+                    <p key={index} className="text-muted-foreground leading-relaxed mb-4">
+                      {line}
+                    </p>
+                  );
                 }
-                return (
-                  <p key={index} className="text-muted-foreground leading-relaxed mb-4">
-                    {paragraph}
-                  </p>
-                );
-              })}
+              });
+
+              flushList();
+              return elements;
+            })()}
           </article>
         </div>
       </section>
