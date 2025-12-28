@@ -76,6 +76,7 @@ export const GET_BLOG_POST_BY_SLUG = gql`
       title
       excerpt
       content {
+        html
         text
       }
       image {

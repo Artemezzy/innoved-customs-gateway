@@ -104,86 +104,30 @@ export default function BlogPostPage() {
       {/* Content */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
-          <article className="max-w-4xl mx-auto">
+          <article className="max-w-4xl mx-auto prose prose-lg max-w-none
+            prose-headings:text-foreground prose-headings:font-bold
+            prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4
+            prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3
+            prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:mb-6
+            prose-ul:text-muted-foreground prose-ol:text-muted-foreground
+            prose-li:my-1
+            prose-strong:text-foreground
+            prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+          ">
             {(() => {
-              const content = (typeof post.content === 'string' ? post.content : post.content?.text || '')
-                .replace(/\\n/g, '\n');
-              const lines = content.split('\n').filter(line => line.trim());
-              const elements: React.ReactNode[] = [];
-              let listItems: string[] = [];
-
-              const flushList = () => {
-                if (listItems.length > 0) {
-                  elements.push(
-                    <ul key={`list-${elements.length}`} className="list-disc list-inside text-muted-foreground space-y-2 my-4 ml-4">
-                      {listItems.map((item, i) => (
-                        <li key={i}>{item}</li>
-                      ))}
-                    </ul>
-                  );
-                  listItems = [];
-                }
-              };
-
-              let isInListContext = false;
-
-              lines.forEach((line, index) => {
-                const trimmedLine = line.trim();
-                
-                // Detect explicit bullet markers
-                const hasExplicitBullet = /^[-•·—]\s/.test(trimmedLine);
-                
-                // Detect list items: lines ending with ";" or "." that follow a ":" line
-                const endsWithSemicolon = trimmedLine.endsWith(';');
-                const isLastListItem = isInListContext && !endsWithSemicolon && listItems.length > 0;
-                
-                if (line.startsWith('## ')) {
-                  flushList();
-                  isInListContext = false;
-                  elements.push(
-                    <h2 key={index} className="text-2xl font-bold text-foreground mt-8 mb-4">
-                      {line.replace('## ', '')}
-                    </h2>
-                  );
-                } else if (line.startsWith('### ')) {
-                  flushList();
-                  isInListContext = false;
-                  elements.push(
-                    <h3 key={index} className="text-xl font-semibold text-foreground mt-6 mb-3">
-                      {line.replace('### ', '')}
-                    </h3>
-                  );
-                } else if (trimmedLine.endsWith(':')) {
-                  flushList();
-                  isInListContext = true;
-                  elements.push(
-                    <p key={index} className="text-foreground font-medium mt-6 mb-2">
-                      {line}
-                    </p>
-                  );
-                } else if (hasExplicitBullet) {
-                  listItems.push(trimmedLine.replace(/^[-•·—]\s*/, ''));
-                } else if (isInListContext && (endsWithSemicolon || isLastListItem)) {
-                  // Add to list if we're in list context and line ends with ; or is the last item
-                  listItems.push(trimmedLine);
-                  if (!endsWithSemicolon) {
-                    // This was the last list item, flush and exit context
-                    flushList();
-                    isInListContext = false;
-                  }
-                } else {
-                  flushList();
-                  isInListContext = false;
-                  elements.push(
-                    <p key={index} className="text-muted-foreground leading-relaxed mb-4">
-                      {line}
-                    </p>
-                  );
-                }
-              });
-
-              flushList();
-              return elements;
+              const content = typeof post.content === 'string' 
+                ? post.content 
+                : post.content;
+              
+              if (content?.html) {
+                return <div dangerouslySetInnerHTML={{ __html: content.html }} />;
+              }
+              
+              return (
+                <p className="text-muted-foreground leading-relaxed text-lg">
+                  {content?.text || ''}
+                </p>
+              );
             })()}
           </article>
         </div>
