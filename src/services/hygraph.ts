@@ -49,7 +49,10 @@ export interface HygraphBlogPost {
   category: string;
   title: string;
   excerpt: string;
-  content: string | { text: string };
+  content: {
+    html?: string;
+    text: string;
+  };
   image?: {
     url: string;
   };

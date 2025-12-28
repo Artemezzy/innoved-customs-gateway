@@ -19,7 +19,7 @@ const transformStaticBlogPost = (post: BlogPost, locale: Locale): HygraphBlogPos
   category: post.category,
   title: post.title[locale],
   excerpt: post.excerpt[locale],
-  content: post.content[locale],
+  content: { text: post.content[locale] },
   image: undefined,
   isPublished: true,
 });
