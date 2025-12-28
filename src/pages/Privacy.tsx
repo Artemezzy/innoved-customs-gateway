@@ -52,31 +52,6 @@ const content = {
         content: 'For questions regarding personal data processing, contact us via Telegram: @innovedbroker'
       }
     ]
-  },
-  zh: {
-    title: '隐私政策',
-    sections: [
-      {
-        title: '1. 一般条款',
-        content: '本隐私政策规定了INNOVED网站用户个人数据的处理程序。我们尊重您的隐私，并致力于保护您的个人数据。'
-      },
-      {
-        title: '2. 个人数据收集',
-        content: '我们只收集提供服务所需的信息：姓名、联系信息、海关清关的货物数据。'
-      },
-      {
-        title: '3. 数据使用',
-        content: '您的数据仅用于提供海关清关服务、与您沟通以及改善我们的服务质量。'
-      },
-      {
-        title: '4. 数据保护',
-        content: '我们采用现代技术和组织措施来保护您的个人数据免受未经授权的访问、修改或销毁。'
-      },
-      {
-        title: '5. 联系方式',
-        content: '有关个人数据处理的问题，请通过Telegram联系我们：@innovedbroker'
-      }
-    ]
   }
 };
 
