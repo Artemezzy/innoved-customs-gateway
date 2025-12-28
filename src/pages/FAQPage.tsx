@@ -18,11 +18,6 @@ const content = {
     title: 'FAQ',
     subtitle: 'Answers to popular questions about customs clearance',
     all: 'All'
-  },
-  zh: {
-    title: '常见问题',
-    subtitle: '关于清关的热门问题解答',
-    all: '全部'
   }
 };
 

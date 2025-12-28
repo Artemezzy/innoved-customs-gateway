@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 interface HowWeWorkProps {
-  language: 'ru' | 'en' | 'zh';
+  language: 'ru' | 'en';
 }
 
 const text = {
@@ -62,36 +62,6 @@ const text = {
       {
         title: 'Document Delivery',
         description: 'We provide ready documents after product release'
-      }
-    ]
-  },
-  zh: {
-    title: '我们如何工作',
-    subtitle: '简单明了的申报流程',
-    steps: [
-      {
-        title: '接收申请',
-        description: '您通过网站表单提交申请或致电我们'
-      },
-      {
-        title: '商业提案',
-        description: '我们发送详细的提案和费用计算'
-      },
-      {
-        title: '签署合同',
-        description: '我们签署合同并确定工作完成期限'
-      },
-      {
-        title: '文件收集',
-        description: '我们收集和分析所有必要文件'
-      },
-      {
-        title: '提交申报',
-        description: '我们准备并向相关部门提交申报'
-      },
-      {
-        title: '文件交付',
-        description: '产品发布后我们提供准备好的文件'
       }
     ]
   }

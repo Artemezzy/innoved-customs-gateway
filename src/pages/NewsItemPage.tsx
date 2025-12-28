@@ -10,8 +10,7 @@ import { Button } from '@/components/ui/button';
 
 const backText = {
   ru: 'Назад к новостям',
-  en: 'Back to news',
-  zh: '返回新闻'
+  en: 'Back to news'
 };
 
 export default function NewsItemPage() {
@@ -32,7 +31,7 @@ export default function NewsItemPage() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString(language === 'ru' ? 'ru-RU' : language === 'zh' ? 'zh-CN' : 'en-US', {
+    return date.toLocaleDateString(language === 'ru' ? 'ru-RU' : 'en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'

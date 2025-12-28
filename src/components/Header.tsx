@@ -4,7 +4,7 @@ import { analytics } from '@/utils/analytics';
 import { useState } from 'react';
 
 interface HeaderProps {
-  language: 'ru' | 'en' | 'zh';
+  language: 'ru' | 'en';
 }
 
 const content = {
@@ -32,19 +32,6 @@ const content = {
       news: 'News',
       faq: 'FAQ',
       contact: 'Contact'
-    }
-  },
-  zh: {
-    logo: 'INNOVED',
-    links: {
-      home: '首页',
-      about: '关于我们',
-      services: '服务',
-      howWeWork: '我们如何工作',
-      blog: '博客',
-      news: '新闻',
-      faq: '常见问题',
-      contact: '联系我们'
     }
   }
 };

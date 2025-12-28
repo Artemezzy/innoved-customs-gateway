@@ -7,7 +7,7 @@ import {
 import type { LucideIcon } from 'lucide-react';
 
 interface ServicesProps {
-  language: 'ru' | 'en' | 'zh';
+  language: 'ru' | 'en';
 }
 
 // Icon mapping for Hygraph icon names to Lucide components
@@ -25,8 +25,7 @@ const iconMap: Record<string, LucideIcon> = {
 
 const sectionTitle = {
   ru: 'Наши услуги',
-  en: 'Our Services',
-  zh: '我们的服务'
+  en: 'Our Services'
 };
 
 export function Services({ language }: ServicesProps) {
