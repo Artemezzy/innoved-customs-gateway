@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { analytics } from '../utils/analytics';
 
 interface SEOHeadProps {
-  language: 'ru' | 'en' | 'zh';
+  language: 'ru' | 'en';
   page?: string;
 }
 
@@ -39,23 +39,6 @@ const seoContent = {
       title: 'Terms of Service - INNOVED',
       description: 'INNOVED company terms of service for website usage',
       keywords: 'terms of service, terms of use, INNOVED'
-    }
-  },
-  zh: {
-    home: {
-      title: 'INNOVED - 俄罗斯海关清关服务 | 经纪服务',
-      description: '俄罗斯专业海关清关服务。超过10年经验。快速、可靠、价格优惠。✅ 进口 ✅ 出口 ✅ 过境',
-      keywords: '海关清关, 海关经纪, 进口, 出口, 俄罗斯, customs clearance'
-    },
-    privacy: {
-      title: '隐私政策 - INNOVED',
-      description: 'INNOVED公司个人数据处理隐私政策',
-      keywords: '隐私政策, 个人数据, INNOVED'
-    },
-    terms: {
-      title: '服务条款 - INNOVED',
-      description: 'INNOVED公司网站使用服务条款',
-      keywords: '服务条款, 使用条款, INNOVED'
     }
   }
 };
@@ -119,7 +102,7 @@ export function SEOHead({ language, page = 'home' }: SEOHeadProps) {
         "telephone": "+7-933-188-10-09",
         "email": "info@innovedbroker.ru",
         "contactType": "customer service",
-        "availableLanguage": ["Russian", "English", "Chinese"]
+        "availableLanguage": ["Russian", "English"]
       },
       "address": {
         "@type": "PostalAddress",

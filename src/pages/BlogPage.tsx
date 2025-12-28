@@ -20,11 +20,6 @@ const content = {
     title: 'Blog',
     subtitle: 'Useful materials on customs clearance and foreign trade',
     readMore: 'Read more'
-  },
-  zh: {
-    title: '博客',
-    subtitle: '关于清关和外贸的有用材料',
-    readMore: '阅读更多'
   }
 };
 
@@ -40,7 +35,7 @@ export default function BlogPage() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString(language === 'ru' ? 'ru-RU' : language === 'zh' ? 'zh-CN' : 'en-US', {
+    return date.toLocaleDateString(language === 'ru' ? 'ru-RU' : 'en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'

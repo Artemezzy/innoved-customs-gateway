@@ -4,7 +4,7 @@ import { analytics } from '@/utils/analytics';
 import { TypewriterText } from './TypewriterText';
 
 interface HeroProps {
-  language: 'ru' | 'en' | 'zh';
+  language: 'ru' | 'en';
 }
 
 const content = {
@@ -17,11 +17,6 @@ const content = {
     title: 'INNOVED',
     subtitles: ['Comprehensive Customs Clearance', 'Customs Clearance With Us'],
     button: 'Simplify Logistics'
-  },
-  zh: {
-    title: 'INNOVED',
-    subtitles: ['全面海关清关服务', '与我们一起清关'],
-    button: '简化物流'
   }
 };
 

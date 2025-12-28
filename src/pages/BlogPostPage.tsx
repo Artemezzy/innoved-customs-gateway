@@ -12,8 +12,7 @@ import { Button } from '@/components/ui/button';
 
 const backText = {
   ru: 'Назад к блогу',
-  en: 'Back to blog',
-  zh: '返回博客'
+  en: 'Back to blog'
 };
 
 export default function BlogPostPage() {
@@ -34,7 +33,7 @@ export default function BlogPostPage() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString(language === 'ru' ? 'ru-RU' : language === 'zh' ? 'zh-CN' : 'en-US', {
+    return date.toLocaleDateString(language === 'ru' ? 'ru-RU' : 'en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'

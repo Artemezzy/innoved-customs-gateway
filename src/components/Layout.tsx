@@ -12,7 +12,7 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   const { language, setLanguage } = useLanguage();
 
-  const handleLanguageChange = (newLanguage: 'ru' | 'en' | 'zh') => {
+  const handleLanguageChange = (newLanguage: 'ru' | 'en') => {
     setLanguage(newLanguage);
     analytics.languageChange(newLanguage);
   };

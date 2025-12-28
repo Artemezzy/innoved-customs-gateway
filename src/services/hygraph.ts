@@ -11,14 +11,13 @@ export const hygraphClient = new GraphQLClient(HYGRAPH_ENDPOINT, {
 });
 
 // Locale type matching Hygraph locales
-export type Locale = 'ru' | 'en' | 'zh';
+export type Locale = 'ru' | 'en';
 
 // Map our app locale to Hygraph locale enum
 export const toHygraphLocale = (locale: Locale): string => {
   const localeMap: Record<Locale, string> = {
     ru: 'ru',
     en: 'en',
-    zh: 'zh',
   };
   return localeMap[locale] || 'ru';
 };

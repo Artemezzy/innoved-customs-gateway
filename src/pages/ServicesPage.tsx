@@ -12,10 +12,6 @@ const content = {
   en: {
     title: 'Our Services',
     subtitle: 'Full range of customs clearance and foreign trade services'
-  },
-  zh: {
-    title: '我们的服务',
-    subtitle: '全方位清关和外贸服务'
   }
 };
 

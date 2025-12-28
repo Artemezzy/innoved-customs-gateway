@@ -18,11 +18,6 @@ const content = {
     title: 'News',
     subtitle: 'News and events from INNOVED',
     readMore: 'Read more'
-  },
-  zh: {
-    title: '新闻',
-    subtitle: 'INNOVED的新闻和活动',
-    readMore: '阅读更多'
   }
 };
 
@@ -38,7 +33,7 @@ export default function NewsPage() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString(language === 'ru' ? 'ru-RU' : language === 'zh' ? 'zh-CN' : 'en-US', {
+    return date.toLocaleDateString(language === 'ru' ? 'ru-RU' : 'en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'

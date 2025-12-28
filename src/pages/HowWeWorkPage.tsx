@@ -12,10 +12,6 @@ const content = {
   en: {
     title: 'How We Work',
     subtitle: 'Transparent process from application to cargo receipt'
-  },
-  zh: {
-    title: '我们如何工作',
-    subtitle: '从申请到货物接收的透明流程'
   }
 };
 

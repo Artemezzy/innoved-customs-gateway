@@ -31,16 +31,6 @@ const fallbackServices: Record<Locale, { title: string; icon: string }[]> = {
     { title: 'Organization of Goods Inspection', icon: 'ScanLine' },
     { title: 'Document Translation', icon: 'Languages' },
   ],
-  zh: [
-    { title: '进口登记', icon: 'Package' },
-    { title: '出口登记', icon: 'Plane' },
-    { title: 'HS代码确定', icon: 'FileSearch' },
-    { title: '联邦海关总署个人账户进口商注册', icon: 'UserPlus' },
-    { title: '证书获取和合规声明组织', icon: 'Shield' },
-    { title: '海关机关信件准备', icon: 'Mail' },
-    { title: '货物检查组织', icon: 'ScanLine' },
-    { title: '文件翻译', icon: 'Languages' },
-  ],
 };
 
 // Transform fallback to match HygraphService interface

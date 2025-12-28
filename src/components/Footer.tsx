@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 interface FooterProps {
-  language: 'ru' | 'en' | 'zh';
+  language: 'ru' | 'en';
 }
 
 const content = {
@@ -35,22 +35,6 @@ const content = {
     legal: {
       privacy: 'Privacy Policy',
       terms: 'Terms of Service'
-    }
-  },
-  zh: {
-    copyright: `© INNOVED ${new Date().getFullYear()}`,
-    links: {
-      about: '关于我们',
-      services: '服务',
-      howWeWork: '我们如何工作',
-      contact: '联系我们',
-      blog: '博客',
-      news: '新闻',
-      faq: '常见问题'
-    },
-    legal: {
-      privacy: '隐私政策',
-      terms: '服务条款'
     }
   }
 };

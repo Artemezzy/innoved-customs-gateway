@@ -1,7 +1,7 @@
 import containerShipImage from '@/assets/container-ship.jpg';
 
 interface AboutProps {
-  language: 'ru' | 'en' | 'zh';
+  language: 'ru' | 'en';
 }
 
 const content = {
@@ -24,16 +24,6 @@ Thanks to modern technologies and well-established remote interaction processes,
 By becoming our client, you get professional support, risk minimization, and confidence that your cargo will be processed in full compliance with current legislation and international standards.
 
 INNOVED - your business without barriers, customs without worries.`
-  },
-  zh: {
-    title: '关于我们',
-    text: `INNOVED公司是俄罗斯全境货物清关领域的可靠合作伙伴。我们汇集了一支拥有十多年经验的专业团队，为客户在清关各个环节提供最高效优质的服务。
-
-凭借现代化技术和完善的远程互动流程，INNOVED能够快速高效地提供服务，无论客户身在何处。我们珍视客户的时间和信任，因此将速度和准确性作为工作重点。
-
-成为我们的客户，您将获得专业支持、风险最小化，以及货物将完全按照现行法律法规和国际标准进行清关的保证。
-
-INNOVED——让您的业务畅通无阻，清关无忧。`
   }
 };
 

@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { analytics } from '@/utils/analytics';
 
 interface ContactProps {
-  language: 'ru' | 'en' | 'zh';
+  language: 'ru' | 'en';
 }
 
 const content = {
@@ -57,28 +57,6 @@ const content = {
     },
     success: 'Request sent successfully!',
     error: 'Please fill in all required fields and give consent to data processing.'
-  },
-  zh: {
-    title: '联系我们',
-    companyInfo: {
-      title: '公司信息',
-      phone: '电话',
-      email: '邮箱',
-      telegram: 'Telegram'
-    },
-    form: {
-      title: '提交申请',
-      name: '姓名',
-      inn: '公司税号',
-      phone: '联系电话',
-      email: '邮箱',
-      additionalInfo: '附加信息',
-      additionalInfoPlaceholder: '请详细描述您的需求、物流要求、货物特殊性和其他重要细节...',
-      submit: '提交申请',
-      consent: '我同意处理个人数据'
-    },
-    success: '申请提交成功！',
-    error: '请填写所有必填字段并同意数据处理。'
   }
 };
 
@@ -395,10 +373,8 @@ export function Contact({ language }: ContactProps) {
                   disabled={isSubmitting}
                   className="w-full bg-primary hover:bg-primary-hover text-primary-foreground font-semibold py-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? (
-                    language === 'ru' ? 'Отправка...' : 
-                    language === 'en' ? 'Sending...' : 
-                    '发送中...'
+                {isSubmitting ? (
+                    language === 'ru' ? 'Отправка...' : 'Sending...'
                   ) : text.form.submit}
                 </Button>
               </form>

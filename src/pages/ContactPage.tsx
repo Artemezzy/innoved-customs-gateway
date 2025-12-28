@@ -12,10 +12,6 @@ const content = {
   en: {
     title: 'Contact Us',
     subtitle: 'Get in touch for a consultation'
-  },
-  zh: {
-    title: '联系我们',
-    subtitle: '联系我们进行咨询'
   }
 };
 
