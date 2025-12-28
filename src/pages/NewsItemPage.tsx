@@ -109,46 +109,23 @@ export default function NewsItemPage() {
       {/* Content */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
-          <article className="max-w-4xl mx-auto">
-            {(() => {
-              const rawContent = typeof item.content === 'string' ? item.content : item.content?.text || '';
-              // Handle literal \n sequences from Hygraph
-              const normalizedContent = rawContent.replace(/\\n/g, '\n');
-              // Split by double newlines OR treat each single newline as paragraph break
-              const paragraphs = normalizedContent.split(/\n/).filter(p => p.trim());
-              
-              return paragraphs.map((paragraph, index) => {
-                const trimmed = paragraph.trim();
-                
-                if (trimmed.startsWith('## ')) {
-                  return (
-                    <h2 key={index} className="text-2xl font-bold text-foreground mt-8 mb-4">
-                      {trimmed.replace('## ', '')}
-                    </h2>
-                  );
-                }
-                if (trimmed.startsWith('### ')) {
-                  return (
-                    <h3 key={index} className="text-xl font-semibold text-foreground mt-6 mb-3">
-                      {trimmed.replace('### ', '')}
-                    </h3>
-                  );
-                }
-                if (trimmed.startsWith('- ')) {
-                  return (
-                    <ul key={index} className="list-disc list-inside text-muted-foreground my-4">
-                      <li>{trimmed.replace(/^-\s*/, '')}</li>
-                    </ul>
-                  );
-                }
-                
-                return (
-                  <p key={index} className="text-muted-foreground leading-relaxed mb-6 text-lg">
-                    {trimmed}
-                  </p>
-                );
-              });
-            })()}
+          <article className="max-w-4xl mx-auto prose prose-lg max-w-none
+            prose-headings:text-foreground prose-headings:font-bold
+            prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4
+            prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-3
+            prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:mb-6
+            prose-ul:text-muted-foreground prose-ol:text-muted-foreground
+            prose-li:my-1
+            prose-strong:text-foreground
+            prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+          ">
+            {item.content?.html ? (
+              <div dangerouslySetInnerHTML={{ __html: item.content.html }} />
+            ) : (
+              <p className="text-muted-foreground leading-relaxed text-lg">
+                {item.content?.text || ''}
+              </p>
+            )}
           </article>
         </div>
       </section>
