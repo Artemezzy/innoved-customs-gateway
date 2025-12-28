@@ -110,37 +110,54 @@ export default function NewsItemPage() {
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <article className="max-w-4xl mx-auto">
-            {(typeof item.content === 'string' ? item.content : item.content?.text || '').split('\n\n').map((paragraph, index) => {
-              if (paragraph.startsWith('## ')) {
+            {(() => {
+              const rawContent = typeof item.content === 'string' ? item.content : item.content?.text || '';
+              // Handle both literal \n and actual newlines
+              const normalizedContent = rawContent.replace(/\\n/g, '\n');
+              const paragraphs = normalizedContent.split(/\n\n+/).filter(p => p.trim());
+              
+              return paragraphs.map((paragraph, index) => {
+                const trimmed = paragraph.trim();
+                
+                if (trimmed.startsWith('## ')) {
+                  return (
+                    <h2 key={index} className="text-2xl font-bold text-foreground mt-8 mb-4">
+                      {trimmed.replace('## ', '')}
+                    </h2>
+                  );
+                }
+                if (trimmed.startsWith('### ')) {
+                  return (
+                    <h3 key={index} className="text-xl font-semibold text-foreground mt-6 mb-3">
+                      {trimmed.replace('### ', '')}
+                    </h3>
+                  );
+                }
+                if (trimmed.startsWith('- ')) {
+                  const items = trimmed.split('\n').filter(line => line.trim().startsWith('- '));
+                  return (
+                    <ul key={index} className="list-disc list-inside text-muted-foreground space-y-2 my-4">
+                      {items.map((listItem, i) => (
+                        <li key={i}>{listItem.replace(/^-\s*/, '')}</li>
+                      ))}
+                    </ul>
+                  );
+                }
+                
+                // Split by single newlines for line breaks within paragraphs
+                const lines = trimmed.split('\n');
                 return (
-                  <h2 key={index} className="text-2xl font-bold text-foreground mt-8 mb-4">
-                    {paragraph.replace('## ', '')}
-                  </h2>
-                );
-              }
-              if (paragraph.startsWith('### ')) {
-                return (
-                  <h3 key={index} className="text-xl font-semibold text-foreground mt-6 mb-3">
-                    {paragraph.replace('### ', '')}
-                  </h3>
-                );
-              }
-              if (paragraph.startsWith('- ')) {
-                const items = paragraph.split('\n').filter(line => line.startsWith('- '));
-                return (
-                  <ul key={index} className="list-disc list-inside text-muted-foreground space-y-2 my-4">
-                    {items.map((listItem, i) => (
-                      <li key={i}>{listItem.replace('- ', '')}</li>
+                  <p key={index} className="text-muted-foreground leading-relaxed mb-4 text-lg">
+                    {lines.map((line, i) => (
+                      <span key={i}>
+                        {line}
+                        {i < lines.length - 1 && <br />}
+                      </span>
                     ))}
-                  </ul>
+                  </p>
                 );
-              }
-              return (
-                <p key={index} className="text-muted-foreground leading-relaxed mb-4 text-lg">
-                  {paragraph}
-                </p>
-              );
-            })}
+              });
+            })()}
           </article>
         </div>
       </section>
