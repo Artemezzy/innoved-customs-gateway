@@ -105,37 +105,31 @@ export default function BlogPostPage() {
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <article className="max-w-4xl mx-auto prose prose-lg dark:prose-invert">
-            {(typeof post.content === 'string' ? post.content : post.content?.text || '').split('\n\n').map((paragraph, index) => {
-              if (paragraph.startsWith('## ')) {
+            {(typeof post.content === 'string' ? post.content : post.content?.text || '')
+              .replace(/\\n/g, '\n')
+              .split('\n')
+              .filter(line => line.trim())
+              .map((paragraph, index) => {
+                if (paragraph.startsWith('## ')) {
+                  return (
+                    <h2 key={index} className="text-2xl font-bold text-foreground mt-8 mb-4">
+                      {paragraph.replace('## ', '')}
+                    </h2>
+                  );
+                }
+                if (paragraph.startsWith('### ')) {
+                  return (
+                    <h3 key={index} className="text-xl font-semibold text-foreground mt-6 mb-3">
+                      {paragraph.replace('### ', '')}
+                    </h3>
+                  );
+                }
                 return (
-                  <h2 key={index} className="text-2xl font-bold text-foreground mt-8 mb-4">
-                    {paragraph.replace('## ', '')}
-                  </h2>
+                  <p key={index} className="text-muted-foreground leading-relaxed mb-4">
+                    {paragraph}
+                  </p>
                 );
-              }
-              if (paragraph.startsWith('### ')) {
-                return (
-                  <h3 key={index} className="text-xl font-semibold text-foreground mt-6 mb-3">
-                    {paragraph.replace('### ', '')}
-                  </h3>
-                );
-              }
-              if (paragraph.startsWith('- ')) {
-                const items = paragraph.split('\n').filter(line => line.startsWith('- '));
-                return (
-                  <ul key={index} className="list-disc list-inside text-muted-foreground space-y-2 my-4">
-                    {items.map((item, i) => (
-                      <li key={i}>{item.replace('- ', '')}</li>
-                    ))}
-                  </ul>
-                );
-              }
-              return (
-                <p key={index} className="text-muted-foreground leading-relaxed mb-4">
-                  {paragraph}
-                </p>
-              );
-            })}
+              })}
           </article>
         </div>
       </section>
