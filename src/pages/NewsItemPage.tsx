@@ -112,9 +112,10 @@ export default function NewsItemPage() {
           <article className="max-w-4xl mx-auto">
             {(() => {
               const rawContent = typeof item.content === 'string' ? item.content : item.content?.text || '';
-              // Handle both literal \n and actual newlines
+              // Handle literal \n sequences from Hygraph
               const normalizedContent = rawContent.replace(/\\n/g, '\n');
-              const paragraphs = normalizedContent.split(/\n\n+/).filter(p => p.trim());
+              // Split by double newlines OR treat each single newline as paragraph break
+              const paragraphs = normalizedContent.split(/\n/).filter(p => p.trim());
               
               return paragraphs.map((paragraph, index) => {
                 const trimmed = paragraph.trim();
@@ -134,26 +135,16 @@ export default function NewsItemPage() {
                   );
                 }
                 if (trimmed.startsWith('- ')) {
-                  const items = trimmed.split('\n').filter(line => line.trim().startsWith('- '));
                   return (
-                    <ul key={index} className="list-disc list-inside text-muted-foreground space-y-2 my-4">
-                      {items.map((listItem, i) => (
-                        <li key={i}>{listItem.replace(/^-\s*/, '')}</li>
-                      ))}
+                    <ul key={index} className="list-disc list-inside text-muted-foreground my-4">
+                      <li>{trimmed.replace(/^-\s*/, '')}</li>
                     </ul>
                   );
                 }
                 
-                // Split by single newlines for line breaks within paragraphs
-                const lines = trimmed.split('\n');
                 return (
-                  <p key={index} className="text-muted-foreground leading-relaxed mb-4 text-lg">
-                    {lines.map((line, i) => (
-                      <span key={i}>
-                        {line}
-                        {i < lines.length - 1 && <br />}
-                      </span>
-                    ))}
+                  <p key={index} className="text-muted-foreground leading-relaxed mb-6 text-lg">
+                    {trimmed}
                   </p>
                 );
               });
