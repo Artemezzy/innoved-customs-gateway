@@ -49,7 +49,7 @@ export interface HygraphBlogPost {
   category: string;
   title: string;
   excerpt: string;
-  content: string;
+  content: string | { text: string };
   image?: {
     url: string;
   };
@@ -62,7 +62,7 @@ export interface HygraphNewsItem {
   date: string;
   title: string;
   excerpt: string;
-  content: string;
+  content: string | { text: string };
   isPublished: boolean;
 }
 

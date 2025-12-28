@@ -75,7 +75,9 @@ export const GET_BLOG_POST_BY_SLUG = gql`
       category
       title
       excerpt
-      content
+      content {
+        text
+      }
       image {
         url
       }
@@ -128,7 +130,9 @@ export const GET_NEWS_ITEM_BY_SLUG = gql`
       date
       title
       excerpt
-      content
+      content {
+        text
+      }
       isPublished
     }
   }
