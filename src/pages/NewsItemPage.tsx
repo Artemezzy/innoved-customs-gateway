@@ -95,7 +95,7 @@ export default function NewsItemPage() {
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <article className="max-w-4xl mx-auto">
-            {item.content.split('\n\n').map((paragraph, index) => {
+            {(typeof item.content === 'string' ? item.content : item.content?.text || '').split('\n\n').map((paragraph, index) => {
               if (paragraph.startsWith('## ')) {
                 return (
                   <h2 key={index} className="text-2xl font-bold text-foreground mt-8 mb-4">
