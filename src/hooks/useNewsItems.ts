@@ -18,7 +18,7 @@ const transformStaticNewsItem = (item: NewsItem, locale: Locale): HygraphNewsIte
   date: item.date,
   title: item.title[locale],
   excerpt: item.excerpt[locale],
-  content: item.content[locale],
+  content: { text: item.content[locale] },
   isPublished: true,
 });
 

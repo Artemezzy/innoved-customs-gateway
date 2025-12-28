@@ -134,6 +134,7 @@ export const GET_NEWS_ITEM_BY_SLUG = gql`
       title
       excerpt
       content {
+        html
         text
       }
       image {
