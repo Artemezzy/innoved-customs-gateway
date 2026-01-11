@@ -1,4 +1,5 @@
 import { Hero } from '@/components/Hero';
+import { StatsSection } from '@/components/StatsSection';
 import { WhyChooseUs } from '@/components/WhyChooseUs';
 import { Services } from '@/components/Services';
 import { Contact } from '@/components/Contact';
@@ -18,6 +19,7 @@ export default function Home() {
     <>
       <SEOHead language={language} page="home" />
       <Hero language={language} />
+      <StatsSection language={language} />
       <WhyChooseUs language={language} />
       <Services language={language} />
       <Contact language={language} />
