@@ -25,47 +25,47 @@ export default function AboutPage() {
         
         {/* Clickable hotspots overlay */}
         <div className="absolute inset-0">
-          {/* Header navigation hotspots */}
+        {/* Header navigation hotspots */}
           <Link 
             to="/" 
             className="absolute hover:bg-white/10 transition-colors rounded cursor-pointer"
-            style={{ top: '0.8%', left: '25.5%', width: '5.5%', height: '1.5%' }}
+            style={{ top: '0.8%', left: '25.5%', width: '5.5%', height: '2%' }}
             aria-label="Главная"
           />
           <Link 
             to="/about" 
             className="absolute hover:bg-white/10 transition-colors rounded cursor-pointer"
-            style={{ top: '0.8%', left: '32%', width: '7.5%', height: '1.5%' }}
+            style={{ top: '0.8%', left: '32%', width: '7.5%', height: '2%' }}
             aria-label="О компании"
           />
           <Link 
             to="/services" 
             className="absolute hover:bg-white/10 transition-colors rounded cursor-pointer"
-            style={{ top: '0.8%', left: '41%', width: '5%', height: '1.5%' }}
+            style={{ top: '0.8%', left: '41%', width: '5%', height: '2%' }}
             aria-label="Услуги"
           />
           <Link 
             to="/blog" 
             className="absolute hover:bg-white/10 transition-colors rounded cursor-pointer"
-            style={{ top: '0.8%', left: '47.5%', width: '4%', height: '1.5%' }}
+            style={{ top: '0.8%', left: '47.5%', width: '4%', height: '2%' }}
             aria-label="Блог"
           />
           <Link 
             to="/news" 
             className="absolute hover:bg-white/10 transition-colors rounded cursor-pointer"
-            style={{ top: '0.8%', left: '53%', width: '5.5%', height: '1.5%' }}
+            style={{ top: '0.8%', left: '53%', width: '5.5%', height: '2%' }}
             aria-label="Новости"
           />
           <Link 
             to="/faq" 
             className="absolute hover:bg-white/10 transition-colors rounded cursor-pointer"
-            style={{ top: '0.8%', left: '60%', width: '3.5%', height: '1.5%' }}
+            style={{ top: '0.8%', left: '60%', width: '3.5%', height: '2%' }}
             aria-label="FAQ"
           />
           <Link 
             to="/contact" 
             className="absolute hover:bg-white/10 transition-colors rounded cursor-pointer"
-            style={{ top: '0.8%', left: '65%', width: '6.5%', height: '1.5%' }}
+            style={{ top: '0.8%', left: '65%', width: '6.5%', height: '2%' }}
             aria-label="Контакты"
           />
 
@@ -73,7 +73,7 @@ export default function AboutPage() {
           <a 
             href="mailto:info@innovedbroker.ru" 
             className="absolute hover:bg-white/10 transition-colors rounded cursor-pointer"
-            style={{ top: '0.8%', left: '82%', width: '14%', height: '1.5%' }}
+            style={{ top: '0.8%', left: '82%', width: '14%', height: '2%' }}
             aria-label="Email"
           />
 
@@ -81,7 +81,7 @@ export default function AboutPage() {
           <Link 
             to="/" 
             className="absolute hover:bg-white/5 transition-colors rounded cursor-pointer"
-            style={{ top: '0.3%', left: '3%', width: '12%', height: '2.5%' }}
+            style={{ top: '0.3%', left: '3%', width: '12%', height: '3%' }}
             aria-label="ИННОВЭД - Главная"
           />
 
