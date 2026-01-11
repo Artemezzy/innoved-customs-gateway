@@ -13,7 +13,7 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   const { language, setLanguage } = useLanguage();
   const location = useLocation();
-  const isImagePage = location.pathname === '/';
+  const isImagePage = location.pathname === '/' || location.pathname === '/about';
 
   const handleLanguageChange = (newLanguage: 'ru' | 'en') => {
     setLanguage(newLanguage);
