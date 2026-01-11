@@ -58,6 +58,11 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				olive: {
+					DEFAULT: 'hsl(var(--olive))',
+					hover: 'hsl(var(--olive-hover))'
+				},
+				navy: 'hsl(var(--navy))',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
