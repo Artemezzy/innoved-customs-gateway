@@ -1,5 +1,7 @@
 import { Hero } from '@/components/Hero';
-import { About } from '@/components/About';
+import { WhyChooseUs } from '@/components/WhyChooseUs';
+import { Services } from '@/components/Services';
+import { Contact } from '@/components/Contact';
 import { SEOHead } from '@/components/SEOHead';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEffect } from 'react';
@@ -16,7 +18,9 @@ export default function Home() {
     <>
       <SEOHead language={language} page="home" />
       <Hero language={language} />
-      <About language={language} />
+      <WhyChooseUs language={language} />
+      <Services language={language} />
+      <Contact language={language} />
     </>
   );
 }
