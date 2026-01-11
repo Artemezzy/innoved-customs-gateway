@@ -91,7 +91,7 @@ export default function AboutPage() {
             target="_blank"
             rel="noopener noreferrer"
             className="absolute hover:bg-white/10 transition-colors rounded-full cursor-pointer"
-            style={{ top: '25.5%', left: '35%', width: '18%', height: '2.5%' }}
+            style={{ top: '12.8%', left: '41%', width: '18%', height: '1.5%' }}
             aria-label="Скачать прайс-лист"
           />
 
@@ -99,7 +99,7 @@ export default function AboutPage() {
           <Link 
             to="/contact" 
             className="absolute hover:bg-white/10 transition-colors rounded-lg cursor-pointer"
-            style={{ top: '86%', left: '66%', width: '16%', height: '2.5%' }}
+            style={{ top: '93.2%', left: '66%', width: '16%', height: '1.5%' }}
             aria-label="Оформить заявку"
           />
 
@@ -107,13 +107,13 @@ export default function AboutPage() {
           <a 
             href="tel:+79331881009" 
             className="absolute hover:bg-white/10 transition-colors rounded cursor-pointer"
-            style={{ top: '93.5%', left: '40%', width: '14%', height: '1.8%' }}
+            style={{ top: '96%', left: '43%', width: '12%', height: '2%' }}
             aria-label="Позвонить"
           />
           <a 
             href="mailto:info@innovedbroker.ru" 
             className="absolute hover:bg-white/10 transition-colors rounded cursor-pointer"
-            style={{ top: '93.5%', left: '58%', width: '18%', height: '1.8%' }}
+            style={{ top: '96%', left: '62%', width: '16%', height: '2%' }}
             aria-label="Написать email"
           />
 
@@ -121,7 +121,7 @@ export default function AboutPage() {
           <Link 
             to="/" 
             className="absolute hover:bg-white/5 transition-colors rounded cursor-pointer"
-            style={{ top: '91.5%', left: '3%', width: '14%', height: '4%' }}
+            style={{ top: '94.5%', left: '3%', width: '14%', height: '4%' }}
             aria-label="ИННОВЭД - Главная"
           />
         </div>
