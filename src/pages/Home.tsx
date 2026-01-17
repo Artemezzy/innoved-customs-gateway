@@ -110,9 +110,8 @@ export default function Home() {
             <h1 
               className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-white leading-tight"
               style={{ 
-                fontFamily: '"Playfair Display", serif',
+                fontFamily: 'Montserrat, sans-serif',
                 fontWeight: 700,
-                fontStyle: 'italic',
                 textShadow: '2px 2px 8px rgba(0,0,0,0.7)',
                 lineHeight: 1.2,
               }}
