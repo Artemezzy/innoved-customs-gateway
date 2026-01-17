@@ -149,24 +149,48 @@ export default function Home() {
           </section>
           
           {/* Why Choose Us Section */}
-          <section className="absolute flex flex-col px-6 lg:px-12" style={{
+          <section className="absolute flex items-start gap-8 px-6 lg:px-12" style={{
           top: '56%',
           left: '3%',
           width: '95%',
           height: '16%'
         }}>
-            <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground mb-4">
+            <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-foreground whitespace-nowrap">
               {t.whyUs.title}
             </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {t.whyUs.items.map((item, index) => <div key={index} className="flex flex-col">
-                  <h3 className="text-sm md:text-base font-semibold text-foreground">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {item.desc}
-                  </p>
-                </div>)}
+            <div className="grid grid-cols-2 gap-x-12 gap-y-4">
+              <div className="flex flex-col">
+                <h3 className="text-sm md:text-base font-semibold text-white">
+                  {t.whyUs.items[0].title}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t.whyUs.items[0].desc}
+                </p>
+              </div>
+              <div className="flex flex-col">
+                <h3 className="text-sm md:text-base font-semibold text-white">
+                  {t.whyUs.items[1].title}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t.whyUs.items[1].desc}
+                </p>
+              </div>
+              <div className="flex flex-col">
+                <h3 className="text-sm md:text-base font-semibold text-white">
+                  {t.whyUs.items[2].title}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t.whyUs.items[2].desc}
+                </p>
+              </div>
+              <div className="flex flex-col">
+                <h3 className="text-sm md:text-base font-semibold text-white">
+                  {t.whyUs.items[3].title}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {t.whyUs.items[3].desc}
+                </p>
+              </div>
             </div>
           </section>
           
