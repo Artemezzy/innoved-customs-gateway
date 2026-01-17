@@ -159,14 +159,38 @@ export default function Home() {
               {t.whyUs.title}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {t.whyUs.items.map((item, index) => <div key={index} className="flex flex-col">
-                  <h3 className="text-sm md:text-base font-semibold text-foreground">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {item.desc}
-                  </p>
-                </div>)}
+              <div className="flex flex-col">
+                <h3 className="text-sm md:text-base font-semibold text-foreground">
+                  {language === 'ru' ? 'Скорость и эффективность' : 'Speed and Efficiency'}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {language === 'ru' ? 'Быстрое таможенное оформление без задержек' : 'Fast customs clearance without delays'}
+                </p>
+              </div>
+              <div className="flex flex-col">
+                <h3 className="text-sm md:text-base font-semibold text-foreground">
+                  {language === 'ru' ? 'Финансовая экономия' : 'Cost Savings'}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {language === 'ru' ? 'Оптимизация затрат на логистику' : 'Logistics cost optimization'}
+                </p>
+              </div>
+              <div className="flex flex-col">
+                <h3 className="text-sm md:text-base font-semibold text-foreground">
+                  {language === 'ru' ? 'Дистанционный формат' : 'Remote Format'}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {language === 'ru' ? 'Работаем онлайн по всей России' : 'Working online across Russia'}
+                </p>
+              </div>
+              <div className="flex flex-col">
+                <h3 className="text-sm md:text-base font-semibold text-foreground">
+                  {language === 'ru' ? 'Экспертная поддержка 24/7' : 'Expert Support 24/7'}
+                </h3>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {language === 'ru' ? 'Консультации в любое время' : 'Consultations anytime'}
+                </p>
+              </div>
             </div>
           </section>
           
