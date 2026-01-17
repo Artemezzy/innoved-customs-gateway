@@ -8,7 +8,8 @@ import homeBgClean from '@/assets/home-bg-clean.jpg';
 const content = {
   ru: {
     hero: {
-      title: '"ТАМОЖНЯ БЕЗ ГРАНИЦ: ВАШ ГРУЗ - НАША ЗАБОТА!"',
+      titleLine1: 'ТАМОЖНЯ БЕЗ ГРАНИЦ',
+      titleLine2: 'ВАШ ГРУЗ - НАША ЗАБОТА!',
       cta: 'Оформить заявку',
     },
     stats: {
@@ -45,7 +46,8 @@ const content = {
   },
   en: {
     hero: {
-      title: '"CUSTOMS WITHOUT BORDERS: YOUR CARGO - OUR CARE!"',
+      titleLine1: 'CUSTOMS WITHOUT BORDERS',
+      titleLine2: 'YOUR CARGO - OUR CARE!',
       cta: 'Submit Request',
     },
     stats: {
@@ -116,7 +118,8 @@ export default function Home() {
                 lineHeight: 1.2,
               }}
             >
-              {t.hero.title}
+              {t.hero.titleLine1}<br />
+              {t.hero.titleLine2}
             </h1>
             <Link
               to="/contact"
