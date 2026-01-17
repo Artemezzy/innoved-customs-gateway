@@ -8,8 +8,8 @@ import homeBgClean from '@/assets/home-bg-clean.jpg';
 const content = {
   ru: {
     hero: {
-      titleLine1: 'ТАМОЖНЯ БЕЗ ГРАНИЦ',
-      titleLine2: 'ВАШ ГРУЗ - НАША ЗАБОТА!',
+      titleLine1: 'ТАМОЖНЯ БЕЗ ГРАНИЦ:',
+      titleLine2: 'ВАШ ГРУЗ — НАША ЗАБОТА!',
       cta: 'Оформить заявку',
     },
     stats: {
@@ -110,12 +110,13 @@ export default function Home() {
             style={{ top: '18%', left: '4%', width: '45%' }}
           >
             <h1 
-              className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl text-white leading-tight"
+              className="text-white whitespace-nowrap"
               style={{ 
                 fontFamily: 'Montserrat, sans-serif',
                 fontWeight: 700,
                 textShadow: '2px 2px 8px rgba(0,0,0,0.7)',
-                lineHeight: 1.2,
+                fontSize: 'clamp(1rem, 3vw, 2.5rem)',
+                lineHeight: 1.3,
               }}
             >
               {t.hero.titleLine1}<br />
