@@ -181,7 +181,7 @@ export default function Home() {
               {t.services.title}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {t.services.items.map((service, index) => <Link key={index} to="/services" className="py-3 rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-2 px-[100px] text-4xl bg-white/0 text-white">
+              {t.services.items.map((service, index) => <Link key={index} to="/services" className="py-3 rounded-lg font-medium shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-2 px-[100px] text-4xl bg-white/0 text-white my-0 mx-[2px] pr-[10px] mr-[600px] text-left">
                   <span className="w-2 h-2 rounded-full bg-[hsl(80,45%,45%)]" />
                   {service}
                 </Link>)}
