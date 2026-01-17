@@ -106,48 +106,56 @@ export default function Home() {
           
           {/* Hero Section */}
           <section 
+            id="hero-section"
             className="absolute flex flex-col items-start justify-center"
             style={{ top: '18%', left: '4%', width: '45%' }}
           >
-            <h1 
-              className="text-white whitespace-nowrap"
-              style={{ 
-                fontFamily: 'Montserrat, sans-serif',
-                fontWeight: 700,
-                textShadow: '2px 2px 8px rgba(0,0,0,0.7)',
-                fontSize: 'clamp(1rem, 3vw, 2.5rem)',
-                lineHeight: 1.3,
-              }}
-            >
-              {t.hero.titleLine1}<br />
-              {t.hero.titleLine2}
-            </h1>
-            <Link
-              to="/contact"
-              className="mt-4 md:mt-6 px-5 md:px-8 py-2.5 md:py-3 text-white font-semibold rounded-md transition-colors duration-200 text-xs sm:text-sm md:text-base shadow-lg hover:opacity-90"
-              style={{ 
-                backgroundColor: '#c1442b',
-              }}
-            >
-              {t.hero.cta}
-            </Link>
+            <div id="hero-title-wrapper">
+              <h1 
+                className="text-white whitespace-nowrap"
+                style={{ 
+                  fontFamily: 'Montserrat, sans-serif',
+                  fontWeight: 700,
+                  textShadow: '2px 2px 8px rgba(0,0,0,0.7)',
+                  fontSize: 'clamp(1rem, 3vw, 2.5rem)',
+                  lineHeight: 1.3,
+                }}
+              >
+                {t.hero.titleLine1}<br />
+                {t.hero.titleLine2}
+              </h1>
+            </div>
+            <div id="hero-cta-wrapper">
+              <Link
+                to="/contact"
+                className="mt-4 md:mt-6 px-5 md:px-8 py-2.5 md:py-3 text-white font-semibold rounded-md transition-colors duration-200 text-xs sm:text-sm md:text-base shadow-lg hover:opacity-90"
+                style={{ 
+                  backgroundColor: '#c1442b',
+                }}
+              >
+                {t.hero.cta}
+              </Link>
+            </div>
           </section>
           
           {/* Stats Section */}
           <section 
+            id="stats-section"
             className="absolute"
             style={{ top: '36%', left: '4%', width: '92%' }}
           >
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
               {/* Left column: title + button */}
-              <div className="flex flex-col max-w-md">
-                <h2 
-                  className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-semibold leading-tight"
-                  style={{ color: '#1a2744' }}
-                >
-                  {t.stats.title}
-                </h2>
-                <div style={{ marginLeft: '2rem' }}>
+              <div id="stats-left-column" className="flex flex-col max-w-md">
+                <div id="stats-title-wrapper">
+                  <h2 
+                    className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-semibold leading-tight"
+                    style={{ color: '#1a2744' }}
+                  >
+                    {t.stats.title}
+                  </h2>
+                </div>
+                <div id="stats-about-btn-wrapper" style={{ marginLeft: '2rem' }}>
                   <Link
                     to="/about"
                     className="mt-3 md:mt-4 inline-flex w-fit px-5 md:px-6 py-2 md:py-2.5 text-white font-medium rounded-md transition-colors duration-200 text-xs sm:text-sm hover:opacity-90 border border-white/30"
@@ -159,7 +167,7 @@ export default function Home() {
               </div>
               
               {/* Right column: stats numbers */}
-              <div className="flex justify-around items-start gap-4 md:gap-8 lg:gap-12 flex-1">
+              <div id="stats-numbers-wrapper" className="flex justify-around items-start gap-4 md:gap-8 lg:gap-12 flex-1">
                 {t.stats.items.map((stat, index) => (
                   <div key={index} className="flex flex-col items-center text-center">
                     <span 
@@ -182,16 +190,19 @@ export default function Home() {
           
           {/* Why Choose Us Section */}
           <section 
+            id="why-us-section"
             className="absolute"
             style={{ top: '55%', left: '4%', width: '92%' }}
           >
-            <h2 
-              className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold mb-3 md:mb-4"
-              style={{ color: '#1a2744' }}
-            >
-              {t.whyUs.title}
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
+            <div id="why-us-title-wrapper">
+              <h2 
+                className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold mb-3 md:mb-4"
+                style={{ color: '#1a2744' }}
+              >
+                {t.whyUs.title}
+              </h2>
+            </div>
+            <div id="why-us-grid-wrapper" className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 lg:gap-6">
               {t.whyUs.items.map((item, index) => (
                 <div key={index} className="flex flex-col">
                   <h3 
@@ -213,16 +224,19 @@ export default function Home() {
           
           {/* Services Section */}
           <section 
+            id="services-section"
             className="absolute"
             style={{ top: '72%', left: '4%', width: '92%' }}
           >
-            <h2 
-              className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold mb-3 md:mb-4"
-              style={{ color: '#1a2744' }}
-            >
-              {t.services.title}
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
+            <div id="services-title-wrapper">
+              <h2 
+                className="text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl font-bold mb-3 md:mb-4"
+                style={{ color: '#1a2744' }}
+              >
+                {t.services.title}
+              </h2>
+            </div>
+            <div id="services-grid-wrapper" className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3">
               {t.services.items.map((service, index) => (
                 <Link
                   key={index}
