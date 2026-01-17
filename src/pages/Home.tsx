@@ -149,8 +149,8 @@ export default function Home() {
                 </h2>
                 <Link
                   to="/about"
-                  className="mt-3 md:mt-4 ml-16 inline-flex w-fit px-5 md:px-6 py-2 md:py-2.5 text-white font-medium rounded-md transition-colors duration-200 text-xs sm:text-sm hover:opacity-90 border border-white/30"
-                  style={{ backgroundColor: 'transparent' }}
+                  className="mt-3 md:mt-4 inline-flex w-fit px-5 md:px-6 py-2 md:py-2.5 text-white font-medium rounded-md transition-colors duration-200 text-xs sm:text-sm hover:opacity-90 border border-white/30"
+                  style={{ backgroundColor: 'transparent', marginLeft: '2rem' }}
                 >
                   {t.stats.aboutBtn}
                 </Link>
