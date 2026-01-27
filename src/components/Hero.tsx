@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import heroVideo from '@/assets/hero-bg-v2.mp4';
 import { analytics } from '@/utils/analytics';
 import { TypewriterText } from './TypewriterText';
+import { useNavigate } from 'react-router-dom';
 
 interface HeroProps {
   language: 'ru' | 'en';
@@ -32,13 +33,11 @@ const content = {
 
 export function Hero({ language }: HeroProps) {
   const text = content[language];
+  const navigate = useNavigate();
 
   const handleButtonClick = () => {
     analytics.contactClick('contact-form');
-    const contactSection = document.getElementById('contact');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }
+    navigate('/contact');
   };
 
   return (
