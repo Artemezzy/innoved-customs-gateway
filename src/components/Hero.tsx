@@ -11,12 +11,22 @@ const content = {
   ru: {
     title: 'ИННОВЭД',
     subtitles: ['Таможенное оформление под ключ', 'Таможенное оформление с нами'],
-    button: 'Упростить логистику'
+    button: 'Упростить логистику',
+    stats: [
+      { number: '200+', label: 'городов по всей России' },
+      { number: '150+', label: 'завершенных сделок в месяц' },
+      { number: '10 ЛЕТ', label: 'на рынке ВЭД' }
+    ]
   },
   en: {
     title: 'INNOVED',
     subtitles: ['Comprehensive Customs Clearance', 'Customs Clearance With Us'],
-    button: 'Simplify Logistics'
+    button: 'Simplify Logistics',
+    stats: [
+      { number: '200+', label: 'cities across Russia' },
+      { number: '150+', label: 'deals completed monthly' },
+      { number: '10 YEARS', label: 'in foreign trade' }
+    ]
   }
 };
 
@@ -46,6 +56,24 @@ export function Hero({ language }: HeroProps) {
       
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-hero" />
+      
+      {/* Stats Bar */}
+      <div className="absolute top-24 md:top-28 left-0 right-0 z-10">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 lg:gap-24">
+            {text.stats.map((stat, index) => (
+              <div key={index} className="text-center animate-fade-in" style={{ animationDelay: `${index * 0.2}s` }}>
+                <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-foreground mb-1 tracking-wide">
+                  {stat.number}
+                </div>
+                <div className="text-xs md:text-sm text-primary-foreground/60 font-medium uppercase tracking-wider">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
       
       {/* Content */}
       <div className="relative z-10 text-center animate-fade-in">
