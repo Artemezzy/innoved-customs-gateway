@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
-import heroBg from '@/assets/hero-bg-new.jpg';
+import heroVideo from '@/assets/hero-bg-v2.mp4';
 import { analytics } from '@/utils/analytics';
+import { TypewriterText } from './TypewriterText';
 
 interface HeroProps {
   language: 'ru' | 'en';
@@ -8,14 +9,14 @@ interface HeroProps {
 
 const content = {
   ru: {
-    title: 'ТАМОЖНЯ БЕЗ ГРАНИЦ:',
-    subtitle: 'ВАШ ГРУЗ - НАША ЗАБОТА',
-    button: 'Оформить заявку'
+    title: 'ИННОВЭД',
+    subtitles: ['Таможенное оформление под ключ', 'Таможенное оформление с нами'],
+    button: 'Упростить логистику'
   },
   en: {
-    title: 'CUSTOMS WITHOUT BORDERS:',
-    subtitle: 'YOUR CARGO - OUR CARE',
-    button: 'Submit Request'
+    title: 'INNOVED',
+    subtitles: ['Comprehensive Customs Clearance', 'Customs Clearance With Us'],
+    button: 'Simplify Logistics'
   }
 };
 
@@ -31,34 +32,42 @@ export function Hero({ language }: HeroProps) {
   };
 
   return (
-    <section className="relative h-[60vh] md:h-[70vh] flex items-end overflow-hidden">
-      {/* Background Image */}
-      <img 
-        src={heroBg} 
-        alt="Container terminal"
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Background Video */}
+      <video 
         className="absolute inset-0 w-full h-full object-cover"
-      />
+        autoPlay
+        muted
+        loop
+        playsInline
+      >
+        <source src={heroVideo} type="video/mp4" />
+      </video>
       
       {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[hsl(222,47%,11%)]/80 via-[hsl(222,47%,11%)]/40 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-hero" />
       
       {/* Content */}
-      <div className="relative z-10 w-full px-4 md:px-8 lg:px-16 pb-12 md:pb-16">
-        <div className="max-w-4xl animate-fade-in">
-          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-2 tracking-wide">
-            {text.title}
-          </h1>
-          <p className="text-xl md:text-3xl lg:text-4xl font-bold text-white mb-6 tracking-wide">
-            {text.subtitle}
-          </p>
-          <Button 
-            size="lg"
-            className="bg-olive hover:bg-olive-hover text-white px-8 py-5 text-base font-semibold rounded-md"
-            onClick={handleButtonClick}
-          >
-            {text.button}
-          </Button>
+      <div className="relative z-10 text-center animate-fade-in">
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-primary-foreground mb-4 tracking-wider animate-glow">
+          {text.title}
+        </h1>
+        <div className="mb-8 h-12 flex items-center justify-center">
+          <TypewriterText 
+            texts={text.subtitles}
+            delay={2000}
+            speed={80}
+            pauseBetween={3000}
+            className="text-xl md:text-2xl lg:text-3xl text-primary-foreground/70 font-montserrat font-medium tracking-wide"
+          />
         </div>
+        <Button 
+          size="lg"
+          className="bg-primary hover:bg-primary-hover text-primary-foreground px-8 py-4 text-lg font-semibold shadow-hover"
+          onClick={handleButtonClick}
+        >
+          {text.button}
+        </Button>
       </div>
     </section>
   );
