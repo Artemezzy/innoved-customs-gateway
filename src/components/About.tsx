@@ -1,4 +1,4 @@
-import containerShipImage from '@/assets/container-ship.jpg';
+import innovedContainersImage from '@/assets/innoved-containers.jpg';
 
 interface AboutProps {
   language: 'ru' | 'en';
@@ -48,8 +48,8 @@ export function About({ language }: AboutProps) {
           </div>
           <div className="animate-slide-in-right">
             <img
-              src={containerShipImage}
-              alt="Container ship for customs clearance and logistics"
+              src={innovedContainersImage}
+              alt="INNOVED branded containers at port"
               className="w-full h-auto rounded-lg shadow-card hover:shadow-hover transition-all duration-300"
             />
           </div>
