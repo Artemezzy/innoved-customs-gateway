@@ -105,7 +105,7 @@ export function Achievements({ language }: AchievementsProps) {
   const text = content[language];
 
   return (
-    <section className="relative py-20 overflow-hidden bg-gradient-to-br from-primary via-primary-hover to-primary-glow">
+    <section className="relative py-20 overflow-hidden bg-primary">
       {/* Triangle pattern background */}
       <svg className="absolute inset-0 w-full h-full opacity-30" preserveAspectRatio="none">
         {/* Large triangles - top left area */}
