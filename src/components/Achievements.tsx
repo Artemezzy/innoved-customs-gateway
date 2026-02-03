@@ -65,7 +65,7 @@ function useCountUp(target: number, duration = 2500) {
   return { count, ref };
 }
 
-interface StatCardProps {
+interface StatItemProps {
   number: number;
   suffix: string;
   label: string;
@@ -73,30 +73,27 @@ interface StatCardProps {
   delay: number;
 }
 
-function StatCard({ number, suffix, label, icon: Icon, delay }: StatCardProps) {
+function StatItem({ number, suffix, label, icon: Icon, delay }: StatItemProps) {
   const { count, ref } = useCountUp(number);
 
   return (
     <div
       ref={ref}
-      className="relative group animate-fade-in"
+      className="flex items-center gap-5 animate-fade-in group"
       style={{ animationDelay: `${delay}s` }}
     >
-      {/* Glass card */}
-      <div className="relative bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-center border border-white/20 hover:bg-white/15 transition-all duration-300 hover:scale-105">
-        {/* Icon with glow */}
-        <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors">
-          <Icon className="w-8 h-8 text-white" />
-        </div>
-        
-        {/* Number */}
-        <div className="text-5xl md:text-6xl font-bold text-white mb-3 tracking-tight">
+      {/* Icon */}
+      <div className="w-14 h-14 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center group-hover:bg-white/25 transition-colors border border-white/20">
+        <Icon className="w-7 h-7 text-white" />
+      </div>
+      
+      {/* Content */}
+      <div>
+        <div className="text-4xl md:text-5xl font-montserrat font-bold text-white tracking-tight">
           {count}
-          <span className="text-white/80">{suffix}</span>
+          <span className="text-white/70">{suffix}</span>
         </div>
-        
-        {/* Label */}
-        <p className="text-white/70 text-sm md:text-base font-medium leading-relaxed">
+        <p className="text-white/60 text-sm md:text-base font-medium mt-1">
           {label}
         </p>
       </div>
@@ -109,26 +106,54 @@ export function Achievements({ language }: AchievementsProps) {
 
   return (
     <section className="relative py-20 overflow-hidden bg-gradient-to-br from-primary via-primary-hover to-primary-glow">
-      {/* Decorative circles */}
-      <div className="absolute top-0 left-0 w-72 h-72 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-white/5 rounded-full translate-x-1/3 translate-y-1/3" />
-      <div className="absolute top-1/2 left-1/4 w-48 h-48 bg-white/3 rounded-full" />
+      {/* Triangle pattern background */}
+      <svg className="absolute inset-0 w-full h-full opacity-30" preserveAspectRatio="none">
+        {/* Large triangles - top left area */}
+        <polygon points="0,0 120,0 60,100" className="fill-white/5" />
+        <polygon points="80,20 200,0 140,120" className="fill-white/8" />
+        <polygon points="0,80 100,60 50,180" className="fill-white/4" />
+        <polygon points="150,80 250,40 200,160" className="fill-white/6" />
+        
+        {/* Medium triangles - scattered */}
+        <polygon points="300,100 380,60 340,180" className="fill-white/5" />
+        <polygon points="10,200 90,180 50,280" className="fill-white/7" />
+        <polygon points="200,200 280,160 240,280" className="fill-white/4" />
+        
+        {/* Large triangles - bottom right area */}
+        <polygon points="100%,100% -120,0 -60,-100" transform="translate(0,0)" className="fill-white/6" style={{ transform: 'translate(100%, 100%) scale(-1, -1)' }} />
+        <polygon points="85%,90% 95%,70% 100%,95%" className="fill-white/5" />
+        <polygon points="75%,85% 90%,75% 82%,100%" className="fill-white/7" />
+        <polygon points="90%,60% 100%,50% 95%,80%" className="fill-white/4" />
+        <polygon points="70%,70% 85%,60% 78%,90%" className="fill-white/6" />
+        
+        {/* Additional scattered triangles */}
+        <polygon points="50%,20% 60%,10% 55%,35%" className="fill-white/3" />
+        <polygon points="40%,60% 55%,50% 48%,75%" className="fill-white/4" />
+        <polygon points="60%,40% 75%,30% 68%,55%" className="fill-white/5" />
+      </svg>
       
       <div className="container mx-auto px-4 relative z-10">
-        <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-16">
-          {text.title}
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-          {text.stats.map((stat, index) => (
-            <StatCard
-              key={index}
-              number={stat.number}
-              suffix={stat.suffix}
-              label={stat.label}
-              icon={stat.icon}
-              delay={index * 0.15}
-            />
-          ))}
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+          {/* Left side - Title */}
+          <div className="lg:w-1/2 text-center lg:text-left">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-montserrat font-bold text-white leading-tight">
+              {text.title}
+            </h2>
+          </div>
+          
+          {/* Right side - Stats */}
+          <div className="lg:w-1/2 space-y-8">
+            {text.stats.map((stat, index) => (
+              <StatItem
+                key={index}
+                number={stat.number}
+                suffix={stat.suffix}
+                label={stat.label}
+                icon={stat.icon}
+                delay={index * 0.15}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>
