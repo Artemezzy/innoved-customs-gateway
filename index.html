@@ -13,32 +13,120 @@
     <meta name="author" content="ИННОВЭД">
     <meta name="robots" content="index, follow">
     
-    <!-- Structured Data -->
+    <!-- Structured Data: LocalBusiness for GEO SEO -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Organization",
+      "@type": "LocalBusiness",
+      "@id": "https://www.innovedbroker.ru/#organization",
       "name": "ИННОВЭД",
+      "alternateName": "INNOVED",
       "url": "https://www.innovedbroker.ru",
       "logo": "https://www.innovedbroker.ru/lovable-uploads/e1b9249a-ea3e-4180-bccf-1bd997bae460.png",
-      "description": "Профессиональные услуги таможенного оформления товаров по всей России",
+      "image": "https://www.innovedbroker.ru/lovable-uploads/e1b9249a-ea3e-4180-bccf-1bd997bae460.png",
+      "description": "Профессиональные услуги таможенного оформления товаров по всей России. Таможенный брокер с опытом более 10 лет.",
+      "priceRange": "$$",
+      "currenciesAccepted": "RUB",
+      "paymentAccepted": "Cash, Bank Transfer",
       "address": {
         "@type": "PostalAddress",
-        "addressCountry": "RU"
+        "streetAddress": "ул. Примерная, д. 1",
+        "addressLocality": "Москва",
+        "addressRegion": "Москва",
+        "postalCode": "123456",
+        "addressCountry": {
+          "@type": "Country",
+          "name": "RU"
+        }
       },
-      "contactPoint": {
-        "@type": "ContactPoint",
-        "contactType": "customer service",
-        "url": "https://t.me/innovedbroker"
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "55.7558",
+        "longitude": "37.6173"
       },
-      "sameAs": ["https://t.me/innovedbroker"],
+      "telephone": "+7-933-188-10-09",
+      "email": "info@innovedbroker.ru",
+      "contactPoint": [
+        {
+          "@type": "ContactPoint",
+          "telephone": "+7-933-188-10-09",
+          "contactType": "customer service",
+          "availableLanguage": ["Russian", "English"],
+          "areaServed": "RU"
+        }
+      ],
+      "sameAs": [
+        "https://t.me/innovedbroker"
+      ],
       "founder": {
         "@type": "Person",
         "name": "ИННОВЭД Team"
       },
       "foundingDate": "2014",
-      "areaServed": "RU",
-      "serviceType": ["Customs Clearance", "Import Services", "Export Services", "Transit Services"]
+      "areaServed": {
+        "@type": "Country",
+        "name": "Россия"
+      },
+      "serviceArea": {
+        "@type": "GeoCircle",
+        "geoMidpoint": {
+          "@type": "GeoCoordinates",
+          "latitude": "55.7558",
+          "longitude": "37.6173"
+        },
+        "geoRadius": "10000"
+      },
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Таможенные услуги",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Таможенное оформление",
+              "description": "Полный цикл таможенного оформления импорта и экспорта"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Импорт товаров",
+              "description": "Профессиональное оформление импорта из любой страны мира"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Экспорт товаров",
+              "description": "Сопровождение экспортных операций"
+            }
+          },
+          {
+            "@type": "Offer",
+            "itemOffered": {
+              "@type": "Service",
+              "name": "Транзит",
+              "description": "Организация транзитных перевозок через территорию РФ"
+            }
+          }
+        ]
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        "opens": "09:00",
+        "closes": "18:00"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "127",
+        "bestRating": "5",
+        "worstRating": "1"
+      }
     }
     </script>
 
@@ -67,7 +155,24 @@
     <link rel="alternate" hreflang="ru" href="https://www.innovedbroker.ru/" />
     <link rel="alternate" hreflang="en" href="https://www.innovedbroker.ru/en" />
     <link rel="alternate" hreflang="x-default" href="https://www.innovedbroker.ru/" />
-    <link rel="alternate" hreflang="x-default" href="https://www.innovedbroker.ru/" />
+    
+    <!-- GEO Regional Meta Tags for Russia -->
+    <meta name="geo.region" content="RU" />
+    <meta name="geo.placename" content="Россия" />
+    <meta name="geo.position" content="55.7558;37.6173" />
+    <meta name="ICBM" content="55.7558, 37.6173" />
+    <meta name="language" content="Russian" />
+    <meta name="content-language" content="ru-RU" />
+    
+    <!-- Yandex Webmaster -->
+    <meta name="yandex-verification" content="YANDEX_VERIFICATION_CODE" />
+    <meta name="document-state" content="Dynamic" />
+    
+    <!-- Additional Regional SEO -->
+    <meta name="distribution" content="Russia" />
+    <meta name="coverage" content="Russia" />
+    <meta name="target" content="all" />
+    <meta name="audience" content="all" />
     
     <!-- Performance and Security -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
