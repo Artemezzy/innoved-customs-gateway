@@ -930,19 +930,119 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Перевод документов — ИННОВЭД',
-        description: 'Профессиональный перевод документов для таможенного оформления.',
-        keywords: 'перевод документов, перевод для таможни, ВЭД',
+        title: 'Перевод документов для ВЭД — нотариальное заверение и конфиденциальность с ИННОВЭД',
+        description: 'Профессиональный перевод ВЭД-документов для таможни. Нотариальное заверение, апостиль, многоязычные проекты и полная конфиденциальность от ИННОВЭД.',
+        keywords: 'перевод документов, перевод для таможни, ВЭД-перевод, нотариальное заверение, апостиль, таможенный перевод, ИННОВЭД',
       },
       en: {
-        title: 'Document Translation — INNOVED',
-        description: 'Professional document translation for customs clearance.',
-        keywords: 'document translation, customs translation, foreign trade',
+        title: 'Document Translation for Foreign Trade — Notarization and Confidentiality with INNOVED',
+        description: 'Professional translation of foreign trade documents for customs. Notarization, apostille, multilingual projects and full confidentiality from INNOVED.',
+        keywords: 'document translation, customs translation, foreign trade translation, notarization, apostille, customs documents, INNOVED',
       },
     },
     content: {
-      ru: null,
-      en: null,
+      ru: {
+        intro: 'В сфере внешнеэкономической деятельности точность перевода — это не просто требование, а гарантия правильного оформления, успешного прохождения таможни и юридической защиты интересов компании. ИННОВЭД выполняет профессиональный перевод документов, связанных с импортом, экспортом и международными контрактами, — с сохранением юридической точности и отраслевой терминологии.\n\nМы понимаем значение каждого слова в деловой переписке, инвойсе или сертификате происхождения, поэтому обеспечиваем результат, принимаемый таможенными органами, банками и партнёрами за рубежом.',
+        sections: [
+          {
+            title: 'Почему выбирают ИННОВЭД',
+            items: [
+              'Узкоспециализированный перевод ВЭД-документов — мы работаем с контрактами, инвойсами, упаковочными листами, техническими паспортами и сертификатами.',
+              'Соблюдение юридической терминологии — перевод выполняется в соответствии с международными нормами документооборота и локальными требованиями ФТС.',
+              'Нотариальное заверение и апостиль — по запросу организуем легализацию документов и оформление подписи переводчика.',
+              'Многоязычные проекты — поддерживаем переводы не только с английского, но и с немецкого, китайского, итальянского, турецкого и других языков.',
+              'Полная конфиденциальность — вся документация проходит через защищённые каналы передачи данных и хранится с соблюдением режимов коммерческой тайны.',
+            ],
+          },
+          {
+            title: 'Как проходит процесс перевода',
+            steps: [
+              {
+                title: 'Получение запроса и материалов',
+                text: 'Клиент передает документы в любом удобном формате — PDF, Word, скан или архив.',
+              },
+              {
+                title: 'Анализ структуры и содержания',
+                text: 'Мы определяем тип документа, объём и наличие специализированных терминов.',
+              },
+              {
+                title: 'Выполнение перевода',
+                text: 'Используем профессиональные лексические базы и глоссарии таможенных терминов.',
+              },
+              {
+                title: 'Редактирование и проверка',
+                text: 'Текст вычитывается вторым специалистом или носителем языка.',
+              },
+              {
+                title: 'Утверждение и передача клиенту',
+                text: 'Готовый перевод передаётся в требуемом виде — электронный файл, заверенная копия или нотариальный экземпляр.',
+              },
+            ],
+          },
+          {
+            title: 'Что вы получаете',
+            items: [
+              'Точные переводы документов, принимаемые ФТС и зарубежными партнёрами.',
+              'Экономию времени за счёт единого подрядчика для всего пакета документов.',
+              'Уверенность в правильности юридических формулировок.',
+              'Быструю обработку срочных документов — при необходимости в тот же день.',
+              'Гибкость форматов — от электронных файлов до нотариально заверенных оригиналов.',
+            ],
+          },
+        ],
+        cta: 'Отправьте документы на перевод уже сегодня — специалисты ИННОВЭД гарантируют точность, конфиденциальность и приёмку результата таможенными органами.',
+      },
+      en: {
+        intro: 'In foreign trade, translation accuracy is not just a requirement, but a guarantee of proper documentation, successful customs clearance, and legal protection of company interests. INNOVED provides professional translation of documents related to import, export, and international contracts — with preservation of legal accuracy and industry terminology.\n\nWe understand the importance of every word in business correspondence, invoices, or certificates of origin, so we ensure results accepted by customs authorities, banks, and partners abroad.',
+        sections: [
+          {
+            title: 'Why Choose INNOVED',
+            items: [
+              'Specialized foreign trade document translation — we work with contracts, invoices, packing lists, technical passports, and certificates.',
+              'Compliance with legal terminology — translation is performed in accordance with international document flow standards and local FCS requirements.',
+              'Notarization and apostille — upon request, we organize document legalization and translator signature certification.',
+              'Multilingual projects — we support translations not only from English, but also from German, Chinese, Italian, Turkish, and other languages.',
+              'Complete confidentiality — all documentation passes through secure data transmission channels and is stored in compliance with trade secret requirements.',
+            ],
+          },
+          {
+            title: 'How the Translation Process Works',
+            steps: [
+              {
+                title: 'Receiving request and materials',
+                text: 'The client submits documents in any convenient format — PDF, Word, scan, or archive.',
+              },
+              {
+                title: 'Structure and content analysis',
+                text: 'We determine the document type, volume, and presence of specialized terminology.',
+              },
+              {
+                title: 'Translation execution',
+                text: 'We use professional lexical databases and customs terminology glossaries.',
+              },
+              {
+                title: 'Editing and review',
+                text: 'The text is proofread by a second specialist or native speaker.',
+              },
+              {
+                title: 'Approval and delivery to client',
+                text: 'The finished translation is delivered in the required format — electronic file, certified copy, or notarized original.',
+              },
+            ],
+          },
+          {
+            title: 'What You Get',
+            items: [
+              'Accurate document translations accepted by FCS and foreign partners.',
+              'Time savings through a single contractor for the entire document package.',
+              'Confidence in the correctness of legal formulations.',
+              'Fast processing of urgent documents — same day if necessary.',
+              'Format flexibility — from electronic files to notarized originals.',
+            ],
+          },
+        ],
+        cta: 'Submit your documents for translation today — INNOVED specialists guarantee accuracy, confidentiality, and acceptance of results by customs authorities.',
+      },
     },
   },
 ];
