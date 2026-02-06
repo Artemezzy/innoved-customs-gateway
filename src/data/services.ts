@@ -330,19 +330,147 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Сертификация и декларирование соответствия — ИННОВЭД',
-        description: 'Организация получения сертификатов и деклараций соответствия.',
-        keywords: 'сертификация, декларация соответствия, сертификат',
+        title: 'Сертификация и декларации для маркетплейсов и импорта — ИННОВЭД',
+        description: 'Комплексное оформление сертификатов и деклараций по ТР ТС для импорта и маркетплейсов. Лабораторные испытания, онлайн-регистрация и консультации от ИННОВЭД.',
+        keywords: 'сертификация маркетплейс, декларация ЕАЭС, сертификат продукции, технические регламенты, маркировка товара, регистрация сертификации, ИННОВЭД',
       },
       en: {
-        title: 'Certification and Declaration of Conformity — INNOVED',
-        description: 'Organization of certificates and declarations of conformity.',
-        keywords: 'certification, declaration of conformity, certificate',
+        title: 'Certification and Declarations for Marketplaces and Import — INNOVED',
+        description: 'Comprehensive certification and declarations under TR CU for import and marketplaces. Laboratory testing, online registration and consultations from INNOVED.',
+        keywords: 'marketplace certification, EAEU declaration, product certificate, technical regulations, product labeling, certification registration, INNOVED',
       },
     },
     content: {
-      ru: null,
-      en: null,
+      ru: {
+        intro: 'Для ввоза, производства или экспорта товаров в России подтверждение соответствия требованиям технических регламентов — обязательное условие законного обращения продукции. Ошибка в выборе схемы сертификации или подаче документов может привести к блокировке продаж и потере времени. ИННОВЭД помогает компаниям быстро и корректно получить сертификаты соответствия, декларации ЕАЭС и техническую документацию, освобождая бизнес от бюрократических сложностей.\n\nМы обеспечиваем полный цикл — от анализа продукции и расчёта кодов ТН ВЭД до регистрации документов в официальных реестрах Росаккредитации.',
+        sections: [
+          {
+            title: 'Почему выбирают ИННОВЭД',
+            items: [
+              'Комплексный подход — одно окно для всех процедур сертификации и декларирования.',
+              'Проверенные испытательные лаборатории — гарантированный допуск протоколов и быстрое подтверждение соответствия.',
+              'Точная идентификация кодов ТН ВЭД и ТР ТС — исключаем ошибки, приводящие к отзыву документов.',
+              'Электронное оформление — все процессы выполняются удалённо с юридической силой электронных подписей.',
+              'Консультации по интеграции с маркетплейсами — готовим пакеты документов, которые успешно проходят валидацию на площадках.',
+            ],
+          },
+          {
+            title: 'Как проходит процесс сертификации',
+            steps: [
+              {
+                title: 'Определение категории товаров и требований',
+                text: 'Анализируем назначение и технические характеристики продукции.',
+              },
+              {
+                title: 'Выбор схемы подтверждения соответствия',
+                text: 'Помогаем определить — сертификат, декларация, добровольная сертификация.',
+              },
+              {
+                title: 'Формирование документации',
+                text: 'Подготавливаем заявки, технические описания, инструкции и макеты маркировки.',
+              },
+              {
+                title: 'Проведение испытаний',
+                text: 'Координируем процесс тестирования образцов в аккредитованных лабораториях.',
+              },
+              {
+                title: 'Регистрация документов',
+                text: 'Декларация или сертификат вносится в реестр Росаккредитации с электронным подтверждением.',
+              },
+            ],
+          },
+          {
+            title: 'Основные ТР ТС, с которыми мы работаем',
+            items: [
+              'ТР ТС 004/2011 — О безопасности низковольтного оборудования.',
+              'ТР ТС 010/2011 — О безопасности машин и оборудования.',
+              'ТР ТС 020/2011 — Электромагнитная совместимость технических средств.',
+              'ТР ТС 007/2011 — Продукция для детей и подростков.',
+              'ТР ТС 017/2011 — Лёгкая промышленность.',
+              'ТР ТС 021/2011 — Пищевая продукция.',
+              'ТР ТС 008/2011 — Игрушки.',
+              'ТР ТС 009/2011 — Парфюмерно-косметическая продукция.',
+              'ТР ТС 025/2012 — Мебельная продукция.',
+            ],
+          },
+          {
+            title: 'Что вы получаете',
+            items: [
+              'Документы, принимаемые всеми маркетплейсами России и ЕАЭС.',
+              'Согласованную упаковку и маркировку в соответствии с ТР ТС.',
+              'Экономию времени — оформление и регистрация полностью онлайн.',
+              'Индивидуальное сопровождение с консультацией по требованиям торговых площадок.',
+              'Актуальные шаблоны и инструкции для размещения товаров в карточках.',
+            ],
+          },
+        ],
+        cta: 'Подайте заявку на организацию получения сертификатов и деклараций соответствия — специалисты ИННОВЭД помогут определить нужные ТР ТС, оформить документы и внести их в реестр.',
+      },
+      en: {
+        intro: 'For importing, manufacturing, or exporting goods in Russia, confirming compliance with technical regulations is a mandatory condition for legal product circulation. An error in choosing a certification scheme or submitting documents can lead to sales blocking and time loss. INNOVED helps companies quickly and correctly obtain conformity certificates, EAEU declarations, and technical documentation, freeing business from bureaucratic complexities.\n\nWe provide a full cycle — from product analysis and HS code calculation to document registration in official Rosaccreditation registries.',
+        sections: [
+          {
+            title: 'Why Choose INNOVED',
+            items: [
+              'Comprehensive approach — one window for all certification and declaration procedures.',
+              'Verified testing laboratories — guaranteed protocol acceptance and fast conformity confirmation.',
+              'Accurate identification of HS codes and TR CU — we eliminate errors leading to document withdrawal.',
+              'Electronic processing — all processes are performed remotely with the legal force of electronic signatures.',
+              'Marketplace integration consultations — we prepare document packages that successfully pass validation on platforms.',
+            ],
+          },
+          {
+            title: 'How the Certification Process Works',
+            steps: [
+              {
+                title: 'Determining product category and requirements',
+                text: 'We analyze the purpose and technical characteristics of the product.',
+              },
+              {
+                title: 'Choosing conformity confirmation scheme',
+                text: 'We help determine — certificate, declaration, voluntary certification.',
+              },
+              {
+                title: 'Documentation preparation',
+                text: 'We prepare applications, technical descriptions, instructions, and labeling layouts.',
+              },
+              {
+                title: 'Conducting tests',
+                text: 'We coordinate the sample testing process in accredited laboratories.',
+              },
+              {
+                title: 'Document registration',
+                text: 'The declaration or certificate is entered into the Rosaccreditation registry with electronic confirmation.',
+              },
+            ],
+          },
+          {
+            title: 'Main TR CU We Work With',
+            items: [
+              'TR CU 004/2011 — On the safety of low voltage equipment.',
+              'TR CU 010/2011 — On the safety of machinery and equipment.',
+              'TR CU 020/2011 — Electromagnetic compatibility of technical means.',
+              'TR CU 007/2011 — Products for children and adolescents.',
+              'TR CU 017/2011 — Light industry.',
+              'TR CU 021/2011 — Food products.',
+              'TR CU 008/2011 — Toys.',
+              'TR CU 009/2011 — Perfume and cosmetic products.',
+              'TR CU 025/2012 — Furniture products.',
+            ],
+          },
+          {
+            title: 'What You Get',
+            items: [
+              'Documents accepted by all marketplaces in Russia and EAEU.',
+              'Coordinated packaging and labeling in accordance with TR CU.',
+              'Time savings — processing and registration completely online.',
+              'Individual support with consultation on marketplace requirements.',
+              'Current templates and instructions for placing products in listings.',
+            ],
+          },
+        ],
+        cta: 'Submit an application for organizing certificates and declarations of conformity — INNOVED specialists will help determine the necessary TR CU, prepare documents, and enter them in the registry.',
+      },
     },
   },
   {
