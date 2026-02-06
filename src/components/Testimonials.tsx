@@ -33,8 +33,8 @@ const testimonials: Testimonial[] = [
     name: { ru: 'Александр М.', en: 'Alexander M.' },
     company: { ru: 'ООО "ТСЛОГИСТИКА"', en: 'TSLOGISTIKA LLC' },
     text: {
-      ru: 'Работаем с ИННОВЭД уже третий год. Всегда быстрое оформление документов и профессиональный подход к решению любых вопросов. Рекомендую как надёжного партнёра!',
-      en: 'We have been working with INNOVAD for three years now. Always quick document processing and professional approach to solving any issues. I recommend them as a reliable partner!'
+      ru: 'Работаем с ИННОВЭД с лета 2025 года. Всегда быстрое оформление документов и профессиональный подход к решению любых вопросов. Рекомендую как надёжного партнёра!',
+      en: 'We have been working with INNOVAD since summer 2025. Always quick document processing and professional approach to solving any issues. I recommend them as a reliable partner!'
     },
     initials: 'АМ',
     rating: 5,
@@ -57,8 +57,8 @@ const testimonials: Testimonial[] = [
     name: { ru: 'Светлана С.', en: 'Svetlana S.' },
     company: { ru: 'ООО "ИмпортПроТехно"', en: 'ImportProTechno LLC' },
     text: {
-      ru: 'Обратились с нестандартной задачей по импорту оборудования. Специалисты ИННОВЭД нашли оптимальное решение и помогли избежать лишних расходов. Отличная работа!',
-      en: 'We approached them with a non-standard task for importing equipment. INNOVAD specialists found the optimal solution and helped avoid unnecessary expenses. Excellent work!'
+      ru: 'Обратились с нестандартной задачей по импорту оборудования по направлению Циндао - Забайкальск - Новосибирск. Специалисты ИННОВЭД помогли и с сертификцией и с прохождением таможни. Отличная работа!',
+      en: 'We approached them with a non-standard task for importing equipment on the Qingdao - Zabaykalsk - Novosibirsk route. INNOVAD specialists helped with both certification and customs clearance. Excellent work!'
     },
     initials: 'СС',
     rating: 5,
@@ -69,8 +69,8 @@ const testimonials: Testimonial[] = [
     name: { ru: 'Баир Б.', en: 'Bair B.' },
     company: { ru: 'ООО "ГлобалТрейдВектор"', en: 'GlobalTradeVector LLC' },
     text: {
-      ru: 'Сотрудничаем более 5 лет. За это время ни одной ошибки в документах, всегда чёткие сроки и прозрачные цены. Настоящие профессионалы своего дела!',
-      en: 'We have been cooperating for more than 5 years. During this time, not a single error in documents, always clear deadlines and transparent prices. True professionals!'
+      ru: 'Сотрудничаем уже три месяца. За это время ни одной ошибки в документах, всегда чёткие сроки и прозрачные цены. Более 20 выпусков во Владивостоке и Находке. Настоящие профессионалы своего дела!',
+      en: 'We have been cooperating for three months now. During this time, not a single error in documents, always clear deadlines and transparent prices. Over 20 releases in Vladivostok and Nakhodka. True professionals!'
     },
     initials: 'ББ',
     rating: 5,
