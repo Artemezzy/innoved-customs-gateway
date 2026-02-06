@@ -158,19 +158,119 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Оформление экспорта — ИННОВЭД',
-        description: 'Профессиональное оформление экспорта товаров из России.',
-        keywords: 'оформление экспорта, таможенное оформление, экспорт товаров',
+        title: 'Экспорт товаров из России с ИННОВЭД — электронное декларирование и валютный контроль',
+        description: 'Полный комплекс услуг по экспорту товаров из России для бизнеса. Таможенное оформление, подтверждение 0% НДС и сопровождение валютного контроля от ИННОВЭД.',
+        keywords: 'экспорт товаров, ВЭД-услуги, электронное декларирование, валютный контроль, таможенное оформление экспорта, нулевая ставка НДС, ИННОВЭД',
       },
       en: {
-        title: 'Export Registration — INNOVED',
-        description: 'Professional export registration of goods from Russia.',
-        keywords: 'export registration, customs clearance, goods export',
+        title: 'Export of Goods from Russia with INNOVED — Electronic Declaration and Currency Control',
+        description: 'Full range of export services for businesses in Russia. Customs clearance, 0% VAT confirmation and currency control support from INNOVED.',
+        keywords: 'goods export, foreign trade services, electronic declaration, currency control, export customs clearance, zero VAT rate, INNOVED',
       },
     },
     content: {
-      ru: null,
-      en: null,
+      ru: {
+        intro: 'Выход на зарубежные рынки требует безупречного оформления экспортных документов, точности кодов ТН ВЭД и уверенного взаимодействия с таможней. Ошибка в декларации может задержать поставку или повлечь валютные риски. ИННОВЭД предоставляет компаниям комплексную услугу экспорта товаров из России, охватывающую таможенное оформление, электронное декларирование, сопровождение валютного контроля и подтверждение нулевой ставки НДС.\n\nМы помогаем экспортёрам работать стабильно, автоматизируя все этапы внешнеэкономических операций и гарантируя предсказуемость сроков. Благодаря цифровым решениям и опыту работы с зарубежными контрагентами, ИННОВЭД снижает барьеры при выходе на внешние рынки и делает процесс полностью удобным для вашего бизнеса.',
+        sections: [
+          {
+            title: 'Почему выбирают ИННОВЭД',
+            items: [
+              'Комплексное сопровождение экспорта — мы берём на себя всё: от анализа товарных кодов до подтверждения вывоза груза за пределы РФ.',
+              'Бесшовная интеграция с бухгалтерией клиента — документы формируются в соответствии с вашими внутренними системами учёта, что ускоряет внутренние процессы.',
+              'Конфиденциальность и юридическая чистота — все операции соответствуют требованиям валютного, налогового и таможенного законодательства.',
+              'Гибкие экспортные решения — мы подстраиваем процесс под тип поставки: от мелкооптовых партий до регулярных контрактов с крупными объёмами.',
+              'Гарантированная прозрачность отчётности — каждый этап виден онлайн, включая дату выпуска декларации и прохождение валютного контроля.',
+            ],
+          },
+          {
+            title: 'Как проходит экспорт товаров',
+            steps: [
+              {
+                title: 'Предварительная консультация',
+                text: 'Специалист оценивает специфику товаров и требования страны-получателя.',
+              },
+              {
+                title: 'Подготовка экспортной декларации',
+                text: 'Формируем корректный пакет документов с электронным декларированием через ФТС.',
+              },
+              {
+                title: 'Проверка кодов и происхождения товара',
+                text: 'Корректно подбираем ТН ВЭД, определяем льготы и тарифы.',
+              },
+              {
+                title: 'Организация выпуска',
+                text: 'Контролируем оформление, подтверждаем вывоз груза и получаем отметку таможни.',
+              },
+              {
+                title: 'Валютный контроль и отчётность',
+                text: 'Передаём данные для банка, обеспечивая соблюдение всех требований валютного законодательства.',
+              },
+            ],
+          },
+          {
+            title: 'Что вы получаете',
+            items: [
+              'Ускорение выхода на зарубежный рынок без бюрократических сложностей.',
+              'Снижение валютных и налоговых рисков при оформлении документов.',
+              'Оптимизацию экспортных процессов за счёт автоматизации и цифровых интеграций.',
+              'Поддержку специалиста по международной логистике и ВЭД-консалтингу.',
+              'Гарантию корректного оформления подтверждения нулевой ставки НДС.',
+            ],
+          },
+        ],
+        cta: 'Отправьте заявку на оформление экспорта товаров в любое время — специалисты ИННОВЭД готовы подключиться 24/7.',
+      },
+      en: {
+        intro: 'Entering foreign markets requires impeccable export documentation, accurate HS codes, and confident interaction with customs. A mistake in the declaration can delay shipment or entail currency risks. INNOVED provides companies with comprehensive export services from Russia, covering customs clearance, electronic declaration, currency control support, and zero VAT rate confirmation.\n\nWe help exporters work consistently by automating all stages of foreign trade operations and guaranteeing predictable timelines. Thanks to digital solutions and experience working with foreign counterparties, INNOVED reduces barriers to entering foreign markets and makes the process completely convenient for your business.',
+        sections: [
+          {
+            title: 'Why Choose INNOVED',
+            items: [
+              'Comprehensive export support — we handle everything: from analyzing product codes to confirming cargo export outside the Russian Federation.',
+              'Seamless integration with client accounting — documents are prepared in accordance with your internal accounting systems, speeding up internal processes.',
+              'Confidentiality and legal compliance — all operations comply with currency, tax, and customs legislation requirements.',
+              'Flexible export solutions — we adapt the process to the type of delivery: from small wholesale batches to regular contracts with large volumes.',
+              'Guaranteed reporting transparency — every stage is visible online, including declaration release date and currency control passage.',
+            ],
+          },
+          {
+            title: 'How Goods Export Works',
+            steps: [
+              {
+                title: 'Preliminary consultation',
+                text: 'A specialist evaluates the specifics of goods and requirements of the destination country.',
+              },
+              {
+                title: 'Export declaration preparation',
+                text: 'We prepare the correct package of documents with electronic declaration through FCS.',
+              },
+              {
+                title: 'Code and origin verification',
+                text: 'We correctly select HS codes, determine benefits and tariffs.',
+              },
+              {
+                title: 'Release organization',
+                text: 'We control the processing, confirm cargo export and receive customs mark.',
+              },
+              {
+                title: 'Currency control and reporting',
+                text: 'We transfer data to the bank, ensuring compliance with all currency legislation requirements.',
+              },
+            ],
+          },
+          {
+            title: 'What You Get',
+            items: [
+              'Accelerated entry into foreign markets without bureaucratic complications.',
+              'Reduced currency and tax risks in document processing.',
+              'Optimization of export processes through automation and digital integrations.',
+              'Support from international logistics and foreign trade consulting specialists.',
+              'Guarantee of correct zero VAT rate confirmation documentation.',
+            ],
+          },
+        ],
+        cta: 'Submit an export application at any time — INNOVED specialists are ready to connect 24/7.',
+      },
     },
   },
   {
