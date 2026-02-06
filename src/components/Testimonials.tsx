@@ -15,6 +15,7 @@ import { useRef } from 'react';
 import victoriaPhoto from '@/assets/testimonial-victoria.png';
 import svetlanaPhoto from '@/assets/testimonial-svetlana.jpg';
 import bairPhoto from '@/assets/testimonial-bair.jpg';
+import alexanderPhoto from '@/assets/testimonial-alexander.jpg';
 
 interface Testimonial {
   id: number;
@@ -30,13 +31,14 @@ const testimonials: Testimonial[] = [
   {
     id: 1,
     name: { ru: 'Александр М.', en: 'Alexander M.' },
-    company: { ru: 'ООО "ТрансЛогистик"', en: 'TransLogistic LLC' },
+    company: { ru: 'ООО "ТСЛОГИСТИКА"', en: 'TSLOGISTIKA LLC' },
     text: {
       ru: 'Работаем с ИННОВЭД уже третий год. Всегда быстрое оформление документов и профессиональный подход к решению любых вопросов. Рекомендую как надёжного партнёра!',
       en: 'We have been working with INNOVAD for three years now. Always quick document processing and professional approach to solving any issues. I recommend them as a reliable partner!'
     },
     initials: 'АМ',
-    rating: 5
+    rating: 5,
+    photo: alexanderPhoto
   },
   {
     id: 2,
