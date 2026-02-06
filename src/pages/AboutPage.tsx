@@ -3,7 +3,6 @@ import { SEOHead } from '@/components/SEOHead';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEffect } from 'react';
 import { analytics } from '@/utils/analytics';
-import teamImage from '@/assets/team-professionals.jpg';
 
 const content = {
   ru: {
@@ -98,28 +97,6 @@ export default function AboutPage() {
       {/* About Component */}
       <About language={language} />
 
-      {/* History Section */}
-      <section className="py-16 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="animate-fade-in">
-              <h2 className="text-3xl font-bold text-foreground mb-6">
-                {text.history.title}
-              </h2>
-              <p className="text-muted-foreground text-lg leading-relaxed">
-                {text.history.text}
-              </p>
-            </div>
-            <div className="animate-fade-in">
-              <img
-                src={teamImage}
-                alt="INNOVED team"
-                className="w-full h-auto rounded-lg shadow-card"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Mission Section */}
       <section className="py-16 bg-secondary">
