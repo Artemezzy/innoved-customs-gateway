@@ -282,19 +282,119 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Определение кода ТН ВЭД — ИННОВЭД',
-        description: 'Профессиональное определение кода ТН ВЭД для ваших товаров.',
-        keywords: 'код ТН ВЭД, классификация товаров, таможенное оформление',
+        title: 'Определение кода ТН ВЭД ЕАЭС — уточнение классификации товаров с ИННОВЭД',
+        description: 'Профессиональное определение кода ТН ВЭД для импорта и экспорта. Анализ номенклатуры, оформление экспертного заключения и сопровождение внешнеэкономической документации.',
+        keywords: 'код ТН ВЭД, классификация товаров ЕАЭС, экспертное определение ТН ВЭД, таможенная номенклатура, обоснование кода, расчёт пошлины, ИННОВЭД',
       },
       en: {
-        title: 'HS Code Determination — INNOVED',
-        description: 'Professional HS code determination for your goods.',
-        keywords: 'HS code, goods classification, customs clearance',
+        title: 'EAEU HS Code Determination — Product Classification with INNOVED',
+        description: 'Professional HS code determination for import and export. Nomenclature analysis, expert opinion preparation and foreign trade documentation support.',
+        keywords: 'HS code, EAEU product classification, expert HS code determination, customs nomenclature, code justification, duty calculation, INNOVED',
       },
     },
     content: {
-      ru: null,
-      en: null,
+      ru: {
+        intro: 'Корректное определение кода ТН ВЭД — один из самых ответственных этапов внешнеэкономической деятельности. От него зависит размер пошлин, необходимость сертификации, скорость таможенного оформления и даже финансовые риски компании. Ошибка в выборе классификации может привести к задержке груза и штрафным санкциям.\n\nИННОВЭД помогает определить точные коды ТН ВЭД ЕАЭС для любых видов товаров, используя экспертный анализ описаний, техдокументации и судебную практику. Мы подбираем код с учётом специфики импорта, экспорта и применимых технических регламентов, чтобы ваш бизнес работал без сбоев и недоразумений с таможенными органами.',
+        sections: [
+          {
+            title: 'Почему выбирают ИННОВЭД',
+            items: [
+              'Анализ по официальным методикам ЕАЭС — мы используем нормативную базу Комиссии ЕЭК и международную номенклатуру ГС.',
+              'Опыт специалистов отраслевой классификации — команда охватывает технические направления: от электроники и текстиля до медоборудования и автокомпонентов.',
+              'Сопровождение при запросах ФТС — при необходимости готовим обоснование классификации и пояснения для инспектора.',
+              'Интеграция с сертификацией и декларированием — определённый код может быть сразу использован при подготовке документов в рамках ВЭД.',
+              'Поддержка изменений в кодировке — мы следим за обновлениями номенклатуры и корректируем коды при изменении структуры ТН ВЭД.',
+            ],
+          },
+          {
+            title: 'Как проходит определение кода ТН ВЭД',
+            steps: [
+              {
+                title: 'Приём заявки и описание товара',
+                text: 'Клиент передаёт спецификацию, фото, характеристики или паспорт изделия.',
+              },
+              {
+                title: 'Первичный анализ',
+                text: 'Эксперт сопоставляет товар с позициями номенклатуры и уточняет критерии классификации.',
+              },
+              {
+                title: 'Сравнение с аналогами и прецедентами',
+                text: 'Используются открытые решения ФТС и международные базы данных.',
+              },
+              {
+                title: 'Формирование заключения',
+                text: 'Клиент получает отчёт с обоснованием выбранного кода и ссылками на нормативные акты ЕАЭС.',
+              },
+              {
+                title: 'Оформление экспертного письма',
+                text: 'При необходимости документ можно использовать при сертификации или подаче декларации.',
+              },
+            ],
+          },
+          {
+            title: 'Что вы получаете',
+            items: [
+              'Корректные коды для расчёта пошлин и НДС при импорте и экспорте.',
+              'Минимизацию рисков при проверках ФТС и валютного контроля.',
+              'Готовность к интеграции с электронным декларированием.',
+              'Поддержку при подготовке документов для сертификации и маркировки.',
+              'Прозрачный отчёт, понятный бухгалтерии, юристам и логистам.',
+            ],
+          },
+        ],
+        cta: 'Заполните заявку на определение кода ТН ВЭД — специалисты ИННОВЭД помогут классифицировать ваш товар по действующей номенклатуре и подготовят обоснование для использования в документации.',
+      },
+      en: {
+        intro: 'Correct HS code determination is one of the most critical stages of foreign trade activity. It determines the amount of duties, the need for certification, the speed of customs clearance, and even the financial risks of the company. An error in classification choice can lead to cargo delays and penalties.\n\nINNOVED helps determine accurate EAEU HS codes for all types of goods using expert analysis of descriptions, technical documentation, and judicial practice. We select codes considering the specifics of import, export, and applicable technical regulations so that your business operates without failures and misunderstandings with customs authorities.',
+        sections: [
+          {
+            title: 'Why Choose INNOVED',
+            items: [
+              'Analysis according to official EAEU methodologies — we use the regulatory framework of the EEC Commission and the international HS nomenclature.',
+              'Experience of industry classification specialists — the team covers technical areas: from electronics and textiles to medical equipment and automotive components.',
+              'Support for FCS requests — if necessary, we prepare classification justification and explanations for the inspector.',
+              'Integration with certification and declaration — the determined code can be immediately used when preparing documents within foreign trade.',
+              'Support for coding changes — we monitor nomenclature updates and adjust codes when the HS code structure changes.',
+            ],
+          },
+          {
+            title: 'How HS Code Determination Works',
+            steps: [
+              {
+                title: 'Application receipt and product description',
+                text: 'The client provides specification, photos, characteristics, or product passport.',
+              },
+              {
+                title: 'Primary analysis',
+                text: 'The expert compares the product with nomenclature items and clarifies classification criteria.',
+              },
+              {
+                title: 'Comparison with analogues and precedents',
+                text: 'Open FCS decisions and international databases are used.',
+              },
+              {
+                title: 'Conclusion preparation',
+                text: 'The client receives a report with justification of the selected code and references to EAEU regulatory acts.',
+              },
+              {
+                title: 'Expert letter preparation',
+                text: 'If necessary, the document can be used for certification or declaration submission.',
+              },
+            ],
+          },
+          {
+            title: 'What You Get',
+            items: [
+              'Correct codes for calculating duties and VAT on import and export.',
+              'Minimizing risks during FCS inspections and currency control.',
+              'Readiness for integration with electronic declaration.',
+              'Support in preparing documents for certification and labeling.',
+              'Transparent report understandable to accountants, lawyers, and logisticians.',
+            ],
+          },
+        ],
+        cta: 'Submit an application for HS code determination — INNOVED specialists will help classify your product according to the current nomenclature and prepare justification for use in documentation.',
+      },
     },
   },
   {
