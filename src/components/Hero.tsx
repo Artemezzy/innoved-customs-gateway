@@ -11,13 +11,13 @@ interface HeroProps {
 const content = {
   ru: {
     title: 'ИННОВЭД',
-    subtitles: ['Таможенное оформление под ключ', 'Таможенное оформление с нами'],
-    button: 'Упростить логистику'
+    subtitles: ['Таможенное оформление без скрытых платежей', 'В короткий срок с гарантией результата'],
+    button: 'Оформить заявку'
   },
   en: {
     title: 'INNOVED',
-    subtitles: ['Comprehensive Customs Clearance', 'Customs Clearance With Us'],
-    button: 'Simplify Logistics'
+    subtitles: ['Customs Clearance Without Hidden Fees', 'Quick Turnaround With Guaranteed Results'],
+    button: 'Submit Request'
   }
 };
 
