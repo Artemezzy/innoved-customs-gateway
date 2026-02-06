@@ -582,19 +582,119 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Подготовка писем в таможенные органы — ИННОВЭД',
-        description: 'Подготовка официальных писем и запросов в таможенные органы.',
-        keywords: 'письма в таможню, запросы в ФТС, таможенные органы',
+        title: 'Подготовка писем в таможенные органы с ИННОВЭД — юридическое сопровождение ВЭД',
+        description: 'Разработка и оформление писем, запросов и объяснений в ФТС России. Юридическая точность, аргументированность и сопровождение до результата от ИННОВЭД.',
+        keywords: 'письмо в таможню, запрос в ФТС, объяснение инспектору, официальное обращение в таможенные органы, подготовка ответа ФТС, юридическая поддержка ВЭД, ИННОВЭД',
       },
       en: {
-        title: 'Preparation of Letters to Customs — INNOVED',
-        description: 'Preparation of official letters and requests to customs authorities.',
-        keywords: 'letters to customs, FCS requests, customs authorities',
+        title: 'Preparation of Letters to Customs Authorities with INNOVED — Legal FTA Support',
+        description: 'Development and preparation of letters, requests, and explanations to Russian FCS. Legal accuracy, argumentation, and support until resolution from INNOVED.',
+        keywords: 'letter to customs, FCS request, explanation to inspector, official appeal to customs authorities, FCS response preparation, legal FTA support, INNOVED',
       },
     },
     content: {
-      ru: null,
-      en: null,
+      ru: {
+        intro: 'Обращение в таможенные органы требует точного понимания законодательства, правил документооборота и формулировок, которые исключают двусмысленность. Ошибка в тексте письма может привести к отказу, дополнительным проверкам или задержке партии. ИННОВЭД готовит юридически корректные письма, запросы и пояснения в ФТС России и региональные таможни, помогая компаниям урегулировать спорные ситуации и защитить свои интересы в рамках ВЭД.\n\nУслуга востребована среди участников внешнеэкономической деятельности, которые хотят минимизировать риски и выстроить официальную коммуникацию с контролирующими органами грамотно и аргументированно.',
+        sections: [
+          {
+            title: 'Почему выбирают ИННОВЭД',
+            items: [
+              'Профессиональная юридическая точность — все письма составляются с опорой на действующий Таможенный кодекс ЕАЭС и административные регламенты.',
+              'Индивидуальный подход к задаче — мы подбираем оптимальную структуру документа в зависимости от цели: запрос, объяснение, возражение или ходатайство.',
+              'Практика взаимодействия с ФТС — используются проверенные формулировки, которые соответствуют требованиям делового оборота и канцелярского делопроизводства.',
+              'Анализ и минимизация рисков — каждый текст проходит внутреннюю проверку на логичность и правовую состоятельность.',
+              'Сопровождение до результата — мы не просто готовим письмо, а отслеживаем его прохождение и при необходимости помогаем с дополнительными комментариями для инспектора.',
+            ],
+          },
+          {
+            title: 'Как проходит подготовка письма',
+            steps: [
+              {
+                title: 'Анализ ситуации',
+                text: 'Мы изучаем контекст, причину обращения и позицию клиента по конкретной поставке или проверке.',
+              },
+              {
+                title: 'Получение исходных данных',
+                text: 'Клиент предоставляет документы, на основании которых требуется сформировать обоснование.',
+              },
+              {
+                title: 'Подготовка проекта письма',
+                text: 'Формулируются правовые доводы, ссылки на нормативные акты и фактические обстоятельства.',
+              },
+              {
+                title: 'Согласование и редактирование',
+                text: 'Текст приводится к официальному стилю и оформляется в соответствии с требованиями ФТС.',
+              },
+              {
+                title: 'Отправка и сопровождение',
+                text: 'Клиент получает итоговый документ в форматах для подачи через ЭДО или бумажным письмом.',
+              },
+            ],
+          },
+          {
+            title: 'Что вы получаете',
+            items: [
+              'Законно обоснованные письма, которые повышают шансы на положительное рассмотрение.',
+              'Оптимизацию коммуникаций с ФТС без привлечения внешних юрисконсультов.',
+              'Минимизацию конфликтов и ускорение процесса принятия решений таможней.',
+              'Возможность использовать шаблон ответа для аналогичных случаев в будущем.',
+              'Поддержку в выстраивании официального делового тона и корректных формулировок.',
+            ],
+          },
+        ],
+        cta: 'Оформите заявку на подготовку письма в таможенные органы, и специалисты ИННОВЭД разработают документ, соответствующий требованиям законодательства и вашей конкретной ситуации.',
+      },
+      en: {
+        intro: 'Contacting customs authorities requires precise understanding of legislation, document flow rules, and formulations that exclude ambiguity. An error in the letter text can lead to rejection, additional inspections, or shipment delays. INNOVED prepares legally correct letters, requests, and explanations to the Russian FCS and regional customs, helping companies resolve disputes and protect their interests within foreign trade activities.\n\nThis service is in demand among foreign trade participants who want to minimize risks and build official communication with regulatory authorities competently and with strong arguments.',
+        sections: [
+          {
+            title: 'Why Choose INNOVED',
+            items: [
+              'Professional legal accuracy — all letters are prepared based on the current EAEU Customs Code and administrative regulations.',
+              'Individual approach to the task — we select the optimal document structure depending on the purpose: request, explanation, objection, or petition.',
+              'Practice of interaction with FCS — proven formulations are used that meet the requirements of business practice and clerical office work.',
+              'Risk analysis and minimization — each text undergoes internal review for logic and legal validity.',
+              'Support until resolution — we don\'t just prepare the letter, we track its progress and, if necessary, help with additional comments for the inspector.',
+            ],
+          },
+          {
+            title: 'How Letter Preparation Works',
+            steps: [
+              {
+                title: 'Situation analysis',
+                text: 'We study the context, reason for the appeal, and the client\'s position on a specific shipment or inspection.',
+              },
+              {
+                title: 'Obtaining source data',
+                text: 'The client provides documents based on which the justification needs to be formed.',
+              },
+              {
+                title: 'Letter draft preparation',
+                text: 'Legal arguments, references to regulations, and factual circumstances are formulated.',
+              },
+              {
+                title: 'Approval and editing',
+                text: 'The text is brought to official style and formatted in accordance with FCS requirements.',
+              },
+              {
+                title: 'Sending and support',
+                text: 'The client receives the final document in formats for submission via EDI or paper letter.',
+              },
+            ],
+          },
+          {
+            title: 'What You Get',
+            items: [
+              'Legally substantiated letters that increase the chances of favorable consideration.',
+              'Optimization of communications with FCS without involving external legal consultants.',
+              'Minimization of conflicts and acceleration of customs decision-making process.',
+              'Ability to use the response template for similar cases in the future.',
+              'Support in building an official business tone and correct formulations.',
+            ],
+          },
+        ],
+        cta: 'Submit an application for preparing a letter to customs authorities, and INNOVED specialists will develop a document that meets legal requirements and your specific situation.',
+      },
     },
   },
   {
