@@ -8,9 +8,13 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { Card, CardContent } from '@/components/ui/card';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Autoplay from 'embla-carousel-autoplay';
 import { useRef } from 'react';
+
+import victoriaPhoto from '@/assets/testimonial-victoria.png';
+import svetlanaPhoto from '@/assets/testimonial-svetlana.jpg';
+import bairPhoto from '@/assets/testimonial-bair.jpg';
 
 interface Testimonial {
   id: number;
@@ -19,6 +23,7 @@ interface Testimonial {
   text: { ru: string; en: string };
   initials: string;
   rating: number;
+  photo?: string;
 }
 
 const testimonials: Testimonial[] = [
@@ -35,36 +40,39 @@ const testimonials: Testimonial[] = [
   },
   {
     id: 2,
-    name: { ru: 'Елена К.', en: 'Elena K.' },
-    company: { ru: 'ИП Козлова', en: 'IE Kozlova' },
+    name: { ru: 'Виктория С.', en: 'Victoria S.' },
+    company: { ru: 'ИП Староспичихина В.', en: 'IE Starospichihina V.' },
     text: {
       ru: 'Очень удобно работать дистанционно — всё решается оперативно через мессенджеры и электронную почту. Сэкономила много времени и нервов на таможенном оформлении.',
       en: 'It is very convenient to work remotely — everything is resolved promptly via messengers and email. Saved a lot of time and effort on customs clearance.'
     },
-    initials: 'ЕК',
-    rating: 5
+    initials: 'ВС',
+    rating: 5,
+    photo: victoriaPhoto
   },
   {
     id: 3,
-    name: { ru: 'Дмитрий С.', en: 'Dmitry S.' },
-    company: { ru: 'ООО "ИмпортПро"', en: 'ImportPro LLC' },
+    name: { ru: 'Светлана С.', en: 'Svetlana S.' },
+    company: { ru: 'ООО "ИмпортПроТехно"', en: 'ImportProTechno LLC' },
     text: {
       ru: 'Обратились с нестандартной задачей по импорту оборудования. Специалисты ИННОВЭД нашли оптимальное решение и помогли избежать лишних расходов. Отличная работа!',
       en: 'We approached them with a non-standard task for importing equipment. INNOVAD specialists found the optimal solution and helped avoid unnecessary expenses. Excellent work!'
     },
-    initials: 'ДС',
-    rating: 5
+    initials: 'СС',
+    rating: 5,
+    photo: svetlanaPhoto
   },
   {
     id: 4,
-    name: { ru: 'Ольга В.', en: 'Olga V.' },
-    company: { ru: 'ООО "ГлобалТрейд"', en: 'GlobalTrade LLC' },
+    name: { ru: 'Баир Б.', en: 'Bair B.' },
+    company: { ru: 'ООО "ГлобалТрейдВектор"', en: 'GlobalTradeVector LLC' },
     text: {
       ru: 'Сотрудничаем более 5 лет. За это время ни одной ошибки в документах, всегда чёткие сроки и прозрачные цены. Настоящие профессионалы своего дела!',
       en: 'We have been cooperating for more than 5 years. During this time, not a single error in documents, always clear deadlines and transparent prices. True professionals!'
     },
-    initials: 'ОВ',
-    rating: 5
+    initials: 'ББ',
+    rating: 5,
+    photo: bairPhoto
   }
 ];
 
@@ -132,6 +140,9 @@ export function Testimonials({ language }: TestimonialsProps) {
                       {/* Author */}
                       <div className="flex items-center gap-4">
                         <Avatar className="h-12 w-12 bg-primary">
+                          {testimonial.photo && (
+                            <AvatarImage src={testimonial.photo} alt={testimonial.name.ru} className="object-cover" />
+                          )}
                           <AvatarFallback className="bg-primary text-primary-foreground font-semibold">
                             {testimonial.initials}
                           </AvatarFallback>
