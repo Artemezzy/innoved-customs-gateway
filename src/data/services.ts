@@ -806,19 +806,119 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Организация досмотра товаров — ИННОВЭД',
-        description: 'Профессиональная организация таможенного досмотра товаров.',
-        keywords: 'досмотр товаров, таможенный досмотр, осмотр груза',
+        title: 'Организация досмотра товаров — сопровождение процедур ФТС с ИННОВЭД',
+        description: 'Организация таможенного досмотра товаров для бизнеса. Подготовка документов, координация участников, контроль прохождения и актов досмотра от ИННОВЭД.',
+        keywords: 'организация досмотра, таможенный контроль товаров, сопровождение досмотра ФТС, координация досмотра груза, акт осмотра, проверка поставки на СВХ, ИННОВЭД',
       },
       en: {
-        title: 'Goods Inspection Organization — INNOVED',
-        description: 'Professional organization of customs goods inspection.',
-        keywords: 'goods inspection, customs inspection, cargo examination',
+        title: 'Goods Inspection Organization — FCS Procedure Support with INNOVED',
+        description: 'Customs goods inspection organization for business. Document preparation, participant coordination, monitoring and inspection reports from INNOVED.',
+        keywords: 'inspection organization, customs control goods, FCS inspection support, cargo inspection coordination, inspection report, delivery check at CWH, INNOVED',
       },
     },
     content: {
-      ru: null,
-      en: null,
+      ru: {
+        intro: 'Таможенный досмотр — обязательная часть контроля при импорте и экспорте, которая требует точной координации участников процесса. Ошибки в организации могут привести к простоям транспорта, повреждению груза и финансовым потерям.\n\nИННОВЭД предлагает услугу организации досмотра товаров — полное сопровождение процедур на складе временного хранения или терминале, включая подготовку документов, взаимодействие с инспектором и контроль результатов осмотра.\n\nМы обеспечиваем прозрачность и оперативность на всех этапах, чтобы проверка прошла быстро, корректно и без замечаний со стороны таможни.',
+        sections: [
+          {
+            title: 'Почему выбирают ИННОВЭД',
+            items: [
+              'Координация действий с таможней и СВХ — мы согласовываем дату и время досмотра, уведомляем инспектора и транспортную компанию.',
+              'Документальная готовность — подготавливаем полный пакет сопроводительных документов, спецификаций и фотофиксацию для отчётности.',
+              'Опыт работы с различными категориями товаров — от промышленных компонентов и электроники до текстиля, автозапчастей и оборудования.',
+              'Контроль физического состояния груза — следим за целостностью упаковки, сохранностью пломб и правильностью пересчёта мест.',
+              'Участие представителя на досмотре — при необходимости наш специалист присутствует на площадке, фиксируя ход и результаты процедуры.',
+            ],
+          },
+          {
+            title: 'Как проходит организация досмотра',
+            steps: [
+              {
+                title: 'Получение уведомления о досмотре',
+                text: 'Мы анализируем документ, определяем таможенный пост и временные рамки проведения процедуры.',
+              },
+              {
+                title: 'Подготовка к проверке',
+                text: 'Составляем перечень документов, оформляем заявку и направляем уведомление на склад временного хранения.',
+              },
+              {
+                title: 'Координация участников',
+                text: 'Уведомляем перевозчика, экспедитора и при необходимости контролируем транспортное прибытие.',
+              },
+              {
+                title: 'Проведение досмотра',
+                text: 'Организуем участие ответственных лиц, фото- и видеофиксацию, оформляем акт досмотра.',
+              },
+              {
+                title: 'Отчётность',
+                text: 'Передаём клиенту протокол с указанием результатов проверки и применённых мер.',
+              },
+            ],
+          },
+          {
+            title: 'Что вы получаете',
+            items: [
+              'Снижение простоев и штрафов из-за несвоевременного прохождения досмотра.',
+              'Полное соответствие процедур требованиям ФТС России.',
+              'Контроль корректности действий инспектора и учёт интересов компании.',
+              'Безопасность груза и подтверждённая фотофиксация результатов.',
+              'Ускоренное завершение таможенного оформления после проверки.',
+            ],
+          },
+        ],
+        cta: 'Отправьте заявку на организацию досмотра товаров, и специалисты ИННОВЭД возьмут под контроль все этапы процедуры. Мы обеспечим согласование с ФТС, сопровождение представителя на месте и своевременное оформление всех результатов проверки.',
+      },
+      en: {
+        intro: 'Customs inspection is a mandatory part of control during import and export, requiring precise coordination of process participants. Organizational errors can lead to transport downtime, cargo damage, and financial losses.\n\nINNOVED offers goods inspection organization services — complete procedure support at temporary storage warehouses or terminals, including document preparation, interaction with inspectors, and monitoring of inspection results.\n\nWe ensure transparency and efficiency at all stages so that the inspection proceeds quickly, correctly, and without remarks from customs.',
+        sections: [
+          {
+            title: 'Why Choose INNOVED',
+            items: [
+              'Coordination with customs and CWH — we agree on the date and time of inspection, notify the inspector and transport company.',
+              'Document readiness — we prepare a complete package of accompanying documents, specifications, and photo documentation for reporting.',
+              'Experience with various product categories — from industrial components and electronics to textiles, auto parts, and equipment.',
+              'Cargo physical condition control — we monitor packaging integrity, seal preservation, and correct counting of pieces.',
+              'Representative participation at inspection — if necessary, our specialist is present on-site, recording the progress and results of the procedure.',
+            ],
+          },
+          {
+            title: 'How Inspection Organization Works',
+            steps: [
+              {
+                title: 'Receiving inspection notification',
+                text: 'We analyze the document, determine the customs post and timeframes for the procedure.',
+              },
+              {
+                title: 'Preparation for inspection',
+                text: 'We compile a list of documents, prepare an application, and send notification to the temporary storage warehouse.',
+              },
+              {
+                title: 'Participant coordination',
+                text: 'We notify the carrier, freight forwarder, and if necessary, monitor transport arrival.',
+              },
+              {
+                title: 'Conducting inspection',
+                text: 'We organize participation of responsible persons, photo and video documentation, and prepare the inspection report.',
+              },
+              {
+                title: 'Reporting',
+                text: 'We provide the client with a protocol indicating inspection results and measures applied.',
+              },
+            ],
+          },
+          {
+            title: 'What You Get',
+            items: [
+              'Reduction of downtime and fines due to untimely inspection completion.',
+              'Full compliance of procedures with Russian FCS requirements.',
+              'Control of inspector actions and consideration of company interests.',
+              'Cargo safety and confirmed photo documentation of results.',
+              'Accelerated completion of customs clearance after inspection.',
+            ],
+          },
+        ],
+        cta: 'Submit an application for goods inspection organization, and INNOVED specialists will take control of all procedure stages. We will ensure coordination with FCS, on-site representative support, and timely processing of all inspection results.',
+      },
     },
   },
   {
