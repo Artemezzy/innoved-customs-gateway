@@ -29,6 +29,7 @@ export interface HygraphService {
   title: string;
   description?: string;
   icon: string;
+  slug: string;
   order: number;
   isActive: boolean;
 }
