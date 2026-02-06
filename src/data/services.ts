@@ -398,27 +398,127 @@ export const servicesData: ServiceData[] = [
     },
   },
   {
-    slug: 'fts-registration',
+    slug: 'ved-consulting',
     icon: 'UserPlus',
     title: {
-      ru: 'Регистрация импортёра в ЛК ФТС',
-      en: 'Importer Registration in FCS Personal Account',
+      ru: 'ВЭД-консалтинг',
+      en: 'Foreign Trade Consulting',
     },
     seo: {
       ru: {
-        title: 'Регистрация импортёра в ЛК ФТС — ИННОВЭД',
-        description: 'Помощь в регистрации импортёра в личном кабинете ФТС.',
-        keywords: 'регистрация ФТС, личный кабинет ФТС, импортёр',
+        title: 'ВЭД-консалтинг для бизнеса — стратегия и сопровождение с ИННОВЭД',
+        description: 'Консультации по внешнеэкономической деятельности. Анализ контрактов, оценка пошлин, оптимизация схем поставок и валютных операций с ИННОВЭД.',
+        keywords: 'консультация ВЭД, оптимизация внешнеэкономической деятельности, анализ внешнеторговых контрактов, стратегическое сопровождение ВЭД, планирование импорта, экспортный консалтинг, ИННОВЭД',
       },
       en: {
-        title: 'Importer Registration in FCS — INNOVED',
-        description: 'Assistance with importer registration in FCS personal account.',
-        keywords: 'FCS registration, FCS personal account, importer',
+        title: 'Foreign Trade Consulting for Business — Strategy and Support from INNOVED',
+        description: 'Foreign trade consulting services. Contract analysis, duty assessment, supply chain optimization and currency operations with INNOVED.',
+        keywords: 'foreign trade consulting, foreign economic activity optimization, trade contract analysis, strategic FEA support, import planning, export consulting, INNOVED',
       },
     },
     content: {
-      ru: null,
-      en: null,
+      ru: {
+        intro: 'Внешнеэкономическая деятельность становится всё сложнее: постоянные изменения в тарифах, таможенных процедурах и международных соглашениях требуют точной стратегии и системного подхода. ИННОВЭД предоставляет профессиональный ВЭД-консалтинг — комплекс консультаций, направленных на повышение экономической эффективности и минимизацию рисков при импорте и экспорте.\n\nМы помогаем компаниям выстраивать оптимальные схемы поставок, документальное сопровождение и управленческую прозрачность внешнеторговых операций — от первой сделки до устойчивой системы международных поставок.',
+        sections: [
+          {
+            title: 'Почему выбирают ИННОВЭД',
+            items: [
+              'Опыт работы с широким спектром отраслей — наша команда консультирует производителей, дистрибьюторов, торговые сети и маркетплейс-селлеров, выходящих на экспорт.',
+              'Финансовая оптимизация ВЭД — подбираем выгодные направления регулирования, снижаем таможенные и логистические расходы, предлагаем схемы с учётом валютного законодательства.',
+              'Анализ договорных отношений — проверяем внешнеторговые контракты на соответствие требованиям ЕАЭС и минимизируем юридические риски.',
+              'Планирование таможенного бюджета — рассчитываем прогноз пошлин, сборов, акцизов и валютных расходов для конкретных категорий товаров.',
+              'Консультирование при выходе на новые рынки — предоставляем информацию о сертификационных требованиях и особенностях национальных регламентов стран-партнёров.',
+            ],
+          },
+          {
+            title: 'Как проходит процесс консалтинга',
+            steps: [
+              {
+                title: 'Выявление потребностей',
+                text: 'Мы анализируем специфику компании, ассортимент товаров, географию поставок и задачи клиента.',
+              },
+              {
+                title: 'Диагностика текущих процессов',
+                text: 'Проверяем экономику поставок, контрактные условия и соответствие регламентам ЕАЭС.',
+              },
+              {
+                title: 'Подготовка рекомендаций',
+                text: 'Формируем персонализированные решения по оптимизации ВЭД-цепочек, документооборота и расчётов.',
+              },
+              {
+                title: 'Согласование стратегии',
+                text: 'Представляем варианты реализации с оценкой поля рисков и финансовых эффектов.',
+              },
+              {
+                title: 'Сопровождение внедрения',
+                text: 'Консультируем при переговорах, изменении схем логистики, регистрации участников и подключении к ЛК ФТС.',
+              },
+            ],
+          },
+          {
+            title: 'Что вы получаете',
+            items: [
+              'Стратегию развития ВЭД с учётом особенностей вашего бизнеса.',
+              'Экспертные расчёты себестоимости поставок и пошлин.',
+              'Минимизацию ошибок при заключении внешнеторговых контрактов.',
+              'Консультационную поддержку при взаимодействии с банками и партнёрами по странам ЕАЭС.',
+              'Возможность управлять ВЭД-процессами прозрачно и прогнозируемо.',
+            ],
+          },
+        ],
+        cta: 'Заполните заявку на ВЭД-консалтинг — специалисты ИННОВЭД проведут анализ вашей деятельности и предложат решения для снижения издержек, оптимизации логистики и повышения эффективности экспорта или импорта.',
+      },
+      en: {
+        intro: 'Foreign economic activity is becoming increasingly complex: constant changes in tariffs, customs procedures, and international agreements require a precise strategy and systematic approach. INNOVED provides professional foreign trade consulting — a set of consultations aimed at increasing economic efficiency and minimizing risks in import and export.\n\nWe help companies build optimal supply chains, document support, and management transparency of foreign trade operations — from the first deal to a sustainable international supply system.',
+        sections: [
+          {
+            title: 'Why Choose INNOVED',
+            items: [
+              'Experience across a wide range of industries — our team consults manufacturers, distributors, retail chains, and marketplace sellers entering export.',
+              'Financial optimization of foreign trade — we select beneficial regulatory directions, reduce customs and logistics costs, offer schemes considering currency legislation.',
+              'Contract relationship analysis — we check foreign trade contracts for compliance with EAEU requirements and minimize legal risks.',
+              'Customs budget planning — we calculate forecasts for duties, fees, excises, and currency expenses for specific product categories.',
+              'Consulting when entering new markets — we provide information on certification requirements and features of national regulations of partner countries.',
+            ],
+          },
+          {
+            title: 'How the Consulting Process Works',
+            steps: [
+              {
+                title: 'Identifying needs',
+                text: 'We analyze the company specifics, product range, delivery geography, and client objectives.',
+              },
+              {
+                title: 'Diagnosing current processes',
+                text: 'We check supply economics, contract terms, and compliance with EAEU regulations.',
+              },
+              {
+                title: 'Preparing recommendations',
+                text: 'We form personalized solutions for optimizing FEA chains, document flow, and calculations.',
+              },
+              {
+                title: 'Strategy approval',
+                text: 'We present implementation options with risk field assessment and financial effects.',
+              },
+              {
+                title: 'Implementation support',
+                text: 'We consult during negotiations, logistics scheme changes, participant registration, and connection to the FCS Personal Account.',
+              },
+            ],
+          },
+          {
+            title: 'What You Get',
+            items: [
+              'FEA development strategy tailored to your business specifics.',
+              'Expert calculations of supply costs and duties.',
+              'Minimization of errors when concluding foreign trade contracts.',
+              'Consulting support when interacting with banks and partners in EAEU countries.',
+              'Ability to manage FEA processes transparently and predictably.',
+            ],
+          },
+        ],
+        cta: 'Submit a request for foreign trade consulting — INNOVED specialists will analyze your activities and offer solutions to reduce costs, optimize logistics, and improve export or import efficiency.',
+      },
     },
   },
   {
