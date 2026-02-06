@@ -8,6 +8,7 @@ import { Layout } from "./components/Layout";
 import Home from "./pages/Home";
 import AboutPage from "./pages/AboutPage";
 import ServicesPage from "./pages/ServicesPage";
+import ServiceDetailPage from "./pages/ServiceDetailPage";
 import HowWeWorkPage from "./pages/HowWeWorkPage";
 import ContactPage from "./pages/ContactPage";
 import BlogPage from "./pages/BlogPage";
@@ -33,6 +34,7 @@ const App = () => (
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/services" element={<ServicesPage />} />
+              <Route path="/services/:slug" element={<ServiceDetailPage />} />
               <Route path="/how-we-work" element={<HowWeWorkPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/blog" element={<BlogPage />} />

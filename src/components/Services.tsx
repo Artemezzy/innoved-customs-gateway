@@ -63,6 +63,7 @@ export function Services({ language }: ServicesProps) {
                 <ServiceCard 
                   title={service.title}
                   icon={getIcon(service.icon)}
+                  slug={service.slug}
                 />
               </div>
             ))}
