@@ -56,7 +56,7 @@ export default function NewsPage() {
           {isLoading && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="h-[400px] rounded-2xl overflow-hidden">
+                <div key={i} className="h-[500px] rounded-2xl overflow-hidden">
                   <Skeleton className="w-full h-full" />
                 </div>
               ))}
