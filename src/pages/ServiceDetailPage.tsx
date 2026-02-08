@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useServiceDetail } from '@/hooks/useServiceDetail';
+import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, CheckCircle, Phone } from 'lucide-react';
 import { useEffect } from 'react';
@@ -35,28 +36,16 @@ export default function ServiceDetailPage() {
 
   useEffect(() => {
     if (service) {
-      const seo = service.seo[language];
-      document.title = seo.title;
-      
-      // Update meta tags
-      const metaDescription = document.querySelector('meta[name="description"]');
-      if (metaDescription) {
-        metaDescription.setAttribute('content', seo.description);
-      }
-      
-      const metaKeywords = document.querySelector('meta[name="keywords"]');
-      if (metaKeywords) {
-        metaKeywords.setAttribute('content', seo.keywords);
-      }
-      
-      analytics.pageView(`/services/${slug}`, seo.title);
+      analytics.pageView(`/services/${slug}`, service.seo[language].title);
     }
   }, [service, language, slug]);
 
   // Not found state
   if (!isFound || !service) {
     return (
-      <div className="min-h-screen bg-background">
+      <>
+        <SEOHead language={language} page="services" />
+        <div className="min-h-screen bg-background">
         <section className="bg-primary text-primary-foreground py-20">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">
@@ -73,7 +62,8 @@ export default function ServiceDetailPage() {
             </Button>
           </Link>
         </div>
-      </div>
+        </div>
+      </>
     );
   }
 
@@ -83,7 +73,16 @@ export default function ServiceDetailPage() {
   // Placeholder state for services without content
   if (!serviceContent) {
     return (
-      <div className="min-h-screen bg-background">
+      <>
+        <SEOHead 
+          language={language} 
+          page="services"
+          customTitle={service.seo[language].title}
+          customDescription={service.seo[language].description}
+          customKeywords={service.seo[language].keywords}
+          canonicalPath={`/services/${slug}`}
+        />
+        <div className="min-h-screen bg-background">
         {/* Hero */}
         <section className="bg-primary text-primary-foreground py-20">
           <div className="container mx-auto px-4 text-center">
@@ -117,13 +116,23 @@ export default function ServiceDetailPage() {
             </Link>
           </div>
         </div>
-      </div>
+        </div>
+      </>
     );
   }
 
   // Full content state
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      <SEOHead 
+        language={language} 
+        page="services"
+        customTitle={service.seo[language].title}
+        customDescription={service.seo[language].description}
+        customKeywords={service.seo[language].keywords}
+        canonicalPath={`/services/${slug}`}
+      />
+      <div className="min-h-screen bg-background">
       {/* Hero */}
       <section className="bg-primary text-primary-foreground py-20">
         <div className="container mx-auto px-4 text-center">
@@ -206,5 +215,6 @@ export default function ServiceDetailPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

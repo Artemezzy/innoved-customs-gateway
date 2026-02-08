@@ -43,7 +43,7 @@ export default function BlogPostPage() {
   if (isLoading) {
     return (
       <>
-        <SEOHead language={language} page="home" />
+        <SEOHead language={language} page="blog" customTitle={`Загрузка... | ИННОВЭД`} />
         <section className="bg-primary text-primary-foreground py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
@@ -73,7 +73,13 @@ export default function BlogPostPage() {
 
   return (
     <>
-      <SEOHead language={language} page="home" />
+      <SEOHead 
+        language={language} 
+        page="blog" 
+        customTitle={`${post.title} | ИННОВЭД`}
+        customDescription={post.excerpt}
+        canonicalPath={`/blog/${post.slug}`}
+      />
       
       {/* Hero Section */}
       <section className="bg-primary text-primary-foreground py-20">

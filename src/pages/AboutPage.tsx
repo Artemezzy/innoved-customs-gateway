@@ -80,7 +80,7 @@ export default function AboutPage() {
 
   return (
     <>
-      <SEOHead language={language} page="home" />
+      <SEOHead language={language} page="about" />
       
       {/* Hero Section */}
       <section className="bg-primary text-primary-foreground py-20">

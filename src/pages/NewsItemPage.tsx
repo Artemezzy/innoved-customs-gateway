@@ -41,7 +41,7 @@ export default function NewsItemPage() {
   if (isLoading) {
     return (
       <>
-        <SEOHead language={language} page="home" />
+        <SEOHead language={language} page="news" customTitle={`Загрузка... | ИННОВЭД`} />
         <section className="bg-primary text-primary-foreground py-20">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
@@ -68,7 +68,13 @@ export default function NewsItemPage() {
 
   return (
     <>
-      <SEOHead language={language} page="home" />
+      <SEOHead 
+        language={language} 
+        page="news" 
+        customTitle={`${item.title} | ИННОВЭД`}
+        customDescription={item.excerpt}
+        canonicalPath={`/news/${item.slug}`}
+      />
       
       {/* Hero Section */}
       <section className="bg-primary text-primary-foreground py-20">

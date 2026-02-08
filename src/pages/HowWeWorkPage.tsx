@@ -25,7 +25,7 @@ export default function HowWeWorkPage() {
 
   return (
     <>
-      <SEOHead language={language} page="home" />
+      <SEOHead language={language} page="howWeWork" />
       
       {/* Hero Section */}
       <section className="bg-primary text-primary-foreground py-20">
