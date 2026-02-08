@@ -36,7 +36,7 @@ export function ContentCard({
   return (
     <Link
       to={linkPath}
-      className="group relative block w-full h-[400px] rounded-2xl overflow-hidden"
+      className="group relative block w-full h-[500px] rounded-2xl overflow-hidden"
     >
       {/* Background Image or Branded Fallback */}
       {imageUrl ? (
