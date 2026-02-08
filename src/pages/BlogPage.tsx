@@ -44,7 +44,7 @@ export default function BlogPage() {
 
   return (
     <>
-      <SEOHead language={language} page="home" />
+      <SEOHead language={language} page="blog" />
       
       {/* Hero Section */}
       <section className="bg-primary text-primary-foreground py-20">
