@@ -28,7 +28,7 @@ export default function HowWeWorkPage() {
       <SEOHead language={language} page="howWeWork" />
       
       {/* Hero Section */}
-      <section className="bg-primary text-primary-foreground py-20">
+      <section className="bg-primary text-primary-foreground py-16 md:py-20">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">
             {text.title}
@@ -39,8 +39,8 @@ export default function HowWeWorkPage() {
         </div>
       </section>
 
-      {/* How We Work Component */}
-      <HowWeWork language={language} />
+      {/* How We Work Component - без заголовка, т.к. уже есть в Hero */}
+      <HowWeWork language={language} showHeader={false} />
     </>
   );
 }
