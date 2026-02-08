@@ -54,9 +54,9 @@ export default function NewsPage() {
         <div className="container mx-auto px-4 lg:px-12">
           {/* Loading State */}
           {isLoading && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-              {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="h-[500px] rounded-2xl overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="h-[550px] md:h-[600px] rounded-2xl overflow-hidden">
                   <Skeleton className="w-full h-full" />
                 </div>
               ))}
@@ -65,7 +65,7 @@ export default function NewsPage() {
 
           {/* News Carousel */}
           {!isLoading && sortedNews.length > 0 && (
-            <ContentCarousel itemsPerPage={4}>
+            <ContentCarousel itemsPerPage={3}>
               {sortedNews.map((item) => (
                 <ContentCard
                   key={item.slug}

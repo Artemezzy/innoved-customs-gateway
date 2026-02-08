@@ -66,8 +66,8 @@ export function ContentCarousel({
         </>
       )}
 
-      {/* Content Grid - Desktop: 4 columns, Tablet: 2, Mobile: 1 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+      {/* Content Grid - Desktop: 3 columns (wider cards), Tablet: 2, Mobile: 1 */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {visibleItems.map((child, index) => (
           <div
             key={`${currentPage}-${index}`}
