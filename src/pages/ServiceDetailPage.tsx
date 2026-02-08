@@ -37,6 +37,60 @@ export default function ServiceDetailPage() {
   useEffect(() => {
     if (service) {
       analytics.pageView(`/services/${slug}`, service.seo[language].title);
+      
+      // Add Service Schema.org structured data
+      const serviceSchema = {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": service.title[language],
+        "description": service.seo[language].description,
+        "url": `https://innovedbroker.ru/services/${slug}`,
+        "provider": {
+          "@type": "Organization",
+          "name": language === 'ru' ? 'ИННОВЭД' : 'INNOVED',
+          "url": "https://innovedbroker.ru",
+          "logo": "https://innovedbroker.ru/logo.png",
+          "telephone": "+7-933-188-10-09",
+          "email": "info@innovedbroker.ru",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": language === 'ru' ? 'Москва' : 'Moscow',
+            "addressCountry": "RU"
+          }
+        },
+        "areaServed": {
+          "@type": "Country",
+          "name": language === 'ru' ? 'Россия' : 'Russia'
+        },
+        "serviceType": language === 'ru' ? 'Таможенное оформление' : 'Customs Clearance',
+        "availableChannel": {
+          "@type": "ServiceChannel",
+          "serviceUrl": "https://innovedbroker.ru/contact",
+          "servicePhone": "+7-933-188-10-09",
+          "availableLanguage": ["Russian", "English"]
+        }
+      };
+
+      // Remove existing Service schema script
+      const existingServiceSchema = document.querySelector('script[data-schema="service"]');
+      if (existingServiceSchema) {
+        existingServiceSchema.remove();
+      }
+
+      // Add new Service schema script
+      const script = document.createElement('script');
+      script.type = 'application/ld+json';
+      script.setAttribute('data-schema', 'service');
+      script.textContent = JSON.stringify(serviceSchema);
+      document.head.appendChild(script);
+
+      // Cleanup on unmount
+      return () => {
+        const schemaScript = document.querySelector('script[data-schema="service"]');
+        if (schemaScript) {
+          schemaScript.remove();
+        }
+      };
     }
   }, [service, language, slug]);
 
