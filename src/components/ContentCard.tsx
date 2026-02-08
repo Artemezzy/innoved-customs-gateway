@@ -67,7 +67,7 @@ export function ContentCard({
             </svg>
           </div>
           {/* Logo/Brand mark */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-primary-foreground/20 text-6xl font-bold">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-primary-foreground/30 text-7xl md:text-8xl font-bold tracking-tight">
             ИННОВЭД
           </div>
         </div>
