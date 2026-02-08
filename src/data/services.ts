@@ -29,19 +29,19 @@ export const servicesData: ServiceData[] = [
     slug: 'import',
     icon: 'Package',
     title: {
-      ru: 'Оформление импорта',
-      en: 'Import Registration',
+      ru: 'Таможенное оформление импорта',
+      en: 'Import Customs Clearance',
     },
     seo: {
       ru: {
-        title: 'Оформление импорта с ИННОВЭД — круглосуточное электронное декларирование по России',
-        description: 'Комплексное оформление импорта для бизнеса по всей России. Электронное декларирование, автоматизация, выделенный менеджер и скорость от ИННОВЭД.',
-        keywords: 'оформление импорта, таможенное оформление, ВЭД-услуги, электронное декларирование, импорт товаров, сертификация, ИННОВЭД',
+        title: 'Таможенное оформление импорта в Россию — электронное декларирование 24/7 | ИННОВЭД',
+        description: 'Комплексное таможенное оформление импорта для бизнеса по всей России. Электронное декларирование, автоматизация, выделенный менеджер и скорость от ИННОВЭД.',
+        keywords: 'таможенное оформление импорта, импорт в россию, таможенный брокер, электронное декларирование, ВЭД, растаможка товаров, ИННОВЭД',
       },
       en: {
-        title: 'Import Registration with INNOVED — 24/7 Electronic Customs Clearance in Russia',
-        description: 'Comprehensive import registration for businesses across Russia. Electronic declaration, automation, dedicated manager and speed from INNOVED.',
-        keywords: 'import registration, customs clearance, foreign trade services, electronic declaration, import goods, certification, INNOVED',
+        title: 'Import Customs Clearance in Russia — 24/7 Electronic Declaration | INNOVED',
+        description: 'Comprehensive import customs clearance for businesses across Russia. Electronic declaration, automation, dedicated manager and fast processing from INNOVED.',
+        keywords: 'import customs clearance, customs clearance russia, customs broker, electronic declaration, foreign trade, goods import, INNOVED',
       },
     },
     content: {
@@ -153,19 +153,19 @@ export const servicesData: ServiceData[] = [
     slug: 'export',
     icon: 'Plane',
     title: {
-      ru: 'Оформление экспорта',
-      en: 'Export Registration',
+      ru: 'Таможенное оформление экспорта',
+      en: 'Export Customs Clearance',
     },
     seo: {
       ru: {
-        title: 'Экспорт товаров из России с ИННОВЭД — электронное декларирование и валютный контроль',
-        description: 'Полный комплекс услуг по экспорту товаров из России для бизнеса. Таможенное оформление, подтверждение 0% НДС и сопровождение валютного контроля от ИННОВЭД.',
-        keywords: 'экспорт товаров, ВЭД-услуги, электронное декларирование, валютный контроль, таможенное оформление экспорта, нулевая ставка НДС, ИННОВЭД',
+        title: 'Таможенное оформление экспорта из России — декларирование и валютный контроль | ИННОВЭД',
+        description: 'Полный комплекс услуг по таможенному оформлению экспорта товаров из России. Электронное декларирование, подтверждение 0% НДС и сопровождение валютного контроля.',
+        keywords: 'таможенное оформление экспорта, экспорт из россии, экспортная декларация, валютный контроль, нулевая ставка НДС, таможенный брокер, ИННОВЭД',
       },
       en: {
-        title: 'Export of Goods from Russia with INNOVED — Electronic Declaration and Currency Control',
-        description: 'Full range of export services for businesses in Russia. Customs clearance, 0% VAT confirmation and currency control support from INNOVED.',
-        keywords: 'goods export, foreign trade services, electronic declaration, currency control, export customs clearance, zero VAT rate, INNOVED',
+        title: 'Export Customs Clearance from Russia — Declaration and Currency Control | INNOVED',
+        description: 'Full range of export customs clearance services from Russia. Electronic declaration, 0% VAT confirmation and currency control support from INNOVED.',
+        keywords: 'export customs clearance, export from russia, export declaration, currency control, zero VAT rate, customs broker, INNOVED',
       },
     },
     content: {
