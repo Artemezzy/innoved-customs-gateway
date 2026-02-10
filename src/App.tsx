@@ -39,8 +39,9 @@ const App = () => (
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogPostPage />} />
-              <Route path="/news" element={<NewsPage />} />
-              <Route path="/news/:slug" element={<NewsItemPage />} />
+              {/* News routes temporarily hidden */}
+              {/* <Route path="/news" element={<NewsPage />} /> */}
+              {/* <Route path="/news/:slug" element={<NewsItemPage />} /> */}
               <Route path="/faq" element={<FAQPage />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />

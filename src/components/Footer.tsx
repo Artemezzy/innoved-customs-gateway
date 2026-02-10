@@ -62,7 +62,7 @@ export function Footer({ language }: FooterProps) {
             <Link to="/services" className="text-sm hover:text-primary-glow transition-colors duration-300">{text.links.services}</Link>
             <Link to="/how-we-work" className="text-sm hover:text-primary-glow transition-colors duration-300">{text.links.howWeWork}</Link>
             <Link to="/blog" className="text-sm hover:text-primary-glow transition-colors duration-300">{text.links.blog}</Link>
-            <Link to="/news" className="text-sm hover:text-primary-glow transition-colors duration-300">{text.links.news}</Link>
+            {/* News link temporarily hidden */}
             <Link to="/faq" className="text-sm hover:text-primary-glow transition-colors duration-300">{text.links.faq}</Link>
             <Link to="/contact" className="text-sm hover:text-primary-glow transition-colors duration-300">{text.links.contact}</Link>
           </nav>
