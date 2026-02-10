@@ -46,7 +46,7 @@ export function Header({ language }: HeaderProps) {
     { to: '/services', label: text.links.services },
     { to: '/how-we-work', label: text.links.howWeWork },
     { to: '/blog', label: text.links.blog },
-    { to: '/news', label: text.links.news },
+    // { to: '/news', label: text.links.news }, // temporarily hidden
     { to: '/faq', label: text.links.faq },
     { to: '/contact', label: text.links.contact },
   ];
