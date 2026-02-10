@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Mail, Phone, MessageCircle, Send, Building, Download, Settings } from 'lucide-react';
+import { Mail, Phone, MessageCircle, Send, Building, Download, Settings, MapPin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { analytics } from '@/utils/analytics';
 
@@ -20,7 +20,8 @@ const content = {
       title: 'Информация о компании',
       phone: 'Телефон',
       email: 'Email',
-      telegram: 'Telegram'
+      telegram: 'Telegram',
+      address: 'Адрес'
     },
     form: {
       title: 'Оставить заявку',
@@ -42,7 +43,8 @@ const content = {
       title: 'Company Information',
       phone: 'Phone',
       email: 'Email',
-      telegram: 'Telegram'
+      telegram: 'Telegram',
+      address: 'Address'
     },
     form: {
       title: 'Leave Request',
@@ -271,6 +273,16 @@ export function Contact({ language }: ContactProps) {
                   <a href="https://t.me/innovedbroker" target="_blank" rel="noopener noreferrer" className="text-lg font-semibold text-foreground hover:text-primary transition-colors">
                     @innovedbroker
                   </a>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <MapPin className="w-5 h-5 text-primary mt-1" />
+                <div>
+                  <p className="text-sm text-muted-foreground">{text.companyInfo.address}</p>
+                  <p className="text-lg font-semibold text-foreground">
+                    664050, {language === 'ru' ? 'Иркутск, Байкальская ул., 289/2' : 'Irkutsk, Baikalskaya st., 289/2'}
+                  </p>
                 </div>
               </div>
             </CardContent>
