@@ -39,6 +39,7 @@ export function Hero({ language }: HeroProps) {
         muted
         loop
         playsInline
+        preload="auto"
       >
         <source src={heroVideo} type="video/mp4" />
       </video>
