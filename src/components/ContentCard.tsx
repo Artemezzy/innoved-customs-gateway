@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { useMemo } from 'react';
 import { CalendarDays } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
@@ -34,14 +33,8 @@ export function ContentCard({
 
   const linkPath = type === 'blog' ? `/blog/${slug}` : `/news/${slug}`;
 
-  const optimizedImageUrl = useMemo(() => {
-    if (!imageUrl) return undefined;
-    // Hygraph uses Filestack for image transformations
-    // Insert resize and format conversion before the file handle
-    const parts = imageUrl.split('/');
-    const handle = parts.pop();
-    return `${parts.join('/')}/resize=width:800,fit:crop/output=format:webp/${handle}`;
-  }, [imageUrl]);
+
+
 
   return (
     <Link
@@ -51,11 +44,10 @@ export function ContentCard({
       {/* Background Image or Branded Fallback */}
       {imageUrl ? (
         <img
-          src={optimizedImageUrl}
+          src={imageUrl}
           alt={title}
           loading="lazy"
           decoding="async"
-          fetchPriority="low"
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
       ) : (
