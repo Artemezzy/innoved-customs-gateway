@@ -3,10 +3,12 @@ import { SEOHead } from '@/components/SEOHead';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEffect } from 'react';
 import { analytics } from '@/utils/analytics';
-import gallery01 from '@/assets/gallery-01.png';
-import gallery02 from '@/assets/gallery-02.png';
-import gallery03 from '@/assets/gallery-03.png';
-import gallery05 from '@/assets/gallery-05.png';
+const galleryImages = [
+  '/gallery/gallery-01.png',
+  '/gallery/gallery-02.png',
+  '/gallery/gallery-03.png',
+  '/gallery/gallery-05.png',
+];
 
 const content = {
   ru: {
@@ -117,13 +119,12 @@ export default function AboutPage() {
       {/* Photo Gallery */}
       <section className="w-full">
         <div className="grid grid-cols-2 md:grid-cols-4">
-          {[gallery01, gallery02, gallery03, gallery05].map((src, i) => (
+          {galleryImages.map((src, i) => (
             <img
               key={i}
               src={src}
               alt={`INNOVED gallery ${i + 1}`}
               className="w-full h-[180px] md:h-[250px] object-cover"
-              loading="lazy"
             />
           ))}
         </div>
