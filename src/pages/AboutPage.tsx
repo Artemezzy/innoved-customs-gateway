@@ -125,7 +125,6 @@ export default function AboutPage() {
               src={src}
               alt={`INNOVED gallery ${i + 1}`}
               className="w-full h-[180px] md:h-[250px] object-cover"
-              loading="lazy"
               width={400}
               height={250}
             />
