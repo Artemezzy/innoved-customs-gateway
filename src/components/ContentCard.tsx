@@ -41,8 +41,11 @@ export function ContentCard({
       {/* Background Image or Branded Fallback */}
       {imageUrl ? (
         <img
-          src={imageUrl}
+          src={`${imageUrl}?width=800&quality=80`}
           alt={title}
+          loading="lazy"
+          decoding="async"
+          fetchPriority="low"
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
       ) : (
