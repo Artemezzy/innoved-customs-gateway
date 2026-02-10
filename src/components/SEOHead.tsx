@@ -18,29 +18,29 @@ const seoContent = {
       keywords: 'таможенное оформление, таможенный брокер, импорт, экспорт, россия, customs clearance, broker, белый импорт, растаможка грузов, декларирование товаров, сертификация товаров, ВЭД, консалтинг, таможенный транзит'
     },
     about: {
-      title: 'О компании ИННОВЭД | Таможенный брокер с опытом более 10 лет',
-      description: 'Узнайте о компании ИННОВЭД — ваш надёжный партнёр в таможенном оформлении. История, миссия, ценности и команда профессионалов.',
-      keywords: 'о компании, инновэд, таможенный брокер москва, команда специалистов, опыт ВЭД'
+      title: 'О компании ИННОВЭД | Таможенный брокер с опытом более 10 лет в России',
+      description: 'Компания ИННОВЭД — надёжный таможенный брокер с опытом более 10 лет. Профессиональная команда, прозрачные условия, работа по всей России.',
+      keywords: 'о компании, инновэд, таможенный брокер москва, команда специалистов, опыт ВЭД, растаможка, декларирование'
     },
     services: {
-      title: 'Услуги таможенного оформления | ИННОВЭД',
-      description: 'Полный спектр услуг по таможенному оформлению: импорт, экспорт, сертификация, классификация ТН ВЭД, консультации. Работаем по всей России.',
-      keywords: 'таможенные услуги, импорт, экспорт, сертификация, классификация ТН ВЭД, ВЭД услуги, ИННОВЭД'
+      title: 'Услуги таможенного оформления и растаможки грузов | ИННОВЭД',
+      description: 'Полный спектр таможенных услуг: импорт, экспорт, сертификация, классификация ТН ВЭД, ВЭД-консалтинг, декларирование товаров. Работаем по всей России.',
+      keywords: 'таможенные услуги, импорт, экспорт, сертификация, классификация ТН ВЭД, ВЭД услуги, растаможка, декларирование, консалтинг, ИННОВЭД'
     },
     howWeWork: {
-      title: 'Как мы работаем | Прозрачный процесс таможенного оформления',
-      description: 'Узнайте, как проходит таможенное оформление с ИННОВЭД: от заявки до получения груза. Пошаговый процесс, сроки, гарантии.',
-      keywords: 'процесс оформления, этапы работы, сроки таможенного оформления, как оформить груз'
+      title: 'Как мы работаем | Прозрачный процесс таможенного оформления | ИННОВЭД',
+      description: 'Пошаговый процесс таможенного оформления с ИННОВЭД: от заявки до получения груза. Чёткие сроки, прозрачные условия, гарантия результата.',
+      keywords: 'процесс оформления, этапы работы, сроки таможенного оформления, как оформить груз, растаможка пошагово'
     },
     contact: {
-      title: 'Контакты ИННОВЭД | Связаться с таможенным брокером',
-      description: 'Свяжитесь с ИННОВЭД для консультации по таможенному оформлению. Телефон, email, Telegram. Ответим в течение 15 минут.',
-      keywords: 'контакты инновэд, таможенный брокер телефон, заказать оформление, консультация ВЭД'
+      title: 'Контакты ИННОВЭД | Заказать таможенное оформление | Консультация',
+      description: 'Свяжитесь с ИННОВЭД для консультации по таможенному оформлению и растаможке грузов. Телефон, email, Telegram. Ответим в течение 15 минут.',
+      keywords: 'контакты инновэд, таможенный брокер телефон, заказать оформление, консультация ВЭД, растаможка заявка'
     },
     blog: {
-      title: 'Блог ИННОВЭД | Статьи о таможенном оформлении и ВЭД',
-      description: 'Полезные материалы о таможенном оформлении, изменениях в законодательстве, советы по импорту и экспорту от экспертов ИННОВЭД.',
-      keywords: 'блог инновэд, статьи таможня, законодательство ВЭД, советы импорт экспорт'
+      title: 'Блог ИННОВЭД | Статьи о таможенном оформлении, ВЭД и растаможке',
+      description: 'Полезные статьи о таможенном оформлении, изменениях в законодательстве ВЭД, советы по импорту, экспорту и сертификации от экспертов ИННОВЭД.',
+      keywords: 'блог инновэд, статьи таможня, законодательство ВЭД, советы импорт экспорт, растаможка, декларирование'
     },
     news: {
       title: 'Новости ИННОВЭД | События и обновления компании',
@@ -48,9 +48,9 @@ const seoContent = {
       keywords: 'новости инновэд, новости таможня, события компании, обновления ВЭД'
     },
     faq: {
-      title: 'Часто задаваемые вопросы | ИННОВЭД',
-      description: 'Ответы на популярные вопросы о таможенном оформлении: сроки, стоимость, документы, порядок работы с ИННОВЭД.',
-      keywords: 'FAQ таможня, вопросы ответы, сколько стоит оформление, какие документы нужны'
+      title: 'Часто задаваемые вопросы о таможенном оформлении | ИННОВЭД',
+      description: 'Ответы на популярные вопросы о таможенном оформлении и растаможке: сроки, стоимость, документы, порядок работы с ИННОВЭД.',
+      keywords: 'FAQ таможня, вопросы ответы, сколько стоит оформление, какие документы нужны, растаможка FAQ, ВЭД вопросы'
     },
     privacy: {
       title: 'Политика конфиденциальности - ИННОВЭД',
@@ -65,34 +65,34 @@ const seoContent = {
   },
   en: {
     home: {
-      title: 'INNOVED - Customs Clearance Services | Broker Services Russia',
-      description: 'Professional customs clearance services across Russia. Over 10 years of experience. Fast, reliable, competitive prices. ✅ Import ✅ Export ✅ Transit',
-      keywords: 'customs clearance, customs broker, import, export, russia, таможенное оформление'
+      title: 'INNOVED - Customs Clearance & Cargo Clearance | Broker Services for Business in Russia',
+      description: 'Professional customs clearance services across Russia. Fast, reliable, competitive prices. Over 10 years of experience. ✅ Import ✅ Export ✅ Transit ✅ Certification',
+      keywords: 'customs clearance, customs broker, import, export, russia, cargo clearance, goods declaration, product certification, foreign trade, consulting, customs transit'
     },
     about: {
-      title: 'About INNOVED | Customs Broker with 10+ Years Experience',
-      description: 'Learn about INNOVED — your reliable partner in customs clearance. Our history, mission, values and team of professionals.',
-      keywords: 'about us, innoved, customs broker russia, professional team, foreign trade experience'
+      title: 'About INNOVED | Customs Broker with 10+ Years Experience in Russia',
+      description: 'INNOVED — your reliable customs broker with over 10 years of experience. Professional team, transparent terms, operating across Russia.',
+      keywords: 'about us, innoved, customs broker russia, professional team, foreign trade experience, cargo clearance'
     },
     services: {
-      title: 'Customs Clearance Services | INNOVED',
-      description: 'Full range of customs clearance services: import, export, certification, HS code classification, consulting. Operating across Russia.',
-      keywords: 'customs services, import, export, certification, HS code classification, foreign trade services, INNOVED'
+      title: 'Customs Clearance & Cargo Clearance Services | INNOVED',
+      description: 'Full range of customs services: import, export, certification, HS code classification, foreign trade consulting, goods declaration. Operating across Russia.',
+      keywords: 'customs services, import, export, certification, HS code classification, foreign trade services, cargo clearance, declaration, consulting, INNOVED'
     },
     howWeWork: {
-      title: 'How We Work | Transparent Customs Clearance Process',
-      description: 'Learn how customs clearance works with INNOVED: from application to cargo receipt. Step-by-step process, timelines, guarantees.',
-      keywords: 'clearance process, work stages, customs clearance timelines, how to clear cargo'
+      title: 'How We Work | Transparent Customs Clearance Process | INNOVED',
+      description: 'Step-by-step customs clearance process with INNOVED: from application to cargo receipt. Clear timelines, transparent terms, guaranteed results.',
+      keywords: 'clearance process, work stages, customs clearance timelines, how to clear cargo, step by step clearance'
     },
     contact: {
-      title: 'Contact INNOVED | Get in Touch with Customs Broker',
-      description: 'Contact INNOVED for customs clearance consultation. Phone, email, Telegram. We respond within 15 minutes.',
-      keywords: 'contact innoved, customs broker phone, order clearance, foreign trade consultation'
+      title: 'Contact INNOVED | Order Customs Clearance | Free Consultation',
+      description: 'Contact INNOVED for customs clearance and cargo clearance consultation. Phone, email, Telegram. We respond within 15 minutes.',
+      keywords: 'contact innoved, customs broker phone, order clearance, foreign trade consultation, cargo clearance request'
     },
     blog: {
-      title: 'INNOVED Blog | Articles on Customs Clearance and Foreign Trade',
-      description: 'Useful materials on customs clearance, legislation changes, import and export tips from INNOVED experts.',
-      keywords: 'innoved blog, customs articles, foreign trade legislation, import export tips'
+      title: 'INNOVED Blog | Articles on Customs Clearance, Foreign Trade & Certification',
+      description: 'Expert articles on customs clearance, foreign trade legislation changes, import, export and certification tips from INNOVED professionals.',
+      keywords: 'innoved blog, customs articles, foreign trade legislation, import export tips, cargo clearance, declaration'
     },
     news: {
       title: 'INNOVED News | Company Events and Updates',
@@ -100,9 +100,9 @@ const seoContent = {
       keywords: 'innoved news, customs news, company events, foreign trade updates'
     },
     faq: {
-      title: 'Frequently Asked Questions | INNOVED',
-      description: 'Answers to popular questions about customs clearance: timelines, costs, documents, working procedures with INNOVED.',
-      keywords: 'customs FAQ, questions answers, clearance cost, what documents needed'
+      title: 'Frequently Asked Questions About Customs Clearance | INNOVED',
+      description: 'Answers to popular questions about customs and cargo clearance: timelines, costs, documents, working procedures with INNOVED.',
+      keywords: 'customs FAQ, questions answers, clearance cost, what documents needed, cargo clearance FAQ, foreign trade questions'
     },
     privacy: {
       title: 'Privacy Policy - INNOVED',
