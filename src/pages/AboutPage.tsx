@@ -4,10 +4,10 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useEffect } from 'react';
 import { analytics } from '@/utils/analytics';
 const galleryImages = [
-  '/gallery/gallery-01.png',
-  '/gallery/gallery-02.png',
-  '/gallery/gallery-03.png',
-  '/gallery/gallery-05.png',
+  '/gallery/gallery-01.webp',
+  '/gallery/gallery-02.webp',
+  '/gallery/gallery-03.webp',
+  '/gallery/gallery-05.webp',
 ];
 
 const content = {
