@@ -51,6 +51,8 @@ export function About({ language }: AboutProps) {
               src={innovedContainersImage}
               alt="INNOVED branded containers at port"
               className="w-full h-auto rounded-lg shadow-card hover:shadow-hover transition-all duration-300"
+              decoding="async"
+              fetchPriority="low"
             />
           </div>
         </div>

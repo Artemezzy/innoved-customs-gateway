@@ -127,6 +127,8 @@ export default function AboutPage() {
               className="w-full h-[180px] md:h-[250px] object-cover"
               width={400}
               height={250}
+              decoding="async"
+              fetchPriority="low"
             />
           ))}
         </div>
