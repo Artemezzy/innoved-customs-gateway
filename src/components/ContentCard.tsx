@@ -33,6 +33,13 @@ export function ContentCard({
 
   const linkPath = type === 'blog' ? `/blog/${slug}` : `/news/${slug}`;
 
+  // Optimize Hygraph images: resize + WebP + quality
+  const optimizedImageUrl = imageUrl
+    ? imageUrl.includes('hygraph.com') || imageUrl.includes('graphassets.com')
+      ? `${imageUrl}?width=600&quality=75&format=webp`
+      : imageUrl
+    : undefined;
+
 
 
 
@@ -42,9 +49,9 @@ export function ContentCard({
       className="group relative block w-full h-[550px] md:h-[600px] rounded-2xl overflow-hidden"
     >
       {/* Background Image or Branded Fallback */}
-      {imageUrl ? (
+      {optimizedImageUrl ? (
         <img
-          src={imageUrl}
+          src={optimizedImageUrl}
           alt={title}
           decoding="async"
           className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
