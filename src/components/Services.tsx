@@ -39,9 +39,7 @@ export function Services({ language }: ServicesProps) {
   return (
     <section id="services" className="py-16 bg-background">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-12 animate-fade-in">
-          {sectionTitle[language]}
-        </h2>
+        
         
         {/* Loading State */}
         {isLoading && (
