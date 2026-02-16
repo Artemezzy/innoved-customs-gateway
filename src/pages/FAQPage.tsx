@@ -34,7 +34,11 @@ export default function FAQPage() {
 
   const filteredItems = activeCategory === 'all' 
     ? faqItems 
-    : faqItems.filter(item => item.category === activeCategory);
+    : faqItems.filter(item => 
+        Array.isArray(item.category) 
+          ? item.category.includes(activeCategory)
+          : item.category === activeCategory
+      );
 
   const categories = Object.keys(faqCategories);
 
