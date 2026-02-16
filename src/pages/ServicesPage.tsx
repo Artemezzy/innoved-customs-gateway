@@ -1,4 +1,5 @@
 import { Services } from '@/components/Services';
+import { RussiaMap } from '@/components/RussiaMap';
 import { SEOHead } from '@/components/SEOHead';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEffect } from 'react';
@@ -41,6 +42,9 @@ export default function ServicesPage() {
 
       {/* Services Component */}
       <Services language={language} />
+
+      {/* Russia Coverage Map */}
+      <RussiaMap language={language} />
     </>
   );
 }
