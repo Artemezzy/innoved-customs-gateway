@@ -10,28 +10,116 @@ interface RussiaPresenceMapProps {
   language: 'ru' | 'en';
 }
 
-// Simplified Russia contour path for viewBox 0 0 1000 600
-const RUSSIA_PATH =
-  'M55,310 L50,290 L40,285 L38,270 L55,260 L60,250 L80,255 L95,240 L100,230 ' +
-  'L110,225 L130,230 L140,220 L155,215 L160,200 L175,195 L185,185 L195,180 ' +
-  'L200,170 L210,160 L225,155 L235,150 L230,140 L215,135 L210,125 L220,115 ' +
-  'L240,110 L255,115 L265,120 L275,130 L285,135 L295,125 L310,130 L320,140 ' +
-  'L330,135 L340,140 L350,145 L365,140 L375,150 L390,155 L400,150 L420,155 ' +
-  'L430,160 L440,155 L455,160 L470,155 L480,165 L495,170 L510,165 L520,160 ' +
-  'L535,155 L545,150 L560,145 L575,140 L590,135 L605,130 L620,125 L635,120 ' +
-  'L650,115 L665,105 L680,100 L695,95 L710,100 L720,110 L730,120 L745,115 ' +
-  'L755,105 L770,100 L785,110 L795,120 L810,125 L825,130 L840,140 L855,150 ' +
-  'L865,160 L875,170 L885,180 L895,190 L905,200 L920,210 L935,220 L945,235 ' +
-  'L955,250 L960,265 L965,280 L960,295 L950,310 L940,320 L930,335 L920,340 ' +
-  'L910,350 L900,360 L890,365 L880,370 L870,375 L855,380 L840,375 L825,370 ' +
-  'L810,375 L800,380 L790,390 L780,395 L770,400 L755,395 L740,390 L725,385 ' +
-  'L710,390 L700,395 L690,400 L675,395 L665,390 L650,385 L635,390 L620,395 ' +
-  'L605,390 L590,385 L575,380 L560,375 L545,380 L530,385 L515,380 L500,375 ' +
-  'L485,370 L470,365 L455,370 L440,375 L425,370 L410,365 L395,360 L380,355 ' +
-  'L365,360 L350,365 L340,370 L325,375 L310,380 L295,385 L280,390 L265,395 ' +
-  'L250,400 L240,410 L225,420 L215,425 L205,430 L195,435 L185,440 L175,435 ' +
-  'L165,425 L155,420 L145,415 L130,410 L120,405 L110,400 L100,395 L90,385 ' +
-  'L80,375 L70,360 L60,345 L55,330 L55,310 Z';
+// Detailed Russia contour paths for viewBox 0 0 1000 600
+// Main Russia outline — clockwise from Kola Peninsula (Murmansk area)
+const RUSSIA_MAIN =
+  // Kola Peninsula (northwest)
+  'M 215,135 L 205,128 L 190,130 L 178,138 L 170,150 L 165,165 ' +
+  // Finnish border south to Gulf of Finland
+  'L 162,180 L 158,195 L 160,210 L 165,225 L 172,238 L 178,248 L 185,258 L 190,268 ' +
+  // St Petersburg area, west to Baltic border
+  'L 182,275 L 175,282 L 168,288 ' +
+  // Baltic states border (Latvia, Estonia)
+  'L 162,298 L 158,310 L 155,320 ' +
+  // Belarus border
+  'L 158,332 L 162,342 L 168,352 ' +
+  // Ukraine border going south
+  'L 175,362 L 182,372 L 190,382 L 198,390 L 205,398 ' +
+  // Sea of Azov approach
+  'L 212,408 L 218,415 L 225,420 ' +
+  // Crimea peninsula
+  'L 218,428 L 210,435 L 205,442 L 210,448 L 218,450 L 228,446 L 235,440 ' +
+  // East along Azov / Caucasus
+  'L 242,438 L 250,442 L 258,448 L 268,454 ' +
+  // Caucasus mountains (Georgia/Azerbaijan border)
+  'L 275,460 L 282,465 L 290,462 L 298,458 ' +
+  // Caspian coast (Dagestan)
+  'L 305,450 L 310,440 L 312,430 L 315,420 ' +
+  // Kazakhstan border going east
+  'L 322,415 L 335,410 L 350,405 L 365,402 L 380,400 ' +
+  'L 395,398 L 410,395 L 425,392 L 440,390 ' +
+  'L 455,392 L 468,395 L 480,398 ' +
+  // Southern Siberia / Kazakhstan-Russia border
+  'L 495,400 L 508,405 L 520,408 ' +
+  // Altai / Mongolia border
+  'L 535,412 L 548,418 L 558,422 L 568,428 ' +
+  // Tuva / Mongolia border
+  'L 580,432 L 592,435 L 605,432 L 618,428 ' +
+  // Buryatia / Mongolia border
+  'L 632,425 L 648,420 L 662,418 L 675,415 ' +
+  // Zabaykalsk area / China border
+  'L 690,412 L 705,408 L 718,405 L 730,410 ' +
+  // Amur River / China border
+  'L 742,415 L 755,420 L 768,425 L 780,430 ' +
+  'L 792,432 L 805,428 L 818,425 ' +
+  // Khabarovsk / Ussuri area
+  'L 830,420 L 842,418 L 855,415 L 865,420 ' +
+  // Primorsky Krai / Vladivostok
+  'L 875,425 L 882,430 L 888,435 L 892,428 ' +
+  // Coast north from Vladivostok
+  'L 890,418 L 886,405 L 882,392 L 880,378 ' +
+  // Tatar Strait / Sea of Okhotsk coast
+  'L 878,362 L 880,348 L 884,335 L 888,320 ' +
+  // Toward Kamchatka
+  'L 892,305 L 898,290 L 905,278 L 912,268 ' +
+  // Kamchatka Peninsula
+  'L 922,258 L 932,250 L 942,248 L 952,252 L 958,262 ' +
+  'L 962,275 L 964,290 L 960,305 L 955,318 L 948,328 ' +
+  'L 940,322 L 935,312 L 930,305 ' +
+  // Back to Sea of Okhotsk mainland
+  'L 920,298 L 910,292 L 902,285 ' +
+  // Northern Sea of Okhotsk coast
+  'L 892,272 L 882,258 L 872,248 L 862,240 ' +
+  // Magadan coast
+  'L 850,230 L 838,222 L 828,215 ' +
+  // Chukotka
+  'L 840,205 L 855,195 L 870,188 L 885,182 ' +
+  'L 898,178 L 910,180 L 920,185 L 930,182 L 940,175 ' +
+  'L 948,168 L 955,158 L 960,148 L 958,138 L 950,130 ' +
+  // Arctic coast east — Chukotka to Wrangel
+  'L 938,125 L 925,120 L 912,118 L 900,115 ' +
+  // East Siberian Sea coast
+  'L 885,112 L 870,108 L 855,105 L 840,100 ' +
+  'L 825,96 L 810,92 L 795,88 ' +
+  // Laptev Sea coast — Yakutia
+  'L 778,85 L 760,82 L 742,80 ' +
+  // Taimyr Peninsula
+  'L 725,78 L 710,72 L 698,65 L 688,58 L 680,52 ' +
+  'L 672,48 L 665,52 L 658,60 L 650,68 ' +
+  'L 642,75 L 632,80 ' +
+  // Kara Sea coast
+  'L 618,82 L 605,78 L 592,75 L 580,72 ' +
+  'L 565,70 L 550,68 L 535,67 L 520,68 ' +
+  // Yamal Peninsula
+  'L 505,65 L 492,60 L 485,54 L 480,48 ' +
+  'L 478,55 L 475,62 L 472,68 ' +
+  // Ob Gulf
+  'L 465,72 L 458,68 L 452,62 L 448,56 ' +
+  'L 445,62 L 442,70 L 438,76 ' +
+  // Western Kara Sea coast
+  'L 430,80 L 420,82 L 408,85 L 395,88 ' +
+  // Novaya Zemlya gap — Barents Sea
+  'L 380,90 L 365,92 L 350,96 L 338,100 ' +
+  // Pechora Sea coast
+  'L 325,105 L 312,110 L 300,115 ' +
+  // Kanin Peninsula / White Sea
+  'L 288,118 L 278,122 L 270,128 ' +
+  // White Sea inlet
+  'L 262,135 L 255,142 L 248,150 L 242,158 ' +
+  'L 248,162 L 255,158 L 262,152 L 268,145 ' +
+  // Back along Kola Peninsula
+  'L 258,138 L 248,132 L 240,128 L 232,125 ' +
+  'L 225,128 L 218,132 L 215,135 Z';
+
+// Kaliningrad exclave (separate polygon)
+const KALININGRAD_PATH =
+  'M 118,305 L 122,300 L 128,298 L 134,300 L 136,306 L 132,312 L 126,314 L 120,310 Z';
+
+// Sakhalin island
+const SAKHALIN_PATH =
+  'M 925,340 L 928,330 L 932,320 L 935,310 L 936,300 ' +
+  'L 935,290 L 932,282 L 930,288 L 928,298 L 926,308 ' +
+  'L 924,318 L 922,330 L 923,338 L 925,340 Z';
 
 export function RussiaPresenceMap({
   cities,
@@ -51,11 +139,26 @@ export function RussiaPresenceMap({
       role="img"
       aria-label={language === 'ru' ? 'Карта присутствия в России' : 'Russia presence map'}
     >
-      {/* Russia contour */}
+      {/* Russia main contour */}
       <path
-        d={RUSSIA_PATH}
+        d={RUSSIA_MAIN}
         className="fill-primary/10 stroke-primary/30"
         strokeWidth={1.5}
+        strokeLinejoin="round"
+      />
+      {/* Kaliningrad exclave */}
+      <path
+        d={KALININGRAD_PATH}
+        className="fill-primary/10 stroke-primary/30"
+        strokeWidth={1.5}
+        strokeLinejoin="round"
+      />
+      {/* Sakhalin island */}
+      <path
+        d={SAKHALIN_PATH}
+        className="fill-primary/10 stroke-primary/30"
+        strokeWidth={1.5}
+        strokeLinejoin="round"
       />
 
       {/* City markers */}
