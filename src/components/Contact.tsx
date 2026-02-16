@@ -99,7 +99,7 @@ export function Contact({ language }: ContactProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.inn || !formData.phone || !formData.email || !formData.consent) {
+    if (!formData.name || !formData.phone || !formData.consent) {
       toast({
         title: "Ошибка",
         description: text.error,
@@ -230,11 +230,8 @@ export function Contact({ language }: ContactProps) {
   return (
     <section id="contact" className="py-16 bg-background">
       <div className="container mx-auto px-4">
-        <div className="mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground animate-fade-in text-center">
-            {text.title}
-          </h2>
-        </div>
+        
+
         
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Company Information */}
@@ -312,19 +309,8 @@ export function Contact({ language }: ContactProps) {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="inn" className="text-sm font-medium">
-                    {text.form.inn} *
-                  </Label>
-                  <Input
-                    id="inn"
-                    type="text"
-                    value={formData.inn}
-                    onChange={(e) => setFormData({...formData, inn: e.target.value})}
-                    required
-                    className="transition-all duration-300 focus:ring-2 focus:ring-primary"
-                  />
-                </div>
+
+
 
                 <div className="space-y-2">
                   <Label htmlFor="phone" className="text-sm font-medium">
@@ -342,14 +328,13 @@ export function Contact({ language }: ContactProps) {
 
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-medium">
-                    {text.form.email} *
+                    {text.form.email}
                   </Label>
                   <Input
                     id="email"
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
-                    required
                     className="transition-all duration-300 focus:ring-2 focus:ring-primary"
                   />
                 </div>
