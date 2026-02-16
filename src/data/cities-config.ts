@@ -14,39 +14,39 @@ export interface CityServicesData {
 }
 
 // Координаты x/y (0–100) относительно viewBox SVG карты России
-// viewBox рассчитан на проекцию ~19°E–190°E долготы, ~40°N–78°N широты
+// viewBox: 0 0 1091.992 630.119 (Wikimedia outline map)
 export const citiesConfig: CityConfig[] = [
   // === 8 обязательных ===
-  { name: 'Владивосток', nameEn: 'Vladivostok', slug: 'vladivostok', x: 89, y: 68 },
-  { name: 'Иркутск', nameEn: 'Irkutsk', slug: 'irkutsk', x: 67, y: 62 },
-  { name: 'Новосибирск', nameEn: 'Novosibirsk', slug: 'novosibirsk', x: 54, y: 58 },
-  { name: 'Москва', nameEn: 'Moscow', slug: 'moscow', x: 24, y: 56 },
-  { name: 'Санкт-Петербург', nameEn: 'Saint Petersburg', slug: 'saint-petersburg', x: 20, y: 44 },
-  { name: 'Забайкальск', nameEn: 'Zabaikalsk', slug: 'zabaikalsk', x: 73, y: 65 },
-  { name: 'Новороссийск', nameEn: 'Novorossiysk', slug: 'novorossiysk', x: 23, y: 73 },
-  { name: 'Красноярск', nameEn: 'Krasnoyarsk', slug: 'krasnoyarsk', x: 59, y: 55 },
+  { name: 'Владивосток', nameEn: 'Vladivostok', slug: 'vladivostok', x: 88, y: 86 },
+  { name: 'Иркутск', nameEn: 'Irkutsk', slug: 'irkutsk', x: 51, y: 74 },
+  { name: 'Новосибирск', nameEn: 'Novosibirsk', slug: 'novosibirsk', x: 36, y: 72 },
+  { name: 'Москва', nameEn: 'Moscow', slug: 'moscow', x: 14.5, y: 68 },
+  { name: 'Санкт-Петербург', nameEn: 'Saint Petersburg', slug: 'saint-petersburg', x: 6.5, y: 63 },
+  { name: 'Забайкальск', nameEn: 'Zabaikalsk', slug: 'zabaikalsk', x: 58, y: 79 },
+  { name: 'Новороссийск', nameEn: 'Novorossiysk', slug: 'novorossiysk', x: 8.5, y: 88 },
+  { name: 'Красноярск', nameEn: 'Krasnoyarsk', slug: 'krasnoyarsk', x: 41, y: 70 },
 
   // === 20 дополнительных ===
-  { name: 'Екатеринбург', nameEn: 'Yekaterinburg', slug: 'yekaterinburg', x: 40, y: 55 },
-  { name: 'Казань', nameEn: 'Kazan', slug: 'kazan', x: 32, y: 55 },
-  { name: 'Самара', nameEn: 'Samara', slug: 'samara', x: 33, y: 61 },
-  { name: 'Ростов-на-Дону', nameEn: 'Rostov-on-Don', slug: 'rostov-on-don', x: 25, y: 70 },
-  { name: 'Краснодар', nameEn: 'Krasnodar', slug: 'krasnodar', x: 24, y: 72 },
-  { name: 'Уфа', nameEn: 'Ufa', slug: 'ufa', x: 37, y: 57 },
-  { name: 'Пермь', nameEn: 'Perm', slug: 'perm', x: 37, y: 50 },
-  { name: 'Челябинск', nameEn: 'Chelyabinsk', slug: 'chelyabinsk', x: 40, y: 58 },
-  { name: 'Нижний Новгород', nameEn: 'Nizhny Novgorod', slug: 'nizhny-novgorod', x: 28, y: 54 },
-  { name: 'Волгоград', nameEn: 'Volgograd', slug: 'volgograd', x: 28, y: 66 },
-  { name: 'Воронеж', nameEn: 'Voronezh', slug: 'voronezh', x: 25, y: 63 },
-  { name: 'Омск', nameEn: 'Omsk', slug: 'omsk', x: 48, y: 57 },
-  { name: 'Тюмень', nameEn: 'Tyumen', slug: 'tyumen', x: 44, y: 52 },
-  { name: 'Хабаровск', nameEn: 'Khabarovsk', slug: 'khabarovsk', x: 88, y: 60 },
-  { name: 'Калининград', nameEn: 'Kaliningrad', slug: 'kaliningrad', x: 13, y: 52 },
-  { name: 'Мурманск', nameEn: 'Murmansk', slug: 'murmansk', x: 21, y: 28 },
-  { name: 'Архангельск', nameEn: 'Arkhangelsk', slug: 'arkhangelsk', x: 26, y: 36 },
-  { name: 'Якутск', nameEn: 'Yakutsk', slug: 'yakutsk', x: 81, y: 40 },
-  { name: 'Петропавловск-Камчатский', nameEn: 'Petropavlovsk-Kamchatsky', slug: 'petropavlovsk-kamchatsky', x: 96, y: 48 },
-  { name: 'Южно-Сахалинск', nameEn: 'Yuzhno-Sakhalinsk', slug: 'yuzhno-sakhalinsk', x: 93, y: 60 },
+  { name: 'Екатеринбург', nameEn: 'Yekaterinburg', slug: 'yekaterinburg', x: 26.5, y: 69 },
+  { name: 'Казань', nameEn: 'Kazan', slug: 'kazan', x: 21, y: 70 },
+  { name: 'Самара', nameEn: 'Samara', slug: 'samara', x: 21.5, y: 74 },
+  { name: 'Ростов-на-Дону', nameEn: 'Rostov-on-Don', slug: 'rostov-on-don', x: 11.5, y: 84 },
+  { name: 'Краснодар', nameEn: 'Krasnodar', slug: 'krasnodar', x: 10.5, y: 86 },
+  { name: 'Уфа', nameEn: 'Ufa', slug: 'ufa', x: 24, y: 71 },
+  { name: 'Пермь', nameEn: 'Perm', slug: 'perm', x: 24.5, y: 66 },
+  { name: 'Челябинск', nameEn: 'Chelyabinsk', slug: 'chelyabinsk', x: 27, y: 71 },
+  { name: 'Нижний Новгород', nameEn: 'Nizhny Novgorod', slug: 'nizhny-novgorod', x: 18, y: 69 },
+  { name: 'Волгоград', nameEn: 'Volgograd', slug: 'volgograd', x: 19, y: 81 },
+  { name: 'Воронеж', nameEn: 'Voronezh', slug: 'voronezh', x: 14, y: 76 },
+  { name: 'Омск', nameEn: 'Omsk', slug: 'omsk', x: 31, y: 72 },
+  { name: 'Тюмень', nameEn: 'Tyumen', slug: 'tyumen', x: 28.5, y: 68 },
+  { name: 'Хабаровск', nameEn: 'Khabarovsk', slug: 'khabarovsk', x: 82, y: 63 },
+  { name: 'Калининград', nameEn: 'Kaliningrad', slug: 'kaliningrad', x: 2.5, y: 71 },
+  { name: 'Мурманск', nameEn: 'Murmansk', slug: 'murmansk', x: 8, y: 46 },
+  { name: 'Архангельск', nameEn: 'Arkhangelsk', slug: 'arkhangelsk', x: 11, y: 50 },
+  { name: 'Якутск', nameEn: 'Yakutsk', slug: 'yakutsk', x: 70.5, y: 54 },
+  { name: 'Петропавловск-Камчатский', nameEn: 'Petropavlovsk-Kamchatsky', slug: 'petropavlovsk-kamchatsky', x: 93.5, y: 49 },
+  { name: 'Южно-Сахалинск', nameEn: 'Yuzhno-Sakhalinsk', slug: 'yuzhno-sakhalinsk', x: 89, y: 69 },
 ];
 
 // Mock-сервисы для каждого города
