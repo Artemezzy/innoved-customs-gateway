@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import heroVideo from '@/assets/hero-bg-v2.mp4';
+import heroBg from '@/assets/hero-bg.jpg';
 import { analytics } from '@/utils/analytics';
 import { TypewriterText } from './TypewriterText';
 import { useNavigate } from 'react-router-dom';
@@ -33,16 +33,11 @@ export function Hero({ language }: HeroProps) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Video */}
-      <video 
+      <img 
+        src={heroBg}
+        alt="Контейнерный порт — таможенное оформление грузов"
         className="absolute inset-0 w-full h-full object-cover"
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-      >
-        <source src={heroVideo} type="video/mp4" />
-      </video>
+      />
       
       {/* Overlay */}
       <div className="absolute inset-0 bg-gradient-hero" />
