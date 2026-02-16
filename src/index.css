@@ -161,3 +161,21 @@
 .animate-glow {
   animation: glow 2s ease-in-out infinite;
 }
+
+/* Russia map outline styling — applied to the injected external SVG */
+.russia-outline-layer path,
+.russia-outline-layer polygon,
+.russia-outline-layer circle,
+.russia-outline-layer ellipse,
+.russia-outline-layer rect:not([fill="none"]) {
+  fill: hsl(var(--primary) / 0.1);
+  stroke: hsl(var(--primary) / 0.3);
+  stroke-width: 1;
+  stroke-linejoin: round;
+}
+
+/* Reset any inline styles the SVG may have */
+.russia-outline-layer [style] {
+  fill: hsl(var(--primary) / 0.1) !important;
+  stroke: hsl(var(--primary) / 0.3) !important;
+}
