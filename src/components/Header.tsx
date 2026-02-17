@@ -84,7 +84,7 @@ export function Header({ language }: HeaderProps) {
           </nav>
 
           {/* Contact + CTA - Right */}
-          <div className="hidden lg:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4 mr-24">
             <a href="https://t.me/innovedbroker" target="_blank" rel="noopener noreferrer"
               className="text-primary-foreground hover:text-primary-glow transition-colors duration-300 p-2 rounded-full hover:bg-white/10"
               onClick={() => analytics.contactClick('telegram')}>
