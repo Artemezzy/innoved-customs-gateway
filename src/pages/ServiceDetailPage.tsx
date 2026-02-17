@@ -210,7 +210,7 @@ export default function ServiceDetailPage() {
                 <ul className="space-y-4">
                   {section.items.map((item, itemIndex) => (
                     <li key={itemIndex} className="flex gap-3">
-                      <CheckCircle className="w-6 h-6 text-primary flex-shrink-0 mt-0.5" />
+                      <CheckCircle className="w-6 h-6 text-accent flex-shrink-0 mt-0.5" />
                       <span className="text-muted-foreground">{item}</span>
                     </li>
                   ))}
@@ -225,7 +225,7 @@ export default function ServiceDetailPage() {
                       key={stepIndex} 
                       className="flex gap-4 p-6 bg-card rounded-lg border border-border"
                     >
-                      <div className="flex-shrink-0 w-12 h-12 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold text-lg">
+                      <div className="flex-shrink-0 w-12 h-12 bg-accent text-accent-foreground rounded-full flex items-center justify-center font-bold text-lg">
                         {stepIndex + 1}
                       </div>
                       <div>
@@ -242,12 +242,12 @@ export default function ServiceDetailPage() {
           ))}
 
           {/* CTA */}
-          <div className="bg-primary/5 rounded-xl p-8 text-center mt-12">
+          <div className="bg-accent/5 rounded-xl p-8 text-center mt-12 border border-accent/20">
             <p className="text-lg text-foreground mb-6">
               {serviceContent.cta}
             </p>
             <Link to="/contact">
-              <Button size="lg" className="gap-2">
+              <Button size="lg" className="gap-2 bg-accent hover:bg-accent/90 text-accent-foreground">
                 <Phone className="w-4 h-4" />
                 {text.contactUs}
               </Button>
