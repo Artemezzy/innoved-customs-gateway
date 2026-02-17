@@ -44,7 +44,7 @@ export function Footer({ language }: FooterProps) {
   const text = content[language];
 
   return (
-    <footer className="relative bg-primary text-primary-foreground py-10 overflow-hidden">
+    <footer className="relative bg-foreground text-primary-foreground py-10 overflow-hidden">
       {/* Triangle pattern */}
       <svg className="absolute inset-0 w-full h-full opacity-20" preserveAspectRatio="none">
         <polygon points="0,0 120,0 60,100" className="fill-white/5" />
