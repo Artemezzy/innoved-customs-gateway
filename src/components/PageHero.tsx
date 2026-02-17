@@ -6,7 +6,7 @@ interface PageHeroProps {
 
 export function PageHero({ title, subtitle, children }: PageHeroProps) {
   return (
-    <section className="relative bg-primary text-primary-foreground py-20 overflow-hidden">
+    <section className="relative bg-foreground text-primary-foreground py-20 overflow-hidden">
       {/* Triangle pattern background */}
       <svg className="absolute inset-0 w-full h-full opacity-30" preserveAspectRatio="none">
         <polygon points="0,0 120,0 60,100" className="fill-white/5" />
