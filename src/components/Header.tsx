@@ -3,6 +3,7 @@ import { Send, Mail, Phone, Menu, X } from 'lucide-react';
 import { analytics } from '@/utils/analytics';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import logoImg from '@/assets/logo.png';
 
 interface HeaderProps {
   language: 'ru' | 'en';
@@ -66,9 +67,9 @@ export function Header({ language }: HeaderProps) {
           {/* Logo - Left */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <img
-              src="/lovable-uploads/e1b9249a-ea3e-4180-bccf-1bd997bae460.png"
+              src={logoImg}
               alt={text.logo}
-              className="h-9 w-auto brightness-0 invert"
+              className="h-10 w-auto brightness-0 invert"
             />
           </Link>
 
