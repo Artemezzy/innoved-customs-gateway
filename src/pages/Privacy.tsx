@@ -1,6 +1,6 @@
-import { Layout } from '@/components/Layout';
 import { SEOHead } from '@/components/SEOHead';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { PageHero } from '@/components/PageHero';
 
 const content = {
   ru: {
@@ -60,16 +60,15 @@ const Privacy = () => {
   const text = content[language];
 
   return (
-    <Layout>
+    <>
       <SEOHead language={language} page="privacy" />
+      <PageHero title={text.title} />
       
-      <div className="py-12">
+      <div className="py-12 bg-background">
         <div className="container mx-auto px-4 max-w-4xl">
-          <h1 className="text-4xl font-bold text-primary mb-8">{text.title}</h1>
-          
           <div className="space-y-8">
             {text.sections.map((section, index) => (
-              <section key={index} className="bg-card p-6 rounded-lg shadow-card">
+              <section key={index} className="bg-card p-6 rounded-lg shadow-card border border-border">
                 <h2 className="text-xl font-semibold text-card-foreground mb-4">
                   {section.title}
                 </h2>
@@ -81,7 +80,7 @@ const Privacy = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   );
 };
 
