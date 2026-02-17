@@ -7,6 +7,7 @@ import { useFaqItems } from '@/hooks/useFaqItems';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { PageHero } from '@/components/PageHero';
 
 const content = {
   ru: {
@@ -45,20 +46,8 @@ export default function FAQPage() {
   return (
     <>
       <SEOHead language={language} page="faq" />
-      
-      {/* Hero Section */}
-      <section className="bg-primary text-primary-foreground py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">
-            {text.title}
-          </h1>
-          <p className="text-xl opacity-90 animate-fade-in">
-            {text.subtitle}
-          </p>
-        </div>
-      </section>
+      <PageHero title={text.title} subtitle={text.subtitle} />
 
-      {/* FAQ Content */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
@@ -84,7 +73,6 @@ export default function FAQPage() {
               ))}
             </div>
 
-            {/* Loading State */}
             {isLoading && (
               <div className="space-y-4">
                 {[1, 2, 3, 4, 5].map((i) => (
@@ -96,7 +84,6 @@ export default function FAQPage() {
               </div>
             )}
 
-            {/* FAQ Accordion */}
             {!isLoading && (
               <Accordion type="single" collapsible className="space-y-4">
                 {filteredItems.map((item, index) => (

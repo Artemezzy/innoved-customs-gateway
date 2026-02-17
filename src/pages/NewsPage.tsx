@@ -6,6 +6,7 @@ import { useNewsItems } from '@/hooks/useNewsItems';
 import { ContentCard } from '@/components/ContentCard';
 import { ContentCarousel } from '@/components/ContentCarousel';
 import { Skeleton } from '@/components/ui/skeleton';
+import { PageHero } from '@/components/PageHero';
 
 const content = {
   ru: {
@@ -24,7 +25,6 @@ export default function NewsPage() {
   
   const { data: newsItems = [], isLoading } = useNewsItems(language);
 
-  // Sort by date descending (newest first - left side)
   const sortedNews = [...newsItems].sort((a, b) => 
     new Date(b.date).getTime() - new Date(a.date).getTime()
   );
@@ -36,23 +36,10 @@ export default function NewsPage() {
   return (
     <>
       <SEOHead language={language} page="news" />
-      
-      {/* Hero Section */}
-      <section className="bg-primary text-primary-foreground py-16 md:py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">
-            {text.title}
-          </h1>
-          <p className="text-xl opacity-90 animate-fade-in">
-            {text.subtitle}
-          </p>
-        </div>
-      </section>
+      <PageHero title={text.title} subtitle={text.subtitle} />
 
-      {/* News Carousel */}
       <section className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4 lg:px-12">
-          {/* Loading State */}
           {isLoading && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {[1, 2, 3].map((i) => (
@@ -63,7 +50,6 @@ export default function NewsPage() {
             </div>
           )}
 
-          {/* News Carousel */}
           {!isLoading && sortedNews.length > 0 && (
             <ContentCarousel itemsPerPage={3}>
               {sortedNews.map((item) => (
@@ -80,7 +66,6 @@ export default function NewsPage() {
             </ContentCarousel>
           )}
 
-          {/* Empty State */}
           {!isLoading && sortedNews.length === 0 && (
             <div className="text-center py-12">
               <p className="text-muted-foreground text-lg">

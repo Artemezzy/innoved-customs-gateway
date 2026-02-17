@@ -3,6 +3,8 @@ import { SEOHead } from '@/components/SEOHead';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEffect } from 'react';
 import { analytics } from '@/utils/analytics';
+import { PageHero } from '@/components/PageHero';
+
 const galleryImages = [
   '/gallery/gallery-01.webp',
   '/gallery/gallery-02.webp',
@@ -88,26 +90,14 @@ export default function AboutPage() {
     <>
       <SEOHead language={language} page="about" />
       
-      {/* Hero Section */}
-      <section className="bg-primary text-primary-foreground py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">
-            {text.title}
-          </h1>
-          <p className="text-xl opacity-90 animate-fade-in">
-            {text.subtitle}
-          </p>
-        </div>
-      </section>
+      <PageHero title={text.title} subtitle={text.subtitle} />
 
-      {/* About Component */}
       <About language={language} />
-
 
       {/* Mission Section */}
       <section className="py-16 bg-secondary">
         <div className="container mx-auto px-4 text-center max-w-3xl">
-          <h2 className="text-3xl font-bold text-foreground mb-6 animate-fade-in">
+          <h2 className="text-3xl font-montserrat font-bold text-foreground mb-6 animate-fade-in">
             {text.mission.title}
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed animate-fade-in">
@@ -137,14 +127,14 @@ export default function AboutPage() {
       {/* Values Section */}
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-foreground mb-12 text-center animate-fade-in">
+          <h2 className="text-3xl font-montserrat font-bold text-foreground mb-12 text-center animate-fade-in">
             {text.values.title}
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {text.values.items.map((value, index) => (
               <div 
                 key={index}
-                className="bg-card p-6 rounded-lg shadow-card hover:shadow-hover transition-all duration-300 animate-fade-in"
+                className="bg-card p-6 rounded-lg shadow-card hover:shadow-hover transition-all duration-300 animate-fade-in border border-border"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
                 <h3 className="text-xl font-semibold text-foreground mb-3">

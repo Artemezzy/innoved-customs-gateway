@@ -368,7 +368,7 @@ export function Contact({ language }: ContactProps) {
                 <Button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="w-full bg-primary hover:bg-primary-hover text-primary-foreground font-semibold py-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold py-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                 {isSubmitting ? (
                     language === 'ru' ? 'Отправка...' : 'Sending...'

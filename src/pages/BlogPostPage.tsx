@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CalendarDays, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { PageHero } from '@/components/PageHero';
 
 const backText = {
   ru: 'Назад к блогу',
@@ -44,15 +45,13 @@ export default function BlogPostPage() {
     return (
       <>
         <SEOHead language={language} page="blog" customTitle={`Загрузка... | ИННОВЭД`} />
-        <section className="bg-primary text-primary-foreground py-20">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <Skeleton className="h-10 w-32 mb-4 bg-white/20" />
-              <Skeleton className="h-6 w-48 mb-4 bg-white/20" />
-              <Skeleton className="h-12 w-full bg-white/20" />
-            </div>
+        <PageHero title="">
+          <div className="max-w-4xl mx-auto">
+            <Skeleton className="h-10 w-32 mb-4 bg-white/20" />
+            <Skeleton className="h-6 w-48 mb-4 bg-white/20" />
+            <Skeleton className="h-12 w-full bg-white/20" />
           </div>
-        </section>
+        </PageHero>
         <section className="py-16 bg-background">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto space-y-4">
@@ -81,31 +80,28 @@ export default function BlogPostPage() {
         canonicalPath={`/blog/${post.slug}`}
       />
       
-      {/* Hero Section */}
-      <section className="bg-primary text-primary-foreground py-20">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <Link to="/blog">
-              <Button variant="ghost" className="mb-4 text-primary-foreground hover:text-primary-foreground/80 hover:bg-white/10">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                {backText[language]}
-              </Button>
-            </Link>
-            <div className="flex items-center gap-4 mb-4">
-              <Badge variant="secondary" className="bg-white/20 text-primary-foreground">
-                {blogCategories[post.category as keyof typeof blogCategories]?.[language] || post.category}
-              </Badge>
-              <div className="flex items-center text-sm opacity-90">
-                <CalendarDays className="w-4 h-4 mr-1" />
-                {formatDate(post.date)}
-              </div>
+      <PageHero title="">
+        <div className="max-w-4xl mx-auto text-left">
+          <Link to="/blog">
+            <Button variant="ghost" className="mb-4 text-primary-foreground hover:text-primary-foreground/80 hover:bg-white/10">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              {backText[language]}
+            </Button>
+          </Link>
+          <div className="flex items-center gap-4 mb-4">
+            <Badge variant="secondary" className="bg-white/20 text-primary-foreground">
+              {blogCategories[post.category as keyof typeof blogCategories]?.[language] || post.category}
+            </Badge>
+            <div className="flex items-center text-sm opacity-90">
+              <CalendarDays className="w-4 h-4 mr-1" />
+              {formatDate(post.date)}
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold animate-fade-in">
-              {post.title}
-            </h1>
           </div>
+          <h1 className="text-3xl md:text-4xl font-montserrat font-bold animate-fade-in">
+            {post.title}
+          </h1>
         </div>
-      </section>
+      </PageHero>
 
       {/* Content */}
       <section className="py-16 bg-background">

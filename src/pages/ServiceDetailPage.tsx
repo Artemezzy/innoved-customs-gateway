@@ -4,6 +4,7 @@ import { useServiceDetail } from '@/hooks/useServiceDetail';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, CheckCircle, Phone } from 'lucide-react';
+import { PageHero } from '@/components/PageHero';
 import { useEffect } from 'react';
 import { analytics } from '@/utils/analytics';
 
@@ -100,14 +101,12 @@ export default function ServiceDetailPage() {
       <>
         <SEOHead language={language} page="services" />
         <div className="min-h-screen bg-background">
-        <section className="bg-primary text-primary-foreground py-20">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              {text.notFound}
-            </h1>
-            <p className="text-xl opacity-90">{text.notFoundText}</p>
-          </div>
-        </section>
+        <PageHero title={text.notFound}>
+          <h1 className="text-4xl md:text-5xl font-montserrat font-bold mb-4">
+            {text.notFound}
+          </h1>
+          <p className="text-xl opacity-90">{text.notFoundText}</p>
+        </PageHero>
         <div className="container mx-auto px-4 py-8">
           <Link to="/services">
             <Button variant="outline" className="gap-2">
@@ -138,13 +137,7 @@ export default function ServiceDetailPage() {
         />
         <div className="min-h-screen bg-background">
         {/* Hero */}
-        <section className="bg-primary text-primary-foreground py-20">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">
-              {serviceTitle}
-            </h1>
-          </div>
-        </section>
+        <PageHero title={serviceTitle} />
 
         {/* Back button and placeholder content */}
         <div className="container mx-auto px-4 py-8">
@@ -188,13 +181,7 @@ export default function ServiceDetailPage() {
       />
       <div className="min-h-screen bg-background">
       {/* Hero */}
-      <section className="bg-primary text-primary-foreground py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">
-            {serviceTitle}
-          </h1>
-        </div>
-      </section>
+      <PageHero title={serviceTitle} />
 
       {/* Content */}
       <div className="container mx-auto px-4 py-8">

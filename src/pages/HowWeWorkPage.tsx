@@ -3,6 +3,7 @@ import { SEOHead } from '@/components/SEOHead';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useEffect } from 'react';
 import { analytics } from '@/utils/analytics';
+import { PageHero } from '@/components/PageHero';
 
 const content = {
   ru: {
@@ -26,20 +27,7 @@ export default function HowWeWorkPage() {
   return (
     <>
       <SEOHead language={language} page="howWeWork" />
-      
-      {/* Hero Section */}
-      <section className="bg-primary text-primary-foreground py-16 md:py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-fade-in">
-            {text.title}
-          </h1>
-          <p className="text-xl opacity-90 animate-fade-in">
-            {text.subtitle}
-          </p>
-        </div>
-      </section>
-
-      {/* How We Work Component - без заголовка, т.к. уже есть в Hero */}
+      <PageHero title={text.title} subtitle={text.subtitle} />
       <HowWeWork language={language} showHeader={false} />
     </>
   );
