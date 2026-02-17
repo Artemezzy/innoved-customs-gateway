@@ -15,7 +15,7 @@ export function LanguageToggle({ onLanguageChange, currentLanguage }: LanguageTo
         variant={currentLanguage === 'ru' ? 'default' : 'outline'}
         size="sm"
         onClick={() => onLanguageChange('ru')}
-        className="text-xs"
+        className={`text-xs ${currentLanguage === 'ru' ? 'bg-accent text-accent-foreground hover:bg-accent/90' : 'border-white/30 text-white hover:bg-white/10'}`}
       >
         RU
       </Button>
@@ -23,7 +23,7 @@ export function LanguageToggle({ onLanguageChange, currentLanguage }: LanguageTo
         variant={currentLanguage === 'en' ? 'default' : 'outline'}
         size="sm"
         onClick={() => onLanguageChange('en')}
-        className="text-xs"
+        className={`text-xs ${currentLanguage === 'en' ? 'bg-accent text-accent-foreground hover:bg-accent/90' : 'border-white/30 text-white hover:bg-white/10'}`}
       >
         EN
       </Button>
