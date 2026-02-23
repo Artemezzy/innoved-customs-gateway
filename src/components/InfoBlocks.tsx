@@ -84,10 +84,7 @@ export function InfoBlocks() {
                   -50% на первое оформление
                 </h3>
                 <p className="font-montserrat text-accent-foreground/80 text-sm mt-1">
-                  особые условия
-                </p>
-                <p className="font-montserrat text-accent-foreground/80 text-sm mt-1">
-                  по промокоду NOW
+                  особые условия · по промокоду NOW
                 </p>
               </div>
               <div className="flex items-end gap-4">
@@ -100,7 +97,7 @@ export function InfoBlocks() {
               </div>
               <a
                 href="#contact"
-                className="inline-block font-montserrat font-bold text-accent bg-accent-foreground hover:bg-accent-foreground/90 rounded-xl px-6 py-3 text-base md:text-lg transition-colors"
+                className="inline-block font-montserrat font-bold text-accent bg-accent-foreground hover:bg-accent-foreground/90 rounded-xl px-8 py-4 text-lg md:text-xl transition-colors"
               >
                 Заказать
               </a>
