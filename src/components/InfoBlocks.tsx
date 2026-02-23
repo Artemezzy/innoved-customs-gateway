@@ -86,11 +86,11 @@ export function InfoBlocks() {
                 <p className="font-montserrat text-accent-foreground/80 text-sm mt-1">
                   особые условия
                 </p>
-                <p className="font-montserrat font-semibold text-accent-foreground text-lg md:text-xl mt-1">
-                  по промокоду <span className="underline font-bold">NOW</span>
+                <p className="font-montserrat text-accent-foreground/80 text-sm mt-1">
+                  по промокоду NOW
                 </p>
               </div>
-              <div>
+              <div className="flex items-end gap-4">
                 <p className="font-montserrat text-accent-foreground/80 text-xs leading-tight">
                   Дата окончания
                   <br />
@@ -102,7 +102,7 @@ export function InfoBlocks() {
                 href="#contact"
                 className="inline-block font-montserrat font-bold text-accent bg-accent-foreground hover:bg-accent-foreground/90 rounded-xl px-6 py-3 text-base md:text-lg transition-colors"
               >
-                Воспользоваться условиями
+                Заказать
               </a>
             </div>
             {/* Blocks 2 & 3 — two squares */}
