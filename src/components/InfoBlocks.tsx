@@ -96,7 +96,7 @@ export function InfoBlocks() {
                 <CountdownTimer />
               </div>
               <a
-                href="#contact"
+                href="/contact"
                 className="inline-block font-montserrat font-bold text-accent bg-accent-foreground hover:bg-accent-foreground/90 rounded-xl px-8 py-4 text-lg md:text-xl transition-colors"
               >
                 Заказать
