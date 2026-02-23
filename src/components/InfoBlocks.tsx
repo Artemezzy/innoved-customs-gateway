@@ -11,12 +11,24 @@ const slides = [
 ];
 
 function CountdownTimer() {
-  const TWO_HOURS = 2 * 60 * 60 * 1000;
+  const getDuration = () => {
+    const key = 'promo_timer';
+    const stored = localStorage.getItem(key);
+    if (stored) {
+      const { start, duration } = JSON.parse(stored);
+      const elapsed = Date.now() - start;
+      if (elapsed < duration) return { start, duration };
+    }
+    const duration = (2 + Math.random()) * 60 * 60 * 1000; // 2–3 hours
+    const entry = { start: Date.now(), duration };
+    localStorage.setItem(key, JSON.stringify(entry));
+    return entry;
+  };
 
   const getRemaining = () => {
-    const now = Date.now();
-    const cycle = now % TWO_HOURS;
-    return TWO_HOURS - cycle;
+    const { start, duration } = getDuration();
+    const left = duration - (Date.now() - start);
+    return left > 0 ? left : (() => { localStorage.removeItem('promo_timer'); return getDuration().duration; })();
   };
 
   const [remaining, setRemaining] = useState(getRemaining);
