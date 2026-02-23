@@ -86,13 +86,13 @@ function CountdownTimer({ language }: { language: Language }) {
   ];
 
   return (
-    <div className="flex gap-3 mt-1">
+    <div className="flex gap-2 sm:gap-3 mt-1">
       {units.map((u, i) => (
         <div key={i} className="flex flex-col items-center">
-          <span className="font-montserrat font-bold text-accent-foreground text-xl md:text-2xl tabular-nums">
+          <span className="font-montserrat font-bold text-accent-foreground text-base sm:text-xl md:text-2xl tabular-nums">
             {u.value}
           </span>
-          <span className="font-montserrat text-accent-foreground/70 text-[10px] md:text-xs">
+          <span className="font-montserrat text-accent-foreground/70 text-[8px] sm:text-[10px] md:text-xs">
             {u.label}
           </span>
         </div>
@@ -139,30 +139,30 @@ export function InfoBlocks({ language }: InfoBlocksProps) {
           {/* Left column */}
           <div className="flex flex-col gap-6">
             {/* Block 1 — promo banner */}
-            <div className="w-full aspect-[2/1] rounded-2xl bg-accent flex flex-col items-start justify-between text-left px-6 py-5 md:px-8 md:py-6">
+            <div className="w-full aspect-[3/2] sm:aspect-[2/1] rounded-2xl bg-accent flex flex-col items-start justify-between text-left px-5 py-4 md:px-8 md:py-6">
               <div>
-                <h3 className="font-montserrat font-bold text-accent-foreground text-2xl md:text-3xl lg:text-4xl leading-tight">
+                <h3 className="font-montserrat font-bold text-accent-foreground text-xl sm:text-2xl md:text-3xl lg:text-4xl leading-tight">
                   {t.promoTitle}
                 </h3>
-                <p className="font-montserrat text-accent-foreground/80 text-sm mt-1">
+                <p className="font-montserrat text-accent-foreground/80 text-xs sm:text-sm mt-1">
                   {t.promoSubtitle}
                 </p>
               </div>
-              <div className="flex items-end gap-4">
-                <p className="font-montserrat text-accent-foreground/80 text-xs leading-tight whitespace-pre-line">
+              <div className="flex items-end gap-3">
+                <p className="font-montserrat text-accent-foreground/80 text-[10px] sm:text-xs leading-tight whitespace-pre-line">
                   {t.promoDateLabel}
                 </p>
                 <CountdownTimer language={language} />
               </div>
               <a
                 href="/contact"
-                className="inline-block font-montserrat font-bold text-accent bg-accent-foreground hover:bg-accent-foreground/90 rounded-xl px-8 py-4 text-lg md:text-xl transition-colors"
+                className="inline-block font-montserrat font-bold text-accent bg-accent-foreground hover:bg-accent-foreground/90 rounded-xl px-6 py-3 sm:px-8 sm:py-4 text-base sm:text-lg md:text-xl transition-colors"
               >
                 {t.promoButton}
               </a>
             </div>
             {/* Blocks 2 & 3 — two squares */}
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-2 gap-3 sm:gap-6">
               <a
                 href="https://t.me/innoved_broker"
                 target="_blank"
@@ -174,11 +174,11 @@ export function InfoBlocks({ language }: InfoBlocksProps) {
                   alt="Телеграм-канал ИННОВЭД"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="relative z-10 flex flex-col justify-between h-full p-4">
-                  <h4 className="font-montserrat font-bold text-foreground text-lg md:text-xl leading-tight pt-1 whitespace-pre-line">
+                <div className="relative z-10 flex flex-col justify-between h-full p-3 sm:p-4">
+                  <h4 className="font-montserrat font-bold text-foreground text-sm sm:text-lg md:text-xl leading-tight pt-1 whitespace-pre-line">
                     {t.telegramTitle}
                   </h4>
-                  <p className="font-montserrat text-foreground text-xs md:text-sm leading-snug pb-1">
+                  <p className="font-montserrat text-foreground text-[10px] sm:text-xs md:text-sm leading-snug pb-1">
                     {t.telegramDesc}
                   </p>
                 </div>
@@ -193,11 +193,11 @@ export function InfoBlocks({ language }: InfoBlocksProps) {
                   alt="Коммерческое предложение ИННОВЭД"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="relative z-10 flex flex-col justify-between h-full p-4">
-                  <h4 className="font-montserrat font-bold text-foreground text-lg md:text-xl leading-tight pt-1 whitespace-pre-line">
+                <div className="relative z-10 flex flex-col justify-between h-full p-3 sm:p-4">
+                  <h4 className="font-montserrat font-bold text-foreground text-sm sm:text-lg md:text-xl leading-tight pt-1 whitespace-pre-line">
                     {t.offerTitle}
                   </h4>
-                  <p className="font-montserrat text-foreground text-xs md:text-sm leading-snug pb-1">
+                  <p className="font-montserrat text-foreground text-[10px] sm:text-xs md:text-sm leading-snug pb-1">
                     {t.offerDesc}
                   </p>
                 </div>
@@ -233,15 +233,15 @@ export function InfoBlocks({ language }: InfoBlocksProps) {
             {/* Arrows */}
             <button
               onClick={goPrev}
-              className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-background/90"
+              className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hover:bg-background/90"
             >
-              <ChevronLeft className="w-5 h-5 text-foreground" />
+              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-foreground" />
             </button>
             <button
               onClick={goNext}
-              className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-background/90"
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-300 hover:bg-background/90"
             >
-              <ChevronRight className="w-5 h-5 text-foreground" />
+              <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-foreground" />
             </button>
           </div>
         </div>
