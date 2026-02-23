@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const slides = [
@@ -9,6 +9,35 @@ const slides = [
   '/gallery/slide-05.webp',
   '/gallery/slide-06.webp',
 ];
+
+function CountdownTimer() {
+  const TWO_HOURS = 2 * 60 * 60 * 1000;
+
+  const getRemaining = () => {
+    const now = Date.now();
+    const cycle = now % TWO_HOURS;
+    return TWO_HOURS - cycle;
+  };
+
+  const [remaining, setRemaining] = useState(getRemaining);
+
+  useEffect(() => {
+    const id = setInterval(() => setRemaining(getRemaining()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const totalSec = Math.floor(remaining / 1000);
+  const dd = String(Math.floor(totalSec / 86400)).padStart(2, '0');
+  const hh = String(Math.floor((totalSec % 86400) / 3600)).padStart(2, '0');
+  const mm = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
+  const ss = String(totalSec % 60).padStart(2, '0');
+
+  return (
+    <p className="font-montserrat font-bold text-accent-foreground text-xl md:text-2xl mt-3 tracking-widest tabular-nums">
+      {dd}:{hh}:{mm}:{ss}
+    </p>
+  );
+}
 
 export function InfoBlocks() {
   const [current, setCurrent] = useState(0);
@@ -32,8 +61,18 @@ export function InfoBlocks() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Left column */}
           <div className="flex flex-col gap-6">
-            {/* Block 1 — horizontal rectangle */}
-            <div className="w-full aspect-[2/1] rounded-2xl border border-border bg-card" />
+            {/* Block 1 — promo banner */}
+            <div className="w-full aspect-[2/1] rounded-2xl bg-accent flex flex-col items-center justify-center text-center px-6">
+              <h3 className="font-montserrat font-bold text-accent-foreground text-2xl md:text-3xl lg:text-4xl leading-tight">
+                -50% на первое оформление
+                <br />
+                по промокоду <span className="underline">NOW</span>
+              </h3>
+              <p className="font-montserrat text-accent-foreground/80 text-sm mt-2">
+                особые условия
+              </p>
+              <CountdownTimer />
+            </div>
             {/* Blocks 2 & 3 — two squares */}
             <div className="grid grid-cols-2 gap-6">
               <div className="aspect-square rounded-2xl border border-border bg-card" />
