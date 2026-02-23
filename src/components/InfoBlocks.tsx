@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const slides = [
@@ -68,19 +68,29 @@ function CountdownTimer() {
 
 export function InfoBlocks() {
   const [current, setCurrent] = useState(0);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const resetAutoplay = useCallback((delay = 7000) => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setCurrent((prev) => (prev + 1) % slides.length);
+    }, delay);
+  }, []);
 
   const goNext = useCallback(() => {
     setCurrent((prev) => (prev + 1) % slides.length);
-  }, []);
+    resetAutoplay();
+  }, [resetAutoplay]);
 
   const goPrev = useCallback(() => {
     setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
-  }, []);
+    resetAutoplay();
+  }, [resetAutoplay]);
 
   useEffect(() => {
-    const timer = setInterval(goNext, 6000);
-    return () => clearInterval(timer);
-  }, [goNext]);
+    resetAutoplay(6000);
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [resetAutoplay]);
 
   return (
     <section className="py-16 md:py-24 bg-background">
