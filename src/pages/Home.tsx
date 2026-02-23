@@ -1,4 +1,5 @@
 import { Hero } from '@/components/Hero';
+import { InfoBlocks } from '@/components/InfoBlocks';
 import { Testimonials } from '@/components/Testimonials';
 import { SEOHead } from '@/components/SEOHead';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -16,6 +17,7 @@ export default function Home() {
     <>
       <SEOHead language={language} page="home" />
       <Hero language={language} />
+      <InfoBlocks />
       <Testimonials language={language} />
     </>
   );
