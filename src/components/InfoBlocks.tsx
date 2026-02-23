@@ -2,12 +2,11 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const slides = [
-  '/gallery/slide-01.webp',
-  '/gallery/slide-02.webp',
-  '/gallery/slide-03.webp',
-  '/gallery/slide-04.webp',
-  '/gallery/slide-05.webp',
-  '/gallery/slide-06.webp',
+  { src: '/gallery/slide-01.webp', subtitle: 'в одежде и текстильной продукции' },
+  { src: '/gallery/slide-02.webp', subtitle: 'в косметических товарах' },
+  { src: '/gallery/slide-03.webp', subtitle: 'в автозапчастях и комплектующих' },
+  { src: '/gallery/slide-04.webp', subtitle: 'в электронике и бытовой технике' },
+  { src: '/gallery/slide-05.webp', subtitle: 'в товарах химической отрасли' },
 ];
 
 function CountdownTimer() {
@@ -160,26 +159,39 @@ export function InfoBlocks() {
 
           {/* Block 4 — image slideshow */}
           <div className="aspect-square rounded-2xl border border-border bg-card overflow-hidden relative group">
-            {slides.map((src, i) => (
-              <img
-                key={src}
-                src={src}
-                alt=""
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+            {slides.map((slide, i) => (
+              <div
+                key={slide.src}
+                className={`absolute inset-0 w-full h-full transition-opacity duration-700 ${
                   i === current ? 'opacity-100' : 'opacity-0'
                 }`}
-              />
+              >
+                <img
+                  src={slide.src}
+                  alt={slide.subtitle}
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black/30" />
+                <div className="relative z-10 flex flex-col items-start justify-start h-full p-6 md:p-8">
+                  <h3 className="font-montserrat font-bold text-white text-2xl md:text-3xl lg:text-4xl leading-tight uppercase">
+                    У нас большая экспертиза
+                  </h3>
+                  <p className="font-montserrat text-white/90 text-base md:text-lg lg:text-xl mt-2">
+                    {slide.subtitle}
+                  </p>
+                </div>
+              </div>
             ))}
             {/* Arrows */}
             <button
               onClick={goPrev}
-              className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-background/90"
+              className="absolute left-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-background/90"
             >
               <ChevronLeft className="w-5 h-5 text-foreground" />
             </button>
             <button
               onClick={goNext}
-              className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-background/90"
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-background/70 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-background/90"
             >
               <ChevronRight className="w-5 h-5 text-foreground" />
             </button>
