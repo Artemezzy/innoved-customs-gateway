@@ -17,7 +17,7 @@ export default function Home() {
     <>
       <SEOHead language={language} page="home" />
       <Hero language={language} />
-      <InfoBlocks />
+      <InfoBlocks language={language} />
       <Testimonials language={language} />
     </>
   );
