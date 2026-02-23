@@ -116,7 +116,26 @@ export function InfoBlocks() {
             </div>
             {/* Blocks 2 & 3 — two squares */}
             <div className="grid grid-cols-2 gap-6">
-              <div className="aspect-square rounded-2xl border border-border bg-card" />
+              <a
+                href="https://t.me/innoved_broker"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="aspect-square rounded-2xl overflow-hidden relative group block"
+              >
+                <img
+                  src="/gallery/telegram-banner.webp"
+                  alt="Телеграм-канал ИННОВЭД"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="relative z-10 flex flex-col justify-between h-full p-5">
+                  <h4 className="font-montserrat font-bold text-foreground text-lg md:text-xl leading-tight">
+                    Запустили телеграм-канал
+                  </h4>
+                  <p className="font-montserrat text-foreground text-xs md:text-sm leading-snug">
+                    Тут мы делимся лайф-хаками, экспертизой и другой полезной информацией
+                  </p>
+                </div>
+              </a>
               <div className="aspect-square rounded-2xl border border-border bg-card" />
             </div>
           </div>
