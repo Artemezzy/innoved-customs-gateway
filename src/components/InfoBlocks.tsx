@@ -136,7 +136,25 @@ export function InfoBlocks() {
                   </p>
                 </div>
               </a>
-              <div className="aspect-square rounded-2xl border border-border bg-card" />
+              <a
+                href="/files/innoved_commercial.pdf"
+                download
+                className="aspect-square rounded-2xl overflow-hidden relative group block"
+              >
+                <img
+                  src="/gallery/offer-banner.webp"
+                  alt="Коммерческое предложение ИННОВЭД"
+                  className="absolute inset-0 w-full h-full object-cover"
+                />
+                <div className="relative z-10 flex flex-col justify-between h-full p-4">
+                  <h4 className="font-montserrat font-bold text-foreground text-lg md:text-xl leading-tight pt-1">
+                    Актуализировали<br />условия
+                  </h4>
+                  <p className="font-montserrat text-foreground text-xs md:text-sm leading-snug pb-1">
+                    Самые лучшие цены на рынке и программа лояльности
+                  </p>
+                </div>
+              </a>
             </div>
           </div>
 
