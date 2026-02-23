@@ -9,7 +9,7 @@ const content = {
   ru: {
     title: 'Наши достижения',
     stats: [
-      { number: 2400, suffix: '+', label: 'оформленных деклараций за 2025 год', icon: FileText },
+      { number: 12400, suffix: '+', label: 'оформленных деклараций за 2025 год', icon: FileText },
       { number: 115, suffix: '+', label: 'постоянных заказчиков', icon: Users },
       { number: 80, suffix: '+', label: 'товарных групп', icon: Package }
     ]
@@ -17,7 +17,7 @@ const content = {
   en: {
     title: 'Our Achievements',
     stats: [
-      { number: 2400, suffix: '+', label: 'declarations processed in 2025', icon: FileText },
+      { number: 12400, suffix: '+', label: 'declarations processed in 2025', icon: FileText },
       { number: 115, suffix: '+', label: 'regular customers', icon: Users },
       { number: 80, suffix: '+', label: 'product categories', icon: Package }
     ]
