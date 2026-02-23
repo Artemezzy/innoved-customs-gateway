@@ -99,8 +99,9 @@ export const useBlogPosts = (locale: Locale) => {
   return useQuery({
     queryKey: ['blogPosts', locale],
     queryFn: () => fetchBlogPosts(locale),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 30 * 60 * 1000, // 30 minutes
+    placeholderData: getFallbackBlogPosts(locale),
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 };
 
