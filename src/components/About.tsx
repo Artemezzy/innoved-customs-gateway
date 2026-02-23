@@ -1,4 +1,4 @@
-import innovedContainersImage from '@/assets/innoved-containers.jpg';
+import innovedContainersImage from '@/assets/innoved-containers.webp';
 
 interface AboutProps {
   language: 'ru' | 'en';
