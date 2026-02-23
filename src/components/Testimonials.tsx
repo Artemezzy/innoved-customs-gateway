@@ -95,7 +95,7 @@ interface TestimonialsProps {
 
 export function Testimonials({ language }: TestimonialsProps) {
   const plugin = useRef(
-    Autoplay({ delay: 5000, stopOnInteraction: true, stopOnMouseEnter: true })
+    Autoplay({ delay: 7000, stopOnInteraction: true, stopOnMouseEnter: true })
   );
 
   return (
