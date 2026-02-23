@@ -32,10 +32,26 @@ function CountdownTimer() {
   const mm = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
   const ss = String(totalSec % 60).padStart(2, '0');
 
+  const units = [
+    { value: dd, label: 'дней' },
+    { value: hh, label: 'часов' },
+    { value: mm, label: 'мин.' },
+    { value: ss, label: 'сек.' },
+  ];
+
   return (
-    <p className="font-montserrat font-bold text-accent-foreground text-xl md:text-2xl mt-3 tracking-widest tabular-nums">
-      {dd}:{hh}:{mm}:{ss}
-    </p>
+    <div className="flex gap-3 mt-1">
+      {units.map((u, i) => (
+        <div key={i} className="flex flex-col items-center">
+          <span className="font-montserrat font-bold text-accent-foreground text-xl md:text-2xl tabular-nums">
+            {u.value}
+          </span>
+          <span className="font-montserrat text-accent-foreground/70 text-[10px] md:text-xs">
+            {u.label}
+          </span>
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -62,16 +78,32 @@ export function InfoBlocks() {
           {/* Left column */}
           <div className="flex flex-col gap-6">
             {/* Block 1 — promo banner */}
-            <div className="w-full aspect-[2/1] rounded-2xl bg-accent flex flex-col items-center justify-center text-center px-6">
-              <h3 className="font-montserrat font-bold text-accent-foreground text-2xl md:text-3xl lg:text-4xl leading-tight">
-                -50% на первое оформление
-                <br />
-                по промокоду <span className="underline">NOW</span>
-              </h3>
-              <p className="font-montserrat text-accent-foreground/80 text-sm mt-2">
-                особые условия
-              </p>
-              <CountdownTimer />
+            <div className="w-full aspect-[2/1] rounded-2xl bg-accent flex flex-col items-start justify-between text-left px-6 py-5 md:px-8 md:py-6">
+              <div>
+                <h3 className="font-montserrat font-bold text-accent-foreground text-2xl md:text-3xl lg:text-4xl leading-tight">
+                  -50% на первое оформление
+                </h3>
+                <p className="font-montserrat text-accent-foreground/80 text-sm mt-1">
+                  особые условия
+                </p>
+                <p className="font-montserrat font-semibold text-accent-foreground text-lg md:text-xl mt-1">
+                  по промокоду <span className="underline font-bold">NOW</span>
+                </p>
+              </div>
+              <div>
+                <p className="font-montserrat text-accent-foreground/80 text-xs leading-tight">
+                  Дата окончания
+                  <br />
+                  программы
+                </p>
+                <CountdownTimer />
+              </div>
+              <a
+                href="#contact"
+                className="inline-block font-montserrat font-bold text-accent bg-accent-foreground hover:bg-accent-foreground/90 rounded-xl px-6 py-3 text-base md:text-lg transition-colors"
+              >
+                Воспользоваться условиями
+              </a>
             </div>
             {/* Blocks 2 & 3 — two squares */}
             <div className="grid grid-cols-2 gap-6">
