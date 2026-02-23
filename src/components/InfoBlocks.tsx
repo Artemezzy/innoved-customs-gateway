@@ -1,15 +1,49 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Language } from '@/contexts/LanguageContext';
 
 const slides = [
-  { src: '/gallery/slide-01.webp', subtitle: 'в одежде и текстильной продукции' },
-  { src: '/gallery/slide-02.webp', subtitle: 'в косметических товарах' },
-  { src: '/gallery/slide-03.webp', subtitle: 'в автозапчастях и комплектующих' },
-  { src: '/gallery/slide-04.webp', subtitle: 'в электронике и бытовой технике' },
-  { src: '/gallery/slide-05.webp', subtitle: 'в товарах химической отрасли' },
+  { src: '/gallery/slide-01.webp', subtitle: { ru: 'в одежде и текстильной продукции', en: 'in clothing and textiles' } },
+  { src: '/gallery/slide-02.webp', subtitle: { ru: 'в косметических товарах', en: 'in cosmetic products' } },
+  { src: '/gallery/slide-03.webp', subtitle: { ru: 'в автозапчастях и комплектующих', en: 'in auto parts and components' } },
+  { src: '/gallery/slide-04.webp', subtitle: { ru: 'в электронике и бытовой технике', en: 'in electronics and home appliances' } },
+  { src: '/gallery/slide-05.webp', subtitle: { ru: 'в товарах химической отрасли', en: 'in chemical industry products' } },
 ];
 
-function CountdownTimer() {
+const content = {
+  ru: {
+    promoTitle: '-50% на первое оформление',
+    promoSubtitle: 'особые условия · по промокоду NOW',
+    promoDateLabel: 'Дата окончания\nпрограммы',
+    promoButton: 'Заказать',
+    telegramTitle: 'Запустили\nтелеграм-канал',
+    telegramDesc: 'Тут мы делимся лайф-хаками, экспертизой и другой полезной информацией',
+    offerTitle: 'Актуализировали\nусловия',
+    offerDesc: 'Самые лучшие цены на рынке и программа лояльности',
+    slideHeading: 'У НАС БОЛЬШАЯ ЭКСПЕРТИЗА',
+    timerDays: 'дней',
+    timerHours: 'часов',
+    timerMin: 'мин.',
+    timerSec: 'сек.',
+  },
+  en: {
+    promoTitle: '-50% on first order',
+    promoSubtitle: 'special conditions · promo code NOW',
+    promoDateLabel: 'Program\nend date',
+    promoButton: 'Order now',
+    telegramTitle: 'We launched\na Telegram channel',
+    telegramDesc: 'Here we share life hacks, expertise and other useful information',
+    offerTitle: 'Updated\nour terms',
+    offerDesc: 'Best prices on the market and a loyalty program',
+    slideHeading: 'WE HAVE GREAT EXPERTISE',
+    timerDays: 'days',
+    timerHours: 'hours',
+    timerMin: 'min.',
+    timerSec: 'sec.',
+  },
+};
+
+function CountdownTimer({ language }: { language: Language }) {
   const getDuration = () => {
     const key = 'promo_timer';
     const stored = localStorage.getItem(key);
@@ -43,11 +77,12 @@ function CountdownTimer() {
   const mm = String(Math.floor((totalSec % 3600) / 60)).padStart(2, '0');
   const ss = String(totalSec % 60).padStart(2, '0');
 
+  const t = content[language];
   const units = [
-    { value: dd, label: 'дней' },
-    { value: hh, label: 'часов' },
-    { value: mm, label: 'мин.' },
-    { value: ss, label: 'сек.' },
+    { value: dd, label: t.timerDays },
+    { value: hh, label: t.timerHours },
+    { value: mm, label: t.timerMin },
+    { value: ss, label: t.timerSec },
   ];
 
   return (
@@ -66,7 +101,12 @@ function CountdownTimer() {
   );
 }
 
-export function InfoBlocks() {
+interface InfoBlocksProps {
+  language: Language;
+}
+
+export function InfoBlocks({ language }: InfoBlocksProps) {
+  const t = content[language];
   const [current, setCurrent] = useState(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -102,25 +142,23 @@ export function InfoBlocks() {
             <div className="w-full aspect-[2/1] rounded-2xl bg-accent flex flex-col items-start justify-between text-left px-6 py-5 md:px-8 md:py-6">
               <div>
                 <h3 className="font-montserrat font-bold text-accent-foreground text-2xl md:text-3xl lg:text-4xl leading-tight">
-                  -50% на первое оформление
+                  {t.promoTitle}
                 </h3>
                 <p className="font-montserrat text-accent-foreground/80 text-sm mt-1">
-                  особые условия · по промокоду NOW
+                  {t.promoSubtitle}
                 </p>
               </div>
               <div className="flex items-end gap-4">
-                <p className="font-montserrat text-accent-foreground/80 text-xs leading-tight">
-                  Дата окончания
-                  <br />
-                  программы
+                <p className="font-montserrat text-accent-foreground/80 text-xs leading-tight whitespace-pre-line">
+                  {t.promoDateLabel}
                 </p>
-                <CountdownTimer />
+                <CountdownTimer language={language} />
               </div>
               <a
                 href="/contact"
                 className="inline-block font-montserrat font-bold text-accent bg-accent-foreground hover:bg-accent-foreground/90 rounded-xl px-8 py-4 text-lg md:text-xl transition-colors"
               >
-                Заказать
+                {t.promoButton}
               </a>
             </div>
             {/* Blocks 2 & 3 — two squares */}
@@ -137,11 +175,11 @@ export function InfoBlocks() {
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="relative z-10 flex flex-col justify-between h-full p-4">
-                  <h4 className="font-montserrat font-bold text-foreground text-lg md:text-xl leading-tight pt-1">
-                    Запустили<br />телеграм-канал
+                  <h4 className="font-montserrat font-bold text-foreground text-lg md:text-xl leading-tight pt-1 whitespace-pre-line">
+                    {t.telegramTitle}
                   </h4>
                   <p className="font-montserrat text-foreground text-xs md:text-sm leading-snug pb-1">
-                    Тут мы делимся лайф-хаками, экспертизой и другой полезной информацией
+                    {t.telegramDesc}
                   </p>
                 </div>
               </a>
@@ -156,11 +194,11 @@ export function InfoBlocks() {
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="relative z-10 flex flex-col justify-between h-full p-4">
-                  <h4 className="font-montserrat font-bold text-foreground text-lg md:text-xl leading-tight pt-1">
-                    Актуализировали<br />условия
+                  <h4 className="font-montserrat font-bold text-foreground text-lg md:text-xl leading-tight pt-1 whitespace-pre-line">
+                    {t.offerTitle}
                   </h4>
                   <p className="font-montserrat text-foreground text-xs md:text-sm leading-snug pb-1">
-                    Самые лучшие цены на рынке и программа лояльности
+                    {t.offerDesc}
                   </p>
                 </div>
               </a>
@@ -178,16 +216,16 @@ export function InfoBlocks() {
               >
                 <img
                   src={slide.src}
-                  alt={slide.subtitle}
+                  alt={slide.subtitle[language]}
                   className="absolute inset-0 w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/30" />
                 <div className="relative z-10 flex flex-col items-start justify-start h-full p-6 md:p-8">
                   <h3 className="font-montserrat font-bold text-white text-2xl md:text-3xl lg:text-4xl leading-tight uppercase">
-                    У нас большая экспертиза
+                    {t.slideHeading}
                   </h3>
                   <p className="font-montserrat text-white/90 text-base md:text-lg lg:text-xl mt-2">
-                    {slide.subtitle}
+                    {slide.subtitle[language]}
                   </p>
                 </div>
               </div>
