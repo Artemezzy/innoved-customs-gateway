@@ -127,11 +127,11 @@ export function InfoBlocks() {
                   alt="Телеграм-канал ИННОВЭД"
                   className="absolute inset-0 w-full h-full object-cover"
                 />
-                <div className="relative z-10 flex flex-col justify-between h-full p-5">
-                  <h4 className="font-montserrat font-bold text-foreground text-lg md:text-xl leading-tight">
-                    Запустили телеграм-канал
+                <div className="relative z-10 flex flex-col justify-between h-full p-4">
+                  <h4 className="font-montserrat font-bold text-foreground text-lg md:text-xl leading-tight pt-1">
+                    Запустили<br />телеграм-канал
                   </h4>
-                  <p className="font-montserrat text-foreground text-xs md:text-sm leading-snug">
+                  <p className="font-montserrat text-foreground text-xs md:text-sm leading-snug pb-1">
                     Тут мы делимся лайф-хаками, экспертизой и другой полезной информацией
                   </p>
                 </div>
