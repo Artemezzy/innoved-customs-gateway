@@ -105,6 +105,10 @@ export function Hero({ language }: HeroProps) {
   const text = content[language];
   const navigate = useNavigate();
 
+  const uspItems = language === 'ru'
+    ? ['Бесплатная консультация', 'Оформление от 5 000 ₽', 'Расчёт платежей за один день']
+    : ['Free consultation', 'Clearance from 5,000 ₽', 'Payment calculation in one day'];
+
   const handleButtonClick = () => {
     analytics.contactClick('contact-form');
     navigate('/contact');
@@ -167,6 +171,22 @@ export function Hero({ language }: HeroProps) {
                 delay={0.3 + index * 0.15}
               />
             ))}
+
+            {/* USP Tags */}
+            <div className="flex flex-wrap gap-2 mt-2">
+              {uspItems.map((item, i) => (
+                <span
+                  key={i}
+                  className="bg-white/15 backdrop-blur-sm border border-white/20 text-primary-foreground text-xs sm:text-sm font-medium px-4 py-2 rounded-lg animate-fade-in"
+                  style={{
+                    animationDelay: `${0.75 + i * 0.12}s`,
+                    transform: `rotate(${i === 0 ? '-1.5' : i === 1 ? '1' : '-0.5'}deg)`,
+                  }}
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       </div>
