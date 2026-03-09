@@ -97,6 +97,12 @@ export default function BrokerCityPage() {
 
   const cityContent = city ? cityContentMap[city] : undefined;
 
+  const breadcrumbItems = [
+    { label: language === 'ru' ? 'Главная' : 'Home', href: '/' },
+    { label: language === 'ru' ? 'География' : 'Geography', href: '/tamozhennyj-broker' },
+    { label: cityData.name[language] },
+  ];
+
   // Rich content page
   if (cityContent) {
     const t = cityContent[language];
@@ -110,6 +116,7 @@ export default function BrokerCityPage() {
           canonicalPath={`/tamozhennyj-broker/${city}`}
         />
         <PageHero title={t.heroTitle} subtitle={t.heroSubtitle} />
+        <Breadcrumbs items={breadcrumbItems} />
         <BrokerCityContent data={t} />
       </>
     );
