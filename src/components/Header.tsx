@@ -104,6 +104,14 @@ export function Header({ language }: HeaderProps) {
               <Phone className="w-4 h-4 mr-2" />
               8 933 188 10 09
             </a>
+            <a
+              href="/files/innoved_commercial.pdf"
+              download
+              className="inline-flex items-center gap-1.5 text-primary-foreground hover:text-primary-glow transition-colors duration-300 text-sm font-medium"
+            >
+              <Download className="w-4 h-4" />
+              {language === 'ru' ? 'Цены' : 'Prices'}
+            </a>
             <Button
               size="sm"
               className="bg-accent hover:bg-accent/90 text-accent-foreground font-semibold"
