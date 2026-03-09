@@ -33,7 +33,7 @@ const content = {
       about: 'About',
       services: 'Services',
       howWeWork: 'How We Work',
-      brancheGeographyches',
+      branches: 'Geography',
       blog: 'Blog',
       news: 'News',
       faq: 'FAQ',
