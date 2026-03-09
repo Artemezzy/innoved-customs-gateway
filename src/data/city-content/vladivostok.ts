@@ -66,7 +66,7 @@ export const vladivostokContent = {
     heroTitle: 'Customs Broker Vladivostok',
     heroSubtitle: 'Professional customs clearance through the ports of Vladivostok',
     seoDescription: 'Customs broker in Vladivostok — import and export clearance through Vladivostok ports. Electronic declaration, HS code selection, support for shipments from China and Asia-Pacific countries.',
-    image: '/gallery/city-vladivostok.webp',
+    image: cityVladivostokImg,
     intro: {
       title: 'Vladivostok — One of Russia\'s Key Pacific Ports',
       text: 'Vladivostok is one of Russia\'s key ports on the Pacific Ocean and the main maritime gateway for cargo from Asian countries. For companies importing goods through Vladivostok from China, Korea, Japan, and other Asia-Pacific countries, proper customs clearance directly impacts cargo transit speed, duty costs, and the stability of the entire logistics chain.',
