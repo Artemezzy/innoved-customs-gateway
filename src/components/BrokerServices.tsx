@@ -120,13 +120,36 @@ export function BrokerServices({ language }: BrokerServicesProps) {
               </p>
             </div>
 
-            <Button
-              asChild
-              size="lg"
-              className="mt-6 bg-accent hover:bg-accent/90 text-accent-foreground font-bold w-fit px-8"
-            >
-              <Link to="/contact">{t.cta}</Link>
-            </Button>
+            <div className="mt-6 flex flex-wrap items-center gap-4">
+              <Button
+                asChild
+                size="lg"
+                className="bg-accent hover:bg-accent/90 text-accent-foreground font-bold px-10 py-6 text-base md:text-lg"
+              >
+                <Link to="/contact">{t.cta}</Link>
+              </Button>
+
+              <a
+                href="https://t.me/innovedbroker"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-accent hover:bg-accent/90 text-accent-foreground transition-colors"
+                aria-label="Telegram"
+              >
+                <Send className="w-5 h-5" />
+              </a>
+
+              <div className="flex flex-col text-sm">
+                <a href="mailto:info@innovedbroker.ru" className="flex items-center gap-1.5 text-foreground hover:text-accent transition-colors">
+                  <Mail className="w-4 h-4 text-accent shrink-0" />
+                  <span>info@innovedbroker.ru</span>
+                </a>
+                <a href="tel:+73952434354" className="flex items-center gap-1.5 text-foreground hover:text-accent transition-colors mt-1">
+                  <Phone className="w-4 h-4 text-accent shrink-0" />
+                  <span>+7 (3952) 43-43-54</span>
+                </a>
+              </div>
+            </div>
           </div>
 
           {/* Right — document image */}
