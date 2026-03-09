@@ -63,7 +63,7 @@ export const barnaulContent = {
   },
   en: {
     heroTitle: 'Customs Broker Barnaul',
-    heroSubtitle: 'Professional customs clearance in the Altai Region',
+    heroSubtitle: 'Import and export of cargo in the Altai region',
     seoDescription: 'Customs broker in Barnaul — import and export clearance. Electronic declaration, HS code selection, support for shipments from Kazakhstan and China.',
     intro: {
       title: 'Barnaul — Logistics Hub in Southern Western Siberia',

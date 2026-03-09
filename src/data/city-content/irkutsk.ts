@@ -63,7 +63,7 @@ export const irkutskContent = {
   },
   en: {
     heroTitle: 'Customs Broker Irkutsk',
-    heroSubtitle: 'Professional customs clearance in Irkutsk and Irkutsk Region',
+    heroSubtitle: 'Import and export of goods in Eastern Siberia',
     seoDescription: 'Customs broker in Irkutsk — import and export clearance through Irkutsk Region. Electronic declaration, HS code selection, support for shipments from China, Mongolia and Asia-Pacific countries.',
     intro: {
       title: 'Irkutsk — The Largest Industrial Center of Eastern Siberia',

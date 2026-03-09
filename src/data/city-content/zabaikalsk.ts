@@ -64,7 +64,7 @@ export const zabaikalskContent = {
   },
   en: {
     heroTitle: 'Customs Broker Zabaikalsk',
-    heroSubtitle: 'Professional customs clearance at the Russia-China border crossing',
+    heroSubtitle: 'Customs clearance at the China border',
     seoDescription: 'Customs broker in Zabaikalsk — import and export clearance through the largest railway border crossing with China. Electronic declaration, HS code selection, Trans-Siberian Railway cargo support.',
     intro: {
       title: 'Zabaikalsk — Key Border Crossing with China',

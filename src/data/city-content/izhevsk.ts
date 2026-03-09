@@ -64,7 +64,7 @@ export const izhevskContent = {
   },
   en: {
     heroTitle: 'Customs Broker Izhevsk',
-    heroSubtitle: 'Professional customs clearance in the Udmurt Republic',
+    heroSubtitle: 'Customs clearance of goods in Udmurtia',
     seoDescription: 'Customs broker in Izhevsk — import and export clearance. Electronic declaration, HS code selection, support for machinery and equipment shipments.',
     intro: {
       title: 'Izhevsk — Industrial Center of Udmurtia',

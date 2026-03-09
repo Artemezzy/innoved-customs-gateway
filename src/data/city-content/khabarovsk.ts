@@ -64,7 +64,7 @@ export const khabarovskContent = {
   },
   en: {
     heroTitle: 'Customs Broker Khabarovsk',
-    heroSubtitle: 'Professional customs clearance in the Russian Far East',
+    heroSubtitle: 'Import and export through the largest Far East hub',
     seoDescription: 'Customs broker in Khabarovsk — import and export clearance in the Far East. Timber, fish products, vehicles. Electronic declaration, HS code selection, Asia-Pacific trade.',
     intro: {
       title: 'Khabarovsk — Largest City of the Russian Far East',

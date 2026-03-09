@@ -63,7 +63,7 @@ export const novosibirskContent = {
   },
   en: {
     heroTitle: 'Customs Broker Novosibirsk',
-    heroSubtitle: 'Professional customs clearance in Novosibirsk and Novosibirsk Region',
+    heroSubtitle: 'Customs clearance of cargo in the center of Siberia',
     seoDescription: 'Customs broker in Novosibirsk — import and export clearance through Siberia\'s largest logistics hub. Electronic declaration, HS code selection, support for shipments from China and Kazakhstan.',
     intro: {
       title: 'Novosibirsk — Siberia\'s Largest Transport & Logistics Hub',
