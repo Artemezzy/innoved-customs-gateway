@@ -62,6 +62,10 @@ const cityContentMap: Record<string, typeof vladivostokContent> = {
   saratov: saratovContent,
   'sankt-peterburg': saintPetersburgContent,
   samara: samaraContent,
+  nakhodka: nakhodkaContent,
+  'nizhny-novgorod': nizhnyNovgorodContent,
+  omsk: omskContent,
+  'rostov-na-donu': rostovContent,
 };
 
 const fallback = {
