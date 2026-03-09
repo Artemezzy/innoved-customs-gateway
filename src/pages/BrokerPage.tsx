@@ -24,44 +24,50 @@ const content = {
   },
 };
 
-const BrokerPage = () => {
+export default function BrokerPage() {
   const { language } = useLanguage();
-  const text = content[language];
+  const t = content[language];
 
   useEffect(() => {
-    analytics.pageView('broker-page');
+    analytics.pageView('/tamozhennyj-broker', 'Таможенный брокер');
   }, []);
 
   return (
     <>
       <SEOHead
-        title={text.title}
-        description={text.subtitle}
-        keywords="таможенный брокер, таможенное оформление, услуги таможенного брокера"
+        language={language}
+        page="broker"
+        customTitle={t.title}
+        customDescription={t.subtitle}
       />
-      <PageHero title={text.title} subtitle={text.subtitle} />
+      <PageHero title={t.title} subtitle={t.subtitle} />
 
-      <section className="py-12">
+      <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-semibold text-primary-foreground mb-6">{text.heading}</h2>
-          <p className="text-primary-foreground/80 mb-8">{text.description}</p>
+          <h2 className="text-3xl font-montserrat font-bold text-foreground text-center mb-4">
+            {t.heading}
+          </h2>
+          <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-12">
+            {t.description}
+          </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {cities.map((city) => (
-              <Link to={`/tamozhennyj-broker/${city.slug}`} key={city.slug} className="group relative block rounded-md overflow-hidden">
-                <img
-                  src={city.imageUrl}
-                  alt={city.name}
-                  className="object-cover w-full h-48 transform group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors duration-300 flex items-center justify-center">
-                  <div className="text-center">
-                    <h3 className="text-xl font-semibold text-white mb-2">{city.name}</h3>
-                    <div className="inline-flex items-center gap-2 text-accent font-medium hover:text-accent-foreground transition-colors duration-300">
-                      {text.details}
-                      <ArrowRight className="w-4 h-4" />
-                    </div>
-                  </div>
+              <Link
+                key={city.slug}
+                to={`/tamozhennyj-broker/${city.slug}`}
+                className="group relative flex items-center gap-4 p-6 rounded-2xl border border-border bg-card hover:border-accent hover:shadow-[var(--shadow-hover)] transition-all duration-300"
+              >
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary group-hover:bg-accent group-hover:text-accent-foreground transition-colors duration-300 shrink-0">
+                  <MapPin className="w-5 h-5" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-montserrat font-bold text-foreground text-lg">
+                    {city.name[language]}
+                  </h3>
+                  <span className="text-sm text-muted-foreground group-hover:text-accent transition-colors duration-300 flex items-center gap-1">
+                    {t.details} <ArrowRight className="w-3 h-3" />
+                  </span>
                 </div>
               </Link>
             ))}
@@ -70,6 +76,4 @@ const BrokerPage = () => {
       </section>
     </>
   );
-};
-
-export default BrokerPage;
+}
