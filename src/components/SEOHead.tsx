@@ -161,6 +161,22 @@ export function SEOHead({
       document.head.appendChild(canonicalLink);
     }
     canonicalLink.href = canonicalUrl;
+
+    // Update hreflang tags
+    const hreflangIds = ['hreflang-ru', 'hreflang-en', 'hreflang-default'];
+    hreflangIds.forEach(id => document.getElementById(id)?.remove());
+
+    const createHreflang = (id: string, lang: string, href: string) => {
+      const link = document.createElement('link');
+      link.id = id;
+      link.rel = 'alternate';
+      link.hreflang = lang;
+      link.href = href;
+      document.head.appendChild(link);
+    };
+    createHreflang('hreflang-ru', 'ru', canonicalUrl);
+    createHreflang('hreflang-en', 'en', canonicalUrl);
+    createHreflang('hreflang-default', 'x-default', canonicalUrl);
     
     // Update Open Graph tags
     const ogTitle = document.querySelector('meta[property="og:title"]');
