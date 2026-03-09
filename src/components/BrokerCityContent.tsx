@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { CheckCircle, Ship, Globe, Briefcase, ArrowRight } from 'lucide-react';
 
 interface CityContentData {
-  image: string;
   intro: { title: string; text: string };
   logistics: { title: string; text: string };
   services: { title: string; items: string[] };
@@ -16,25 +15,12 @@ interface CityContentData {
 export function BrokerCityContent({ data }: { data: CityContentData }) {
   return (
     <div className="space-y-0">
-      {/* Intro + Image */}
       <section className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4 max-w-5xl">
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div>
-              <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-4">
-                {data.intro.title}
-              </h2>
-              <p className="text-muted-foreground leading-relaxed">{data.intro.text}</p>
-            </div>
-            <div className="rounded-2xl overflow-hidden shadow-lg">
-              <img
-                src={data.image}
-                alt={data.intro.title}
-                className="w-full h-64 md:h-80 object-cover"
-                loading="lazy"
-              />
-            </div>
-          </div>
+          <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-4">
+            {data.intro.title}
+          </h2>
+          <p className="text-muted-foreground leading-relaxed">{data.intro.text}</p>
         </div>
       </section>
 
