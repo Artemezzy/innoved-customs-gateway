@@ -32,6 +32,10 @@ import { tolyattiContent } from '@/data/city-content/tolyatti';
 import { saratovContent } from '@/data/city-content/saratov';
 import { saintPetersburgContent } from '@/data/city-content/saint-petersburg';
 import { samaraContent } from '@/data/city-content/samara';
+import { nakhodkaContent } from '@/data/city-content/nakhodka';
+import { nizhnyNovgorodContent } from '@/data/city-content/nizhny-novgorod';
+import { omskContent } from '@/data/city-content/omsk';
+import { rostovContent } from '@/data/city-content/rostov';
 
 const cityContentMap: Record<string, typeof vladivostokContent> = {
   vladivostok: vladivostokContent,
@@ -58,6 +62,10 @@ const cityContentMap: Record<string, typeof vladivostokContent> = {
   saratov: saratovContent,
   'sankt-peterburg': saintPetersburgContent,
   samara: samaraContent,
+  nakhodka: nakhodkaContent,
+  'nizhny-novgorod': nizhnyNovgorodContent,
+  omsk: omskContent,
+  'rostov-na-donu': rostovContent,
 };
 
 const fallback = {
