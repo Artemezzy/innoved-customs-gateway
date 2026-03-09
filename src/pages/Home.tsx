@@ -1,4 +1,5 @@
 import { Hero } from '@/components/Hero';
+import { BrokerServices } from '@/components/BrokerServices';
 import { InfoBlocks } from '@/components/InfoBlocks';
 import { Testimonials } from '@/components/Testimonials';
 import { SEOHead } from '@/components/SEOHead';
@@ -17,6 +18,7 @@ export default function Home() {
     <>
       <SEOHead language={language} page="home" />
       <Hero language={language} />
+      <BrokerServices language={language} />
       <InfoBlocks language={language} />
       <Testimonials language={language} />
     </>
