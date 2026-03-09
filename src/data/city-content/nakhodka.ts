@@ -64,7 +64,7 @@ export const nakhodkaContent = {
   },
   en: {
     heroTitle: 'Customs Broker Nakhodka',
-    heroSubtitle: 'Professional customs clearance through the ports of Nakhodka',
+    heroSubtitle: 'Cargo clearance at the seaport of Nakhodka',
     seoDescription: 'Customs broker in Nakhodka — import and export clearance through Nakhodka and Vostochny seaports. Vehicles from Japan, timber, fish products. Electronic declaration through CED.',
     intro: {
       title: 'Nakhodka — Largest Port City of Primorsky Krai',

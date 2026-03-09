@@ -64,7 +64,7 @@ export const makhachkalaContent = {
   },
   en: {
     heroTitle: 'Customs Broker Makhachkala',
-    heroSubtitle: 'Professional customs clearance through the Caspian Sea port',
+    heroSubtitle: 'Customs clearance of goods on the Caspian Sea',
     seoDescription: 'Customs broker in Makhachkala — import and export clearance. Electronic declaration, HS code selection, support for shipments through Makhachkala seaport.',
     intro: {
       title: 'Makhachkala — Port City on the Caspian Sea',

@@ -64,7 +64,7 @@ export const volgogradContent = {
   },
   en: {
     heroTitle: 'Customs Broker Volgograd',
-    heroSubtitle: 'Professional customs clearance in the Southern Federal District',
+    heroSubtitle: 'Customs clearance of goods in Southern Russia',
     seoDescription: 'Customs broker in Volgograd — import and export clearance. Electronic declaration, HS code selection, support for metal and chemical product shipments.',
     intro: {
       title: 'Volgograd — Industrial Center of Southern Russia',

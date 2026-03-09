@@ -64,7 +64,7 @@ export const chelyabinskContent = {
   },
   en: {
     heroTitle: 'Customs Broker Chelyabinsk',
-    heroSubtitle: 'Professional customs clearance in Chelyabinsk',
+    heroSubtitle: 'Customs clearance and transit through Kazakhstan',
     seoDescription: 'Customs broker in Chelyabinsk — import and export clearance of metal products, engineering products. Electronic declaration, HS code selection, transit through Kazakhstan.',
     intro: {
       title: 'Chelyabinsk — Industrial Center of the Ural Federal District',

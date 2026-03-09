@@ -64,7 +64,7 @@ export const krasnoyarskContent = {
   },
   en: {
     heroTitle: 'Customs Broker Krasnoyarsk',
-    heroSubtitle: 'Professional customs clearance in Eastern Siberia',
+    heroSubtitle: 'Cargo clearance in the center of Siberia',
     seoDescription: 'Customs broker in Krasnoyarsk — import and export clearance. Electronic declaration, HS code selection, support for non-ferrous metals and timber product shipments.',
     intro: {
       title: 'Krasnoyarsk — Industrial Center of Eastern Siberia',

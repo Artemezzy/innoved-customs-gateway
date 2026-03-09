@@ -64,7 +64,7 @@ export const omskContent = {
   },
   en: {
     heroTitle: 'Customs Broker Omsk',
-    heroSubtitle: 'Professional customs clearance in Omsk',
+    heroSubtitle: 'Customs clearance and transit through Kazakhstan',
     seoDescription: 'Customs broker in Omsk — import and export clearance of petroleum products, chemical products, engineering products. Electronic declaration, transit through Kazakhstan.',
     intro: {
       title: 'Omsk — Industrial Center of the Siberian Federal District',

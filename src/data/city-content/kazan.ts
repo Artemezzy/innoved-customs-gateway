@@ -64,7 +64,7 @@ export const kazanContent = {
   },
   en: {
     heroTitle: 'Customs Broker Kazan',
-    heroSubtitle: 'Professional customs clearance in the Republic of Tatarstan',
+    heroSubtitle: 'Import and export of goods through the Volga region',
     seoDescription: 'Customs broker in Kazan — import and export clearance. Electronic declaration, HS code selection, support for chemical and machinery product shipments.',
     intro: {
       title: 'Kazan — Economic Center of Tatarstan',

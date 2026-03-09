@@ -64,7 +64,7 @@ export const samaraContent = {
   },
   en: {
     heroTitle: 'Customs Broker Samara',
-    heroSubtitle: 'Professional customs clearance in Samara',
+    heroSubtitle: 'Customs clearance of cargo in the Volga region',
     seoDescription: 'Customs broker in Samara — import and export clearance of engineering products, petroleum products, chemical products. Electronic declaration, HS code selection.',
     intro: {
       title: 'Samara — Largest City of the Volga Region',

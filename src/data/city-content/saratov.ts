@@ -64,7 +64,7 @@ export const saratovContent = {
   },
   en: {
     heroTitle: 'Customs Broker Saratov',
-    heroSubtitle: 'Professional customs clearance in Saratov',
+    heroSubtitle: 'Import and export of goods in the Volga region',
     seoDescription: 'Customs broker in Saratov — import and export clearance of agricultural products, chemical products, engineering products. Electronic declaration, HS code selection.',
     intro: {
       title: 'Saratov — Industrial and Transport Center of the Volga Region',

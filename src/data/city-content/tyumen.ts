@@ -64,7 +64,7 @@ export const tyumenContent = {
   },
   en: {
     heroTitle: 'Customs Broker Tyumen',
-    heroSubtitle: 'Professional customs clearance in Tyumen',
+    heroSubtitle: 'Customs clearance and industrial import',
     seoDescription: 'Customs broker in Tyumen — import and export clearance of oil and gas equipment, petrochemical products. Electronic declaration, HS code selection, transit through Kazakhstan.',
     intro: {
       title: 'Tyumen — Industrial Center of Western Siberia',

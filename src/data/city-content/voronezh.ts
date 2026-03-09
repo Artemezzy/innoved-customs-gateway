@@ -64,7 +64,7 @@ export const voronezhContent = {
   },
   en: {
     heroTitle: 'Customs Broker Voronezh',
-    heroSubtitle: 'Professional customs clearance in the Central Federal District',
+    heroSubtitle: 'Customs clearance of cargo in the Chernozem region',
     seoDescription: 'Customs broker in Voronezh — import and export clearance. Electronic declaration, HS code selection, support for equipment and agricultural product shipments.',
     intro: {
       title: 'Voronezh — Industrial and Logistics Center of CFD',

@@ -65,7 +65,7 @@ export const saintPetersburgContent = {
   },
   en: {
     heroTitle: 'Customs Broker Saint Petersburg',
-    heroSubtitle: 'Professional customs clearance through the ports of Saint Petersburg',
+    heroSubtitle: 'Customs clearance of cargo at the seaport',
     seoDescription: 'Customs broker in Saint Petersburg — import and export clearance through the largest Baltic Sea port. Electronic declaration through Baltic Customs CED, HS code selection.',
     intro: {
       title: 'Saint Petersburg — The Largest Baltic Sea Port',

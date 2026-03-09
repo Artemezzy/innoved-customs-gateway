@@ -64,7 +64,7 @@ export const tolyattiContent = {
   },
   en: {
     heroTitle: 'Customs Broker Tolyatti',
-    heroSubtitle: 'Professional customs clearance in Tolyatti',
+    heroSubtitle: 'Customs clearance of cargo in the Volga region',
     seoDescription: 'Customs broker in Tolyatti — import and export clearance of vehicles, auto components, engineering products. Electronic declaration, HS code selection.',
     intro: {
       title: 'Tolyatti — Russia\'s Largest Automotive Center',

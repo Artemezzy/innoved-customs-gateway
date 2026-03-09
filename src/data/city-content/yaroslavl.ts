@@ -64,7 +64,7 @@ export const yaroslavlContent = {
   },
   en: {
     heroTitle: 'Customs Broker Yaroslavl',
-    heroSubtitle: 'Professional customs clearance in Yaroslavl',
+    heroSubtitle: 'Import and export of cargo in Central Russia',
     seoDescription: 'Customs broker in Yaroslavl — import and export clearance for engineering products, petroleum products, chemical products. Electronic declaration, HS code selection.',
     intro: {
       title: 'Yaroslavl — Industrial and Transport Center of Central Russia',

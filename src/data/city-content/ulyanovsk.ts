@@ -64,7 +64,7 @@ export const ulyanovskContent = {
   },
   en: {
     heroTitle: 'Customs Broker Ulyanovsk',
-    heroSubtitle: 'Professional customs clearance in Ulyanovsk',
+    heroSubtitle: 'Cargo clearance and foreign trade support',
     seoDescription: 'Customs broker in Ulyanovsk — import and export clearance of aviation equipment, engineering products. Electronic declaration, HS code selection.',
     intro: {
       title: 'Ulyanovsk — Industrial City of the Volga Region',

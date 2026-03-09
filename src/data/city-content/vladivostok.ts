@@ -63,7 +63,7 @@ export const vladivostokContent = {
   },
   en: {
     heroTitle: 'Customs Broker Vladivostok',
-    heroSubtitle: 'Professional customs clearance through the ports of Vladivostok',
+    heroSubtitle: 'Import and export of goods through the Far East',
     seoDescription: 'Customs broker in Vladivostok — import and export clearance through Vladivostok ports. Electronic declaration, HS code selection, support for shipments from China and Asia-Pacific countries.',
     
     intro: {

@@ -64,7 +64,7 @@ export const rostovContent = {
   },
   en: {
     heroTitle: 'Customs Broker Rostov-on-Don',
-    heroSubtitle: 'Professional customs clearance in Rostov-on-Don',
+    heroSubtitle: 'Cargo clearance in Southern Russia',
     seoDescription: 'Customs broker in Rostov-on-Don — import and export clearance of grain, agricultural products, equipment through the seaport. Electronic declaration, HS code selection.',
     intro: {
       title: 'Rostov-on-Don — Trade Center of Southern Russia',

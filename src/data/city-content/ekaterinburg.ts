@@ -64,7 +64,7 @@ export const ekaterinburgContent = {
   },
   en: {
     heroTitle: 'Customs Broker Ekaterinburg',
-    heroSubtitle: 'Professional customs clearance in the Ural region',
+    heroSubtitle: 'Customs clearance and foreign trade support in the Urals',
     seoDescription: 'Customs broker in Ekaterinburg — import and export clearance. Electronic declaration, HS code selection, support for shipments from China, Kazakhstan, and European countries.',
     intro: {
       title: 'Ekaterinburg — Industrial Center of the Urals',
