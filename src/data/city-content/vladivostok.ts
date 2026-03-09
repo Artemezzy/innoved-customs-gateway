@@ -1,4 +1,4 @@
-import cityVladivostokImg from '@/assets/city-vladivostok.webp';
+import cityVladivostokImg from '@/assets/city-vladivostok.jpg';
 
 export const vladivostokContent = {
   ru: {
