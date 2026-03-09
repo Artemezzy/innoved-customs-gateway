@@ -11,14 +11,14 @@ const content = {
   ru: {
     title: 'Таможенный брокер',
     subtitle: 'Профессиональные услуги таможенного оформления по всей России',
-    heading: 'Наши филиалы',
+    heading: 'Где мы оказываем услуги',
     description: 'Мы оказываем услуги таможенного оформления в ключевых логистических центрах России. Выберите ваш город, чтобы узнать подробности.',
     details: 'Подробнее',
   },
   en: {
     title: 'Customs Broker',
     subtitle: 'Professional customs clearance services across Russia',
-    heading: 'Our Branches',
+    heading: 'Where We Provide Services',
     description: 'We provide customs clearance services in key logistics hubs across Russia. Select your city to learn more.',
     details: 'Learn more',
   },
