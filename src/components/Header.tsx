@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Send, Mail, Phone, Menu, X } from 'lucide-react';
+import { Send, Mail, Phone, Menu, X, Download } from 'lucide-react';
 import { analytics } from '@/utils/analytics';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -103,6 +103,14 @@ export function Header({ language }: HeaderProps) {
               onClick={() => analytics.contactClick('phone')}>
               <Phone className="w-4 h-4 mr-2" />
               8 933 188 10 09
+            </a>
+            <a
+              href="/files/innoved_commercial.pdf"
+              download
+              className="inline-flex items-center gap-1.5 text-primary-foreground hover:text-primary-glow transition-colors duration-300 text-sm font-medium"
+            >
+              <Download className="w-4 h-4" />
+              {language === 'ru' ? 'Цены' : 'Prices'}
             </a>
             <Button
               size="sm"
