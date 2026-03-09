@@ -9,9 +9,15 @@ import { analytics } from '@/utils/analytics';
 
 // City content imports
 import { vladivostokContent } from '@/data/city-content/vladivostok';
+import { irkutskContent } from '@/data/city-content/irkutsk';
+import { novorossiyskContent } from '@/data/city-content/novorossiysk';
+import { novosibirskContent } from '@/data/city-content/novosibirsk';
 
 const cityContentMap: Record<string, typeof vladivostokContent> = {
   vladivostok: vladivostokContent,
+  irkutsk: irkutskContent,
+  novorossiysk: novorossiyskContent,
+  novosibirsk: novosibirskContent,
 };
 
 const fallback = {
