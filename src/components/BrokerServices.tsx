@@ -130,11 +130,11 @@ export function BrokerServices({ language }: BrokerServicesProps) {
           </div>
 
           {/* Right — document image */}
-          <div className="rounded-2xl overflow-hidden flex items-center justify-center p-6 md:p-10">
+          <div className="rounded-2xl overflow-hidden">
             <img
               src="/gallery/broker-doc.webp"
               alt={language === 'ru' ? 'Таможенная декларация' : 'Customs declaration'}
-              className="max-h-[360px] w-auto object-contain drop-shadow-lg"
+              className="w-full h-full object-cover"
             />
           </div>
         </div>
