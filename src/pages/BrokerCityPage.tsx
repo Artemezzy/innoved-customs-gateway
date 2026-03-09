@@ -22,6 +22,16 @@ import { makhachkalaContent } from '@/data/city-content/makhachkala';
 import { moscowContent } from '@/data/city-content/moscow';
 import { volgogradContent } from '@/data/city-content/volgograd';
 import { voronezhContent } from '@/data/city-content/voronezh';
+import { zabaikalskContent } from '@/data/city-content/zabaikalsk';
+import { yaroslavlContent } from '@/data/city-content/yaroslavl';
+import { chelyabinskContent } from '@/data/city-content/chelyabinsk';
+import { khabarovskContent } from '@/data/city-content/khabarovsk';
+import { ulyanovskContent } from '@/data/city-content/ulyanovsk';
+import { tyumenContent } from '@/data/city-content/tyumen';
+import { tolyattiContent } from '@/data/city-content/tolyatti';
+import { saratovContent } from '@/data/city-content/saratov';
+import { saintPetersburgContent } from '@/data/city-content/saint-petersburg';
+import { samaraContent } from '@/data/city-content/samara';
 
 const cityContentMap: Record<string, typeof vladivostokContent> = {
   vladivostok: vladivostokContent,
@@ -38,6 +48,16 @@ const cityContentMap: Record<string, typeof vladivostokContent> = {
   moskva: moscowContent,
   volgograd: volgogradContent,
   voronezh: voronezhContent,
+  zabaykalsk: zabaikalskContent,
+  yaroslavl: yaroslavlContent,
+  chelyabinsk: chelyabinskContent,
+  khabarovsk: khabarovskContent,
+  ulyanovsk: ulyanovskContent,
+  tyumen: tyumenContent,
+  tolyatti: tolyattiContent,
+  saratov: saratovContent,
+  'sankt-peterburg': saintPetersburgContent,
+  samara: samaraContent,
 };
 
 const fallback = {
