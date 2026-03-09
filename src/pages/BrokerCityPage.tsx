@@ -2,6 +2,7 @@ import { useParams, Navigate } from 'react-router-dom';
 import { PageHero } from '@/components/PageHero';
 import { SEOHead } from '@/components/SEOHead';
 import { BrokerCityContent } from '@/components/BrokerCityContent';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cities } from '@/data/cities';
 import { useEffect } from 'react';
