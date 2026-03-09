@@ -2,6 +2,7 @@ import { useParams, Navigate } from 'react-router-dom';
 import { PageHero } from '@/components/PageHero';
 import { SEOHead } from '@/components/SEOHead';
 import { BrokerCityContent } from '@/components/BrokerCityContent';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cities } from '@/data/cities';
 import { useEffect } from 'react';
@@ -96,6 +97,12 @@ export default function BrokerCityPage() {
 
   const cityContent = city ? cityContentMap[city] : undefined;
 
+  const breadcrumbItems = [
+    { label: language === 'ru' ? 'Главная' : 'Home', href: '/' },
+    { label: language === 'ru' ? 'География' : 'Geography', href: '/tamozhennyj-broker' },
+    { label: cityData.name[language] },
+  ];
+
   // Rich content page
   if (cityContent) {
     const t = cityContent[language];
@@ -109,6 +116,7 @@ export default function BrokerCityPage() {
           canonicalPath={`/tamozhennyj-broker/${city}`}
         />
         <PageHero title={t.heroTitle} subtitle={t.heroSubtitle} />
+        <Breadcrumbs items={breadcrumbItems} />
         <BrokerCityContent data={t} />
       </>
     );
