@@ -18,7 +18,7 @@ const content = {
       about: 'О компании',
       services: 'Услуги',
       howWeWork: 'Как мы работаем',
-      branches: 'Филиалы',
+      branches: 'География',
       blog: 'Блог',
       news: 'Новости',
       faq: 'FAQ',
