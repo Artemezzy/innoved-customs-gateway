@@ -18,6 +18,8 @@ import NewsItemPage from "./pages/NewsItemPage";
 import FAQPage from "./pages/FAQPage";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import BrokerPage from "./pages/BrokerPage";
+import BrokerCityPage from "./pages/BrokerCityPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +39,8 @@ const App = () => (
               <Route path="/services/:slug" element={<ServiceDetailPage />} />
               <Route path="/how-we-work" element={<HowWeWorkPage />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/tamozhennyj-broker" element={<BrokerPage />} />
+              <Route path="/tamozhennyj-broker/:city" element={<BrokerCityPage />} />
               <Route path="/blog" element={<BlogPage />} />
               <Route path="/blog/:slug" element={<BlogPostPage />} />
               {/* News routes temporarily hidden */}
