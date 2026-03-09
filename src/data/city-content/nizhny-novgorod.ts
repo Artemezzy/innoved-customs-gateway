@@ -1,7 +1,7 @@
 export const nizhnyNovgorodContent = {
   ru: {
     heroTitle: 'Таможенный брокер Нижний Новгород',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов в Нижнем Новгороде',
+    heroSubtitle: 'Растаможка товаров и ВЭД в Поволжье',
     seoDescription: 'Таможенный брокер в Нижнем Новгороде — оформление импорта и экспорта машиностроительной продукции, автокомпонентов, химической продукции. Электронное декларирование, подбор кодов ТН ВЭД.',
     intro: {
       title: 'Нижний Новгород — промышленный центр Приволжского федерального округа',
@@ -64,7 +64,7 @@ export const nizhnyNovgorodContent = {
   },
   en: {
     heroTitle: 'Customs Broker Nizhny Novgorod',
-    heroSubtitle: 'Professional customs clearance in Nizhny Novgorod',
+    heroSubtitle: 'Customs clearance and foreign trade in the Volga region',
     seoDescription: 'Customs broker in Nizhny Novgorod — import and export clearance of engineering products, auto components, chemical products. Electronic declaration, HS code selection.',
     intro: {
       title: 'Nizhny Novgorod — Industrial Center of the Volga Federal District',

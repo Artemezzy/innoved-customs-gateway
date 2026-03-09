@@ -1,7 +1,7 @@
 export const ulyanovskContent = {
   ru: {
     heroTitle: 'Таможенный брокер Ульяновск',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов в Ульяновске',
+    heroSubtitle: 'Растаможка грузов и ВЭД-сопровождение',
     seoDescription: 'Таможенный брокер в Ульяновске — оформление импорта и экспорта авиационной техники, машиностроительной продукции. Электронное декларирование, подбор кодов ТН ВЭД.',
     intro: {
       title: 'Ульяновск — промышленный город Поволжья',
@@ -64,7 +64,7 @@ export const ulyanovskContent = {
   },
   en: {
     heroTitle: 'Customs Broker Ulyanovsk',
-    heroSubtitle: 'Professional customs clearance in Ulyanovsk',
+    heroSubtitle: 'Cargo clearance and foreign trade support',
     seoDescription: 'Customs broker in Ulyanovsk — import and export clearance of aviation equipment, engineering products. Electronic declaration, HS code selection.',
     intro: {
       title: 'Ulyanovsk — Industrial City of the Volga Region',

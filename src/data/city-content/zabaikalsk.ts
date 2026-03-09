@@ -1,7 +1,7 @@
 export const zabaikalskContent = {
   ru: {
     heroTitle: 'Таможенный брокер Забайкальск',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов на российско-китайской границе',
+    heroSubtitle: 'Таможенное оформление грузов на границе с Китаем',
     seoDescription: 'Таможенный брокер в Забайкальске — оформление импорта и экспорта через крупнейший железнодорожный пункт пропуска на границе с Китаем. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение грузов по Транссибу.',
     intro: {
       title: 'Забайкальск — ключевой пункт пропуска на границе с Китаем',
@@ -64,7 +64,7 @@ export const zabaikalskContent = {
   },
   en: {
     heroTitle: 'Customs Broker Zabaikalsk',
-    heroSubtitle: 'Professional customs clearance at the Russia-China border crossing',
+    heroSubtitle: 'Customs clearance at the China border',
     seoDescription: 'Customs broker in Zabaikalsk — import and export clearance through the largest railway border crossing with China. Electronic declaration, HS code selection, Trans-Siberian Railway cargo support.',
     intro: {
       title: 'Zabaikalsk — Key Border Crossing with China',

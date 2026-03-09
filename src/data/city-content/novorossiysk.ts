@@ -1,7 +1,7 @@
 export const novorossiyskContent = {
   ru: {
     heroTitle: 'Таможенный брокер Новороссийск',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов через порт Новороссийск',
+    heroSubtitle: 'Растаможка грузов в порту Чёрного моря',
     seoDescription: 'Таможенный брокер в Новороссийске — оформление импорта и экспорта через крупнейший порт на Чёрном море. Электронное декларирование, работа с СВХ, сопровождение морских грузов.',
     intro: {
       title: 'Новороссийск — крупнейший российский порт на Чёрном море',
@@ -64,7 +64,7 @@ export const novorossiyskContent = {
   },
   en: {
     heroTitle: 'Customs Broker Novorossiysk',
-    heroSubtitle: 'Professional customs clearance through the port of Novorossiysk',
+    heroSubtitle: 'Cargo clearance at the Black Sea port',
     seoDescription: 'Customs broker in Novorossiysk — import and export clearance through Russia\'s largest Black Sea port. Electronic declaration, bonded warehouse coordination, maritime cargo support.',
     intro: {
       title: 'Novorossiysk — Russia\'s Largest Black Sea Port',

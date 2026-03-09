@@ -1,7 +1,7 @@
 export const kazanContent = {
   ru: {
     heroTitle: 'Таможенный брокер Казань',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов в Республике Татарстан',
+    heroSubtitle: 'Импорт и экспорт товаров через Поволжье',
     seoDescription: 'Таможенный брокер в Казани — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок химической и машиностроительной продукции.',
     intro: {
       title: 'Казань — экономический центр Татарстана',
@@ -64,7 +64,7 @@ export const kazanContent = {
   },
   en: {
     heroTitle: 'Customs Broker Kazan',
-    heroSubtitle: 'Professional customs clearance in the Republic of Tatarstan',
+    heroSubtitle: 'Import and export of goods through the Volga region',
     seoDescription: 'Customs broker in Kazan — import and export clearance. Electronic declaration, HS code selection, support for chemical and machinery product shipments.',
     intro: {
       title: 'Kazan — Economic Center of Tatarstan',

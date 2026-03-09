@@ -1,7 +1,7 @@
 export const moscowContent = {
   ru: {
     heroTitle: 'Таможенный брокер Москва',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов в столице России',
+    heroSubtitle: 'Растаможка грузов и ВЭД-сопровождение в столице',
     seoDescription: 'Таможенный брокер в Москве — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок любых товарных категорий.',
     intro: {
       title: 'Москва — крупнейший логистический центр России',
@@ -64,7 +64,7 @@ export const moscowContent = {
   },
   en: {
     heroTitle: 'Customs Broker Moscow',
-    heroSubtitle: 'Professional customs clearance in the capital of Russia',
+    heroSubtitle: 'Cargo clearance and foreign trade support in the capital',
     seoDescription: 'Customs broker in Moscow — import and export clearance. Electronic declaration, HS code selection, support for all product categories.',
     intro: {
       title: 'Moscow — Russia\'s Largest Logistics Center',

@@ -1,7 +1,7 @@
 export const irkutskContent = {
   ru: {
     heroTitle: 'Таможенный брокер Иркутск',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов в Иркутске и Иркутской области',
+    heroSubtitle: 'Импорт и экспорт товаров в Восточной Сибири',
     seoDescription: 'Таможенный брокер в Иркутске — оформление импорта и экспорта через Иркутскую область. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок из Китая, Монголии и стран АТР.',
     intro: {
       title: 'Иркутск — крупнейший промышленный центр Восточной Сибири',
@@ -63,7 +63,7 @@ export const irkutskContent = {
   },
   en: {
     heroTitle: 'Customs Broker Irkutsk',
-    heroSubtitle: 'Professional customs clearance in Irkutsk and Irkutsk Region',
+    heroSubtitle: 'Import and export of goods in Eastern Siberia',
     seoDescription: 'Customs broker in Irkutsk — import and export clearance through Irkutsk Region. Electronic declaration, HS code selection, support for shipments from China, Mongolia and Asia-Pacific countries.',
     intro: {
       title: 'Irkutsk — The Largest Industrial Center of Eastern Siberia',

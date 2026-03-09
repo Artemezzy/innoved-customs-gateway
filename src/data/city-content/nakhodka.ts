@@ -1,7 +1,7 @@
 export const nakhodkaContent = {
   ru: {
     heroTitle: 'Таможенный брокер Находка',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов через порты Находки',
+    heroSubtitle: 'Растаможка грузов в морском порту Находки',
     seoDescription: 'Таможенный брокер в Находке — оформление импорта и экспорта через морские порты Находки и Восточный. Автомобили из Японии, лесопродукция, рыбопродукция. Электронное декларирование через ЦЭД.',
     intro: {
       title: 'Находка — крупнейший портовый город Приморского края',
@@ -64,7 +64,7 @@ export const nakhodkaContent = {
   },
   en: {
     heroTitle: 'Customs Broker Nakhodka',
-    heroSubtitle: 'Professional customs clearance through the ports of Nakhodka',
+    heroSubtitle: 'Cargo clearance at the seaport of Nakhodka',
     seoDescription: 'Customs broker in Nakhodka — import and export clearance through Nakhodka and Vostochny seaports. Vehicles from Japan, timber, fish products. Electronic declaration through CED.',
     intro: {
       title: 'Nakhodka — Largest Port City of Primorsky Krai',

@@ -1,7 +1,7 @@
 export const izhevskContent = {
   ru: {
     heroTitle: 'Таможенный брокер Ижевск',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов в Удмуртии',
+    heroSubtitle: 'Таможенное оформление товаров в Удмуртии',
     seoDescription: 'Таможенный брокер в Ижевске — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок машиностроительной продукции и оборудования.',
     intro: {
       title: 'Ижевск — промышленный центр Удмуртии',
@@ -64,7 +64,7 @@ export const izhevskContent = {
   },
   en: {
     heroTitle: 'Customs Broker Izhevsk',
-    heroSubtitle: 'Professional customs clearance in the Udmurt Republic',
+    heroSubtitle: 'Customs clearance of goods in Udmurtia',
     seoDescription: 'Customs broker in Izhevsk — import and export clearance. Electronic declaration, HS code selection, support for machinery and equipment shipments.',
     intro: {
       title: 'Izhevsk — Industrial Center of Udmurtia',

@@ -1,7 +1,7 @@
 export const barnaulContent = {
   ru: {
     heroTitle: 'Таможенный брокер Барнаул',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов в Алтайском крае',
+    heroSubtitle: 'Импорт и экспорт грузов на Алтае',
     seoDescription: 'Таможенный брокер в Барнауле — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок из Казахстана и Китая.',
     intro: {
       title: 'Барнаул — логистический узел на юге Западной Сибири',
@@ -63,7 +63,7 @@ export const barnaulContent = {
   },
   en: {
     heroTitle: 'Customs Broker Barnaul',
-    heroSubtitle: 'Professional customs clearance in the Altai Region',
+    heroSubtitle: 'Import and export of cargo in the Altai region',
     seoDescription: 'Customs broker in Barnaul — import and export clearance. Electronic declaration, HS code selection, support for shipments from Kazakhstan and China.',
     intro: {
       title: 'Barnaul — Logistics Hub in Southern Western Siberia',

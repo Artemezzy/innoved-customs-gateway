@@ -3,7 +3,7 @@
 export const vladivostokContent = {
   ru: {
     heroTitle: 'Таможенный брокер Владивосток',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов через порты Владивостока',
+    heroSubtitle: 'Импорт и экспорт товаров через Дальний Восток',
     seoDescription: 'Таможенный брокер во Владивостоке — оформление импорта и экспорта через порты Владивостока. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок из Китая и стран АТР.',
     intro: {
       title: 'Владивосток — один из ключевых портов России на Тихом океане',
@@ -63,7 +63,7 @@ export const vladivostokContent = {
   },
   en: {
     heroTitle: 'Customs Broker Vladivostok',
-    heroSubtitle: 'Professional customs clearance through the ports of Vladivostok',
+    heroSubtitle: 'Import and export of goods through the Far East',
     seoDescription: 'Customs broker in Vladivostok — import and export clearance through Vladivostok ports. Electronic declaration, HS code selection, support for shipments from China and Asia-Pacific countries.',
     
     intro: {

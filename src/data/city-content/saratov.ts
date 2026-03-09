@@ -1,7 +1,7 @@
 export const saratovContent = {
   ru: {
     heroTitle: 'Таможенный брокер Саратов',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов в Саратове',
+    heroSubtitle: 'Импорт и экспорт товаров в Поволжье',
     seoDescription: 'Таможенный брокер в Саратове — оформление импорта и экспорта агропродукции, химической продукции, машиностроительной продукции. Электронное декларирование, подбор кодов ТН ВЭД.',
     intro: {
       title: 'Саратов — промышленный и транспортный центр Поволжья',
@@ -64,7 +64,7 @@ export const saratovContent = {
   },
   en: {
     heroTitle: 'Customs Broker Saratov',
-    heroSubtitle: 'Professional customs clearance in Saratov',
+    heroSubtitle: 'Import and export of goods in the Volga region',
     seoDescription: 'Customs broker in Saratov — import and export clearance of agricultural products, chemical products, engineering products. Electronic declaration, HS code selection.',
     intro: {
       title: 'Saratov — Industrial and Transport Center of the Volga Region',

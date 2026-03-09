@@ -1,7 +1,7 @@
 export const krasnodarContent = {
   ru: {
     heroTitle: 'Таможенный брокер Краснодар',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов в Краснодарском крае',
+    heroSubtitle: 'Импорт и экспорт грузов на юге России',
     seoDescription: 'Таможенный брокер в Краснодаре — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок через порты Новороссийска и Туапсе.',
     intro: {
       title: 'Краснодар — логистический центр Юга России',
@@ -64,7 +64,7 @@ export const krasnodarContent = {
   },
   en: {
     heroTitle: 'Customs Broker Krasnodar',
-    heroSubtitle: 'Professional customs clearance in the Krasnodar Region',
+    heroSubtitle: 'Import and export of cargo in Southern Russia',
     seoDescription: 'Customs broker in Krasnodar — import and export clearance. Electronic declaration, HS code selection, support for shipments through Novorossiysk and Tuapse ports.',
     intro: {
       title: 'Krasnodar — Logistics Center of Southern Russia',

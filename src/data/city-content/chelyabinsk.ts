@@ -1,7 +1,7 @@
 export const chelyabinskContent = {
   ru: {
     heroTitle: 'Таможенный брокер Челябинск',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов в Челябинске',
+    heroSubtitle: 'Таможенное оформление товаров и транзит через Казахстан',
     seoDescription: 'Таможенный брокер в Челябинске — оформление импорта и экспорта металлопродукции, машиностроительной продукции. Электронное декларирование, подбор кодов ТН ВЭД, транзит через Казахстан.',
     intro: {
       title: 'Челябинск — промышленный центр Уральского федерального округа',
@@ -64,7 +64,7 @@ export const chelyabinskContent = {
   },
   en: {
     heroTitle: 'Customs Broker Chelyabinsk',
-    heroSubtitle: 'Professional customs clearance in Chelyabinsk',
+    heroSubtitle: 'Customs clearance and transit through Kazakhstan',
     seoDescription: 'Customs broker in Chelyabinsk — import and export clearance of metal products, engineering products. Electronic declaration, HS code selection, transit through Kazakhstan.',
     intro: {
       title: 'Chelyabinsk — Industrial Center of the Ural Federal District',

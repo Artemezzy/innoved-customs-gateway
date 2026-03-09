@@ -1,7 +1,7 @@
 export const yaroslavlContent = {
   ru: {
     heroTitle: 'Таможенный брокер Ярославль',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов в Ярославле',
+    heroSubtitle: 'Импорт и экспорт грузов в Центральной России',
     seoDescription: 'Таможенный брокер в Ярославле — оформление импорта и экспорта машиностроительной продукции, нефтепродуктов, химической продукции. Электронное декларирование, подбор кодов ТН ВЭД.',
     intro: {
       title: 'Ярославль — промышленный и транспортный центр Центральной России',
@@ -64,7 +64,7 @@ export const yaroslavlContent = {
   },
   en: {
     heroTitle: 'Customs Broker Yaroslavl',
-    heroSubtitle: 'Professional customs clearance in Yaroslavl',
+    heroSubtitle: 'Import and export of cargo in Central Russia',
     seoDescription: 'Customs broker in Yaroslavl — import and export clearance for engineering products, petroleum products, chemical products. Electronic declaration, HS code selection.',
     intro: {
       title: 'Yaroslavl — Industrial and Transport Center of Central Russia',

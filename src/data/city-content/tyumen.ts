@@ -1,7 +1,7 @@
 export const tyumenContent = {
   ru: {
     heroTitle: 'Таможенный брокер Тюмень',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов в Тюмени',
+    heroSubtitle: 'Растаможка товаров и промышленный импорт',
     seoDescription: 'Таможенный брокер в Тюмени — оформление импорта и экспорта нефтегазового оборудования, продукции нефтехимии. Электронное декларирование, подбор кодов ТН ВЭД, транзит через Казахстан.',
     intro: {
       title: 'Тюмень — промышленный центр Западной Сибири',
@@ -64,7 +64,7 @@ export const tyumenContent = {
   },
   en: {
     heroTitle: 'Customs Broker Tyumen',
-    heroSubtitle: 'Professional customs clearance in Tyumen',
+    heroSubtitle: 'Customs clearance and industrial import',
     seoDescription: 'Customs broker in Tyumen — import and export clearance of oil and gas equipment, petrochemical products. Electronic declaration, HS code selection, transit through Kazakhstan.',
     intro: {
       title: 'Tyumen — Industrial Center of Western Siberia',

@@ -1,7 +1,7 @@
 export const novosibirskContent = {
   ru: {
     heroTitle: 'Таможенный брокер Новосибирск',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов в Новосибирске и Новосибирской области',
+    heroSubtitle: 'Таможенное оформление грузов в центре Сибири',
     seoDescription: 'Таможенный брокер в Новосибирске — оформление импорта и экспорта через крупнейший логистический узел Сибири. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок из Китая и Казахстана.',
     intro: {
       title: 'Новосибирск — крупнейший транспортно-логистический узел Сибири',
@@ -63,7 +63,7 @@ export const novosibirskContent = {
   },
   en: {
     heroTitle: 'Customs Broker Novosibirsk',
-    heroSubtitle: 'Professional customs clearance in Novosibirsk and Novosibirsk Region',
+    heroSubtitle: 'Customs clearance of cargo in the center of Siberia',
     seoDescription: 'Customs broker in Novosibirsk — import and export clearance through Siberia\'s largest logistics hub. Electronic declaration, HS code selection, support for shipments from China and Kazakhstan.',
     intro: {
       title: 'Novosibirsk — Siberia\'s Largest Transport & Logistics Hub',

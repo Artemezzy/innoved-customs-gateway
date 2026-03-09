@@ -1,7 +1,7 @@
 export const tolyattiContent = {
   ru: {
     heroTitle: 'Таможенный брокер Тольятти',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов в Тольятти',
+    heroSubtitle: 'Таможенное оформление грузов в Поволжье',
     seoDescription: 'Таможенный брокер в Тольятти — оформление импорта и экспорта автомобилей, автокомпонентов, машиностроительной продукции. Электронное декларирование, подбор кодов ТН ВЭД.',
     intro: {
       title: 'Тольятти — крупнейший автомобильный центр России',
@@ -64,7 +64,7 @@ export const tolyattiContent = {
   },
   en: {
     heroTitle: 'Customs Broker Tolyatti',
-    heroSubtitle: 'Professional customs clearance in Tolyatti',
+    heroSubtitle: 'Customs clearance of cargo in the Volga region',
     seoDescription: 'Customs broker in Tolyatti — import and export clearance of vehicles, auto components, engineering products. Electronic declaration, HS code selection.',
     intro: {
       title: 'Tolyatti — Russia\'s Largest Automotive Center',

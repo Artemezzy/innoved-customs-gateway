@@ -1,7 +1,7 @@
 export const voronezhContent = {
   ru: {
     heroTitle: 'Таможенный брокер Воронеж',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов в Центральном федеральном округе',
+    heroSubtitle: 'Таможенное оформление грузов в Черноземье',
     seoDescription: 'Таможенный брокер в Воронеже — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок оборудования и агропродукции.',
     intro: {
       title: 'Воронеж — промышленный и логистический центр ЦФО',
@@ -64,7 +64,7 @@ export const voronezhContent = {
   },
   en: {
     heroTitle: 'Customs Broker Voronezh',
-    heroSubtitle: 'Professional customs clearance in the Central Federal District',
+    heroSubtitle: 'Customs clearance of cargo in the Chernozem region',
     seoDescription: 'Customs broker in Voronezh — import and export clearance. Electronic declaration, HS code selection, support for equipment and agricultural product shipments.',
     intro: {
       title: 'Voronezh — Industrial and Logistics Center of CFD',

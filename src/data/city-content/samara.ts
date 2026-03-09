@@ -1,7 +1,7 @@
 export const samaraContent = {
   ru: {
     heroTitle: 'Таможенный брокер Самара',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов в Самаре',
+    heroSubtitle: 'Таможенное оформление грузов в Поволжье',
     seoDescription: 'Таможенный брокер в Самаре — оформление импорта и экспорта машиностроительной продукции, нефтепродуктов, химической продукции. Электронное декларирование, подбор кодов ТН ВЭД.',
     intro: {
       title: 'Самара — крупнейший город Поволжья',
@@ -64,7 +64,7 @@ export const samaraContent = {
   },
   en: {
     heroTitle: 'Customs Broker Samara',
-    heroSubtitle: 'Professional customs clearance in Samara',
+    heroSubtitle: 'Customs clearance of cargo in the Volga region',
     seoDescription: 'Customs broker in Samara — import and export clearance of engineering products, petroleum products, chemical products. Electronic declaration, HS code selection.',
     intro: {
       title: 'Samara — Largest City of the Volga Region',

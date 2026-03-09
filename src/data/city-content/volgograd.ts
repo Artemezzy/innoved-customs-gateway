@@ -1,7 +1,7 @@
 export const volgogradContent = {
   ru: {
     heroTitle: 'Таможенный брокер Волгоград',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов в Южном федеральном округе',
+    heroSubtitle: 'Растаможка товаров на юге России',
     seoDescription: 'Таможенный брокер в Волгограде — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок металлопродукции и химической продукции.',
     intro: {
       title: 'Волгоград — промышленный центр Юга России',
@@ -64,7 +64,7 @@ export const volgogradContent = {
   },
   en: {
     heroTitle: 'Customs Broker Volgograd',
-    heroSubtitle: 'Professional customs clearance in the Southern Federal District',
+    heroSubtitle: 'Customs clearance of goods in Southern Russia',
     seoDescription: 'Customs broker in Volgograd — import and export clearance. Electronic declaration, HS code selection, support for metal and chemical product shipments.',
     intro: {
       title: 'Volgograd — Industrial Center of Southern Russia',

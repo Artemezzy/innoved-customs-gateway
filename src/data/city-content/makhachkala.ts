@@ -1,7 +1,7 @@
 export const makhachkalaContent = {
   ru: {
     heroTitle: 'Таможенный брокер Махачкала',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов через порт Каспийского моря',
+    heroSubtitle: 'Таможенное оформление товаров на Каспии',
     seoDescription: 'Таможенный брокер в Махачкале — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок через морской порт Махачкалы.',
     intro: {
       title: 'Махачкала — портовый город на Каспийском море',
@@ -64,7 +64,7 @@ export const makhachkalaContent = {
   },
   en: {
     heroTitle: 'Customs Broker Makhachkala',
-    heroSubtitle: 'Professional customs clearance through the Caspian Sea port',
+    heroSubtitle: 'Customs clearance of goods on the Caspian Sea',
     seoDescription: 'Customs broker in Makhachkala — import and export clearance. Electronic declaration, HS code selection, support for shipments through Makhachkala seaport.',
     intro: {
       title: 'Makhachkala — Port City on the Caspian Sea',

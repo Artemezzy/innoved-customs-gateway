@@ -1,7 +1,7 @@
 export const omskContent = {
   ru: {
     heroTitle: 'Таможенный брокер Омск',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов в Омске',
+    heroSubtitle: 'Растаможка товаров и транзит через Казахстан',
     seoDescription: 'Таможенный брокер в Омске — оформление импорта и экспорта нефтепродуктов, химической продукции, машиностроительной продукции. Электронное декларирование, транзит через Казахстан.',
     intro: {
       title: 'Омск — промышленный центр Сибирского федерального округа',
@@ -64,7 +64,7 @@ export const omskContent = {
   },
   en: {
     heroTitle: 'Customs Broker Omsk',
-    heroSubtitle: 'Professional customs clearance in Omsk',
+    heroSubtitle: 'Customs clearance and transit through Kazakhstan',
     seoDescription: 'Customs broker in Omsk — import and export clearance of petroleum products, chemical products, engineering products. Electronic declaration, transit through Kazakhstan.',
     intro: {
       title: 'Omsk — Industrial Center of the Siberian Federal District',

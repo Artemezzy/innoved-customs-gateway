@@ -1,7 +1,7 @@
 export const ekaterinburgContent = {
   ru: {
     heroTitle: 'Таможенный брокер Екатеринбург',
-    heroSubtitle: 'Профессиональное таможенное оформление грузов на Урале',
+    heroSubtitle: 'Растаможка товаров и ВЭД-сопровождение на Урале',
     seoDescription: 'Таможенный брокер в Екатеринбурге — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок из Китая, Казахстана и стран Европы.',
     intro: {
       title: 'Екатеринбург — промышленный центр Урала',
@@ -64,7 +64,7 @@ export const ekaterinburgContent = {
   },
   en: {
     heroTitle: 'Customs Broker Ekaterinburg',
-    heroSubtitle: 'Professional customs clearance in the Ural region',
+    heroSubtitle: 'Customs clearance and foreign trade support in the Urals',
     seoDescription: 'Customs broker in Ekaterinburg — import and export clearance. Electronic declaration, HS code selection, support for shipments from China, Kazakhstan, and European countries.',
     intro: {
       title: 'Ekaterinburg — Industrial Center of the Urals',
