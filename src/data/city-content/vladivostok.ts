@@ -1,11 +1,10 @@
-import cityVladivostokImg from '@/assets/city-vladivostok.jpg';
+
 
 export const vladivostokContent = {
   ru: {
     heroTitle: 'Таможенный брокер Владивосток',
     heroSubtitle: 'Профессиональное таможенное оформление грузов через порты Владивостока',
     seoDescription: 'Таможенный брокер во Владивостоке — оформление импорта и экспорта через порты Владивостока. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок из Китая и стран АТР.',
-    image: cityVladivostokImg,
     intro: {
       title: 'Владивосток — один из ключевых портов России на Тихом океане',
       text: 'Владивосток — один из ключевых портов России на Тихом океане и главный морской «ворота» для грузов из стран Азии. Для компаний, которые ввозят товары через Владивосток из Китая, Кореи, Японии и других стран АТР, от грамотного таможенного оформления зависят скорость прохождения грузов, расходы на пошлины и стабильность всей логистической цепочки.',
@@ -66,7 +65,7 @@ export const vladivostokContent = {
     heroTitle: 'Customs Broker Vladivostok',
     heroSubtitle: 'Professional customs clearance through the ports of Vladivostok',
     seoDescription: 'Customs broker in Vladivostok — import and export clearance through Vladivostok ports. Electronic declaration, HS code selection, support for shipments from China and Asia-Pacific countries.',
-    image: cityVladivostokImg,
+    
     intro: {
       title: 'Vladivostok — One of Russia\'s Key Pacific Ports',
       text: 'Vladivostok is one of Russia\'s key ports on the Pacific Ocean and the main maritime gateway for cargo from Asian countries. For companies importing goods through Vladivostok from China, Korea, Japan, and other Asia-Pacific countries, proper customs clearance directly impacts cargo transit speed, duty costs, and the stability of the entire logistics chain.',
