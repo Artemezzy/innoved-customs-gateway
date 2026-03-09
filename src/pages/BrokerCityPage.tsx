@@ -12,12 +12,32 @@ import { vladivostokContent } from '@/data/city-content/vladivostok';
 import { irkutskContent } from '@/data/city-content/irkutsk';
 import { novorossiyskContent } from '@/data/city-content/novorossiysk';
 import { novosibirskContent } from '@/data/city-content/novosibirsk';
+import { barnaulContent } from '@/data/city-content/barnaul';
+import { ekaterinburgContent } from '@/data/city-content/ekaterinburg';
+import { izhevskContent } from '@/data/city-content/izhevsk';
+import { kazanContent } from '@/data/city-content/kazan';
+import { krasnodarContent } from '@/data/city-content/krasnodar';
+import { krasnoyarskContent } from '@/data/city-content/krasnoyarsk';
+import { makhachkalaContent } from '@/data/city-content/makhachkala';
+import { moscowContent } from '@/data/city-content/moscow';
+import { volgogradContent } from '@/data/city-content/volgograd';
+import { voronezhContent } from '@/data/city-content/voronezh';
 
 const cityContentMap: Record<string, typeof vladivostokContent> = {
   vladivostok: vladivostokContent,
   irkutsk: irkutskContent,
   novorossiysk: novorossiyskContent,
   novosibirsk: novosibirskContent,
+  barnaul: barnaulContent,
+  ekaterinburg: ekaterinburgContent,
+  izhevsk: izhevskContent,
+  kazan: kazanContent,
+  krasnodar: krasnodarContent,
+  krasnoyarsk: krasnoyarskContent,
+  makhachkala: makhachkalaContent,
+  moskva: moscowContent,
+  volgograd: volgogradContent,
+  voronezh: voronezhContent,
 };
 
 const fallback = {
