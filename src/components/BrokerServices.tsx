@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Clock, Wallet } from 'lucide-react';
+import { Clock, Wallet, Send, Mail, Phone } from 'lucide-react';
 
 interface BrokerServicesProps {
   language: 'ru' | 'en';
