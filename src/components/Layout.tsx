@@ -20,14 +20,7 @@ export function Layout({ children }: LayoutProps) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <Header language={language} />
-      
-      <div className="fixed top-4 right-4 z-50">
-        <LanguageToggle 
-          currentLanguage={language}
-          onLanguageChange={handleLanguageChange}
-        />
-      </div>
+      <Header language={language} onLanguageChange={handleLanguageChange} />
 
       <main className="flex-1">
         {children}
