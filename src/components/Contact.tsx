@@ -154,9 +154,9 @@ export function Contact({ language }: ContactProps) {
                 <MapPin className="w-5 h-5 text-accent mt-1" />
                 <div>
                   <p className="text-sm text-muted-foreground">{text.companyInfo.address}</p>
-                  <p className="text-lg font-semibold text-foreground">
+                  <a href="https://go.2gis.com/V7I3P" target="_blank" rel="noopener noreferrer" className="text-lg font-semibold text-foreground hover:text-accent transition-colors">
                     664050, {language === 'ru' ? 'Иркутск, Байкальская ул., 289/2' : 'Irkutsk, Baikalskaya st., 289/2'}
-                  </p>
+                  </a>
                 </div>
               </div>
             </CardContent>
