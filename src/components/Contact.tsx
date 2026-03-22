@@ -29,7 +29,7 @@ const content = {
   },
   en: {
     title: 'Contacts',
-    companyInfo: { title: 'Company Information', phone: 'Phone', email: 'Email', telegram: 'Telegram', address: 'Address' },
+    companyInfo: { title: 'Company Information', phone: 'Phone', email: 'Email', telegram: 'Telegram', max: 'MAX Bot', address: 'Address' },
     form: {
       title: 'Leave Request', name: 'Name', inn: 'Company TIN', phone: 'Contact Phone', email: 'Email',
       additionalInfo: 'Additional Information',

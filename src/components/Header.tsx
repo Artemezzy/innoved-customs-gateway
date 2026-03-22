@@ -133,6 +133,10 @@ export function Header({ language }: HeaderProps) {
               className="text-primary-foreground p-2" onClick={() => analytics.contactClick('telegram')}>
               <Send className="w-4 h-4" />
             </a>
+            <a href="https://max.ru/id3849109300_bot" target="_blank" rel="noopener noreferrer"
+              className="text-primary-foreground p-2" onClick={() => analytics.contactClick('max-bot')}>
+              <img src={maxIcon} alt="MAX" className="w-4 h-4 brightness-0 invert" />
+            </a>
             <a href="tel:89331881009" className="text-primary-foreground p-2" onClick={() => analytics.contactClick('phone')}>
               <Phone className="w-4 h-4" />
             </a>
