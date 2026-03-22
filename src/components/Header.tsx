@@ -127,6 +127,7 @@ export function Header({ language, onLanguageChange }: HeaderProps) {
             >
               {text.cta}
             </Button>
+            <LanguageToggle currentLanguage={language} onLanguageChange={onLanguageChange} />
           </div>
 
           {/* Mobile */}
