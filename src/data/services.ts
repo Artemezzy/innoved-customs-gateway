@@ -34,13 +34,13 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Таможенное оформление импорта в Россию — электронное декларирование 24/7 | ИННОВЭД',
-        description: 'Комплексное таможенное оформление импорта для бизнеса по всей России. Электронное декларирование, автоматизация, выделенный менеджер и скорость от ИННОВЭД.',
+        title: 'Таможенное оформление импорта',
+        description: 'Услуги по таможенному оформление импорта. Официальный импорт грузов. Официальный импорт товаров. Растаможка товаров из Китая. Белый импорт.',
         keywords: 'таможенное оформление импорта, импорт в россию, таможенный брокер, электронное декларирование, ВЭД, растаможка товаров, ИННОВЭД',
       },
       en: {
-        title: 'Import Customs Clearance in Russia — 24/7 Electronic Declaration | INNOVED',
-        description: 'Comprehensive import customs clearance for businesses across Russia. Electronic declaration, automation, dedicated manager and fast processing from INNOVED.',
+        title: 'Import Customs Clearance',
+        description: 'Import customs clearance services. Official cargo import. Official goods import. Customs clearance from China. White import.',
         keywords: 'import customs clearance, customs clearance russia, customs broker, electronic declaration, foreign trade, goods import, INNOVED',
       },
     },
