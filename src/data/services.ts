@@ -930,12 +930,12 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Перевод документов для ВЭД — нотариальное заверение и конфиденциальность с ИННОВЭД',
+        title: 'Перевод документов для таможни',
         description: 'Профессиональный перевод ВЭД-документов для таможни. Нотариальное заверение, апостиль, многоязычные проекты и полная конфиденциальность от ИННОВЭД.',
         keywords: 'перевод документов, перевод для таможни, ВЭД-перевод, нотариальное заверение, апостиль, таможенный перевод, ИННОВЭД',
       },
       en: {
-        title: 'Document Translation for Foreign Trade — Notarization and Confidentiality with INNOVED',
+        title: 'Document Translation for Customs',
         description: 'Professional translation of foreign trade documents for customs. Notarization, apostille, multilingual projects and full confidentiality from INNOVED.',
         keywords: 'document translation, customs translation, foreign trade translation, notarization, apostille, customs documents, INNOVED',
       },
