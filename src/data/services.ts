@@ -158,13 +158,13 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Таможенное оформление экспорта из России — декларирование и валютный контроль | ИННОВЭД',
-        description: 'Полный комплекс услуг по таможенному оформлению экспорта товаров из России. Электронное декларирование, подтверждение 0% НДС и сопровождение валютного контроля.',
+        title: 'Таможенное оформление экспорта',
+        description: 'Услуги по таможенному оформлению экспорта. Официальный экспорт грузов. Официальный экспорт товаров. Вывоз товаров за рубеж.',
         keywords: 'таможенное оформление экспорта, экспорт из россии, экспортная декларация, валютный контроль, нулевая ставка НДС, таможенный брокер, ИННОВЭД',
       },
       en: {
-        title: 'Export Customs Clearance from Russia — Declaration and Currency Control | INNOVED',
-        description: 'Full range of export customs clearance services from Russia. Electronic declaration, 0% VAT confirmation and currency control support from INNOVED.',
+        title: 'Export Customs Clearance',
+        description: 'Export customs clearance services. Official cargo export. Official goods export. International shipping abroad.',
         keywords: 'export customs clearance, export from russia, export declaration, currency control, zero VAT rate, customs broker, INNOVED',
       },
     },
