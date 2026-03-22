@@ -133,11 +133,11 @@ export function Contact({ language }: ContactProps) {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <img src={maxIcon} alt="MAX" className="w-5 h-5" />
+                <img src={maxIcon} alt="MAX" className="w-5 h-5 text-accent" style={{ filter: 'invert(56%) sepia(98%) saturate(1284%) hue-rotate(360deg) brightness(101%) contrast(97%)' }} />
                 <div>
                   <p className="text-sm text-muted-foreground">{text.companyInfo.max}</p>
                   <a href="https://max.ru/id3849109300_bot" target="_blank" rel="noopener noreferrer" className="text-lg font-semibold text-foreground hover:text-accent transition-colors">
-                    @id3849109300_bot
+                    @innovedbroker
                   </a>
                 </div>
               </div>
