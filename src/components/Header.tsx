@@ -5,9 +5,11 @@ import { analytics } from '@/utils/analytics';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import logoImg from '@/assets/logo.png';
+import { LanguageToggle } from './LanguageToggle';
 
 interface HeaderProps {
   language: 'ru' | 'en';
+  onLanguageChange: (lang: 'ru' | 'en') => void;
 }
 
 const content = {
@@ -43,7 +45,7 @@ const content = {
   }
 };
 
-export function Header({ language }: HeaderProps) {
+export function Header({ language, onLanguageChange }: HeaderProps) {
   const text = content[language];
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -125,6 +127,7 @@ export function Header({ language }: HeaderProps) {
             >
               {text.cta}
             </Button>
+            <LanguageToggle currentLanguage={language} onLanguageChange={onLanguageChange} />
           </div>
 
           {/* Mobile */}
@@ -140,6 +143,7 @@ export function Header({ language }: HeaderProps) {
             <a href="tel:89331881009" className="text-primary-foreground p-2" onClick={() => analytics.contactClick('phone')}>
               <Phone className="w-4 h-4" />
             </a>
+            <LanguageToggle currentLanguage={language} onLanguageChange={onLanguageChange} />
             <button className="text-primary-foreground p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
