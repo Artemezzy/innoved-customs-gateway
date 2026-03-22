@@ -45,7 +45,7 @@ export default function ServiceDetailPage() {
         "@type": "Service",
         "name": service.title[language],
         "description": service.seo[language].description,
-        "url": `https://innovedbroker.ru/services/${slug}`,
+        "url": `https://www.innovedbroker.ru/services/${slug}`,
         "provider": {
           "@type": "Organization",
           "name": language === 'ru' ? 'ИННОВЭД' : 'INNOVED',
