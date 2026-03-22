@@ -95,9 +95,9 @@ export default function FAQPage() {
                     style={{ animationDelay: `${index * 50}ms` }}
                   >
                     <AccordionTrigger className="px-6 py-4 text-left hover:no-underline">
-                      <h3 className="text-foreground font-medium pr-4">
+                      <span className="text-foreground font-medium pr-4">
                         {item.question}
-                      </h3>
+                      </span>
                     </AccordionTrigger>
                     <AccordionContent className="px-6 pb-4">
                       <p className="text-muted-foreground leading-relaxed">
