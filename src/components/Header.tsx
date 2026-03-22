@@ -5,9 +5,11 @@ import { analytics } from '@/utils/analytics';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import logoImg from '@/assets/logo.png';
+import { LanguageToggle } from './LanguageToggle';
 
 interface HeaderProps {
   language: 'ru' | 'en';
+  onLanguageChange: (lang: 'ru' | 'en') => void;
 }
 
 const content = {
