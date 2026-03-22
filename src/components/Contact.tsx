@@ -132,15 +132,6 @@ export function Contact({ language }: ContactProps) {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <MessageCircle className="w-5 h-5 text-accent" />
-                <div>
-                  <p className="text-sm text-muted-foreground">{language === 'ru' ? 'Бот MAX' : 'MAX Bot'}</p>
-                  <a href="https://t.me/id3849109300_bot" target="_blank" rel="noopener noreferrer" className="text-lg font-semibold text-foreground hover:text-accent transition-colors">
-                    @id3849109300_bot
-                  </a>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
                 <Send className="w-5 h-5 text-accent" />
                 <div>
                   <p className="text-sm text-muted-foreground">{text.companyInfo.telegram}</p>
