@@ -135,7 +135,7 @@ export function Header({ language }: HeaderProps) {
             </a>
             <a href="https://max.ru/id3849109300_bot" target="_blank" rel="noopener noreferrer"
               className="text-primary-foreground p-2" onClick={() => analytics.contactClick('max-bot' as any)}>
-              <img src={maxIcon} alt="MAX" className="w-4 h-4 brightness-0 invert" />
+              <img src={maxIcon} alt="MAX" className="w-5 h-5 invert opacity-90" />
             </a>
             <a href="tel:89331881009" className="text-primary-foreground p-2" onClick={() => analytics.contactClick('phone')}>
               <Phone className="w-4 h-4" />
