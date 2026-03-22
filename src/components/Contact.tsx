@@ -6,6 +6,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Mail, Phone, MessageCircle, Send, Building, Download, Settings, MapPin } from 'lucide-react';
+import maxIcon from '@/assets/max-icon.png';
 import { useToast } from '@/hooks/use-toast';
 import { analytics } from '@/utils/analytics';
 
@@ -16,7 +17,7 @@ interface ContactProps {
 const content = {
   ru: {
     title: 'Контакты',
-    companyInfo: { title: 'Информация о компании', phone: 'Телефон', email: 'Email', telegram: 'Telegram', address: 'Адрес' },
+    companyInfo: { title: 'Информация о компании', phone: 'Телефон', email: 'Email', telegram: 'Telegram', max: 'MAX Бот', address: 'Адрес' },
     form: {
       title: 'Оставить заявку', name: 'Имя', inn: 'ИНН компании', phone: 'Номер телефона для связи', email: 'Почта',
       additionalInfo: 'Дополнительная информация',
@@ -28,7 +29,7 @@ const content = {
   },
   en: {
     title: 'Contacts',
-    companyInfo: { title: 'Company Information', phone: 'Phone', email: 'Email', telegram: 'Telegram', address: 'Address' },
+    companyInfo: { title: 'Company Information', phone: 'Phone', email: 'Email', telegram: 'Telegram', max: 'MAX Bot', address: 'Address' },
     form: {
       title: 'Leave Request', name: 'Name', inn: 'Company TIN', phone: 'Contact Phone', email: 'Email',
       additionalInfo: 'Additional Information',
@@ -128,6 +129,15 @@ export function Contact({ language }: ContactProps) {
                   <p className="text-sm text-muted-foreground">{text.companyInfo.email}</p>
                   <a href="mailto:info@innovedbroker.ru" className="text-lg font-semibold text-foreground hover:text-accent transition-colors">
                     info@innovedbroker.ru
+                  </a>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <img src={maxIcon} alt="MAX" className="w-5 h-5" />
+                <div>
+                  <p className="text-sm text-muted-foreground">{text.companyInfo.max}</p>
+                  <a href="https://max.ru/id3849109300_bot" target="_blank" rel="noopener noreferrer" className="text-lg font-semibold text-foreground hover:text-accent transition-colors">
+                    @id3849109300_bot
                   </a>
                 </div>
               </div>
