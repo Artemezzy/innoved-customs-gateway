@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Send, Mail, Phone, Menu, X, Download } from 'lucide-react';
-import maxIcon from '@/assets/max-icon.png';
+import maxIcon from '@/assets/max-icon-white.webp';
 import { analytics } from '@/utils/analytics';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
@@ -97,7 +97,7 @@ export function Header({ language }: HeaderProps) {
             <a href="https://max.ru/id3849109300_bot" target="_blank" rel="noopener noreferrer"
               className="text-primary-foreground hover:text-primary-glow transition-colors duration-300 p-2 rounded-full hover:bg-white/10"
               onClick={() => analytics.contactClick('max-bot' as any)}>
-              <img src={maxIcon} alt="MAX" className="w-5 h-5 invert opacity-90" />
+              <img src={maxIcon} alt="MAX" className="w-5 h-5 opacity-90" />
             </a>
             <a href="mailto:info@innovedbroker.ru"
               className="text-primary-foreground hover:text-primary-glow transition-colors duration-300 p-2 rounded-full hover:bg-white/10"
@@ -135,7 +135,7 @@ export function Header({ language }: HeaderProps) {
             </a>
             <a href="https://max.ru/id3849109300_bot" target="_blank" rel="noopener noreferrer"
               className="text-primary-foreground p-2" onClick={() => analytics.contactClick('max-bot' as any)}>
-              <img src={maxIcon} alt="MAX" className="w-5 h-5 invert opacity-90" />
+              <img src={maxIcon} alt="MAX" className="w-5 h-5 opacity-90" />
             </a>
             <a href="tel:89331881009" className="text-primary-foreground p-2" onClick={() => analytics.contactClick('phone')}>
               <Phone className="w-4 h-4" />
