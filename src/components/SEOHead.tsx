@@ -153,7 +153,7 @@ export function SEOHead({
     document.documentElement.lang = language;
     
     // Update canonical URL
-    const canonicalUrl = `https://innovedbroker.ru${canonicalPath || (typeof window !== 'undefined' ? window.location.pathname : '/')}`;
+    const canonicalUrl = `https://www.innovedbroker.ru${canonicalPath || (typeof window !== 'undefined' ? window.location.pathname : '/')}`;
     let canonicalLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
     if (!canonicalLink) {
       canonicalLink = document.createElement('link');
