@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Send, Mail, Phone, Menu, X, Download } from 'lucide-react';
+import { Send, Mail, Phone, Menu, X, Download, MessageCircle } from 'lucide-react';
 import { analytics } from '@/utils/analytics';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
