@@ -143,6 +143,7 @@ export function Header({ language, onLanguageChange }: HeaderProps) {
             <a href="tel:89331881009" className="text-primary-foreground p-2" onClick={() => analytics.contactClick('phone')}>
               <Phone className="w-4 h-4" />
             </a>
+            <LanguageToggle currentLanguage={language} onLanguageChange={onLanguageChange} />
             <button className="text-primary-foreground p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
