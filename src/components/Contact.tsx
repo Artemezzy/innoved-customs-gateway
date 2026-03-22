@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Mail, Phone, MessageCircle, Send, Building, Download, Settings, MapPin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { analytics } from '@/utils/analytics';
@@ -107,10 +107,10 @@ export function Contact({ language }: ContactProps) {
           {/* Company Information */}
           <Card className="animate-fade-in shadow-card hover:shadow-hover transition-all duration-300 border border-border">
             <CardHeader>
-              <CardTitle className="text-xl font-semibold text-accent flex items-center gap-2">
+              <h2 className="text-xl font-semibold text-accent flex items-center gap-2 tracking-tight">
                 <Building className="w-5 h-5" />
                 {text.companyInfo.title}
-              </CardTitle>
+              </h2>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center gap-3">
@@ -155,10 +155,10 @@ export function Contact({ language }: ContactProps) {
           {/* Contact Form */}
           <Card className="animate-fade-in shadow-card hover:shadow-hover transition-all duration-300 border border-border" style={{ animationDelay: '0.1s' }}>
             <CardHeader>
-              <CardTitle className="text-xl font-semibold text-accent flex items-center gap-2">
+              <h2 className="text-xl font-semibold text-accent flex items-center gap-2 tracking-tight">
                 <MessageCircle className="w-5 h-5" />
                 {text.form.title}
-              </CardTitle>
+              </h2>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">

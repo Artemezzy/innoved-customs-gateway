@@ -51,6 +51,7 @@ export default function FAQPage() {
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
+            <h2 className="sr-only">{language === 'ru' ? 'Вопросы и ответы' : 'Questions and answers'}</h2>
             {/* Category Filter */}
             <div className="flex flex-wrap gap-2 mb-8 justify-center">
               <Button
@@ -94,9 +95,9 @@ export default function FAQPage() {
                     style={{ animationDelay: `${index * 50}ms` }}
                   >
                     <AccordionTrigger className="px-6 py-4 text-left hover:no-underline">
-                      <span className="text-foreground font-medium pr-4">
+                      <h3 className="text-foreground font-medium pr-4">
                         {item.question}
-                      </span>
+                      </h3>
                     </AccordionTrigger>
                     <AccordionContent className="px-6 pb-4">
                       <p className="text-muted-foreground leading-relaxed">
