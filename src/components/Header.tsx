@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { Send, Mail, Phone, Menu, X, Download } from 'lucide-react';
+import maxIcon from '@/assets/max-icon.png';
 import { analytics } from '@/utils/analytics';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
