@@ -211,7 +211,7 @@ export function SEOHead({
       "@type": "Organization",
       "name": language === 'ru' ? 'ИННОВЭД' : 'INNOVED',
       "url": "https://www.innovedbroker.ru",
-      "logo": "https://innovedbroker.ru/logo.png",
+      "logo": "https://www.innovedbroker.ru/logo.png",
       "sameAs": [
         "https://t.me/innovedbroker"
       ],
