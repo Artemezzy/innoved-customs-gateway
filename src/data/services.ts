@@ -682,12 +682,12 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Подготовка писем в таможенные органы с ИННОВЭД — юридическое сопровождение ВЭД',
+        title: 'Запрос в таможенный орган',
         description: 'Разработка и оформление писем, запросов и объяснений в ФТС России. Юридическая точность, аргументированность и сопровождение до результата от ИННОВЭД.',
         keywords: 'письмо в таможню, запрос в ФТС, объяснение инспектору, официальное обращение в таможенные органы, подготовка ответа ФТС, юридическая поддержка ВЭД, ИННОВЭД',
       },
       en: {
-        title: 'Preparation of Letters to Customs Authorities with INNOVED — Legal FTA Support',
+        title: 'Customs Authority Request',
         description: 'Development and preparation of letters, requests, and explanations to Russian FCS. Legal accuracy, argumentation, and support until resolution from INNOVED.',
         keywords: 'letter to customs, FCS request, explanation to inspector, official appeal to customs authorities, FCS response preparation, legal FTA support, INNOVED',
       },
