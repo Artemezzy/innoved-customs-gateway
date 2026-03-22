@@ -97,7 +97,7 @@ export function Header({ language }: HeaderProps) {
             <a href="https://max.ru/id3849109300_bot" target="_blank" rel="noopener noreferrer"
               className="text-primary-foreground hover:text-primary-glow transition-colors duration-300 p-2 rounded-full hover:bg-white/10"
               onClick={() => analytics.contactClick('max-bot' as any)}>
-              <img src={maxIcon} alt="MAX" className="w-5 h-5 invert opacity-90" />
+              <img src={maxIcon} alt="MAX" className="w-5 h-5 opacity-90" />
             </a>
             <a href="mailto:info@innovedbroker.ru"
               className="text-primary-foreground hover:text-primary-glow transition-colors duration-300 p-2 rounded-full hover:bg-white/10"
