@@ -530,13 +530,13 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Сертификация и декларации для маркетплейсов и импорта — ИННОВЭД',
-        description: 'Комплексное оформление сертификатов и деклараций по ТР ТС для импорта и маркетплейсов. Лабораторные испытания, онлайн-регистрация и консультации от ИННОВЭД.',
+        title: 'Сертификация товаров',
+        description: 'Оформление сертификатов и деклараций по ТР ТС. Лабораторные испытания, онлайн-регистрация и консультации от ИННОВЭД.',
         keywords: 'сертификация маркетплейс, декларация ЕАЭС, сертификат продукции, технические регламенты, маркировка товара, регистрация сертификации, ИННОВЭД',
       },
       en: {
-        title: 'Certification and Declarations for Marketplaces and Import — INNOVED',
-        description: 'Comprehensive certification and declarations under TR CU for import and marketplaces. Laboratory testing, online registration and consultations from INNOVED.',
+        title: 'Product Certification',
+        description: 'Certificates and declarations under TR CU. Laboratory testing, online registration and consultations from INNOVED.',
         keywords: 'marketplace certification, EAEU declaration, product certificate, technical regulations, product labeling, certification registration, INNOVED',
       },
     },
