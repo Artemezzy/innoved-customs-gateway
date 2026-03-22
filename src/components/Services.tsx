@@ -33,6 +33,7 @@ export function Services({ language }: ServicesProps) {
               </div>
             ))}
           </div>
+          </>
         )}
       </div>
     </section>

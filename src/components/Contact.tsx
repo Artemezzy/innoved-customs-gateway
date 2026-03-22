@@ -157,9 +157,11 @@ export function Contact({ language }: ContactProps) {
           {/* Contact Form */}
           <Card className="animate-fade-in shadow-card hover:shadow-hover transition-all duration-300 border border-border" style={{ animationDelay: '0.1s' }}>
             <CardHeader>
-              <CardTitle className="text-xl font-semibold text-accent flex items-center gap-2">
-                <MessageCircle className="w-5 h-5" />
-                {text.form.title}
+              <CardTitle asChild>
+                <h2 className="text-xl font-semibold text-accent flex items-center gap-2">
+                  <MessageCircle className="w-5 h-5" />
+                  {text.form.title}
+                </h2>
               </CardTitle>
             </CardHeader>
             <CardContent>

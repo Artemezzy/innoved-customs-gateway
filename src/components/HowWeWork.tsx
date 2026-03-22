@@ -53,6 +53,9 @@ export const HowWeWork = ({ language, showHeader = true }: HowWeWorkProps) => {
         )}
 
         <div className="max-w-4xl mx-auto">
+          {!showHeader && (
+            <h2 className="sr-only">{content.title}</h2>
+          )}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             {/* Desktop Tabs */}
             <TabsList className="hidden md:grid w-full grid-cols-6 h-auto p-2 bg-muted/50 rounded-xl mb-8">
