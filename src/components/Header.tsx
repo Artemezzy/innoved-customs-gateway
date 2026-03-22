@@ -94,6 +94,11 @@ export function Header({ language }: HeaderProps) {
               onClick={() => analytics.contactClick('telegram')}>
               <Send className="w-4 h-4" />
             </a>
+            <a href="https://max.ru/id3849109300_bot" target="_blank" rel="noopener noreferrer"
+              className="text-primary-foreground hover:text-primary-glow transition-colors duration-300 p-2 rounded-full hover:bg-white/10"
+              onClick={() => analytics.contactClick('max-bot')}>
+              <img src={maxIcon} alt="MAX" className="w-4 h-4 brightness-0 invert" />
+            </a>
             <a href="mailto:info@innovedbroker.ru"
               className="text-primary-foreground hover:text-primary-glow transition-colors duration-300 p-2 rounded-full hover:bg-white/10"
               onClick={() => analytics.contactClick('email')}>
