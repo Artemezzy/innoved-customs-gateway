@@ -107,12 +107,10 @@ export function Contact({ language }: ContactProps) {
           {/* Company Information */}
           <Card className="animate-fade-in shadow-card hover:shadow-hover transition-all duration-300 border border-border">
             <CardHeader>
-              <CardTitle asChild>
-                <h2 className="text-xl font-semibold text-accent flex items-center gap-2">
-                  <Building className="w-5 h-5" />
-                  {text.companyInfo.title}
-                </h2>
-              </CardTitle>
+              <h2 className="text-xl font-semibold text-accent flex items-center gap-2 tracking-tight">
+                <Building className="w-5 h-5" />
+                {text.companyInfo.title}
+              </h2>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center gap-3">
