@@ -93,6 +93,12 @@ export function Header({ language }: HeaderProps) {
               onClick={() => analytics.contactClick('telegram')}>
               <Send className="w-4 h-4" />
             </a>
+            <a href="https://t.me/id3849109300_bot" target="_blank" rel="noopener noreferrer"
+              className="text-primary-foreground hover:text-primary-glow transition-colors duration-300 p-2 rounded-full hover:bg-white/10"
+              onClick={() => analytics.contactClick('telegram-bot-max')}
+              aria-label="MAX Bot">
+              <MessageCircle className="w-4 h-4" />
+            </a>
             <a href="mailto:info@innovedbroker.ru"
               className="text-primary-foreground hover:text-primary-glow transition-colors duration-300 p-2 rounded-full hover:bg-white/10"
               onClick={() => analytics.contactClick('email')}>
