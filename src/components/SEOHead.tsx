@@ -153,7 +153,7 @@ export function SEOHead({
     document.documentElement.lang = language;
     
     // Update canonical URL
-    const canonicalUrl = `https://innovedbroker.ru${canonicalPath || (typeof window !== 'undefined' ? window.location.pathname : '/')}`;
+    const canonicalUrl = `https://www.innovedbroker.ru${canonicalPath || (typeof window !== 'undefined' ? window.location.pathname : '/')}`;
     let canonicalLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
     if (!canonicalLink) {
       canonicalLink = document.createElement('link');
@@ -210,8 +210,8 @@ export function SEOHead({
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": language === 'ru' ? 'ИННОВЭД' : 'INNOVED',
-      "url": "https://innovedbroker.ru",
-      "logo": "https://innovedbroker.ru/logo.png",
+      "url": "https://www.innovedbroker.ru",
+      "logo": "https://www.innovedbroker.ru/logo.png",
       "sameAs": [
         "https://t.me/innovedbroker"
       ],

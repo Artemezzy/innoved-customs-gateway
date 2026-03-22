@@ -45,12 +45,12 @@ export default function ServiceDetailPage() {
         "@type": "Service",
         "name": service.title[language],
         "description": service.seo[language].description,
-        "url": `https://innovedbroker.ru/services/${slug}`,
+        "url": `https://www.innovedbroker.ru/services/${slug}`,
         "provider": {
           "@type": "Organization",
           "name": language === 'ru' ? 'ИННОВЭД' : 'INNOVED',
-          "url": "https://innovedbroker.ru",
-          "logo": "https://innovedbroker.ru/logo.png",
+          "url": "https://www.innovedbroker.ru",
+          "logo": "https://www.innovedbroker.ru/logo.png",
           "telephone": "+7-933-188-10-09",
           "email": "info@innovedbroker.ru",
           "address": {
@@ -66,7 +66,7 @@ export default function ServiceDetailPage() {
         "serviceType": language === 'ru' ? 'Таможенное оформление' : 'Customs Clearance',
         "availableChannel": {
           "@type": "ServiceChannel",
-          "serviceUrl": "https://innovedbroker.ru/contact",
+          "serviceUrl": "https://www.innovedbroker.ru/contact",
           "servicePhone": "+7-933-188-10-09",
           "availableLanguage": ["Russian", "English"]
         }
