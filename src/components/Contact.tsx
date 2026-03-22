@@ -133,7 +133,9 @@ export function Contact({ language }: ContactProps) {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-5 h-5 bg-accent" style={{ WebkitMaskImage: `url(${maxIcon})`, WebkitMaskSize: 'contain', WebkitMaskRepeat: 'no-repeat', WebkitMaskPosition: 'center', maskImage: `url(${maxIcon})`, maskSize: 'contain', maskRepeat: 'no-repeat', maskPosition: 'center' }} />
+                <svg className="w-5 h-5 text-accent shrink-0" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M256 0C114.6 0 0 107.5 0 240c0 74.8 37.8 141.6 97 186.3L80 512l108.3-56.1C210.8 462.5 233 466 256 466c141.4 0 256-107.5 256-240S397.4 0 256 0zm48 320c-44.2 0-80-35.8-80-80s35.8-80 80-80 80 35.8 80 80-35.8 80-80 80z"/>
+                </svg>
                 <div>
                   <p className="text-sm text-muted-foreground">{text.companyInfo.max}</p>
                   <a href="https://max.ru/id3849109300_bot" target="_blank" rel="noopener noreferrer" className="text-lg font-semibold text-foreground hover:text-accent transition-colors">
