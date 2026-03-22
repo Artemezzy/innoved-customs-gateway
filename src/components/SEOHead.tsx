@@ -210,7 +210,7 @@ export function SEOHead({
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": language === 'ru' ? 'ИННОВЭД' : 'INNOVED',
-      "url": "https://innovedbroker.ru",
+      "url": "https://www.innovedbroker.ru",
       "logo": "https://innovedbroker.ru/logo.png",
       "sameAs": [
         "https://t.me/innovedbroker"
