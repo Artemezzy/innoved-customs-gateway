@@ -17,7 +17,7 @@ interface ContactProps {
 const content = {
   ru: {
     title: 'Контакты',
-    companyInfo: { title: 'Информация о компании', phone: 'Телефон', email: 'Email', telegram: 'Telegram', address: 'Адрес' },
+    companyInfo: { title: 'Информация о компании', phone: 'Телефон', email: 'Email', telegram: 'Telegram', max: 'MAX Бот', address: 'Адрес' },
     form: {
       title: 'Оставить заявку', name: 'Имя', inn: 'ИНН компании', phone: 'Номер телефона для связи', email: 'Почта',
       additionalInfo: 'Дополнительная информация',
