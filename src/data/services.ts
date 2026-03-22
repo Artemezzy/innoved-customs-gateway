@@ -34,13 +34,13 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Таможенное оформление импорта в Россию — электронное декларирование 24/7 | ИННОВЭД',
-        description: 'Комплексное таможенное оформление импорта для бизнеса по всей России. Электронное декларирование, автоматизация, выделенный менеджер и скорость от ИННОВЭД.',
+        title: 'Таможенное оформление импорта',
+        description: 'Услуги по таможенному оформление импорта. Официальный импорт грузов. Официальный импорт товаров. Растаможка товаров из Китая. Белый импорт.',
         keywords: 'таможенное оформление импорта, импорт в россию, таможенный брокер, электронное декларирование, ВЭД, растаможка товаров, ИННОВЭД',
       },
       en: {
-        title: 'Import Customs Clearance in Russia — 24/7 Electronic Declaration | INNOVED',
-        description: 'Comprehensive import customs clearance for businesses across Russia. Electronic declaration, automation, dedicated manager and fast processing from INNOVED.',
+        title: 'Import Customs Clearance',
+        description: 'Import customs clearance services. Official cargo import. Official goods import. Customs clearance from China. White import.',
         keywords: 'import customs clearance, customs clearance russia, customs broker, electronic declaration, foreign trade, goods import, INNOVED',
       },
     },
@@ -158,13 +158,13 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Таможенное оформление экспорта из России — декларирование и валютный контроль | ИННОВЭД',
-        description: 'Полный комплекс услуг по таможенному оформлению экспорта товаров из России. Электронное декларирование, подтверждение 0% НДС и сопровождение валютного контроля.',
+        title: 'Таможенное оформление экспорта',
+        description: 'Услуги по таможенному оформлению экспорта. Официальный экспорт грузов. Официальный экспорт товаров. Вывоз товаров за рубеж.',
         keywords: 'таможенное оформление экспорта, экспорт из россии, экспортная декларация, валютный контроль, нулевая ставка НДС, таможенный брокер, ИННОВЭД',
       },
       en: {
-        title: 'Export Customs Clearance from Russia — Declaration and Currency Control | INNOVED',
-        description: 'Full range of export customs clearance services from Russia. Electronic declaration, 0% VAT confirmation and currency control support from INNOVED.',
+        title: 'Export Customs Clearance',
+        description: 'Export customs clearance services. Official cargo export. Official goods export. International shipping abroad.',
         keywords: 'export customs clearance, export from russia, export declaration, currency control, zero VAT rate, customs broker, INNOVED',
       },
     },
@@ -282,13 +282,13 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Определение кода ТН ВЭД ЕАЭС — уточнение классификации товаров с ИННОВЭД',
-        description: 'Профессиональное определение кода ТН ВЭД для импорта и экспорта. Анализ номенклатуры, оформление экспертного заключения и сопровождение внешнеэкономической документации.',
+        title: 'Определение кода ТН ВЭД',
+        description: 'Услуги по определению кода ТН ВЭД. Анализ номенклатуры, оформление экспертного заключения и сопровождение внешнеэкономической документации.',
         keywords: 'код ТН ВЭД, классификация товаров ЕАЭС, экспертное определение ТН ВЭД, таможенная номенклатура, обоснование кода, расчёт пошлины, ИННОВЭД',
       },
       en: {
-        title: 'EAEU HS Code Determination — Product Classification with INNOVED',
-        description: 'Professional HS code determination for import and export. Nomenclature analysis, expert opinion preparation and foreign trade documentation support.',
+        title: 'HS Code Determination',
+        description: 'HS code determination services. Nomenclature analysis, expert opinion preparation and foreign trade documentation support.',
         keywords: 'HS code, EAEU product classification, expert HS code determination, customs nomenclature, code justification, duty calculation, INNOVED',
       },
     },
@@ -406,12 +406,12 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'ВЭД-консалтинг для бизнеса — стратегия и сопровождение с ИННОВЭД',
+        title: 'Консультации по вэд',
         description: 'Консультации по внешнеэкономической деятельности. Анализ контрактов, оценка пошлин, оптимизация схем поставок и валютных операций с ИННОВЭД.',
         keywords: 'консультация ВЭД, оптимизация внешнеэкономической деятельности, анализ внешнеторговых контрактов, стратегическое сопровождение ВЭД, планирование импорта, экспортный консалтинг, ИННОВЭД',
       },
       en: {
-        title: 'Foreign Trade Consulting for Business — Strategy and Support from INNOVED',
+        title: 'Foreign Trade Consulting',
         description: 'Foreign trade consulting services. Contract analysis, duty assessment, supply chain optimization and currency operations with INNOVED.',
         keywords: 'foreign trade consulting, foreign economic activity optimization, trade contract analysis, strategic FEA support, import planning, export consulting, INNOVED',
       },
@@ -530,13 +530,13 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Сертификация и декларации для маркетплейсов и импорта — ИННОВЭД',
-        description: 'Комплексное оформление сертификатов и деклараций по ТР ТС для импорта и маркетплейсов. Лабораторные испытания, онлайн-регистрация и консультации от ИННОВЭД.',
+        title: 'Сертификация товаров',
+        description: 'Оформление сертификатов и деклараций по ТР ТС. Лабораторные испытания, онлайн-регистрация и консультации от ИННОВЭД.',
         keywords: 'сертификация маркетплейс, декларация ЕАЭС, сертификат продукции, технические регламенты, маркировка товара, регистрация сертификации, ИННОВЭД',
       },
       en: {
-        title: 'Certification and Declarations for Marketplaces and Import — INNOVED',
-        description: 'Comprehensive certification and declarations under TR CU for import and marketplaces. Laboratory testing, online registration and consultations from INNOVED.',
+        title: 'Product Certification',
+        description: 'Certificates and declarations under TR CU. Laboratory testing, online registration and consultations from INNOVED.',
         keywords: 'marketplace certification, EAEU declaration, product certificate, technical regulations, product labeling, certification registration, INNOVED',
       },
     },
@@ -682,12 +682,12 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Подготовка писем в таможенные органы с ИННОВЭД — юридическое сопровождение ВЭД',
+        title: 'Запрос в таможенный орган',
         description: 'Разработка и оформление писем, запросов и объяснений в ФТС России. Юридическая точность, аргументированность и сопровождение до результата от ИННОВЭД.',
         keywords: 'письмо в таможню, запрос в ФТС, объяснение инспектору, официальное обращение в таможенные органы, подготовка ответа ФТС, юридическая поддержка ВЭД, ИННОВЭД',
       },
       en: {
-        title: 'Preparation of Letters to Customs Authorities with INNOVED — Legal FTA Support',
+        title: 'Customs Authority Request',
         description: 'Development and preparation of letters, requests, and explanations to Russian FCS. Legal accuracy, argumentation, and support until resolution from INNOVED.',
         keywords: 'letter to customs, FCS request, explanation to inspector, official appeal to customs authorities, FCS response preparation, legal FTA support, INNOVED',
       },
@@ -806,12 +806,12 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Организация досмотра товаров — сопровождение процедур ФТС с ИННОВЭД',
+        title: 'Таможенный досмотр товаров',
         description: 'Организация таможенного досмотра товаров для бизнеса. Подготовка документов, координация участников, контроль прохождения и актов досмотра от ИННОВЭД.',
         keywords: 'организация досмотра, таможенный контроль товаров, сопровождение досмотра ФТС, координация досмотра груза, акт осмотра, проверка поставки на СВХ, ИННОВЭД',
       },
       en: {
-        title: 'Goods Inspection Organization — FCS Procedure Support with INNOVED',
+        title: 'Customs Goods Inspection',
         description: 'Customs goods inspection organization for business. Document preparation, participant coordination, monitoring and inspection reports from INNOVED.',
         keywords: 'inspection organization, customs control goods, FCS inspection support, cargo inspection coordination, inspection report, delivery check at CWH, INNOVED',
       },
@@ -930,12 +930,12 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Перевод документов для ВЭД — нотариальное заверение и конфиденциальность с ИННОВЭД',
+        title: 'Перевод документов для таможни',
         description: 'Профессиональный перевод ВЭД-документов для таможни. Нотариальное заверение, апостиль, многоязычные проекты и полная конфиденциальность от ИННОВЭД.',
         keywords: 'перевод документов, перевод для таможни, ВЭД-перевод, нотариальное заверение, апостиль, таможенный перевод, ИННОВЭД',
       },
       en: {
-        title: 'Document Translation for Foreign Trade — Notarization and Confidentiality with INNOVED',
+        title: 'Document Translation for Customs',
         description: 'Professional translation of foreign trade documents for customs. Notarization, apostille, multilingual projects and full confidentiality from INNOVED.',
         keywords: 'document translation, customs translation, foreign trade translation, notarization, apostille, customs documents, INNOVED',
       },
