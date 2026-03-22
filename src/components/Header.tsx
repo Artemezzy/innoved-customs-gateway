@@ -45,7 +45,7 @@ const content = {
   }
 };
 
-export function Header({ language }: HeaderProps) {
+export function Header({ language, onLanguageChange }: HeaderProps) {
   const text = content[language];
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
