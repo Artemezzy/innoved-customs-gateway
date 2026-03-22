@@ -49,8 +49,8 @@ export default function ServiceDetailPage() {
         "provider": {
           "@type": "Organization",
           "name": language === 'ru' ? 'ИННОВЭД' : 'INNOVED',
-          "url": "https://innovedbroker.ru",
-          "logo": "https://innovedbroker.ru/logo.png",
+          "url": "https://www.innovedbroker.ru",
+          "logo": "https://www.innovedbroker.ru/logo.png",
           "telephone": "+7-933-188-10-09",
           "email": "info@innovedbroker.ru",
           "address": {

@@ -20,7 +20,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
         "@type": "ListItem",
         "position": index + 1,
         "name": item.label,
-        ...(item.href ? { "item": `https://innovedbroker.ru${item.href}` } : {}),
+        ...(item.href ? { "item": `https://www.innovedbroker.ru${item.href}` } : {}),
       })),
     };
 
