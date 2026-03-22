@@ -66,7 +66,7 @@ export function Header({ language }: HeaderProps) {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black/20 backdrop-blur-sm border-b border-white/10">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-2 lg:px-3">
         <div className="flex items-center justify-between h-16">
           {/* Logo - Left */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
