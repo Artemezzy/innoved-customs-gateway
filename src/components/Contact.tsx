@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Mail, Phone, MessageCircle, Send, Building, Download, Settings, MapPin } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { analytics } from '@/utils/analytics';
