@@ -9,6 +9,9 @@ const serviceImages: Record<string, string> = {
   'customs-letters': '/gallery/service-letters.webp',
   'inspection': '/gallery/service-inspection.webp',
   'translation': '/gallery/service-translation.webp',
+  'rastamozhka-tovarov': '/gallery/service-rastamozhka-tovarov.webp',
+  'rastamozhka-gruzov': '/gallery/service-rastamozhka-gruzov.webp',
+  'tamozhennaya-ochistka': '/gallery/service-tamozhennaya-ochistka.webp',
 };
 
 interface ServiceCardProps {

@@ -1045,6 +1045,378 @@ export const servicesData: ServiceData[] = [
       },
     },
   },
+  {
+    slug: 'rastamozhka-tovarov',
+    icon: 'PackageCheck',
+    title: {
+      ru: 'Растаможка товаров',
+      en: 'Goods Customs Clearance',
+    },
+    seo: {
+      ru: {
+        title: 'Растаможка товаров',
+        description: 'Профессиональная помощь в растаможке любых товаров для России и СНГ — только официальный ввоз, белый импорт и прозрачные условия работы для бизнеса',
+        keywords: 'растаможка товаров, растаможить товар, таможенное оформление товаров, белый импорт, официальный ввоз, таможенный брокер, ИННОВЭД',
+      },
+      en: {
+        title: 'Goods Customs Clearance',
+        description: 'Professional customs clearance assistance for any goods to Russia and CIS — official import only, white import, and transparent business conditions.',
+        keywords: 'goods customs clearance, customs clearance services, official import, white import, customs broker, INNOVED',
+      },
+    },
+    content: {
+      ru: {
+        intro: 'Растаможка товаров — ключевой этап при ввозе продукции на территорию России и стран СНГ. Ошибки в декларировании, неверный подбор кода ТН ВЭД или неполный пакет документов могут привести к задержке груза, доначислению платежей и даже конфискации. ИННОВЭД обеспечивает полный цикл растаможки любых товаров — от потребительских до промышленных, — гарантируя только официальный ввоз, прозрачные условия и соблюдение всех требований законодательства.',
+        sections: [
+          {
+            title: 'Почему выбирают ИННОВЭД',
+            items: [
+              'Белый импорт без компромиссов — мы работаем только в правовом поле, исключая серые схемы и недекларирование.',
+              'Любые категории товаров — от электроники и одежды до оборудования, сырья и продуктов питания.',
+              'Подбор оптимального кода ТН ВЭД — правильная классификация снижает размер таможенных платежей без нарушения закона.',
+              'Электронное декларирование 24/7 — подача деклараций через защищённые каналы ФТС в любое время суток.',
+              'Выделенный менеджер — один специалист ведёт вашу партию от приёма документов до выпуска товара.',
+            ],
+          },
+          {
+            title: 'Как проходит растаможка товаров',
+            steps: [
+              {
+                title: 'Приём и проверка документов',
+                text: 'Вы передаёте контракт, инвойс, упаковочный лист, транспортные документы и сертификаты. Мы проверяем полноту и корректность данных.',
+              },
+              {
+                title: 'Определение кода ТН ВЭД и расчёт платежей',
+                text: 'Подбираем правильный код для вашего товара и рассчитываем таможенные пошлины, НДС и акцизы.',
+              },
+              {
+                title: 'Подготовка и подача декларации',
+                text: 'Формируем электронную декларацию на товары и направляем её в таможенный орган.',
+              },
+              {
+                title: 'Сопровождение таможенного контроля',
+                text: 'Отвечаем на запросы инспектора, предоставляем дополнительные документы, при необходимости организуем досмотр.',
+              },
+              {
+                title: 'Выпуск товара и передача документов',
+                text: 'После положительного решения таможни вы получаете выпущенную декларацию и можете забирать свой груз.',
+              },
+            ],
+          },
+          {
+            title: 'Что вы получаете',
+            items: [
+              'Полностью легальный ввоз товаров без рисков для бизнеса.',
+              'Экономию на таможенных платежах за счёт грамотной классификации.',
+              'Предсказуемые сроки растаможки — от нескольких часов до 1–2 рабочих дней.',
+              'Прозрачную отчётность на каждом этапе оформления.',
+              'Минимум вашего участия — мы берём на себя все взаимодействия с таможней.',
+            ],
+          },
+        ],
+        cta: 'Оставьте заявку на растаможку товаров — менеджер ИННОВЭД свяжется с вами в течение 15 минут и рассчитает стоимость оформления.',
+      },
+      en: {
+        intro: 'Goods customs clearance is a key stage when importing products into Russia and CIS countries. Errors in declaration, incorrect HS code selection, or an incomplete document package can lead to cargo delays, additional charges, and even confiscation. INNOVED provides a full cycle of customs clearance for any goods — from consumer to industrial — guaranteeing official import only, transparent conditions, and full compliance with all legal requirements.',
+        sections: [
+          {
+            title: 'Why Choose INNOVED',
+            items: [
+              'White import without compromise — we only work within the legal framework, excluding gray schemes and undeclared goods.',
+              'Any product category — from electronics and clothing to equipment, raw materials, and food products.',
+              'Optimal HS code selection — correct classification reduces customs duties without breaking the law.',
+              'Electronic declaration 24/7 — filing declarations through secure FCS channels at any time.',
+              'Dedicated manager — one specialist handles your shipment from document receipt to goods release.',
+            ],
+          },
+          {
+            title: 'How Goods Customs Clearance Works',
+            steps: [
+              {
+                title: 'Document receipt and verification',
+                text: 'You provide the contract, invoice, packing list, transport documents, and certificates. We check completeness and correctness of data.',
+              },
+              {
+                title: 'HS code determination and payment calculation',
+                text: 'We select the correct code for your goods and calculate customs duties, VAT, and excise taxes.',
+              },
+              {
+                title: 'Declaration preparation and submission',
+                text: 'We prepare the electronic goods declaration and submit it to customs authorities.',
+              },
+              {
+                title: 'Customs control support',
+                text: 'We respond to inspector requests, provide additional documents, and organize inspection if necessary.',
+              },
+              {
+                title: 'Goods release and document delivery',
+                text: 'After customs approval, you receive the released declaration and can pick up your cargo.',
+              },
+            ],
+          },
+          {
+            title: 'What You Get',
+            items: [
+              'Fully legal import of goods with no risks to your business.',
+              'Savings on customs payments through proper classification.',
+              'Predictable clearance timelines — from a few hours to 1–2 business days.',
+              'Transparent reporting at every stage of processing.',
+              'Minimal involvement — we handle all customs interactions.',
+            ],
+          },
+        ],
+        cta: 'Submit a request for goods customs clearance — an INNOVED manager will contact you within 15 minutes and calculate the processing cost.',
+      },
+    },
+  },
+  {
+    slug: 'rastamozhka-gruzov',
+    icon: 'Truck',
+    title: {
+      ru: 'Растаможка грузов',
+      en: 'Cargo Customs Clearance',
+    },
+    seo: {
+      ru: {
+        title: 'Растаможка грузов',
+        description: 'Надежное таможенное оформление и растаможка грузов в Россию и СНГ: официальный ввоз, белый импорт и тщательная проверка документов под требования таможни.',
+        keywords: 'растаможка грузов, таможенное оформление грузов, растаможить груз, белый импорт, ввоз грузов, таможенный брокер, ИННОВЭД',
+      },
+      en: {
+        title: 'Cargo Customs Clearance',
+        description: 'Reliable customs clearance for cargo to Russia and CIS: official import, white import, and thorough document verification to meet customs requirements.',
+        keywords: 'cargo customs clearance, customs clearance services, official import, white import, cargo import, customs broker, INNOVED',
+      },
+    },
+    content: {
+      ru: {
+        intro: 'Растаможка грузов — сложный процесс, требующий точного оформления документов, знания таможенного законодательства и опыта взаимодействия с контролирующими органами. Независимо от типа и объёма груза — контейнерная, сборная или негабаритная поставка — ИННОВЭД обеспечивает надёжное таможенное оформление с полным соблюдением всех нормативных требований. Мы гарантируем белый импорт, прозрачные условия и минимальные сроки прохождения таможни.',
+        sections: [
+          {
+            title: 'Почему выбирают ИННОВЭД',
+            items: [
+              'Работа с любыми типами грузов — контейнерные, навалочные, наливные, негабаритные и сборные поставки.',
+              'Тщательная проверка документов — каждый документ проходит многоуровневый контроль до подачи декларации.',
+              'Оптимизация таможенных платежей — корректный подбор кода ТН ВЭД и применение преференций позволяют снизить расходы.',
+              'Работа на всех таможенных постах РФ — удалённое оформление грузов независимо от точки прибытия.',
+              'Опыт работы с крупными партиями — мы успешно оформляем регулярные коммерческие поставки для предприятий различных отраслей.',
+            ],
+          },
+          {
+            title: 'Как проходит растаможка грузов',
+            steps: [
+              {
+                title: 'Получение документов и предварительный анализ',
+                text: 'Клиент предоставляет контракт, транспортные накладные, инвойсы, сертификаты. Мы анализируем груз и определяем стратегию оформления.',
+              },
+              {
+                title: 'Классификация и расчёт платежей',
+                text: 'Определяем код ТН ВЭД, рассчитываем пошлины, НДС, акцизы и другие обязательные платежи.',
+              },
+              {
+                title: 'Подготовка и подача таможенной декларации',
+                text: 'Формируем декларацию на товары в электронном виде и подаём через систему ФТС.',
+              },
+              {
+                title: 'Сопровождение таможенного контроля',
+                text: 'Взаимодействуем с таможенным инспектором, оперативно предоставляем дополнительные сведения и документы.',
+              },
+              {
+                title: 'Выпуск груза',
+                text: 'После прохождения таможенного контроля груз выпускается в свободное обращение. Вы получаете полный пакет документов.',
+              },
+            ],
+          },
+          {
+            title: 'Что вы получаете',
+            items: [
+              'Надёжную растаможку грузов любого объёма и сложности.',
+              'Полное соответствие таможенному законодательству — исключение рисков штрафов и задержек.',
+              'Минимальные сроки оформления за счёт электронного декларирования и выстроенных процессов.',
+              'Прозрачную отчётность и контроль на каждом этапе.',
+              'Экономию вашего времени — мы полностью берём на себя взаимодействие с таможней.',
+            ],
+          },
+        ],
+        cta: 'Отправьте заявку на растаможку грузов — специалисты ИННОВЭД готовы подключиться в любое время.',
+      },
+      en: {
+        intro: 'Cargo customs clearance is a complex process requiring accurate documentation, knowledge of customs legislation, and experience interacting with regulatory authorities. Regardless of cargo type and volume — container, consolidated, or oversized shipments — INNOVED ensures reliable customs clearance with full compliance with all regulatory requirements. We guarantee white import, transparent conditions, and minimal customs processing times.',
+        sections: [
+          {
+            title: 'Why Choose INNOVED',
+            items: [
+              'Working with all cargo types — container, bulk, liquid, oversized, and consolidated shipments.',
+              'Thorough document verification — every document undergoes multi-level review before declaration submission.',
+              'Customs payment optimization — correct HS code selection and preference application reduce costs.',
+              'Coverage of all Russian customs posts — remote cargo processing regardless of arrival point.',
+              'Experience with large shipments — we successfully process regular commercial deliveries for various industries.',
+            ],
+          },
+          {
+            title: 'How Cargo Customs Clearance Works',
+            steps: [
+              {
+                title: 'Document receipt and preliminary analysis',
+                text: 'The client provides the contract, transport documents, invoices, and certificates. We analyze the cargo and determine the clearance strategy.',
+              },
+              {
+                title: 'Classification and payment calculation',
+                text: 'We determine the HS code, calculate duties, VAT, excise taxes, and other mandatory payments.',
+              },
+              {
+                title: 'Customs declaration preparation and submission',
+                text: 'We prepare the electronic goods declaration and submit it through the FCS system.',
+              },
+              {
+                title: 'Customs control support',
+                text: 'We interact with customs inspectors and promptly provide additional information and documents.',
+              },
+              {
+                title: 'Cargo release',
+                text: 'After passing customs control, the cargo is released for free circulation. You receive a complete document package.',
+              },
+            ],
+          },
+          {
+            title: 'What You Get',
+            items: [
+              'Reliable customs clearance for cargo of any volume and complexity.',
+              'Full compliance with customs legislation — eliminating risks of fines and delays.',
+              'Minimal processing times through electronic declaration and streamlined processes.',
+              'Transparent reporting and control at every stage.',
+              'Time savings — we fully handle all customs interactions.',
+            ],
+          },
+        ],
+        cta: 'Submit a request for cargo customs clearance — INNOVED specialists are ready to assist at any time.',
+      },
+    },
+  },
+  {
+    slug: 'tamozhennaya-ochistka',
+    icon: 'ShieldCheck',
+    title: {
+      ru: 'Таможенная очистка',
+      en: 'Customs Clearance',
+    },
+    seo: {
+      ru: {
+        title: 'Таможенная очистка',
+        description: 'Услуги по растаможке товаров в России и СНГ, официальный ввоз товаров, белый импорт',
+        keywords: 'таможенная очистка, растаможка, таможенное оформление, белый импорт, официальный ввоз, таможенный брокер, ИННОВЭД',
+      },
+      en: {
+        title: 'Customs Clearance',
+        description: 'Customs clearance services in Russia and CIS — official goods import, white import, and full regulatory compliance.',
+        keywords: 'customs clearance, customs processing, official import, white import, customs broker, INNOVED',
+      },
+    },
+    content: {
+      ru: {
+        intro: 'Таможенная очистка — это комплекс процедур, необходимых для легального перемещения товаров через границу Российской Федерации. Процесс включает подачу декларации, уплату таможенных платежей, прохождение контроля и получение разрешения на выпуск. ИННОВЭД выполняет таможенную очистку товаров под ключ, обеспечивая официальный ввоз, белый импорт и полное соответствие требованиям ФТС.',
+        sections: [
+          {
+            title: 'Почему выбирают ИННОВЭД',
+            items: [
+              'Комплексный подход — мы закрываем весь процесс таможенной очистки: от сбора документов до выпуска товара.',
+              'Знание нюансов законодательства — специалисты отслеживают все изменения в таможенном регулировании и применяют их в работе.',
+              'Минимизация рисков — грамотное оформление исключает доначисления, штрафы и отказы в выпуске.',
+              'Работа с любыми товарными группами — продовольственные, промышленные, подакцизные, подсанкционные товары.',
+              'Удалённое оформление по всей России — независимо от места нахождения груза и таможенного поста.',
+            ],
+          },
+          {
+            title: 'Этапы таможенной очистки',
+            steps: [
+              {
+                title: 'Анализ товара и документов',
+                text: 'Изучаем товарную номенклатуру, проверяем комплектность документов и определяем требования к оформлению.',
+              },
+              {
+                title: 'Классификация и расчёт платежей',
+                text: 'Подбираем корректный код ТН ВЭД, рассчитываем пошлины, НДС и иные платежи.',
+              },
+              {
+                title: 'Подготовка и подача декларации',
+                text: 'Формируем электронную декларацию и передаём её в таможенный орган.',
+              },
+              {
+                title: 'Прохождение таможенного контроля',
+                text: 'Сопровождаем проверку, предоставляем дополнительные документы и пояснения по запросу инспектора.',
+              },
+              {
+                title: 'Выпуск и передача документов',
+                text: 'После завершения очистки вы получаете выпущенную декларацию и полный пакет сопроводительных документов.',
+              },
+            ],
+          },
+          {
+            title: 'Что вы получаете',
+            items: [
+              'Полностью легальный ввоз с соблюдением всех норм таможенного законодательства.',
+              'Оптимизацию затрат за счёт правильной классификации и применения льгот.',
+              'Быстрое прохождение таможни — от нескольких часов до 1 рабочего дня.',
+              'Прозрачность на каждом этапе — вы видите статус оформления в режиме реального времени.',
+              'Отсутствие бюрократической нагрузки — все взаимодействия с таможней берёт на себя ИННОВЭД.',
+            ],
+          },
+        ],
+        cta: 'Закажите таможенную очистку товаров — менеджер ИННОВЭД свяжется с вами в течение 15 минут.',
+      },
+      en: {
+        intro: 'Customs clearance is a set of procedures required for legal movement of goods across the Russian Federation border. The process includes filing a declaration, paying customs duties, passing control, and obtaining release permission. INNOVED performs turnkey customs clearance, ensuring official import, white import, and full compliance with FCS requirements.',
+        sections: [
+          {
+            title: 'Why Choose INNOVED',
+            items: [
+              'Comprehensive approach — we cover the entire customs clearance process: from document collection to goods release.',
+              'Knowledge of legislative nuances — specialists track all changes in customs regulations and apply them in practice.',
+              'Risk minimization — proper processing eliminates additional charges, fines, and release refusals.',
+              'Working with all product groups — food, industrial, excisable, and sanctioned goods.',
+              'Remote processing across Russia — regardless of cargo location and customs post.',
+            ],
+          },
+          {
+            title: 'Customs Clearance Stages',
+            steps: [
+              {
+                title: 'Product and document analysis',
+                text: 'We study the product nomenclature, check document completeness, and determine processing requirements.',
+              },
+              {
+                title: 'Classification and payment calculation',
+                text: 'We select the correct HS code, calculate duties, VAT, and other payments.',
+              },
+              {
+                title: 'Declaration preparation and submission',
+                text: 'We prepare the electronic declaration and submit it to customs authorities.',
+              },
+              {
+                title: 'Customs control passage',
+                text: 'We support the inspection, provide additional documents and explanations at the inspector\'s request.',
+              },
+              {
+                title: 'Release and document delivery',
+                text: 'After clearance completion, you receive the released declaration and a complete set of accompanying documents.',
+              },
+            ],
+          },
+          {
+            title: 'What You Get',
+            items: [
+              'Fully legal import in compliance with all customs legislation.',
+              'Cost optimization through proper classification and benefit application.',
+              'Fast customs processing — from a few hours to 1 business day.',
+              'Transparency at every stage — you see the processing status in real time.',
+              'No bureaucratic burden — INNOVED handles all customs interactions.',
+            ],
+          },
+        ],
+        cta: 'Order customs clearance — an INNOVED manager will contact you within 15 minutes.',
+      },
+    },
+  },
 ];
 
 // Helper function to get service by slug
