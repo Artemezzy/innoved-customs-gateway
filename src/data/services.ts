@@ -806,12 +806,12 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Организация досмотра товаров — сопровождение процедур ФТС с ИННОВЭД',
+        title: 'Таможенный досмотр товаров',
         description: 'Организация таможенного досмотра товаров для бизнеса. Подготовка документов, координация участников, контроль прохождения и актов досмотра от ИННОВЭД.',
         keywords: 'организация досмотра, таможенный контроль товаров, сопровождение досмотра ФТС, координация досмотра груза, акт осмотра, проверка поставки на СВХ, ИННОВЭД',
       },
       en: {
-        title: 'Goods Inspection Organization — FCS Procedure Support with INNOVED',
+        title: 'Customs Goods Inspection',
         description: 'Customs goods inspection organization for business. Document preparation, participant coordination, monitoring and inspection reports from INNOVED.',
         keywords: 'inspection organization, customs control goods, FCS inspection support, cargo inspection coordination, inspection report, delivery check at CWH, INNOVED',
       },
