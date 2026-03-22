@@ -406,12 +406,12 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'ВЭД-консалтинг для бизнеса — стратегия и сопровождение с ИННОВЭД',
+        title: 'Консультации по вэд',
         description: 'Консультации по внешнеэкономической деятельности. Анализ контрактов, оценка пошлин, оптимизация схем поставок и валютных операций с ИННОВЭД.',
         keywords: 'консультация ВЭД, оптимизация внешнеэкономической деятельности, анализ внешнеторговых контрактов, стратегическое сопровождение ВЭД, планирование импорта, экспортный консалтинг, ИННОВЭД',
       },
       en: {
-        title: 'Foreign Trade Consulting for Business — Strategy and Support from INNOVED',
+        title: 'Foreign Trade Consulting',
         description: 'Foreign trade consulting services. Contract analysis, duty assessment, supply chain optimization and currency operations with INNOVED.',
         keywords: 'foreign trade consulting, foreign economic activity optimization, trade contract analysis, strategic FEA support, import planning, export consulting, INNOVED',
       },
