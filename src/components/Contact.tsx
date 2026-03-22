@@ -107,9 +107,11 @@ export function Contact({ language }: ContactProps) {
           {/* Company Information */}
           <Card className="animate-fade-in shadow-card hover:shadow-hover transition-all duration-300 border border-border">
             <CardHeader>
-              <CardTitle className="text-xl font-semibold text-accent flex items-center gap-2">
-                <Building className="w-5 h-5" />
-                {text.companyInfo.title}
+              <CardTitle asChild>
+                <h2 className="text-xl font-semibold text-accent flex items-center gap-2">
+                  <Building className="w-5 h-5" />
+                  {text.companyInfo.title}
+                </h2>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
