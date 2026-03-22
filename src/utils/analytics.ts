@@ -10,13 +10,15 @@ declare global {
 const GA_MEASUREMENT_ID = import.meta.env.VITE_GA_MEASUREMENT_ID || 'GA_MEASUREMENT_ID';
 const IS_DEVELOPMENT = import.meta.env.DEV;
 
+type ContactMethod = 'telegram' | 'phone' | 'email' | 'contact-form' | 'max-bot';
+
 export const analytics = {
   // Initialize GA4 with debug mode for development
   init: () => {
     if (typeof window !== 'undefined' && window.gtag && GA_MEASUREMENT_ID !== 'GA_MEASUREMENT_ID') {
       window.gtag('config', GA_MEASUREMENT_ID, {
         debug_mode: IS_DEVELOPMENT,
-        send_page_view: false, // We'll send manually
+        send_page_view: false,
       });
     }
   },
@@ -29,8 +31,7 @@ export const analytics = {
         page_title: title,
         debug_mode: IS_DEVELOPMENT,
       });
-      
-      // Also send as event for better tracking
+
       window.gtag('event', 'page_view', {
         page_title: title,
         page_location: window.location.href,
@@ -48,8 +49,7 @@ export const analytics = {
         value: value,
         debug_mode: IS_DEVELOPMENT,
       });
-      
-      // Log to console in development
+
       if (IS_DEVELOPMENT) {
         console.log('Analytics Event:', { action, category, label, value });
       }
@@ -64,7 +64,7 @@ export const analytics = {
         value: value,
         currency: currency,
       });
-      
+
       if (IS_DEVELOPMENT) {
         console.log('Analytics Conversion:', { conversionId, value, currency });
       }
@@ -72,7 +72,7 @@ export const analytics = {
   },
 
   // Track specific business events
-  contactClick: (method: 'telegram' | 'phone' | 'email' | 'contact-form' | 'max-bot') => {
+  contactClick: (method: ContactMethod) => {
     analytics.event('contact_click', 'engagement', method);
   },
 
