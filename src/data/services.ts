@@ -282,13 +282,13 @@ export const servicesData: ServiceData[] = [
     },
     seo: {
       ru: {
-        title: 'Определение кода ТН ВЭД ЕАЭС — уточнение классификации товаров с ИННОВЭД',
-        description: 'Профессиональное определение кода ТН ВЭД для импорта и экспорта. Анализ номенклатуры, оформление экспертного заключения и сопровождение внешнеэкономической документации.',
+        title: 'Определение кода ТН ВЭД',
+        description: 'Услуги по определению кода ТН ВЭД. Анализ номенклатуры, оформление экспертного заключения и сопровождение внешнеэкономической документации.',
         keywords: 'код ТН ВЭД, классификация товаров ЕАЭС, экспертное определение ТН ВЭД, таможенная номенклатура, обоснование кода, расчёт пошлины, ИННОВЭД',
       },
       en: {
-        title: 'EAEU HS Code Determination — Product Classification with INNOVED',
-        description: 'Professional HS code determination for import and export. Nomenclature analysis, expert opinion preparation and foreign trade documentation support.',
+        title: 'HS Code Determination',
+        description: 'HS code determination services. Nomenclature analysis, expert opinion preparation and foreign trade documentation support.',
         keywords: 'HS code, EAEU product classification, expert HS code determination, customs nomenclature, code justification, duty calculation, INNOVED',
       },
     },
