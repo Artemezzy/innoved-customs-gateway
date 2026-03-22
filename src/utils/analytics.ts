@@ -72,7 +72,7 @@ export const analytics = {
   },
 
   // Track specific business events
-  contactClick: (method: 'telegram' | 'phone' | 'email' | 'contact-form') => {
+  contactClick: (method: 'telegram' | 'telegram-bot-max' | 'phone' | 'email' | 'contact-form') => {
     analytics.event('contact_click', 'engagement', method);
   },
 
