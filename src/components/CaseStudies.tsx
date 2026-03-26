@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Language } from '@/contexts/LanguageContext';
 import caseZapchasti from '@/assets/case-zapchasti.webp';
+import caseDress from '@/assets/case-dress.webp';
 
 interface CaseItem {
   image: string;
@@ -24,6 +25,19 @@ const cases: CaseItem[] = [
     magnetText: {
       ru: '«Сократили срок таможенного оформления автозапчастей с 5–7 до 2 дней и снизили дополнительные расходы на 18% для оптового поставщика. Настроим такую же схему под ваши поставки.»',
       en: '"We reduced auto parts customs clearance from 5–7 to 2 days and cut additional costs by 18% for a wholesale supplier. We\'ll set up the same process for your shipments."',
+    },
+  },
+  {
+    image: caseDress,
+    imageAlt: 'Таможенное оформление одежды из Турции — кейс ИННОВЭД',
+    link: '/rastamojka-odejdi',
+    title: {
+      ru: 'Растаможка одежды из Турции',
+      en: 'Turkish Clothing Customs Clearance',
+    },
+    magnetText: {
+      ru: '«Другие брокеры отказывались растамаживать нашу партию одежды из Турции или предлагали завышенные тарифы. Мы приняли проект в исходном виде, оформили поставку за 3 дня и снизили стоимость услуг до 22% относительно их предложений. Узнайте, как мы можем оформить вашу турецкую одежду на таких же условиях.»',
+      en: '"Other brokers refused to clear our Turkish clothing shipment or offered inflated tariffs. We accepted the project as-is, completed clearance in 3 days and reduced service costs by up to 22% compared to their quotes. Learn how we can handle your Turkish clothing on the same terms."',
     },
   },
 ];
