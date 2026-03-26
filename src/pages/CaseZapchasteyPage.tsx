@@ -38,7 +38,6 @@ export default function CaseZapchasteyPage() {
         subtitle={isRu
           ? 'Кейс: экономия до 18% и сокращение сроков до 2 дней'
           : 'Case Study: up to 18% savings and 2-day clearance'}
-        language={language}
       />
 
       <article className="py-12 md:py-16">

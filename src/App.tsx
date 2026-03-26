@@ -20,6 +20,7 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import BrokerPage from "./pages/BrokerPage";
 import BrokerCityPage from "./pages/BrokerCityPage";
+import CaseZapchasteyPage from "./pages/CaseZapchasteyPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,6 +47,7 @@ const App = () => (
               {/* News routes temporarily hidden */}
               {/* <Route path="/news" element={<NewsPage />} /> */}
               {/* <Route path="/news/:slug" element={<NewsItemPage />} /> */}
+              <Route path="/rastamojka-zapchastey" element={<CaseZapchasteyPage />} />
               <Route path="/faq" element={<FAQPage />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
