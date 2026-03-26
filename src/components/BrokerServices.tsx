@@ -144,9 +144,9 @@ export function BrokerServices({ language }: BrokerServicesProps) {
                   <Mail className="w-4 h-4 text-accent shrink-0" />
                   <span>info@innovedbroker.ru</span>
                 </a>
-                <a href="tel:+73952434354" className="flex items-center gap-1.5 text-foreground hover:text-accent transition-colors mt-1">
+                <a href="tel:+79331881009" className="flex items-center gap-1.5 text-foreground hover:text-accent transition-colors mt-1">
                   <Phone className="w-4 h-4 text-accent shrink-0" />
-                  <span>+7 (3952) 43-43-54</span>
+                  <span>+7 933 188 10 09</span>
                 </a>
               </div>
             </div>
