@@ -256,9 +256,9 @@ export default function CaseTechnikiPage() {
                 </a>
               </Button>
               <Button asChild variant="outline" className="w-full sm:col-span-2">
-                <a href="tel:+73952434977">
+                <a href="tel:+79331881009">
                   <Phone className="w-4 h-4 mr-2" />
-                  +7 (3952) 43-49-77
+                  8 933 188 10 09
                 </a>
               </Button>
             </div>
