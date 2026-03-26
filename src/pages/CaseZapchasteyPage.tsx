@@ -7,7 +7,7 @@ import { analytics } from '@/utils/analytics';
 import { Button } from '@/components/ui/button';
 import { Send, Mail, Phone, MessageCircle } from 'lucide-react';
 import caseImage from '@/assets/case-zapchasti.webp';
-import maxIconOrange from '@/assets/max-icon-orange.webp';
+import maxIcon from '@/assets/max-icon.png';
 
 const keywords = 'растаможка запчастей, таможенное оформление запчастей из Китая, растаможка запчастей, бу запчасти растаможка, белый импорт запчастей, кейс, автозапчасти таможня, импорт автозапчастей';
 
