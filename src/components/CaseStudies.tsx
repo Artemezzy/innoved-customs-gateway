@@ -58,10 +58,6 @@ export function CaseStudies({ language }: CaseStudiesProps) {
   return (
     <section className="py-12 md:py-20 bg-muted/30">
       <div className="container mx-auto px-4">
-        <h2 className="text-2xl md:text-3xl font-bold text-center mb-8 md:mb-12 text-foreground">
-          {sectionTitle[language]}
-        </h2>
-
         <div className="relative">
           {/* Navigation arrows */}
           {cases.length > 1 && (
@@ -89,18 +85,20 @@ export function CaseStudies({ language }: CaseStudiesProps) {
           >
             <div className="grid grid-cols-1 md:grid-cols-2">
               {/* Left: image */}
-              <div className="aspect-[16/10] md:aspect-auto md:min-h-[320px] overflow-hidden">
+              <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[320px] overflow-hidden">
                 <img
                   src={caseItem.image}
                   alt={caseItem.imageAlt}
-                  className="w-full h-full object-cover"
-                  loading="lazy"
+                  className="absolute inset-0 w-full h-full object-cover"
                 />
               </div>
 
               {/* Right: magnet text */}
               <div className="flex flex-col justify-center p-6 md:p-10">
-                <h3 className="text-xl md:text-2xl font-bold text-foreground mb-4">
+                <p className="text-xs uppercase tracking-widest text-primary font-semibold mb-3" style={{ fontFamily: 'Montserrat, sans-serif' }}>
+                  {sectionTitle[language]}
+                </p>
+                <h3 className="text-xl md:text-2xl font-bold text-foreground mb-4 text-left" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                   {caseItem.title[language]}
                 </h3>
                 <p className="text-muted-foreground text-base md:text-lg leading-relaxed mb-6">
