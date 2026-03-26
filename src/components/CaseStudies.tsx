@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Language } from '@/contexts/LanguageContext';
 import caseZapchasti from '@/assets/case-zapchasti.webp';
 import caseDress from '@/assets/case-dress.webp';
+import caseOborud from '@/assets/case-oborud.webp';
 
 interface CaseItem {
   image: string;
@@ -19,7 +20,7 @@ const cases: CaseItem[] = [
     imageAlt: 'Таможенное оформление автозапчастей — кейс ИННОВЭД',
     link: '/rastamojka-zapchastey',
     title: {
-      ru: 'Растаможка автозапчастей',
+      ru: 'Растаможка запчастей',
       en: 'Auto Parts Customs Clearance',
     },
     magnetText: {
@@ -38,6 +39,19 @@ const cases: CaseItem[] = [
     magnetText: {
       ru: '«Другие брокеры отказывались растамаживать нашу партию одежды из Турции или предлагали завышенные тарифы. Мы приняли проект в исходном виде, оформили поставку за 3 дня и снизили стоимость услуг до 22% относительно их предложений. Узнайте, как мы можем оформить вашу турецкую одежду на таких же условиях.»',
       en: '"Other brokers refused to clear our Turkish clothing shipment or offered inflated tariffs. We accepted the project as-is, completed clearance in 3 days and reduced service costs by up to 22% compared to their quotes. Learn how we can handle your Turkish clothing on the same terms."',
+    },
+  },
+  {
+    image: caseOborud,
+    imageAlt: 'Таможенное оформление технологического оборудования — кейс ИННОВЭД',
+    link: '/rastamojka-oborudovaniya',
+    title: {
+      ru: 'Растаможка оборудования',
+      en: 'Equipment Customs Clearance',
+    },
+    magnetText: {
+      ru: '«Контрагенты не успевают, оборудование простаивает на СВХ, сроки проекта "плывут"? Мы показали, как превратить 10–14 дней ожидания в стабильные 1–2 дня выпуска. Ознакомьтесь с кейсом по технологическому оборудованию.»',
+      en: '"Contractors falling behind, equipment stuck at temporary storage, project deadlines slipping? We showed how to turn 10–14 days of waiting into stable 1–2 day releases. See our industrial equipment case study."',
     },
   },
 ];

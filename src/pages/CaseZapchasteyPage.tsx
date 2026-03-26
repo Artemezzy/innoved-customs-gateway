@@ -34,7 +34,7 @@ export default function CaseZapchasteyPage() {
         canonicalPath="/rastamojka-zapchastey"
       />
       <PageHero
-        title={isRu ? 'Растаможка автозапчастей' : 'Auto Parts Customs Clearance'}
+        title={isRu ? 'Растаможка запчастей' : 'Auto Parts Customs Clearance'}
         subtitle={isRu
           ? 'Кейс: экономия до 18% и сокращение сроков до 2 дней'
           : 'Case Study: up to 18% savings and 2-day clearance'}
