@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Language } from '@/contexts/LanguageContext';
+import caseTech from '@/assets/case-tech.webp';
 import caseZapchasti from '@/assets/case-zapchasti.webp';
 import caseDress from '@/assets/case-dress.webp';
 import caseOborud from '@/assets/case-oborud.webp';
@@ -15,6 +16,19 @@ interface CaseItem {
 }
 
 const cases: CaseItem[] = [
+  {
+    image: caseTech,
+    imageAlt: 'Таможенное оформление бытовой техники — кейс ИННОВЭД',
+    link: '/rastamojka-tehniki',
+    title: {
+      ru: 'Растаможка техники',
+      en: 'Appliance Customs Clearance',
+    },
+    magnetText: {
+      ru: '«Холодильники и стиральные машины уже проданы в розницу, а их партию держит таможня из\u2011за вопросов к EAC и маркировке? В нашем кейсе мы перевели клиента из режима постоянных блокировок в стабильные поставки без остановок, с прогнозируемыми сроками и понятными расходами. Посмотрите, как устроено решение.»',
+      en: '"Refrigerators and washing machines already sold to retail, but customs is holding the shipment over EAC and labeling questions? In our case study, we moved the client from constant blocks to stable deliveries with predictable timelines and clear costs. See how the solution works."',
+    },
+  },
   {
     image: caseZapchasti,
     imageAlt: 'Таможенное оформление автозапчастей — кейс ИННОВЭД',
