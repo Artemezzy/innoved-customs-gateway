@@ -22,6 +22,7 @@ import BrokerPage from "./pages/BrokerPage";
 import BrokerCityPage from "./pages/BrokerCityPage";
 import CaseZapchasteyPage from "./pages/CaseZapchasteyPage";
 import CaseOdejdaPage from "./pages/CaseOdejdaPage";
+import CaseOborudovaniyaPage from "./pages/CaseOborudovaniyaPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -50,6 +51,7 @@ const App = () => (
               {/* <Route path="/news/:slug" element={<NewsItemPage />} /> */}
               <Route path="/rastamojka-zapchastey" element={<CaseZapchasteyPage />} />
               <Route path="/rastamojka-odejdi" element={<CaseOdejdaPage />} />
+              <Route path="/rastamojka-oborudovaniya" element={<CaseOborudovaniyaPage />} />
               <Route path="/faq" element={<FAQPage />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
