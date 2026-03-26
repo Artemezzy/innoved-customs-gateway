@@ -1,63 +1,58 @@
 
 
-# Fix H1-H6 heading hierarchy across pages
+## Оптимизация критического пути рендеринга (CSS + шрифты)
 
-## Problem
-Several pages skip heading levels (H1 → H3, missing H2) or use non-semantic tags where headings should be. This hurts SEO.
+### Проблема
+Два ресурса блокируют начальную отрисовку и задерживают LCP:
+1. **CSS бандл** (`/assets/index-*.css`) — Vite по умолчанию вставляет `<link rel="stylesheet">`, который блокирует рендер
+2. **Google Fonts Montserrat** — синхронная загрузка через `<link rel="stylesheet">`
 
-## Changes
+### Решение
 
-### 1. `/services` page — Add H2 wrapper in `Services.tsx`
-Currently ServiceCard uses H3 directly. Add a visually hidden H2 section heading above the grid:
-```
-<h2 className="sr-only">{language === 'ru' ? 'Список услуг' : 'Services list'}</h2>
-```
-This preserves visual design while fixing H1→H3 skip.
+#### 1. Шрифт Montserrat — отложенная загрузка (index.html)
 
-### 2. `/how-we-work` page — Change step H3 to H2 in `HowWeWork.tsx`
-When `showHeader={false}` (used on the dedicated page), the component's own H2 title is hidden, leaving only H3 step titles. Fix: change step `fullTitle` from `<h3>` to `<h2>` when shown on standalone page, OR add a `sr-only` H2 inside the component when header is hidden.
+Заменить текущий синхронный `<link>` на паттерн с `preload` + `media="print"` trick:
 
-Simpler approach: add an `sr-only` H2 before the tabs when `showHeader` is false:
-```tsx
-{!showHeader && (
-  <h2 className="sr-only">{content.title}</h2>
-)}
-```
+```html
+<!-- Preconnect остаётся -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-### 3. `/contact` page — Add H2 headings in `Contact.tsx`
-The CardTitle elements use generic tags. Change the two `CardTitle` components to render as H2:
-```tsx
-<CardTitle asChild><h2 className="...">{text.companyInfo.title}</h2></CardTitle>
+<!-- Асинхронная загрузка шрифта -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+<noscript>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
+</noscript>
 ```
 
-### 4. `/blog` page — Add H2 in `BlogPage.tsx`
-Add a visually hidden H2 section heading before the content carousel:
-```
-<h2 className="sr-only">{language === 'ru' ? 'Статьи' : 'Articles'}</h2>
-```
-And change ContentCard's `<h3>` — this is correct as-is (H2 → H3 hierarchy).
+Шрифт уже использует `display=swap`, поэтому текст будет виден сразу с фоллбэком, а Montserrat подгрузится асинхронно.
 
-### 5. `/news` page — Add H2 in `NewsPage.tsx`
-Same as blog — add `sr-only` H2 before content:
-```
-<h2 className="sr-only">{language === 'ru' ? 'Новости компании' : 'Company news'}</h2>
-```
+#### 2. CSS бандл — встроить критический CSS (опционально, через Vite)
 
-### 6. `/faq` page — Add H2 in `FAQPage.tsx`
-Add `sr-only` H2 before the accordion, and wrap accordion question text in H3:
-```tsx
-<h2 className="sr-only">{language === 'ru' ? 'Вопросы и ответы' : 'Questions and answers'}</h2>
-```
-Change the `<span>` inside AccordionTrigger to `<h3>`:
-```tsx
-<h3 className="text-foreground font-medium pr-4">{item.question}</h3>
+Vite не имеет встроенной поддержки inline critical CSS, но есть два подхода:
+
+**Подход A** — плагин `vite-plugin-css-injected-by-js` (инлайнит весь CSS в JS, убирает блокирующий `<link>`):
+
+Добавить в `vite.config.ts`:
+```ts
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
+
+plugins: [
+  react(),
+  cssInjectedByJsPlugin(),
+  // ...
+]
 ```
 
-## Files to modify
-- `src/components/Services.tsx` — add sr-only H2
-- `src/components/HowWeWork.tsx` — add sr-only H2 when no header
-- `src/components/Contact.tsx` — CardTitle → H2
-- `src/pages/BlogPage.tsx` — add sr-only H2
-- `src/pages/NewsPage.tsx` — add sr-only H2
-- `src/pages/FAQPage.tsx` — add sr-only H2, span → H3
+Это полностью убирает отдельный CSS-файл — стили вставляются через JS при загрузке бандла. CSS перестаёт блокировать рендер.
+
+**Подход B** (рекомендуемый, без плагинов) — оставить CSS как есть, но сфокусироваться на шрифтах, т.к. CSS бандл Vite обычно мал и быстро загружается с того же домена.
+
+### Рекомендация
+
+Применить только **пункт 1** (асинхронная загрузка шрифтов) — это даст наибольший эффект при минимальных изменениях. CSS бандл загружается с того же домена и кешируется, его влияние на LCP минимально.
+
+### Файлы для изменения
+- `index.html` — заменить строку 21 на асинхронную загрузку шрифта (4 строки)
 
