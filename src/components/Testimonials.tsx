@@ -12,10 +12,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Autoplay from 'embla-carousel-autoplay';
 import { useRef } from 'react';
 
-import victoriaPhoto from '@/assets/testimonial-victoria.png';
-import svetlanaPhoto from '@/assets/testimonial-svetlana.jpg';
-import bairPhoto from '@/assets/testimonial-bair.jpg';
-import alexanderPhoto from '@/assets/testimonial-alexander.jpg';
+import victoriaPhoto from '@/assets/testimonial-victoria.webp';
+import svetlanaPhoto from '@/assets/testimonial-svetlana.webp';
+import bairPhoto from '@/assets/testimonial-bair.webp';
+import alexanderPhoto from '@/assets/testimonial-alexander.webp';
 
 interface Testimonial {
   id: number;
