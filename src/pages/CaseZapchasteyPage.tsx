@@ -226,7 +226,7 @@ export default function CaseZapchasteyPage() {
 
               <Button variant="outline" asChild>
                 <a href="https://max.ru/id3849109300_bot" target="_blank" rel="noopener noreferrer">
-                  <img src={maxIconOrange} alt="MAX" className="w-4 h-4 mr-2" />
+                  <img src={maxIcon} alt="MAX" className="w-4 h-4 mr-2" />
                   MAX
                 </a>
               </Button>
