@@ -61,7 +61,7 @@ const cases: CaseItem[] = [
 const sectionTitle = { ru: 'Наши кейсы', en: 'Our Cases' };
 const readMore = { ru: 'Подробнее →', en: 'Read more →' };
 
-const AUTO_INTERVAL = 7 * 60 * 1000; // 7 minutes
+const AUTO_INTERVAL = 7 * 1000; // 7 seconds
 const FREEZE_DURATION = 15 * 1000;   // 15 seconds
 
 interface CaseStudiesProps {
