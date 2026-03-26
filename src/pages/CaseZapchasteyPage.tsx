@@ -7,7 +7,7 @@ import { analytics } from '@/utils/analytics';
 import { Button } from '@/components/ui/button';
 import { Send, Mail, Phone, MessageCircle } from 'lucide-react';
 import caseImage from '@/assets/case-zapchasti.webp';
-import maxIconOrange from '@/assets/max-icon-orange.webp';
+import maxIcon from '@/assets/max-icon.png';
 
 const keywords = 'растаможка запчастей, таможенное оформление запчастей из Китая, растаможка запчастей, бу запчасти растаможка, белый импорт запчастей, кейс, автозапчасти таможня, импорт автозапчастей';
 
@@ -226,7 +226,7 @@ export default function CaseZapchasteyPage() {
 
               <Button variant="outline" asChild>
                 <a href="https://max.ru/id3849109300_bot" target="_blank" rel="noopener noreferrer">
-                  <img src={maxIconOrange} alt="MAX" className="w-4 h-4 mr-2" />
+                  <img src={maxIcon} alt="MAX" className="w-4 h-4 mr-2" />
                   MAX
                 </a>
               </Button>
