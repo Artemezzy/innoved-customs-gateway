@@ -1,16 +1,18 @@
 User-agent: Googlebot
+Disallow: /contact
 Allow: /
+Sitemap: https://www.innovedbroker.ru/sitemap.xml
 
 User-agent: Bingbot
+Disallow: /contact
 Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
+Sitemap: https://www.innovedbroker.ru/sitemap.xml
 
 User-agent: *
+Disallow: /contact
 Allow: /
+Sitemap: https://www.innovedbroker.ru/sitemap.xml
 
+User-Agent: Yandex
+Disallow: /contact
 Sitemap: https://www.innovedbroker.ru/sitemap.xml
