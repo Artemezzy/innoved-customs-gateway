@@ -1,18 +1,39 @@
 User-agent: Googlebot
 Disallow: /contact
+Disallow: /assets/
+Disallow: /privacy
+Disallow: /terms
+Disallow: /zh
+Disallow: /news
 Allow: /
 Sitemap: https://www.innovedbroker.ru/sitemap.xml
 
 User-agent: Bingbot
 Disallow: /contact
+Disallow: /assets/
+Disallow: /privacy
+Disallow: /terms
+Disallow: /zh
+Disallow: /news
 Allow: /
 Sitemap: https://www.innovedbroker.ru/sitemap.xml
 
 User-agent: *
 Disallow: /contact
+Disallow: /assets/
+Disallow: /privacy
+Disallow: /terms
+Disallow: /zh
+Disallow: /news
 Allow: /
 Sitemap: https://www.innovedbroker.ru/sitemap.xml
 
 User-Agent: Yandex
 Disallow: /contact
+Disallow: /assets/
+Disallow: /privacy
+Disallow: /terms
+Disallow: /zh
+Disallow: /news
+Allow: /
 Sitemap: https://www.innovedbroker.ru/sitemap.xml
