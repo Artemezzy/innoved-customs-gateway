@@ -61,6 +61,31 @@ const seoContent = {
       title: 'Пользовательское соглашение - ИННОВЭД',
       description: 'Пользовательское соглашение компании ИННОВЭД об использовании сайта',
       keywords: 'пользовательское соглашение, условия использования, ИННОВЭД'
+    },
+    broker: {
+      title: 'Таможенный брокер по всей России | География услуг ИННОВЭД',
+      description: 'Услуги таможенного брокера в 28 городах России. Москва, Санкт-Петербург, Владивосток, Новосибирск и другие регионы.',
+      keywords: 'таможенный брокер россия, география услуг, таможенное оформление регионы, растаможка города'
+    },
+    caseTehniki: {
+      title: 'Растаможка техники | Кейс ИННОВЭД',
+      description: 'Кейс: таможенное оформление бытовой техники. Перевод клиента из режима блокировок в стабильные поставки без остановок.',
+      keywords: 'растаможка техники, таможенное оформление техники, белый импорт электроприборов, кейс ИННОВЭД'
+    },
+    caseZapchastey: {
+      title: 'Растаможка запчастей | Кейс ИННОВЭД',
+      description: 'Кейс: таможенное оформление автозапчастей. Оптимизация логистики и снижение таможенных платежей.',
+      keywords: 'растаможка запчастей, таможенное оформление автозапчастей, импорт запчастей, кейс ИННОВЭД'
+    },
+    caseOdejda: {
+      title: 'Растаможка одежды | Кейс ИННОВЭД',
+      description: 'Кейс: таможенное оформление одежды и текстиля. Сертификация, маркировка и белый импорт.',
+      keywords: 'растаможка одежды, таможенное оформление одежды, импорт текстиля, кейс ИННОВЭД'
+    },
+    caseOborudovaniya: {
+      title: 'Растаможка оборудования | Кейс ИННОВЭД',
+      description: 'Кейс: таможенное оформление промышленного оборудования. Сокращение сроков оформления с 10-14 до 1-2 дней.',
+      keywords: 'растаможка оборудования, таможенное оформление станков, импорт оборудования, кейс ИННОВЭД'
     }
   },
   en: {
@@ -113,6 +138,31 @@ const seoContent = {
       title: 'Terms of Service - INNOVED',
       description: 'INNOVED company terms of service for website usage',
       keywords: 'terms of service, terms of use, INNOVED'
+    },
+    broker: {
+      title: 'Customs Broker Across Russia | INNOVED Service Locations',
+      description: 'Customs broker services in 28 cities across Russia. Moscow, St. Petersburg, Vladivostok, Novosibirsk and more.',
+      keywords: 'customs broker russia, service locations, customs clearance regions, cargo clearance cities'
+    },
+    caseTehniki: {
+      title: 'Appliance Customs Clearance | INNOVED Case Study',
+      description: 'Case study: customs clearance of household appliances. From constant blockages to stable, uninterrupted deliveries.',
+      keywords: 'appliance customs clearance, household electronics import, white import, INNOVED case study'
+    },
+    caseZapchastey: {
+      title: 'Auto Parts Customs Clearance | INNOVED Case Study',
+      description: 'Case study: customs clearance of auto parts. Logistics optimization and customs duty reduction.',
+      keywords: 'auto parts customs clearance, spare parts import, INNOVED case study'
+    },
+    caseOdejda: {
+      title: 'Clothing Customs Clearance | INNOVED Case Study',
+      description: 'Case study: customs clearance of clothing and textiles. Certification, labeling and white import.',
+      keywords: 'clothing customs clearance, textile import, garment import, INNOVED case study'
+    },
+    caseOborudovaniya: {
+      title: 'Equipment Customs Clearance | INNOVED Case Study',
+      description: 'Case study: customs clearance of industrial equipment. Processing time reduced from 10-14 to 1-2 days.',
+      keywords: 'equipment customs clearance, machinery import, industrial equipment, INNOVED case study'
     }
   }
 };
