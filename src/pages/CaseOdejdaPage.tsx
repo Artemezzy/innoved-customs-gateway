@@ -25,12 +25,7 @@ export default function CaseOdejdaPage() {
     <>
       <SEOHead
         language={language}
-        page="home"
-        customTitle={isRu ? 'Растаможка одежды — кейс ИННОВЭД' : 'Clothing Customs Clearance — INNOVED Case Study'}
-        customDescription={isRu
-          ? 'Таможенное оформление одежды из Турции, растаможка одежды, ТО текстиля, белый импорт одежды, кейс.'
-          : 'Customs clearance of clothing from Turkey, textile clearance, white import, case study.'}
-        customKeywords={keywords}
+        page="caseOdejda"
         canonicalPath="/rastamojka-odejdi"
       />
       <PageHero

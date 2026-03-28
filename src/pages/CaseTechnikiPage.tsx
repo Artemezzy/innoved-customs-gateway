@@ -25,12 +25,7 @@ export default function CaseTechnikiPage() {
     <>
       <SEOHead
         language={language}
-        page="home"
-        customTitle={isRu ? 'Растаможка техники — кейс ИННОВЭД' : 'Appliance Customs Clearance — INNOVED Case Study'}
-        customDescription={isRu
-          ? 'Таможенное оформление техники, растаможка бытовой техники, белый импорт электроприборов, кейс.'
-          : 'Customs clearance of household appliances, white import of electronics, case study.'}
-        customKeywords={keywords}
+        page="caseTehniki"
         canonicalPath="/rastamojka-tehniki"
       />
       <PageHero

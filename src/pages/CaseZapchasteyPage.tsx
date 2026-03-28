@@ -25,12 +25,7 @@ export default function CaseZapchasteyPage() {
     <>
       <SEOHead
         language={language}
-        page="home"
-        customTitle={isRu ? 'Растаможка запчастей — кейс ИННОВЭД' : 'Auto Parts Customs Clearance — INNOVED Case Study'}
-        customDescription={isRu
-          ? 'Таможенное оформление запчастей из Китая, растаможка запчастей, бу запчасти растаможка, белый импорт запчастей, кейс.'
-          : 'Customs clearance of auto parts from China, used parts clearance, white import, case study.'}
-        customKeywords={keywords}
+        page="caseZapchastey"
         canonicalPath="/rastamojka-zapchastey"
       />
       <PageHero
