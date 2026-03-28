@@ -1,58 +1,75 @@
 
 
-## Оптимизация критического пути рендеринга (CSS + шрифты)
+## Разделение sitemap на индексный файл и 3 дочерних
 
-### Проблема
-Два ресурса блокируют начальную отрисовку и задерживают LCP:
-1. **CSS бандл** (`/assets/index-*.css`) — Vite по умолчанию вставляет `<link rel="stylesheet">`, который блокирует рендер
-2. **Google Fonts Montserrat** — синхронная загрузка через `<link rel="stylesheet">`
+### Что делаем
 
-### Решение
+Заменяем единый `sitemap.xml` на индексный файл (`sitemapindex`), который ссылается на 3 дочерних sitemap. Убираем `priority` и `changefreq`, добавляем `lastmod` с текущей датой (2026-03-28).
 
-#### 1. Шрифт Montserrat — отложенная загрузка (index.html)
+### Файлы
 
-Заменить текущий синхронный `<link>` на паттерн с `preload` + `media="print"` trick:
-
-```html
-<!-- Preconnect остаётся -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<!-- Асинхронная загрузка шрифта -->
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
-<noscript>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap">
-</noscript>
+**1. `public/sitemap.xml`** — индексный файл (по образцу из вложения):
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>https://www.innovedbroker.ru/sitemap-main.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.innovedbroker.ru/sitemap-service.xml</loc>
+  </sitemap>
+  <sitemap>
+    <loc>https://www.innovedbroker.ru/sitemap-geo.xml</loc>
+  </sitemap>
+</sitemapindex>
 ```
 
-Шрифт уже использует `display=swap`, поэтому текст будет виден сразу с фоллбэком, а Montserrat подгрузится асинхронно.
+**2. `public/sitemap-main.xml`** — все страницы кроме услуг и географии:
+- `/`
+- `/about`
+- `/how-we-work`
+- `/contact`
+- `/blog`
+- `/faq`
+- `/privacy`
+- `/terms`
+- `/rastamojka-tehniki`
+- `/rastamojka-zapchastey`
+- `/rastamojka-odejdi`
+- `/rastamojka-oborudovaniya`
 
-#### 2. CSS бандл — встроить критический CSS (опционально, через Vite)
+**3. `public/sitemap-service.xml`** — раздел услуг:
+- `/services`
+- `/services/import`
+- `/services/export`
+- `/services/certification`
+- `/services/hs-code`
+- `/services/customs-letters`
+- `/services/ved-consulting`
+- `/services/inspection`
+- `/services/translation`
+- `/services/rastamozhka-tovarov`
+- `/services/rastamozhka-gruzov`
+- `/services/tamozhennaya-ochistka`
 
-Vite не имеет встроенной поддержки inline critical CSS, но есть два подхода:
+**4. `public/sitemap-geo.xml`** — раздел географии:
+- `/tamozhennyj-broker`
+- `/tamozhennyj-broker/barnaul`
+- ... все 28 городов
 
-**Подход A** — плагин `vite-plugin-css-injected-by-js` (инлайнит весь CSS в JS, убирает блокирующий `<link>`):
-
-Добавить в `vite.config.ts`:
-```ts
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
-
-plugins: [
-  react(),
-  cssInjectedByJsPlugin(),
-  // ...
-]
+Каждый URL будет в формате:
+```xml
+<url>
+  <loc>https://www.innovedbroker.ru/...</loc>
+  <lastmod>2026-03-28</lastmod>
+</url>
 ```
 
-Это полностью убирает отдельный CSS-файл — стили вставляются через JS при загрузке бандла. CSS перестаёт блокировать рендер.
+**5. `public/robots.txt`** — обновить ссылку на sitemap (остается `sitemap.xml`, т.к. он теперь индексный — менять не нужно).
 
-**Подход B** (рекомендуемый, без плагинов) — оставить CSS как есть, но сфокусироваться на шрифтах, т.к. CSS бандл Vite обычно мал и быстро загружается с того же домена.
-
-### Рекомендация
-
-Применить только **пункт 1** (асинхронная загрузка шрифтов) — это даст наибольший эффект при минимальных изменениях. CSS бандл загружается с того же домена и кешируется, его влияние на LCP минимально.
-
-### Файлы для изменения
-- `index.html` — заменить строку 21 на асинхронную загрузку шрифта (4 строки)
+### Итого: 4 файла
+- `public/sitemap.xml` — перезаписать
+- `public/sitemap-main.xml` — создать
+- `public/sitemap-service.xml` — создать
+- `public/sitemap-geo.xml` — создать
 
