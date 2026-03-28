@@ -25,12 +25,7 @@ export default function CaseOborudovaniyaPage() {
     <>
       <SEOHead
         language={language}
-        page="home"
-        customTitle={isRu ? 'Растаможка оборудования — кейс ИННОВЭД' : 'Equipment Customs Clearance — INNOVED Case Study'}
-        customDescription={isRu
-          ? 'Таможенное оформление оборудования, растаможка станков, белый импорт оборудования, кейс.'
-          : 'Customs clearance of equipment, CNC machines clearance, white import, case study.'}
-        customKeywords={keywords}
+        page="caseOborudovaniya"
         canonicalPath="/rastamojka-oborudovaniya"
       />
       <PageHero

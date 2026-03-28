@@ -37,8 +37,7 @@ export default function BrokerPage() {
       <SEOHead
         language={language}
         page="broker"
-        customTitle={t.title}
-        customDescription={t.subtitle}
+        canonicalPath="/tamozhennyj-broker"
       />
       <PageHero title={t.title} subtitle={t.subtitle} />
 
