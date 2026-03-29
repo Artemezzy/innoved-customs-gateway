@@ -3,6 +3,7 @@ export const moscowContent = {
     heroTitle: 'Таможенный брокер Москва',
     heroSubtitle: 'Растаможка грузов и ВЭД-сопровождение в столице',
     seoDescription: 'Таможенный брокер в Москве — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок любых товарных категорий.',
+    seoKeywords: 'таможенный брокер москва, растаможка москва, таможенное оформление москва, импорт экспорт москва, ВЭД москва, декларирование товаров',
     intro: {
       title: 'Москва — крупнейший логистический центр России',
       text: 'Москва — столица России, крупнейший экономический, финансовый и логистический центр страны с наиболее развитой инфраструктурой для внешнеэкономической деятельности. Москва и Московская область являются безусловными лидерами по объёму внешнеторгового оборота, концентрируя большую часть импорта и значительную долю экспорта России. Для компаний из Москвы, работающих с импортом и экспортом, профессиональное таможенное оформление — это основа стабильности бизнес-процессов, прозрачности расчётов и минимизации всех рисков.',
@@ -66,6 +67,7 @@ export const moscowContent = {
     heroTitle: 'Customs Broker Moscow',
     heroSubtitle: 'Cargo clearance and foreign trade support in the capital',
     seoDescription: 'Customs broker in Moscow — import and export clearance. Electronic declaration, HS code selection, support for all product categories.',
+    seoKeywords: 'customs broker moscow, customs clearance moscow, import export moscow, foreign trade moscow, goods declaration',
     intro: {
       title: 'Moscow — Russia\'s Largest Logistics Center',
       text: 'Moscow is the capital of Russia, the largest economic, financial, and logistics center of the country with the most developed infrastructure for foreign economic activity. Moscow and the Moscow Region are undisputed leaders in foreign trade turnover, concentrating most of Russia\'s imports and a significant share of exports. For companies from Moscow working with imports and exports, professional customs clearance is the foundation of business process stability, transparent calculations, and minimization of all risks.',

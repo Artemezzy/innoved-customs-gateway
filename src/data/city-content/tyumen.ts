@@ -3,6 +3,7 @@ export const tyumenContent = {
     heroTitle: 'Таможенный брокер Тюмень',
     heroSubtitle: 'Растаможка товаров и промышленный импорт',
     seoDescription: 'Таможенный брокер в Тюмени — оформление импорта и экспорта нефтегазового оборудования, продукции нефтехимии. Электронное декларирование, подбор кодов ТН ВЭД, транзит через Казахстан.',
+    seoKeywords: 'таможенный брокер тюмень, растаможка тюмень, таможенное оформление тюменская область, импорт оборудования, ВЭД тюмень, нефтегазовое оборудование',
     intro: {
       title: 'Тюмень — промышленный центр Западной Сибири',
       text: 'Тюмень — крупный промышленный и транспортный центр Западной Сибири, важный логистический узел на Транссибирской магистрали, через который проходят грузопотоки из Казахстана и стран Азии в европейскую часть России. Тюменская область активно развивает внешнеэкономическую деятельность, экспортируя нефтегазовое оборудование, продукцию нефтехимии и импортируя оборудование, технику и товары народного потребления.',
@@ -66,6 +67,7 @@ export const tyumenContent = {
     heroTitle: 'Customs Broker Tyumen',
     heroSubtitle: 'Customs clearance and industrial import',
     seoDescription: 'Customs broker in Tyumen — import and export clearance of oil and gas equipment, petrochemical products. Electronic declaration, HS code selection, transit through Kazakhstan.',
+    seoKeywords: 'customs broker tyumen, customs clearance tyumen region, equipment import, foreign trade tyumen, oil gas equipment',
     intro: {
       title: 'Tyumen — Industrial Center of Western Siberia',
       text: 'Tyumen is a major industrial and transport center of Western Siberia, an important logistics hub on the Trans-Siberian Railway, through which cargo flows from Kazakhstan and Asian countries to the European part of Russia. The Tyumen region actively develops foreign economic activity, exporting oil and gas equipment, petrochemical products and importing equipment, machinery, and consumer goods.',

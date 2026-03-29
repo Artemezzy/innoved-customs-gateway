@@ -3,6 +3,7 @@ export const omskContent = {
     heroTitle: 'Таможенный брокер Омск',
     heroSubtitle: 'Растаможка товаров и транзит через Казахстан',
     seoDescription: 'Таможенный брокер в Омске — оформление импорта и экспорта нефтепродуктов, химической продукции, машиностроительной продукции. Электронное декларирование, транзит через Казахстан.',
+    seoKeywords: 'таможенный брокер омск, растаможка омск, таможенное оформление омская область, импорт из казахстана, ВЭД омск, экспорт нефтепродуктов',
     intro: {
       title: 'Омск — промышленный центр Сибирского федерального округа',
       text: 'Омск — крупный промышленный центр Сибирского федерального округа, важный транспортный узел на Транссибирской магистрали и один из ключевых логистических центров Западной Сибири. Омская область активно участвует во внешнеэкономической деятельности, экспортируя нефтепродукты, химическую продукцию и импортируя оборудование, машины и товары народного потребления.',
@@ -66,6 +67,7 @@ export const omskContent = {
     heroTitle: 'Customs Broker Omsk',
     heroSubtitle: 'Customs clearance and transit through Kazakhstan',
     seoDescription: 'Customs broker in Omsk — import and export clearance of petroleum products, chemical products, engineering products. Electronic declaration, transit through Kazakhstan.',
+    seoKeywords: 'customs broker omsk, customs clearance omsk region, kazakhstan import, foreign trade omsk, petroleum export',
     intro: {
       title: 'Omsk — Industrial Center of the Siberian Federal District',
       text: 'Omsk is a major industrial center of the Siberian Federal District, an important transport hub on the Trans-Siberian Railway, and one of the key logistics centers of Western Siberia. The Omsk region actively participates in foreign economic activity, exporting petroleum and chemical products and importing equipment, machinery, and consumer goods.',

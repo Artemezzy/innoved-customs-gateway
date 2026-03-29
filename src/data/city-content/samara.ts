@@ -3,6 +3,7 @@ export const samaraContent = {
     heroTitle: 'Таможенный брокер Самара',
     heroSubtitle: 'Таможенное оформление грузов в Поволжье',
     seoDescription: 'Таможенный брокер в Самаре — оформление импорта и экспорта машиностроительной продукции, нефтепродуктов, химической продукции. Электронное декларирование, подбор кодов ТН ВЭД.',
+    seoKeywords: 'таможенный брокер самара, растаможка самара, таможенное оформление поволжье, импорт оборудования, ВЭД самара, экспорт автокомпонентов',
     intro: {
       title: 'Самара — крупнейший город Поволжья',
       text: 'Самара — крупнейший город Поволжья, важный промышленный и транспортный центр, через который проходят значительные грузопотоки из Казахстана, стран Центральной Азии и Китая. Самарская область активно развивает внешнеэкономическую деятельность, экспортируя машиностроительную продукцию, химическую продукцию, нефтепродукты и импортируя оборудование, комплектующие и товары народного потребления.',
@@ -66,6 +67,7 @@ export const samaraContent = {
     heroTitle: 'Customs Broker Samara',
     heroSubtitle: 'Customs clearance of cargo in the Volga region',
     seoDescription: 'Customs broker in Samara — import and export clearance of engineering products, petroleum products, chemical products. Electronic declaration, HS code selection.',
+    seoKeywords: 'customs broker samara, customs clearance volga region, equipment import, foreign trade samara, auto components export',
     intro: {
       title: 'Samara — Largest City of the Volga Region',
       text: 'Samara is the largest city of the Volga region, an important industrial and transport center through which significant cargo flows from Kazakhstan, Central Asian countries, and China pass. The Samara region actively develops foreign economic activity, exporting engineering products, chemical products, petroleum products and importing equipment, components, and consumer goods.',

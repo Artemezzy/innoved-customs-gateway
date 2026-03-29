@@ -3,6 +3,7 @@ export const barnaulContent = {
     heroTitle: 'Таможенный брокер Барнаул',
     heroSubtitle: 'Импорт и экспорт грузов на Алтае',
     seoDescription: 'Таможенный брокер в Барнауле — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок из Казахстана и Китая.',
+    seoKeywords: 'таможенный брокер барнаул, растаможка барнаул, таможенное оформление алтай, импорт из казахстана, ВЭД барнаул, экспорт сельхозпродукции',
     intro: {
       title: 'Барнаул — логистический узел на юге Западной Сибири',
       text: 'Барнаул — административный центр Алтайского края и важный логистический узел на юге Западной Сибири, расположенный на пересечении транспортных путей из Казахстана и Центральной Азии. Алтайский край активно развивает экспортную деятельность: продовольственные товары, продукция машиностроения и минеральные продукты составляют основу внешнеторгового оборота региона. Для компаний из Барнаула, которые импортируют оборудование, автокомпоненты, стройматериалы или экспортируют сельскохозяйственную продукцию, машиностроительные изделия и сырьё, грамотное таможенное оформление — это гарантия соблюдения сроков поставок и прозрачности финансовых расчётов.',
@@ -65,6 +66,7 @@ export const barnaulContent = {
     heroTitle: 'Customs Broker Barnaul',
     heroSubtitle: 'Import and export of cargo in the Altai region',
     seoDescription: 'Customs broker in Barnaul — import and export clearance. Electronic declaration, HS code selection, support for shipments from Kazakhstan and China.',
+    seoKeywords: 'customs broker barnaul, customs clearance altai, import from kazakhstan, foreign trade barnaul, agricultural export',
     intro: {
       title: 'Barnaul — Logistics Hub in Southern Western Siberia',
       text: 'Barnaul is the administrative center of the Altai Region and an important logistics hub in southern Western Siberia, located at the intersection of transport routes from Kazakhstan and Central Asia. The Altai Region actively develops export activities: food products, machinery, and mineral products form the basis of the region\'s foreign trade turnover. For companies from Barnaul that import equipment, auto components, construction materials, or export agricultural products, machinery, and raw materials, proper customs clearance is a guarantee of delivery timelines and financial transparency.',

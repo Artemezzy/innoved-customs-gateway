@@ -3,6 +3,7 @@ export const tolyattiContent = {
     heroTitle: 'Таможенный брокер Тольятти',
     heroSubtitle: 'Таможенное оформление грузов в Поволжье',
     seoDescription: 'Таможенный брокер в Тольятти — оформление импорта и экспорта автомобилей, автокомпонентов, машиностроительной продукции. Электронное декларирование, подбор кодов ТН ВЭД.',
+    seoKeywords: 'таможенный брокер тольятти, растаможка тольятти, таможенное оформление автопром, импорт автокомпонентов, ВЭД тольятти',
     intro: {
       title: 'Тольятти — крупнейший автомобильный центр России',
       text: 'Тольятти — крупнейший автомобильный центр России, важный промышленный город Поволжья, где сосредоточено автомобильное производство и смежные отрасли. Тольятти и Самарская область активно участвуют во внешнеэкономической деятельности, импортируя автокомпоненты, оборудование, технику и экспортируя автомобили, машиностроительную продукцию и химическую продукцию.',
@@ -66,6 +67,7 @@ export const tolyattiContent = {
     heroTitle: 'Customs Broker Tolyatti',
     heroSubtitle: 'Customs clearance of cargo in the Volga region',
     seoDescription: 'Customs broker in Tolyatti — import and export clearance of vehicles, auto components, engineering products. Electronic declaration, HS code selection.',
+    seoKeywords: 'customs broker tolyatti, customs clearance automotive, auto components import, foreign trade tolyatti',
     intro: {
       title: 'Tolyatti — Russia\'s Largest Automotive Center',
       text: 'Tolyatti is Russia\'s largest automotive center, an important industrial city of the Volga region where automobile production and related industries are concentrated. Tolyatti and the Samara region actively participate in foreign economic activity, importing auto components, equipment, and exporting vehicles, engineering products, and chemical products.',

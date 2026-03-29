@@ -3,6 +3,7 @@ export const kazanContent = {
     heroTitle: 'Таможенный брокер Казань',
     heroSubtitle: 'Импорт и экспорт товаров через Поволжье',
     seoDescription: 'Таможенный брокер в Казани — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок химической и машиностроительной продукции.',
+    seoKeywords: 'таможенный брокер казань, растаможка казань, таможенное оформление татарстан, импорт оборудования, ВЭД казань, экспорт нефтепродуктов',
     intro: {
       title: 'Казань — экономический центр Татарстана',
       text: 'Казань — столица Республики Татарстан, крупнейший экономический, научный и культурный центр Приволжского федерального округа с развитой промышленностью, IT-сектором и транспортной инфраструктурой. Республика Татарстан входит в число лидеров по объёму внешнеторгового оборота среди регионов России, активно экспортируя нефтепродукты, химическую продукцию, машиностроительную продукцию и импортируя оборудование и товары народного потребления. Для компаний из Казани, работающих с импортом и экспортом, профессиональное таможенное оформление — это гарантия соблюдения сроков, прозрачности расчётов и минимизации рисков.',
@@ -66,6 +67,7 @@ export const kazanContent = {
     heroTitle: 'Customs Broker Kazan',
     heroSubtitle: 'Import and export of goods through the Volga region',
     seoDescription: 'Customs broker in Kazan — import and export clearance. Electronic declaration, HS code selection, support for chemical and machinery product shipments.',
+    seoKeywords: 'customs broker kazan, customs clearance tatarstan, equipment import, foreign trade kazan, petroleum export',
     intro: {
       title: 'Kazan — Economic Center of Tatarstan',
       text: 'Kazan is the capital of the Republic of Tatarstan, the largest economic, scientific, and cultural center of the Volga Federal District with developed industry, IT sector, and transport infrastructure. The Republic of Tatarstan ranks among the leaders in foreign trade turnover among Russian regions, actively exporting petroleum products, chemical products, machinery, and importing equipment and consumer goods. For companies from Kazan working with imports and exports, professional customs clearance is a guarantee of meeting deadlines, transparent calculations, and risk minimization.',

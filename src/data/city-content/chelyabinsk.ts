@@ -3,6 +3,7 @@ export const chelyabinskContent = {
     heroTitle: 'Таможенный брокер Челябинск',
     heroSubtitle: 'Таможенное оформление товаров и транзит через Казахстан',
     seoDescription: 'Таможенный брокер в Челябинске — оформление импорта и экспорта металлопродукции, машиностроительной продукции. Электронное декларирование, подбор кодов ТН ВЭД, транзит через Казахстан.',
+    seoKeywords: 'таможенный брокер челябинск, растаможка челябинск, таможенное оформление урал, транзит казахстан, металлопродукция экспорт, ВЭД челябинск',
     intro: {
       title: 'Челябинск — промышленный центр Уральского федерального округа',
       text: 'Челябинск — крупный промышленный центр Уральского федерального округа, важный транспортный узел на пересечении маршрутов из Казахстана в центральную Россию. Челябинская область активно развивает внешнеэкономическую деятельность, экспортируя металлопродукцию, машиностроительную продукцию и импортируя оборудование, комплектующие и товары народного потребления. Для компаний из Челябинска профессиональное таможенное оформление — это гарантия соблюдения сроков, прозрачности расчётов и минимизации рисков.',
@@ -66,6 +67,7 @@ export const chelyabinskContent = {
     heroTitle: 'Customs Broker Chelyabinsk',
     heroSubtitle: 'Customs clearance and transit through Kazakhstan',
     seoDescription: 'Customs broker in Chelyabinsk — import and export clearance of metal products, engineering products. Electronic declaration, HS code selection, transit through Kazakhstan.',
+    seoKeywords: 'customs broker chelyabinsk, customs clearance urals, kazakhstan transit, metal products export, foreign trade chelyabinsk',
     intro: {
       title: 'Chelyabinsk — Industrial Center of the Ural Federal District',
       text: 'Chelyabinsk is a major industrial center of the Ural Federal District, an important transport hub at the intersection of routes from Kazakhstan to central Russia. The Chelyabinsk region actively develops foreign economic activity, exporting metal and engineering products and importing equipment, components, and consumer goods.',

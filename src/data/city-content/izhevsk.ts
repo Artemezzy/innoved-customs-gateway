@@ -3,6 +3,7 @@ export const izhevskContent = {
     heroTitle: 'Таможенный брокер Ижевск',
     heroSubtitle: 'Таможенное оформление товаров в Удмуртии',
     seoDescription: 'Таможенный брокер в Ижевске — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок машиностроительной продукции и оборудования.',
+    seoKeywords: 'таможенный брокер ижевск, растаможка ижевск, таможенное оформление удмуртия, импорт оборудования, ВЭД ижевск, экспорт машиностроения',
     intro: {
       title: 'Ижевск — промышленный центр Удмуртии',
       text: 'Ижевск — столица Удмуртской Республики, крупный промышленный центр Приволжского федерального округа с развитым машиностроением, металлообработкой и оборонно-промышленным комплексом. Удмуртская Республика активно развивает экспортный потенциал, наращивая поставки машиностроительной продукции, вооружений, металлоизделий на международные рынки. Для компаний из Ижевска, которые импортируют оборудование, комплектующие, сырьё или экспортируют машиностроительную продукцию, качественное таможенное оформление — это основа стабильности поставок и соблюдения всех требований законодательства.',
@@ -66,6 +67,7 @@ export const izhevskContent = {
     heroTitle: 'Customs Broker Izhevsk',
     heroSubtitle: 'Customs clearance of goods in Udmurtia',
     seoDescription: 'Customs broker in Izhevsk — import and export clearance. Electronic declaration, HS code selection, support for machinery and equipment shipments.',
+    seoKeywords: 'customs broker izhevsk, customs clearance udmurtia, equipment import, foreign trade izhevsk, machinery export',
     intro: {
       title: 'Izhevsk — Industrial Center of Udmurtia',
       text: 'Izhevsk is the capital of the Udmurt Republic, a major industrial center of the Volga Federal District with developed mechanical engineering, metalworking, and defense industry. The Udmurt Republic actively develops its export potential, increasing shipments of machinery, weapons, and metal products to international markets. For companies from Izhevsk that import equipment, components, raw materials, or export machinery products, quality customs clearance is the foundation of supply stability and compliance with all legal requirements.',

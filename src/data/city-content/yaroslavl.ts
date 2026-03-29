@@ -3,6 +3,7 @@ export const yaroslavlContent = {
     heroTitle: 'Таможенный брокер Ярославль',
     heroSubtitle: 'Импорт и экспорт грузов в Центральной России',
     seoDescription: 'Таможенный брокер в Ярославле — оформление импорта и экспорта машиностроительной продукции, нефтепродуктов, химической продукции. Электронное декларирование, подбор кодов ТН ВЭД.',
+    seoKeywords: 'таможенный брокер ярославль, растаможка ярославль, таможенное оформление ярославская область, импорт оборудования, ВЭД ярославль',
     intro: {
       title: 'Ярославль — промышленный и транспортный центр Центральной России',
       text: 'Ярославль — крупный промышленный и транспортный центр Центральной России, важный узел на пересечении федеральных автомагистралей и железнодорожных маршрутов. Ярославская область активно развивает внешнеэкономическую деятельность, экспортируя машиностроительную продукцию, нефтепродукты, химическую продукцию и импортируя оборудование, комплектующие и товары народного потребления. Для компаний из Ярославля профессиональное таможенное оформление — это гарантия соблюдения сроков, прозрачности расчётов и минимизации рисков.',
@@ -66,6 +67,7 @@ export const yaroslavlContent = {
     heroTitle: 'Customs Broker Yaroslavl',
     heroSubtitle: 'Import and export of cargo in Central Russia',
     seoDescription: 'Customs broker in Yaroslavl — import and export clearance for engineering products, petroleum products, chemical products. Electronic declaration, HS code selection.',
+    seoKeywords: 'customs broker yaroslavl, customs clearance yaroslavl region, equipment import, foreign trade yaroslavl',
     intro: {
       title: 'Yaroslavl — Industrial and Transport Center of Central Russia',
       text: 'Yaroslavl is a major industrial and transport center of Central Russia, an important hub at the intersection of federal highways and railway routes. The Yaroslavl region actively develops foreign economic activity, exporting engineering products, petroleum products, chemical products and importing equipment, components and consumer goods.',

@@ -3,6 +3,7 @@ export const ulyanovskContent = {
     heroTitle: 'Таможенный брокер Ульяновск',
     heroSubtitle: 'Растаможка грузов и ВЭД-сопровождение',
     seoDescription: 'Таможенный брокер в Ульяновске — оформление импорта и экспорта авиационной техники, машиностроительной продукции. Электронное декларирование, подбор кодов ТН ВЭД.',
+    seoKeywords: 'таможенный брокер ульяновск, растаможка ульяновск, таможенное оформление ульяновская область, импорт оборудования, ВЭД ульяновск',
     intro: {
       title: 'Ульяновск — промышленный город Поволжья',
       text: 'Ульяновск — крупный промышленный город Поволжья, важный транспортный узел на Волге, известный своими машиностроительными и авиастроительными предприятиями. Ульяновская область активно развивает внешнеэкономическую деятельность, экспортируя машиностроительную продукцию, авиационную технику и импортируя оборудование, комплектующие и товары народного потребления.',
@@ -66,6 +67,7 @@ export const ulyanovskContent = {
     heroTitle: 'Customs Broker Ulyanovsk',
     heroSubtitle: 'Cargo clearance and foreign trade support',
     seoDescription: 'Customs broker in Ulyanovsk — import and export clearance of aviation equipment, engineering products. Electronic declaration, HS code selection.',
+    seoKeywords: 'customs broker ulyanovsk, customs clearance ulyanovsk region, equipment import, foreign trade ulyanovsk',
     intro: {
       title: 'Ulyanovsk — Industrial City of the Volga Region',
       text: 'Ulyanovsk is a major industrial city of the Volga region, an important transport hub on the Volga, known for its engineering and aircraft manufacturing enterprises. The Ulyanovsk region actively develops foreign economic activity, exporting engineering products, aviation equipment and importing equipment, components, and consumer goods.',

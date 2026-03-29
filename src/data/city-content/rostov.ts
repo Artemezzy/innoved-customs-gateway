@@ -3,6 +3,7 @@ export const rostovContent = {
     heroTitle: 'Таможенный брокер Ростов-на-Дону',
     heroSubtitle: 'Растаможка грузов на юге России',
     seoDescription: 'Таможенный брокер в Ростове-на-Дону — оформление импорта и экспорта зерна, агропродукции, оборудования через морской порт. Электронное декларирование, подбор кодов ТН ВЭД.',
+    seoKeywords: 'таможенный брокер ростов-на-дону, растаможка ростов, таможенное оформление юг россии, импорт экспорт ростов, ВЭД ростов, порт ростов',
     intro: {
       title: 'Ростов-на-Дону — торговый центр юга России',
       text: 'Ростов-на-Дону — крупнейший город Южного федерального округа, важный транспортный узел и торговый центр юга России, через который проходят значительные грузопотоки из Турции, стран Ближнего Востока и Средней Азии. Ростовская область занимает лидирующие позиции в экспорте зерновых и масличных культур, активно импортирует оборудование, технику и товары народного потребления.',
@@ -66,6 +67,7 @@ export const rostovContent = {
     heroTitle: 'Customs Broker Rostov-on-Don',
     heroSubtitle: 'Cargo clearance in Southern Russia',
     seoDescription: 'Customs broker in Rostov-on-Don — import and export clearance of grain, agricultural products, equipment through the seaport. Electronic declaration, HS code selection.',
+    seoKeywords: 'customs broker rostov-on-don, customs clearance southern russia, import export rostov, foreign trade rostov',
     intro: {
       title: 'Rostov-on-Don — Trade Center of Southern Russia',
       text: 'Rostov-on-Don is the largest city of the Southern Federal District, an important transport hub and trade center of southern Russia, through which significant cargo flows from Turkey, Middle Eastern, and Central Asian countries pass. The Rostov region holds leading positions in grain and oilseed exports, actively importing equipment, machinery, and consumer goods.',
