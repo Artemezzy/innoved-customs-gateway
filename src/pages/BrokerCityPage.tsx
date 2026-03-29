@@ -113,7 +113,7 @@ export default function BrokerCityPage() {
           page="broker-city"
           customTitle={t.heroTitle}
           customDescription={t.seoDescription}
-          customKeywords={t.seoKeywords}
+          customKeywords={(t as any).seoKeywords}
           canonicalPath={`/tamozhennyj-broker/${city}`}
         />
         <PageHero title={t.heroTitle} subtitle={t.heroSubtitle} />
