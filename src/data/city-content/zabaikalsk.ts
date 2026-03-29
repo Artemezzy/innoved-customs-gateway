@@ -3,6 +3,7 @@ export const zabaikalskContent = {
     heroTitle: 'Таможенный брокер Забайкальск',
     heroSubtitle: 'Таможенное оформление грузов на границе с Китаем',
     seoDescription: 'Таможенный брокер в Забайкальске — оформление импорта и экспорта через крупнейший железнодорожный пункт пропуска на границе с Китаем. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение грузов по Транссибу.',
+    seoKeywords: 'таможенный брокер забайкальск, растаможка забайкальск, таможенное оформление забайкалье, импорт из китая, ВЭД забайкальск, погранпереход',
     intro: {
       title: 'Забайкальск — ключевой пункт пропуска на границе с Китаем',
       text: 'Забайкальск — ключевой пункт пропуска на российско-китайской границе, важнейший транспортный узел на пересечении Транссибирской магистрали и железнодорожных путей из Китая. Через Забайкальск проходят основные грузопотоки между Россией и Китаем, включая импорт промышленных товаров, автомобилей, оборудования и экспорт сырьевых ресурсов, лесопродукции. Для компаний, работающих с Китаем через Забайкальск, профессиональное таможенное оформление — это основа быстрого прохождения границы, прозрачности расчётов и соблюдения всех требований законодательства.',
@@ -66,6 +67,7 @@ export const zabaikalskContent = {
     heroTitle: 'Customs Broker Zabaikalsk',
     heroSubtitle: 'Customs clearance at the China border',
     seoDescription: 'Customs broker in Zabaikalsk — import and export clearance through the largest railway border crossing with China. Electronic declaration, HS code selection, Trans-Siberian Railway cargo support.',
+    seoKeywords: 'customs broker zabaykalsk, customs clearance zabaykalsk, china import, foreign trade zabaykalsk, border crossing',
     intro: {
       title: 'Zabaikalsk — Key Border Crossing with China',
       text: 'Zabaikalsk is a key border crossing on the Russia-China border, a vital transport hub at the intersection of the Trans-Siberian Railway and railway routes from China. Major cargo flows between Russia and China pass through Zabaikalsk, including imports of industrial goods, vehicles, equipment, and exports of raw materials and timber products. For companies working with China through Zabaikalsk, professional customs clearance is the foundation for quick border crossing and compliance with all legal requirements.',

@@ -3,6 +3,7 @@ export const novosibirskContent = {
     heroTitle: 'Таможенный брокер Новосибирск',
     heroSubtitle: 'Таможенное оформление грузов в центре Сибири',
     seoDescription: 'Таможенный брокер в Новосибирске — оформление импорта и экспорта через крупнейший логистический узел Сибири. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок из Китая и Казахстана.',
+    seoKeywords: 'таможенный брокер новосибирск, растаможка новосибирск, таможенное оформление сибирь, импорт из китая, ВЭД новосибирск, транзит грузов',
     intro: {
       title: 'Новосибирск — крупнейший транспортно-логистический узел Сибири',
       text: 'Новосибирск — третий по численности населения город России и крупнейший транспортно-логистический узел Сибири, через который проходят ключевые железнодорожные маршруты из Азии в европейскую часть страны. Новосибирская область активно развивает внешнеэкономическую деятельность: объём внешней торговли со странами Азии, Ближнего и Среднего Востока растёт, регион стал важным звеном в цепочке поставок по Восточному полигону железных дорог. Для компаний из Новосибирска и области, которые импортируют оборудование, технику, продовольствие, товары народного потребления или экспортируют машиностроительную продукцию, агропродукцию и сырьё, качественное таможенное оформление — это основа предсказуемости сроков и контроля расходов.',
@@ -65,6 +66,7 @@ export const novosibirskContent = {
     heroTitle: 'Customs Broker Novosibirsk',
     heroSubtitle: 'Customs clearance of cargo in the center of Siberia',
     seoDescription: 'Customs broker in Novosibirsk — import and export clearance through Siberia\'s largest logistics hub. Electronic declaration, HS code selection, support for shipments from China and Kazakhstan.',
+    seoKeywords: 'customs broker novosibirsk, customs clearance siberia, china import, foreign trade novosibirsk, cargo transit',
     intro: {
       title: 'Novosibirsk — Siberia\'s Largest Transport & Logistics Hub',
       text: 'Novosibirsk is Russia\'s third-largest city by population and the largest transport and logistics hub in Siberia, through which key railway routes from Asia to the European part of the country pass. The Novosibirsk Region is actively developing foreign economic activity: the volume of foreign trade with Asian, Middle and Near Eastern countries is growing, and the region has become an important link in the supply chain along the Eastern Railway Polygon. For companies importing equipment, machinery, food, consumer goods, or exporting engineering products, agricultural products, and raw materials, quality customs clearance is the foundation of schedule predictability and cost control.',

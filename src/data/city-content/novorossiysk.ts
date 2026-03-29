@@ -3,6 +3,7 @@ export const novorossiyskContent = {
     heroTitle: 'Таможенный брокер Новороссийск',
     heroSubtitle: 'Растаможка грузов в порту Чёрного моря',
     seoDescription: 'Таможенный брокер в Новороссийске — оформление импорта и экспорта через крупнейший порт на Чёрном море. Электронное декларирование, работа с СВХ, сопровождение морских грузов.',
+    seoKeywords: 'таможенный брокер новороссийск, растаможка новороссийск, таможенное оформление порт новороссийск, морские грузы, ВЭД новороссийск, контейнерные перевозки',
     intro: {
       title: 'Новороссийск — крупнейший российский порт на Чёрном море',
       text: 'Новороссийск — крупнейший российский порт на Чёрном море и ключевой транспортный узел для морских грузопотоков между Россией, странами Средиземноморья, Ближнего Востока и Азии. Через Новороссийский морской торговый порт проходят миллионы тонн контейнерных, навалочных и наливных грузов, включая импорт промышленного оборудования, продовольствия, сырья, а также экспорт нефтепродуктов, зерна, металлов и удобрений. Для компаний, которые используют Новороссийск как точку ввоза или вывоза товаров, правильное и своевременное таможенное оформление — это гарантия соблюдения сроков поставок, минимизация простоев на СВХ и контроль расходов на пошлины и сборы.',
@@ -66,6 +67,7 @@ export const novorossiyskContent = {
     heroTitle: 'Customs Broker Novorossiysk',
     heroSubtitle: 'Cargo clearance at the Black Sea port',
     seoDescription: 'Customs broker in Novorossiysk — import and export clearance through Russia\'s largest Black Sea port. Electronic declaration, bonded warehouse coordination, maritime cargo support.',
+    seoKeywords: 'customs broker novorossiysk, customs clearance novorossiysk port, sea cargo, foreign trade novorossiysk, container shipping',
     intro: {
       title: 'Novorossiysk — Russia\'s Largest Black Sea Port',
       text: 'Novorossiysk is Russia\'s largest port on the Black Sea and a key transport hub for maritime cargo flows between Russia, Mediterranean countries, the Middle East, and Asia. Millions of tons of container, bulk, and liquid cargo pass through the Novorossiysk Commercial Sea Port, including imports of industrial equipment, food, raw materials, as well as exports of petroleum products, grain, metals, and fertilizers. For companies using Novorossiysk as an import or export point, proper and timely customs clearance guarantees delivery schedule compliance, minimizes bonded warehouse downtime, and controls duty and fee expenses.',

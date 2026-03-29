@@ -3,6 +3,7 @@ export const voronezhContent = {
     heroTitle: 'Таможенный брокер Воронеж',
     heroSubtitle: 'Таможенное оформление грузов в Черноземье',
     seoDescription: 'Таможенный брокер в Воронеже — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок оборудования и агропродукции.',
+    seoKeywords: 'таможенный брокер воронеж, растаможка воронеж, таможенное оформление воронежская область, импорт оборудования, ВЭД воронеж',
     intro: {
       title: 'Воронеж — промышленный и логистический центр ЦФО',
       text: 'Воронеж — крупный промышленный и логистический центр Центрального федерального округа, расположенный на пересечении важных транспортных магистралей, связывающих центральную Россию с южными регионами. Воронежская область активно развивает внешнеэкономическую деятельность: растут объёмы импорта оборудования и товаров, а также экспорта машиностроительной и сельскохозяйственной продукции. Для компаний из Воронежа, которые импортируют промышленное оборудование, автокомпоненты, товары народного потребления или экспортируют машиностроительную и агропродукцию, профессиональное таможенное оформление — это гарантия соблюдения сроков и контроля расходов.',
@@ -66,6 +67,7 @@ export const voronezhContent = {
     heroTitle: 'Customs Broker Voronezh',
     heroSubtitle: 'Customs clearance of cargo in the Chernozem region',
     seoDescription: 'Customs broker in Voronezh — import and export clearance. Electronic declaration, HS code selection, support for equipment and agricultural product shipments.',
+    seoKeywords: 'customs broker voronezh, customs clearance voronezh region, equipment import, foreign trade voronezh',
     intro: {
       title: 'Voronezh — Industrial and Logistics Center of CFD',
       text: 'Voronezh is a major industrial and logistics center of the Central Federal District, located at the intersection of important transport routes connecting central Russia with southern regions. The Voronezh Region actively develops foreign economic activity: import volumes of equipment and goods are growing, as well as exports of machinery and agricultural products. For companies from Voronezh that import industrial equipment, auto components, consumer goods, or export machinery and agricultural products, professional customs clearance is a guarantee of meeting deadlines and controlling costs.',

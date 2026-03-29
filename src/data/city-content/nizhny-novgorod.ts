@@ -3,6 +3,7 @@ export const nizhnyNovgorodContent = {
     heroTitle: 'Таможенный брокер Нижний Новгород',
     heroSubtitle: 'Растаможка товаров и ВЭД в Поволжье',
     seoDescription: 'Таможенный брокер в Нижнем Новгороде — оформление импорта и экспорта машиностроительной продукции, автокомпонентов, химической продукции. Электронное декларирование, подбор кодов ТН ВЭД.',
+    seoKeywords: 'таможенный брокер нижний новгород, растаможка нижний новгород, таможенное оформление поволжье, импорт оборудования, ВЭД нижний новгород',
     intro: {
       title: 'Нижний Новгород — промышленный центр Приволжского федерального округа',
       text: 'Нижний Новгород — крупнейший промышленный, транспортный и культурный центр Приволжского федерального округа, расположенный на слиянии Волги и Оки. Нижегородская область активно развивает внешнеэкономическую деятельность, экспортируя машиностроительную продукцию, химическую продукцию и импортируя оборудование, комплектующие и товары народного потребления.',
@@ -66,6 +67,7 @@ export const nizhnyNovgorodContent = {
     heroTitle: 'Customs Broker Nizhny Novgorod',
     heroSubtitle: 'Customs clearance and foreign trade in the Volga region',
     seoDescription: 'Customs broker in Nizhny Novgorod — import and export clearance of engineering products, auto components, chemical products. Electronic declaration, HS code selection.',
+    seoKeywords: 'customs broker nizhny novgorod, customs clearance volga region, equipment import, foreign trade nizhny novgorod',
     intro: {
       title: 'Nizhny Novgorod — Industrial Center of the Volga Federal District',
       text: 'Nizhny Novgorod is the largest industrial, transport, and cultural center of the Volga Federal District, located at the confluence of the Volga and Oka rivers. The Nizhny Novgorod region actively develops foreign economic activity, exporting engineering and chemical products and importing equipment, components, and consumer goods.',

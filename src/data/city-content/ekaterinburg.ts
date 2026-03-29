@@ -3,6 +3,7 @@ export const ekaterinburgContent = {
     heroTitle: 'Таможенный брокер Екатеринбург',
     heroSubtitle: 'Растаможка товаров и ВЭД-сопровождение на Урале',
     seoDescription: 'Таможенный брокер в Екатеринбурге — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок из Китая, Казахстана и стран Европы.',
+    seoKeywords: 'таможенный брокер екатеринбург, растаможка екатеринбург, таможенное оформление урал, импорт из китая, ВЭД екатеринбург, экспорт металлопродукции',
     intro: {
       title: 'Екатеринбург — промышленный центр Урала',
       text: 'Екатеринбург — крупнейший промышленный, научный и культурный центр Урала, четвёртый по численности населения город России и ключевой транспортно-логистический узел на пересечении европейской и азиатской частей страны. Свердловская область является одним из ведущих регионов России по объёму внешнеторгового оборота, активно экспортируя металлопродукцию, машиностроительную продукцию и импортируя оборудование, комплектующие и товары народного потребления. Для компаний из Екатеринбурга, работающих с импортом и экспортом, профессиональное таможенное оформление — это основа бесперебойных поставок, прозрачности расчётов и соблюдения всех требований законодательства.',
@@ -66,6 +67,7 @@ export const ekaterinburgContent = {
     heroTitle: 'Customs Broker Ekaterinburg',
     heroSubtitle: 'Customs clearance and foreign trade support in the Urals',
     seoDescription: 'Customs broker in Ekaterinburg — import and export clearance. Electronic declaration, HS code selection, support for shipments from China, Kazakhstan, and European countries.',
+    seoKeywords: 'customs broker ekaterinburg, customs clearance urals, china import, foreign trade ekaterinburg, metal products export',
     intro: {
       title: 'Ekaterinburg — Industrial Center of the Urals',
       text: 'Ekaterinburg is the largest industrial, scientific, and cultural center of the Urals, the fourth most populous city in Russia, and a key transport and logistics hub at the intersection of the European and Asian parts of the country. The Sverdlovsk Region is one of the leading regions in Russia by foreign trade turnover, actively exporting metal products, machinery, and importing equipment, components, and consumer goods. For companies from Ekaterinburg working with imports and exports, professional customs clearance is the foundation of uninterrupted supplies, transparent calculations, and compliance with all legal requirements.',

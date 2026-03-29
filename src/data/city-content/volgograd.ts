@@ -3,6 +3,7 @@ export const volgogradContent = {
     heroTitle: 'Таможенный брокер Волгоград',
     heroSubtitle: 'Растаможка товаров на юге России',
     seoDescription: 'Таможенный брокер в Волгограде — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок металлопродукции и химической продукции.',
+    seoKeywords: 'таможенный брокер волгоград, растаможка волгоград, таможенное оформление волгоградская область, импорт экспорт волгоград, ВЭД волгоград',
     intro: {
       title: 'Волгоград — промышленный центр Юга России',
       text: 'Волгоград — крупный промышленный центр Южного федерального округа и важный транспортный узел на пересечении водных, железнодорожных и автомобильных магистралей. Волгоградская область активно участвует во внешнеэкономической деятельности, экспортируя металлопродукцию, химическую продукцию, нефтепродукты и импортируя оборудование, машины и товары народного потребления. Для компаний из Волгограда, которые работают с импортом и экспортом, качественное таможенное оформление — это основа стабильности поставок, предсказуемости расходов и соблюдения всех требований законодательства.',
@@ -66,6 +67,7 @@ export const volgogradContent = {
     heroTitle: 'Customs Broker Volgograd',
     heroSubtitle: 'Customs clearance of goods in Southern Russia',
     seoDescription: 'Customs broker in Volgograd — import and export clearance. Electronic declaration, HS code selection, support for metal and chemical product shipments.',
+    seoKeywords: 'customs broker volgograd, customs clearance volgograd region, import export volgograd, foreign trade volgograd',
     intro: {
       title: 'Volgograd — Industrial Center of Southern Russia',
       text: 'Volgograd is a major industrial center of the Southern Federal District and an important transport hub at the intersection of waterway, railway, and road routes. The Volgograd Region actively participates in foreign economic activity, exporting metal products, chemical products, petroleum products, and importing equipment, machines, and consumer goods. For companies from Volgograd working with imports and exports, quality customs clearance is the foundation of supply stability, cost predictability, and compliance with all legal requirements.',

@@ -3,6 +3,7 @@ export const makhachkalaContent = {
     heroTitle: 'Таможенный брокер Махачкала',
     heroSubtitle: 'Таможенное оформление товаров на Каспии',
     seoDescription: 'Таможенный брокер в Махачкале — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок через морской порт Махачкалы.',
+    seoKeywords: 'таможенный брокер махачкала, растаможка махачкала, таможенное оформление дагестан, импорт из ирана турции, ВЭД махачкала, каспийский порт',
     intro: {
       title: 'Махачкала — портовый город на Каспийском море',
       text: 'Махачкала — столица Республики Дагестан, крупнейший портовый город на Каспийском море и важный транспортный узел, связывающий Россию со странами Прикаспия и Ближнего Востока. Республика Дагестан активно развивает внешнеэкономическую деятельность, используя выгодное географическое положение для торговли с Ираном, Азербайджаном, Казахстаном и другими странами региона. Для компаний из Махачкалы, работающих с импортом и экспортом, профессиональное таможенное оформление — это гарантия стабильности поставок, прозрачности расчётов и соблюдения всех требований законодательства.',
@@ -66,6 +67,7 @@ export const makhachkalaContent = {
     heroTitle: 'Customs Broker Makhachkala',
     heroSubtitle: 'Customs clearance of goods on the Caspian Sea',
     seoDescription: 'Customs broker in Makhachkala — import and export clearance. Electronic declaration, HS code selection, support for shipments through Makhachkala seaport.',
+    seoKeywords: 'customs broker makhachkala, customs clearance dagestan, iran turkey import, foreign trade makhachkala, caspian port',
     intro: {
       title: 'Makhachkala — Port City on the Caspian Sea',
       text: 'Makhachkala is the capital of the Republic of Dagestan, the largest port city on the Caspian Sea, and an important transport hub connecting Russia with Caspian and Middle Eastern countries. The Republic of Dagestan actively develops foreign economic activity, using its advantageous geographical position for trade with Iran, Azerbaijan, Kazakhstan, and other countries in the region. For companies from Makhachkala working with imports and exports, professional customs clearance is a guarantee of supply stability, transparent calculations, and compliance with all legal requirements.',

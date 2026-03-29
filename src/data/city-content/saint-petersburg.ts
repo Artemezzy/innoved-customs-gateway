@@ -3,6 +3,7 @@ export const saintPetersburgContent = {
     heroTitle: 'Таможенный брокер Санкт-Петербург',
     heroSubtitle: 'Таможенное оформление грузов в морском порту',
     seoDescription: 'Таможенный брокер в Санкт-Петербурге — оформление импорта и экспорта через крупнейший морской порт на Балтике. Электронное декларирование через ЦЭД Балтийской таможни, подбор кодов ТН ВЭД.',
+    seoKeywords: 'таможенный брокер санкт-петербург, растаможка спб, таможенное оформление петербург, порт санкт-петербург, ВЭД спб, импорт из европы',
     intro: {
       title: 'Санкт-Петербург — крупнейший морской порт на Балтике',
       text: 'Санкт-Петербург — второй по величине город России, крупнейший морской порт на Балтике и важнейший торговый узел, связывающий Россию со странами Европы. Санкт-Петербург и Ленинградская область занимают ведущие позиции по объёму внешнеторгового оборота, обслуживая значительную долю импорта и экспорта через Балтийский регион.',
@@ -67,6 +68,7 @@ export const saintPetersburgContent = {
     heroTitle: 'Customs Broker Saint Petersburg',
     heroSubtitle: 'Customs clearance of cargo at the seaport',
     seoDescription: 'Customs broker in Saint Petersburg — import and export clearance through the largest Baltic Sea port. Electronic declaration through Baltic Customs CED, HS code selection.',
+    seoKeywords: 'customs broker saint petersburg, customs clearance st petersburg, port saint petersburg, foreign trade spb, europe import',
     intro: {
       title: 'Saint Petersburg — The Largest Baltic Sea Port',
       text: 'Saint Petersburg is Russia\'s second-largest city, the largest seaport on the Baltic, and a key trade hub connecting Russia with European countries. Saint Petersburg and the Leningrad Region hold leading positions in foreign trade turnover, handling a significant share of imports and exports through the Baltic region.',

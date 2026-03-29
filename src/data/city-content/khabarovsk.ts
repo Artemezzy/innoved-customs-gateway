@@ -3,6 +3,7 @@ export const khabarovskContent = {
     heroTitle: 'Таможенный брокер Хабаровск',
     heroSubtitle: 'Импорт и экспорт товаров через крупнейший хаб Дальнего Востока',
     seoDescription: 'Таможенный брокер в Хабаровске — оформление импорта и экспорта через Дальний Восток. Лесопродукция, рыбопродукция, автомобили. Электронное декларирование, подбор кодов ТН ВЭД, работа со странами АТР.',
+    seoKeywords: 'таможенный брокер хабаровск, растаможка хабаровск, таможенное оформление дальний восток, экспорт лесопродукции, импорт автомобилей япония, ВЭД хабаровск, декларирование АТР',
     intro: {
       title: 'Хабаровск — крупнейший город Дальнего Востока',
       text: 'Хабаровск — крупнейший город Дальнего Востока, важный транспортный узел и экономический центр региона, через который проходят значительные грузопотоки из стран Азиатско-Тихоокеанского региона. Хабаровский край активно развивает внешнеэкономическую деятельность, экспортируя лесопродукцию, рыбопродукцию, металлопродукцию и импортируя оборудование, автомобили и товары народного потребления.',
@@ -66,6 +67,7 @@ export const khabarovskContent = {
     heroTitle: 'Customs Broker Khabarovsk',
     heroSubtitle: 'Import and export through the largest Far East hub',
     seoDescription: 'Customs broker in Khabarovsk — import and export clearance in the Far East. Timber, fish products, vehicles. Electronic declaration, HS code selection, Asia-Pacific trade.',
+    seoKeywords: 'customs broker khabarovsk, customs clearance far east, timber export, vehicle import japan, foreign trade khabarovsk, Asia-Pacific declaration',
     intro: {
       title: 'Khabarovsk — Largest City of the Russian Far East',
       text: 'Khabarovsk is the largest city of the Russian Far East, an important transport hub and economic center of the region, through which significant cargo flows from Asia-Pacific countries pass. The Khabarovsk Territory actively develops foreign economic activity, exporting timber, fish products, metal products and importing equipment, vehicles, and consumer goods.',

@@ -3,6 +3,7 @@ export const saratovContent = {
     heroTitle: 'Таможенный брокер Саратов',
     heroSubtitle: 'Импорт и экспорт товаров в Поволжье',
     seoDescription: 'Таможенный брокер в Саратове — оформление импорта и экспорта агропродукции, химической продукции, машиностроительной продукции. Электронное декларирование, подбор кодов ТН ВЭД.',
+    seoKeywords: 'таможенный брокер саратов, растаможка саратов, таможенное оформление саратовская область, импорт оборудования, ВЭД саратов',
     intro: {
       title: 'Саратов — промышленный и транспортный центр Поволжья',
       text: 'Саратов — крупный промышленный и транспортный центр Поволжья, важный логистический узел на пересечении транспортных маршрутов из Казахстана и стран Центральной Азии в европейскую часть России. Саратовская область активно развивает внешнеэкономическую деятельность, экспортируя агропродукцию, химическую продукцию и импортируя оборудование, технику и товары народного потребления.',
@@ -66,6 +67,7 @@ export const saratovContent = {
     heroTitle: 'Customs Broker Saratov',
     heroSubtitle: 'Import and export of goods in the Volga region',
     seoDescription: 'Customs broker in Saratov — import and export clearance of agricultural products, chemical products, engineering products. Electronic declaration, HS code selection.',
+    seoKeywords: 'customs broker saratov, customs clearance saratov region, equipment import, foreign trade saratov',
     intro: {
       title: 'Saratov — Industrial and Transport Center of the Volga Region',
       text: 'Saratov is a major industrial and transport center of the Volga region, an important logistics hub at the intersection of transport routes from Kazakhstan and Central Asian countries to the European part of Russia. The Saratov region actively develops foreign economic activity, exporting agricultural and chemical products and importing equipment and consumer goods.',

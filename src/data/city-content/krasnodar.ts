@@ -3,6 +3,7 @@ export const krasnodarContent = {
     heroTitle: 'Таможенный брокер Краснодар',
     heroSubtitle: 'Импорт и экспорт грузов на юге России',
     seoDescription: 'Таможенный брокер в Краснодаре — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок через порты Новороссийска и Туапсе.',
+    seoKeywords: 'таможенный брокер краснодар, растаможка краснодар, таможенное оформление юг россии, порт новороссийск, ВЭД краснодар, экспорт зерна',
     intro: {
       title: 'Краснодар — логистический центр Юга России',
       text: 'Краснодар — административный центр Краснодарского края, крупнейший экономический и логистический центр Южного федерального округа с развитой промышленностью, сельским хозяйством и транспортной инфраструктурой. Краснодарский край является одним из ведущих регионов России по объёму внешнеторгового оборота, активно экспортируя сельскохозяйственную продукцию, продовольствие и импортируя оборудование, товары народного потребления через морские порты Новороссийска и Туапсе. Для компаний из Краснодара, работающих с импортом и экспортом, профессиональное таможенное оформление — это гарантия стабильности поставок, прозрачности расчётов и соблюдения всех требований законодательства.',
@@ -66,6 +67,7 @@ export const krasnodarContent = {
     heroTitle: 'Customs Broker Krasnodar',
     heroSubtitle: 'Import and export of cargo in Southern Russia',
     seoDescription: 'Customs broker in Krasnodar — import and export clearance. Electronic declaration, HS code selection, support for shipments through Novorossiysk and Tuapse ports.',
+    seoKeywords: 'customs broker krasnodar, customs clearance southern russia, novorossiysk port, foreign trade krasnodar, grain export',
     intro: {
       title: 'Krasnodar — Logistics Center of Southern Russia',
       text: 'Krasnodar is the administrative center of the Krasnodar Region, the largest economic and logistics center of the Southern Federal District with developed industry, agriculture, and transport infrastructure. The Krasnodar Region is one of the leading regions in Russia by foreign trade turnover, actively exporting agricultural products, food, and importing equipment and consumer goods through Novorossiysk and Tuapse seaports. For companies from Krasnodar working with imports and exports, professional customs clearance is a guarantee of supply stability, transparent calculations, and compliance with all legal requirements.',

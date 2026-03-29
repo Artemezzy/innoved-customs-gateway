@@ -3,6 +3,7 @@ export const krasnoyarskContent = {
     heroTitle: 'Таможенный брокер Красноярск',
     heroSubtitle: 'Растаможка грузов в центре Сибири',
     seoDescription: 'Таможенный брокер в Красноярске — оформление импорта и экспорта. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок цветных металлов и лесопродукции.',
+    seoKeywords: 'таможенный брокер красноярск, растаможка красноярск, таможенное оформление сибирь, импорт оборудования, ВЭД красноярск, экспорт металлов',
     intro: {
       title: 'Красноярск — промышленный центр Восточной Сибири',
       text: 'Красноярск — крупнейший промышленный, научный и культурный центр Восточной Сибири, важный транспортный узел на Транссибирской магистрали. Красноярский край является одним из ведущих регионов России по объёму внешнеторгового оборота, активно экспортируя цветные металлы, лесопродукцию, нефтепродукты и импортируя оборудование и товары народного потребления. Для компаний из Красноярска, работающих с импортом и экспортом, профессиональное таможенное оформление — это основа стабильности поставок, прозрачности расчётов и соблюдения всех требований законодательства.',
@@ -66,6 +67,7 @@ export const krasnoyarskContent = {
     heroTitle: 'Customs Broker Krasnoyarsk',
     heroSubtitle: 'Cargo clearance in the center of Siberia',
     seoDescription: 'Customs broker in Krasnoyarsk — import and export clearance. Electronic declaration, HS code selection, support for non-ferrous metals and timber product shipments.',
+    seoKeywords: 'customs broker krasnoyarsk, customs clearance siberia, equipment import, foreign trade krasnoyarsk, metals export',
     intro: {
       title: 'Krasnoyarsk — Industrial Center of Eastern Siberia',
       text: 'Krasnoyarsk is the largest industrial, scientific, and cultural center of Eastern Siberia, an important transport hub on the Trans-Siberian Railway. The Krasnoyarsk Region is one of the leading regions in Russia by foreign trade turnover, actively exporting non-ferrous metals, timber products, petroleum products, and importing equipment and consumer goods. For companies from Krasnoyarsk working with imports and exports, professional customs clearance is the foundation of supply stability, transparent calculations, and compliance with all legal requirements.',

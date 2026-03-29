@@ -3,6 +3,7 @@ export const nakhodkaContent = {
     heroTitle: 'Таможенный брокер Находка',
     heroSubtitle: 'Растаможка грузов в морском порту Находки',
     seoDescription: 'Таможенный брокер в Находке — оформление импорта и экспорта через морские порты Находки и Восточный. Автомобили из Японии, лесопродукция, рыбопродукция. Электронное декларирование через ЦЭД.',
+    seoKeywords: 'таможенный брокер находка, растаможка находка, таможенное оформление порт находка, импорт из японии кореи, ВЭД находка, морские грузы',
     intro: {
       title: 'Находка — крупнейший портовый город Приморского края',
       text: 'Находка — крупнейший портовый город Приморского края и важный транспортно-логистический узел на Дальнем Востоке России, через который проходят значительные грузопотоки из стран Азиатско-Тихоокеанского региона. Морской порт Находки является одним из крупнейших контейнерных и универсальных портов России на Тихом океане, обслуживающим торговлю с Китаем, Японией, Южной Кореей и другими странами региона.',
@@ -66,6 +67,7 @@ export const nakhodkaContent = {
     heroTitle: 'Customs Broker Nakhodka',
     heroSubtitle: 'Cargo clearance at the seaport of Nakhodka',
     seoDescription: 'Customs broker in Nakhodka — import and export clearance through Nakhodka and Vostochny seaports. Vehicles from Japan, timber, fish products. Electronic declaration through CED.',
+    seoKeywords: 'customs broker nakhodka, customs clearance nakhodka port, japan korea import, foreign trade nakhodka, sea cargo',
     intro: {
       title: 'Nakhodka — Largest Port City of Primorsky Krai',
       text: 'Nakhodka is the largest port city of Primorsky Krai and an important transport and logistics hub in the Russian Far East, through which significant cargo flows from Asia-Pacific countries pass. The seaport of Nakhodka is one of Russia\'s largest container and universal ports on the Pacific, serving trade with China, Japan, South Korea, and other countries.',

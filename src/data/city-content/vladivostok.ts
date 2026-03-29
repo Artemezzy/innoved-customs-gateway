@@ -5,6 +5,7 @@ export const vladivostokContent = {
     heroTitle: 'Таможенный брокер Владивосток',
     heroSubtitle: 'Импорт и экспорт товаров через Дальний Восток',
     seoDescription: 'Таможенный брокер во Владивостоке — оформление импорта и экспорта через порты Владивостока. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок из Китая и стран АТР.',
+    seoKeywords: 'таможенный брокер владивосток, растаможка владивосток, таможенное оформление дальний восток, импорт из китая, порт владивосток, ВЭД владивосток',
     intro: {
       title: 'Владивосток — один из ключевых портов России на Тихом океане',
       text: 'Владивосток — один из ключевых портов России на Тихом океане и главный морской «ворота» для грузов из стран Азии. Для компаний, которые ввозят товары через Владивосток из Китая, Кореи, Японии и других стран АТР, от грамотного таможенного оформления зависят скорость прохождения грузов, расходы на пошлины и стабильность всей логистической цепочки.',
@@ -65,6 +66,7 @@ export const vladivostokContent = {
     heroTitle: 'Customs Broker Vladivostok',
     heroSubtitle: 'Import and export of goods through the Far East',
     seoDescription: 'Customs broker in Vladivostok — import and export clearance through Vladivostok ports. Electronic declaration, HS code selection, support for shipments from China and Asia-Pacific countries.',
+    seoKeywords: 'customs broker vladivostok, customs clearance far east, china import, vladivostok port, foreign trade vladivostok',
     
     intro: {
       title: 'Vladivostok — One of Russia\'s Key Pacific Ports',

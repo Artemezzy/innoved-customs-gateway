@@ -3,6 +3,7 @@ export const irkutskContent = {
     heroTitle: 'Таможенный брокер Иркутск',
     heroSubtitle: 'Импорт и экспорт товаров в Восточной Сибири',
     seoDescription: 'Таможенный брокер в Иркутске — оформление импорта и экспорта через Иркутскую область. Электронное декларирование, подбор кодов ТН ВЭД, сопровождение поставок из Китая, Монголии и стран АТР.',
+    seoKeywords: 'таможенный брокер иркутск, растаможка иркутск, таможенное оформление восточная сибирь, импорт из китая монголии, ВЭД иркутск, экспорт пиломатериалов',
     intro: {
       title: 'Иркутск — крупнейший промышленный центр Восточной Сибири',
       text: 'Иркутск — крупнейший промышленный центр Восточной Сибири и важный транспортный узел на пути транзитных грузов из стран Азиатско-Тихоокеанского региона в центральную часть России. Иркутская область занимает более 30% экспорта Сибирского федерального округа, а основными торговыми партнёрами региона являются Китай, Монголия, Индонезия, Турция, Узбекистан и Казахстан. Для компаний из Иркутска и области, которые импортируют оборудование, комплектующие, товары народного потребления или экспортируют нефтепродукты, уголь, алюминий, пиломатериалы и продукцию химической промышленности, качественное таможенное оформление — это основа стабильности поставок и прозрачности расчётов.',
@@ -65,6 +66,7 @@ export const irkutskContent = {
     heroTitle: 'Customs Broker Irkutsk',
     heroSubtitle: 'Import and export of goods in Eastern Siberia',
     seoDescription: 'Customs broker in Irkutsk — import and export clearance through Irkutsk Region. Electronic declaration, HS code selection, support for shipments from China, Mongolia and Asia-Pacific countries.',
+    seoKeywords: 'customs broker irkutsk, customs clearance eastern siberia, china mongolia import, foreign trade irkutsk, lumber export',
     intro: {
       title: 'Irkutsk — The Largest Industrial Center of Eastern Siberia',
       text: 'Irkutsk is the largest industrial center of Eastern Siberia and an important transport hub on the transit route for cargo from Asia-Pacific countries to central Russia. The Irkutsk Region accounts for over 30% of exports from the Siberian Federal District, with major trading partners including China, Mongolia, Indonesia, Turkey, Uzbekistan, and Kazakhstan. For companies importing equipment, components, consumer goods, or exporting petroleum products, coal, aluminum, lumber, and chemical products, quality customs clearance is the foundation of supply chain stability and cost transparency.',
