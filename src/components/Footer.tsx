@@ -73,6 +73,9 @@ export function Footer({ language }: FooterProps) {
                 {text.legal.terms}
               </Link>
             </div>
+            <a href="https://webmaster.yandex.ru/siteinfo/?site=https://www.innovedbroker.ru" target="_blank" rel="noopener noreferrer" className="mt-2 inline-block">
+              <img width="88" height="31" alt="Яндекс ИКС" src="https://yandex.ru/cycounter?https://www.innovedbroker.ru&theme=dark&lang=ru" className="rounded-lg" />
+            </a>
           </div>
           <nav className="flex flex-wrap gap-4 md:gap-6">
             <Link to="/about" className="text-sm hover:text-primary-glow transition-colors duration-300">{text.links.about}</Link>
