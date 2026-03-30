@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Mail, Phone, MessageCircle, Send, Building, Download, Settings, MapPin } from 'lucide-react';
+import { Mail, Phone, MessageCircle, Send, Building, MapPin } from 'lucide-react';
 import maxIconWhite from '@/assets/max-icon-white.webp';
 import { useToast } from '@/hooks/use-toast';
 import { analytics } from '@/utils/analytics';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ContactProps {
   language: 'ru' | 'en';
@@ -45,15 +46,9 @@ export function Contact({ language }: ContactProps) {
   const text = content[language];
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    name: '', inn: '', phone: '', email: '', additionalInfo: '', consent: false
+    name: '', phone: '', email: '', additionalInfo: '', consent: false
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [webhookUrl, setWebhookUrl] = useState('');
-
-  useEffect(() => {
-    const savedWebhook = localStorage.getItem('pipedreamWebhookUrl');
-    if (savedWebhook) setWebhookUrl(savedWebhook);
-  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,33 +61,21 @@ export function Contact({ language }: ContactProps) {
     setIsSubmitting(true);
 
     try {
-      const contactRequest = {
-        id: crypto.randomUUID(), name: formData.name, inn: formData.inn, phone: formData.phone,
-        email: formData.email, additionalInfo: formData.additionalInfo, language, createdAt: new Date().toISOString(),
-      };
+      const { data, error } = await supabase.functions.invoke('send-telegram-message', {
+        body: {
+          name: formData.name,
+          inn: '',
+          phone: formData.phone,
+          email: formData.email,
+          message: formData.additionalInfo,
+        },
+      });
 
-      const existingRequests = JSON.parse(localStorage.getItem('contactRequests') || '[]');
-      existingRequests.push(contactRequest);
-      localStorage.setItem('contactRequests', JSON.stringify(existingRequests));
-
-      if (webhookUrl) {
-        try {
-          const response = await fetch(webhookUrl, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: formData.name, inn: formData.inn, phone: formData.phone, email: formData.email, message: formData.additionalInfo, language, timestamp: new Date().toISOString() }),
-          });
-          if (!response.ok) throw new Error(`Webhook failed with status: ${response.status}`);
-        } catch (error) {
-          console.error('Webhook error:', error);
-          toast({ title: "Предупреждение", description: "Заявка сохранена локально, но не отправлена в Telegram. Проверьте настройки webhook.", variant: "destructive" });
-        }
-      } else {
-        toast({ title: "Предупреждение", description: "Webhook URL не настроен. Заявка сохранена только локально.", variant: "destructive" });
-      }
+      if (error) throw error;
       
       toast({ title: "Успех", description: text.success });
       analytics.formSubmit('contact');
-      setFormData({ name: '', inn: '', phone: '', email: '', additionalInfo: '', consent: false });
+      setFormData({ name: '', phone: '', email: '', additionalInfo: '', consent: false });
     } catch (error: any) {
       console.error('Error submitting form:', error);
       toast({ title: "Ошибка", description: "Произошла ошибка при отправке заявки", variant: "destructive" });
