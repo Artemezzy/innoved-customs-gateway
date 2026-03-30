@@ -89,7 +89,7 @@ const handler = async (req: Request): Promise<Response> => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          CHAT_ID: 477,
+          DIALOG_ID: 'chat477',
           MESSAGE: chatMessage,
         }),
       });
