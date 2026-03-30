@@ -61,10 +61,9 @@ export function Contact({ language }: ContactProps) {
     setIsSubmitting(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('send-telegram-message', {
+      const { data, error } = await supabase.functions.invoke('send-bitrix-lead', {
         body: {
           name: formData.name,
-          inn: '',
           phone: formData.phone,
           email: formData.email,
           message: formData.additionalInfo,
