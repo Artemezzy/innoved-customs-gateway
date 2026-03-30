@@ -99,6 +99,27 @@ const handler = async (req: Request): Promise<Response> => {
       console.error('Chat notification error (non-blocking):', chatError);
     }
 
+    // 4. Create Open Line chat linked to the Lead
+    try {
+      const olRes = await fetch(`${webhookUrl}/imopenlines.crm.chat.create.json`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          CRM_ENTITY_TYPE: 'LEAD',
+          CRM_ENTITY_ID: leadData.result,
+          LINE_ID: 1,
+        }),
+      });
+      const olData = await olRes.json();
+      if (olData.error) {
+        console.error('Open Line chat error:', olData);
+      } else {
+        console.log('Open Line chat created:', olData.result);
+      }
+    } catch (olError) {
+      console.error('Open Line chat error (non-blocking):', olError);
+    }
+
     return new Response(
       JSON.stringify({ success: true, contactId, leadId: leadData.result }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
