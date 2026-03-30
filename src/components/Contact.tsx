@@ -5,10 +5,11 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Mail, Phone, MessageCircle, Send, Building, Download, Settings, MapPin } from 'lucide-react';
+import { Mail, Phone, MessageCircle, Send, Building, MapPin } from 'lucide-react';
 import maxIconWhite from '@/assets/max-icon-white.webp';
 import { useToast } from '@/hooks/use-toast';
 import { analytics } from '@/utils/analytics';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ContactProps {
   language: 'ru' | 'en';
