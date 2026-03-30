@@ -81,6 +81,24 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Lead created:', leadData.result);
 
+    // 3. Send notification to Bitrix24 group chat
+    const chatMessage = `🔔 Новая заявка с сайта!\n\n👤 Имя: ${name}\n📞 Телефон: ${phone}${email ? `\n📧 Email: ${email}` : ''}${message ? `\n💬 Сообщение: ${message}` : ''}\n\n🔗 Лид #${leadData.result}`;
+
+    try {
+      const chatRes = await fetch(`${webhookUrl}/im.message.add.json`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          CHAT_ID: 477,
+          MESSAGE: chatMessage,
+        }),
+      });
+      const chatData = await chatRes.json();
+      console.log('Chat notification sent:', chatData.result);
+    } catch (chatError) {
+      console.error('Chat notification error (non-blocking):', chatError);
+    }
+
     return new Response(
       JSON.stringify({ success: true, contactId, leadId: leadData.result }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
