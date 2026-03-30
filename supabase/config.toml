@@ -30,3 +30,6 @@ port = 54328
 
 [functions.send-telegram-message]
 verify_jwt = false
+
+[functions.send-bitrix-lead]
+verify_jwt = false
