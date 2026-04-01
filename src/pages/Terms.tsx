@@ -142,9 +142,13 @@ const Terms = () => {
                 <h2 className="text-xl font-semibold text-card-foreground mb-4">
                   {section.title}
                 </h2>
-                <p className="text-muted-foreground leading-relaxed">
-                  {section.content}
-                </p>
+                <div className="space-y-3">
+                  {section.content.map((paragraph, pIndex) => (
+                    <p key={pIndex} className="text-muted-foreground leading-relaxed">
+                      {paragraph}
+                    </p>
+                  ))}
+                </div>
               </section>
             ))}
           </div>
