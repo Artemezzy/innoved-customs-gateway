@@ -80,7 +80,7 @@ export function Contact({ language }: ContactProps) {
       
       toast({ title: "Успех", description: text.success });
       analytics.formSubmit('contact');
-      setFormData({ name: '', phone: '', email: '', additionalInfo: '', consent: false });
+      setFormData({ name: '', phone: '', email: '', additionalInfo: '', consent: false, marketing: false });
     } catch (error: any) {
       console.error('Error submitting form:', error);
       toast({ title: "Ошибка", description: "Произошла ошибка при отправке заявки", variant: "destructive" });
