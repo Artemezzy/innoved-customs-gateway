@@ -4,6 +4,7 @@ const ALLOWED_ORIGINS = [
   'https://innovedbroker.ru',
   'https://www.innovedbroker.ru',
   'https://id-preview--706c0eaf-9190-4fe5-97a9-48df9371963c.lovable.app',
+  'https://706c0eaf-9190-4fe5-97a9-48df9371963c.lovableproject.com',
 ];
 
 function getCorsHeaders(req: Request) {
