@@ -23,7 +23,10 @@ const content = {
       title: 'Оставить заявку', name: 'Имя', inn: 'ИНН компании', phone: 'Номер телефона для связи', email: 'Почта',
       additionalInfo: 'Дополнительная информация',
       additionalInfoPlaceholder: 'Опишите подробно вашу потребность, требования к логистике, особенности груза и другие важные детали...',
-      submit: 'Отправить заявку', consent: 'Я согласен на обработку персональных данных'
+      submit: 'Отправить заявку',
+      consent: 'Нажимая кнопку «Отправить заявку», я даю свое согласие на обработку моих персональных данных, в соответствии с Федеральным законом от 27.07.2006 года №152-ФЗ «О персональных данных», на условиях и для целей, определенных в',
+      consentLink: 'Политике конфиденциальности',
+      marketing: 'Согласен(на) на получение информационных и рекламных сообщений'
     },
     success: 'Заявка отправлена успешно!',
     error: 'Пожалуйста, заполните все обязательные поля и дайте согласие на обработку данных.'
@@ -35,7 +38,10 @@ const content = {
       title: 'Leave Request', name: 'Name', inn: 'Company TIN', phone: 'Contact Phone', email: 'Email',
       additionalInfo: 'Additional Information',
       additionalInfoPlaceholder: 'Please describe your needs, logistics requirements, cargo specifics and other important details...',
-      submit: 'Send Request', consent: 'I agree to the processing of personal data'
+      submit: 'Send Request',
+      consent: 'By clicking "Send Request", I give my consent to the processing of my personal data, in accordance with the Federal Law of 27.07.2006 No. 152-FZ "On Personal Data", under the terms and for the purposes defined in the',
+      consentLink: 'Privacy Policy',
+      marketing: 'I agree to receive informational and promotional messages'
     },
     success: 'Request sent successfully!',
     error: 'Please fill in all required fields and give consent to data processing.'
@@ -46,7 +52,7 @@ export function Contact({ language }: ContactProps) {
   const text = content[language];
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    name: '', phone: '', email: '', additionalInfo: '', consent: false
+    name: '', phone: '', email: '', additionalInfo: '', consent: false, marketing: false
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -74,7 +80,7 @@ export function Contact({ language }: ContactProps) {
       
       toast({ title: "Успех", description: text.success });
       analytics.formSubmit('contact');
-      setFormData({ name: '', phone: '', email: '', additionalInfo: '', consent: false });
+      setFormData({ name: '', phone: '', email: '', additionalInfo: '', consent: false, marketing: false });
     } catch (error: any) {
       console.error('Error submitting form:', error);
       toast({ title: "Ошибка", description: "Произошла ошибка при отправке заявки", variant: "destructive" });
@@ -170,11 +176,17 @@ export function Contact({ language }: ContactProps) {
                   <Label htmlFor="additionalInfo" className="text-sm font-medium">{text.form.additionalInfo}</Label>
                   <Textarea id="additionalInfo" value={formData.additionalInfo} onChange={(e) => setFormData({...formData, additionalInfo: e.target.value})} placeholder={text.form.additionalInfoPlaceholder} rows={4} className="transition-all duration-300 focus:ring-2 focus:ring-accent resize-none" />
                 </div>
-                <div className="flex items-center space-x-2 mt-4">
-                  <Checkbox id="consent" checked={formData.consent} onCheckedChange={(checked) => setFormData({...formData, consent: checked as boolean})} required />
-                  <Label htmlFor="consent" className="text-sm text-muted-foreground">{text.form.consent} *</Label>
+                <div className="flex items-start space-x-2 mt-4">
+                  <Checkbox id="consent" checked={formData.consent} onCheckedChange={(checked) => setFormData({...formData, consent: checked as boolean})} className="mt-1" />
+                  <Label htmlFor="consent" className="text-sm text-muted-foreground leading-relaxed">
+                    {text.form.consent} <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">{text.form.consentLink}</a> *
+                  </Label>
                 </div>
-                <Button type="submit" disabled={isSubmitting} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold py-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                <div className="flex items-start space-x-2">
+                  <Checkbox id="marketing" checked={formData.marketing} onCheckedChange={(checked) => setFormData({...formData, marketing: checked as boolean})} className="mt-1" />
+                  <Label htmlFor="marketing" className="text-sm text-muted-foreground leading-relaxed">{text.form.marketing}</Label>
+                </div>
+                <Button type="submit" disabled={isSubmitting || !formData.consent} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold py-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                   {isSubmitting ? (language === 'ru' ? 'Отправка...' : 'Sending...') : text.form.submit}
                 </Button>
               </form>
