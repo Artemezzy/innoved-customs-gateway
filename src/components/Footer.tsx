@@ -86,6 +86,11 @@ export function Footer({ language }: FooterProps) {
             <Link to="/contact" className="text-sm hover:text-primary-glow transition-colors duration-300">{text.links.contact}</Link>
           </nav>
         </div>
+        <p className="mt-6 text-[11px] leading-snug text-primary-foreground/50">
+          {language === 'ru'
+            ? 'Любая информация, представленная на данном сайте, носит исключительно информационный характер и ни при каких условиях не является публичной офертой, определяемой положениями статьи 437 ГК РФ.'
+            : 'Any information presented on this website is for informational purposes only and under no circumstances constitutes a public offer as defined by Article 437 of the Civil Code of the Russian Federation.'}
+        </p>
       </div>
     </footer>
   );
