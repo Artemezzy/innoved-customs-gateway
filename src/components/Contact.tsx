@@ -176,9 +176,15 @@ export function Contact({ language }: ContactProps) {
                   <Label htmlFor="additionalInfo" className="text-sm font-medium">{text.form.additionalInfo}</Label>
                   <Textarea id="additionalInfo" value={formData.additionalInfo} onChange={(e) => setFormData({...formData, additionalInfo: e.target.value})} placeholder={text.form.additionalInfoPlaceholder} rows={4} className="transition-all duration-300 focus:ring-2 focus:ring-accent resize-none" />
                 </div>
-                <div className="flex items-center space-x-2 mt-4">
-                  <Checkbox id="consent" checked={formData.consent} onCheckedChange={(checked) => setFormData({...formData, consent: checked as boolean})} required />
-                  <Label htmlFor="consent" className="text-sm text-muted-foreground">{text.form.consent} *</Label>
+                <div className="flex items-start space-x-2 mt-4">
+                  <Checkbox id="consent" checked={formData.consent} onCheckedChange={(checked) => setFormData({...formData, consent: checked as boolean})} className="mt-1" />
+                  <Label htmlFor="consent" className="text-sm text-muted-foreground leading-relaxed">
+                    {text.form.consent} <a href="/privacy" target="_blank" rel="noopener noreferrer" className="text-accent hover:underline">{text.form.consentLink}</a> *
+                  </Label>
+                </div>
+                <div className="flex items-start space-x-2">
+                  <Checkbox id="marketing" checked={formData.marketing} onCheckedChange={(checked) => setFormData({...formData, marketing: checked as boolean})} className="mt-1" />
+                  <Label htmlFor="marketing" className="text-sm text-muted-foreground leading-relaxed">{text.form.marketing}</Label>
                 </div>
                 <Button type="submit" disabled={isSubmitting} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold py-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                   {isSubmitting ? (language === 'ru' ? 'Отправка...' : 'Sending...') : text.form.submit}
