@@ -56,11 +56,24 @@ export function Contact({ language }: ContactProps) {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const isValidPhone = (phone: string) => /^[\d\s\+\-\(\)]{7,20}$/.test(phone);
+  const isValidEmail = (email: string) => !email || (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 255);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name || !formData.phone || !formData.consent) {
+    if (!formData.name.trim() || !formData.phone.trim() || !formData.consent) {
       toast({ title: "Ошибка", description: text.error, variant: "destructive" });
+      return;
+    }
+
+    if (!isValidPhone(formData.phone)) {
+      toast({ title: "Ошибка", description: language === 'ru' ? "Укажите корректный номер телефона" : "Please enter a valid phone number", variant: "destructive" });
+      return;
+    }
+
+    if (!isValidEmail(formData.email)) {
+      toast({ title: "Ошибка", description: language === 'ru' ? "Укажите корректный email" : "Please enter a valid email", variant: "destructive" });
       return;
     }
 
@@ -81,9 +94,8 @@ export function Contact({ language }: ContactProps) {
       toast({ title: "Успех", description: text.success });
       analytics.formSubmit('contact');
       setFormData({ name: '', phone: '', email: '', additionalInfo: '', consent: false, marketing: false });
-    } catch (error: any) {
-      console.error('Error submitting form:', error);
-      toast({ title: "Ошибка", description: "Произошла ошибка при отправке заявки", variant: "destructive" });
+    } catch (error: unknown) {
+      toast({ title: "Ошибка", description: language === 'ru' ? "Произошла ошибка при отправке заявки. Попробуйте позже." : "An error occurred. Please try again later.", variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }
