@@ -52,7 +52,7 @@ export function Contact({ language }: ContactProps) {
   const text = content[language];
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    name: '', phone: '', email: '', additionalInfo: '', consent: false
+    name: '', phone: '', email: '', additionalInfo: '', consent: false, marketing: false
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
