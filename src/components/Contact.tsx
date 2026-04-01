@@ -38,7 +38,10 @@ const content = {
       title: 'Leave Request', name: 'Name', inn: 'Company TIN', phone: 'Contact Phone', email: 'Email',
       additionalInfo: 'Additional Information',
       additionalInfoPlaceholder: 'Please describe your needs, logistics requirements, cargo specifics and other important details...',
-      submit: 'Send Request', consent: 'I agree to the processing of personal data'
+      submit: 'Send Request',
+      consent: 'By clicking "Send Request", I give my consent to the processing of my personal data, in accordance with the Federal Law of 27.07.2006 No. 152-FZ "On Personal Data", under the terms and for the purposes defined in the',
+      consentLink: 'Privacy Policy',
+      marketing: 'I agree to receive informational and promotional messages'
     },
     success: 'Request sent successfully!',
     error: 'Please fill in all required fields and give consent to data processing.'
