@@ -186,7 +186,7 @@ export function Contact({ language }: ContactProps) {
                   <Checkbox id="marketing" checked={formData.marketing} onCheckedChange={(checked) => setFormData({...formData, marketing: checked as boolean})} className="mt-1" />
                   <Label htmlFor="marketing" className="text-sm text-muted-foreground leading-relaxed">{text.form.marketing}</Label>
                 </div>
-                <Button type="submit" disabled={isSubmitting} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold py-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                <Button type="submit" disabled={isSubmitting || !formData.consent} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-semibold py-3 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
                   {isSubmitting ? (language === 'ru' ? 'Отправка...' : 'Sending...') : text.form.submit}
                 </Button>
               </form>
