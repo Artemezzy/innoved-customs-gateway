@@ -61,11 +61,11 @@ const otherServices = {
 };
 
 const stepIcons = [
-  { id: 'analysis', iconLabel: '📋' },
-  { id: 'classification', iconLabel: '🔍' },
-  { id: 'declaration', iconLabel: '📄' },
-  { id: 'control', iconLabel: '🛂' },
-  { id: 'release', iconLabel: '✅' },
+  { id: 'analysis', icon: ClipboardList },
+  { id: 'classification', icon: Search },
+  { id: 'declaration', icon: FileText },
+  { id: 'control', icon: ScanLine },
+  { id: 'release', icon: PackageCheck },
 ];
 
 export default function TamozhennayaOchistkaPage() {
