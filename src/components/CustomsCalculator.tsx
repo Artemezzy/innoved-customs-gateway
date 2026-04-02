@@ -163,7 +163,7 @@ export function CustomsCalculator({ language, compact = false }: CustomsCalculat
   if (compact) {
     return (
       <div className="p-5 md:p-6 space-y-4">
-        <div className="flex items-center gap-2 text-sm font-medium text-primary mb-1">
+        <div className="flex items-center gap-2 text-sm font-medium text-accent mb-1">
           <Calculator className="h-4 w-4" />
           {t.title}
         </div>
