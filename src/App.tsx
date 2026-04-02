@@ -26,6 +26,7 @@ import CaseOborudovaniyaPage from "./pages/CaseOborudovaniyaPage";
 import CaseTechnikiPage from "./pages/CaseTechnikiPage";
 import SitemapPage from "./pages/SitemapPage";
 import TamozhennayaOchistkaPage from "./pages/TamozhennayaOchistkaPage";
+import RastamozhkaGruzovPage from "./pages/RastamozhkaGruzovPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
