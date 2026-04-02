@@ -24,6 +24,7 @@ import CaseZapchasteyPage from "./pages/CaseZapchasteyPage";
 import CaseOdejdaPage from "./pages/CaseOdejdaPage";
 import CaseOborudovaniyaPage from "./pages/CaseOborudovaniyaPage";
 import CaseTechnikiPage from "./pages/CaseTechnikiPage";
+import SitemapPage from "./pages/SitemapPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
