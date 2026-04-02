@@ -208,7 +208,7 @@ export function CustomsCalculator({ language, compact = false }: CustomsCalculat
         {result && (
           <div className="border-t pt-4 space-y-3">
             <p className="text-sm text-muted-foreground">{t.resultTitle}</p>
-            <p className="text-2xl font-bold text-primary">{formatNumber(result.total)}&nbsp;₽</p>
+            <p className="text-2xl font-bold text-accent">{formatNumber(result.total)}&nbsp;₽</p>
             <div className="space-y-1.5 text-sm">
               <Row label={t.duty} value={result.duty} />
               <Row label={t.vat} value={result.vat} />
