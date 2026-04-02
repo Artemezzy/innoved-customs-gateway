@@ -140,8 +140,18 @@ export function CustomsCalculator({ language }: CustomsCalculatorProps) {
 
   const handleCta = () => {
     if (!result) return;
-    const lines = [
-      `${t.dutyRate}: ${codeNotFound ? manualDuty + '%' : hsQuery}`,
+
+    const hsEntry = findHsCode(hsQuery);
+    const dutyRateValue = hsEntry ? `${hsEntry.dutyRate}%` : `${manualDuty}%`;
+    const productDesc = hsEntry ? `${hsEntry.code} — ${hsEntry.description}` : hsQuery;
+
+    const greeting = language === 'ru'
+      ? 'Добрый день!\nМеня зовут ..., пишу от компании ...\nПрошу помочь с расчётом таможенных платежей.\n'
+      : 'Hello!\nMy name is ..., I am writing on behalf of ...\nPlease help me calculate customs duties.\n';
+
+    const details = [
+      `${t.hsCode}: ${productDesc}`,
+      `${t.dutyRate}: ${dutyRateValue}`,
       `${t.value}: ${formatNumber(parseFloat(value))} ${currency}`,
       country ? `${t.country}: ${country}` : '',
       `${t.duty}: ${formatNumber(result.duty)} ₽`,
@@ -151,7 +161,7 @@ export function CustomsCalculator({ language }: CustomsCalculatorProps) {
       `${t.total}: ${formatNumber(result.total)} ₽`,
     ].filter(Boolean).join('\n');
 
-    navigate('/contact', { state: { prefill: lines } });
+    navigate('/contact', { state: { prefill: greeting + '\n' + details } });
   };
 
   return (
