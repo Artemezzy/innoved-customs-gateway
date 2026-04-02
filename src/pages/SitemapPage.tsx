@@ -67,6 +67,31 @@ export default function SitemapPage() {
                 {language === 'ru' ? 'Услуги' : 'Services'}
               </h2>
               <ul className="space-y-2">
+                <li>
+                  <Link to="/tamozhennyj-broker" className="text-sm text-muted-foreground hover:text-accent transition-colors">
+                    {language === 'ru' ? 'Таможенный брокер' : 'Customs Broker'}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/rastamojka-zapchastey" className="text-sm text-muted-foreground hover:text-accent transition-colors">
+                    {language === 'ru' ? 'Растаможка запчастей' : 'Spare Parts Clearance'}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/rastamojka-odejdi" className="text-sm text-muted-foreground hover:text-accent transition-colors">
+                    {language === 'ru' ? 'Растаможка одежды' : 'Clothing Clearance'}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/rastamojka-oborudovaniya" className="text-sm text-muted-foreground hover:text-accent transition-colors">
+                    {language === 'ru' ? 'Растаможка оборудования' : 'Equipment Clearance'}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/rastamojka-tehniki" className="text-sm text-muted-foreground hover:text-accent transition-colors">
+                    {language === 'ru' ? 'Растаможка техники' : 'Machinery Clearance'}
+                  </Link>
+                </li>
                 {services.map((s) => (
                   <li key={s.slug}>
                     <Link
