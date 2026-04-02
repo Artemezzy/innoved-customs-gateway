@@ -302,7 +302,7 @@ export default function TamozhennayaOchistkaPage() {
                   <Button
                     key={s.slug}
                     variant="outline"
-                    className="justify-start text-sm h-auto py-2.5 px-4 hover:border-accent hover:text-accent"
+                    className="justify-start text-sm h-auto py-2.5 px-4 whitespace-normal text-left hover:border-accent hover:text-accent"
                     asChild
                   >
                     <Link to={`/services/${s.slug}`}>
