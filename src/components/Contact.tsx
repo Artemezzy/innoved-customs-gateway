@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -51,10 +52,18 @@ const content = {
 export function Contact({ language }: ContactProps) {
   const text = content[language];
   const { toast } = useToast();
+  const location = useLocation();
+  const prefill = (location.state as { prefill?: string })?.prefill || '';
   const [formData, setFormData] = useState({
-    name: '', phone: '', email: '', additionalInfo: '', consent: false, marketing: false
+    name: '', phone: '', email: '', additionalInfo: prefill, consent: false, marketing: false
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (prefill) {
+      setFormData(prev => ({ ...prev, additionalInfo: prefill }));
+    }
+  }, [prefill]);
 
   const isValidPhone = (phone: string) => /^[\d\s\+\-\(\)]{7,20}$/.test(phone);
   const isValidEmail = (email: string) => !email || (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 255);

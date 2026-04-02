@@ -2,6 +2,7 @@ import { Hero } from '@/components/Hero';
 import { BrokerServices } from '@/components/BrokerServices';
 import { InfoBlocks } from '@/components/InfoBlocks';
 import { CaseStudies } from '@/components/CaseStudies';
+import { CustomsCalculator } from '@/components/CustomsCalculator';
 import { Testimonials } from '@/components/Testimonials';
 import { SEOHead } from '@/components/SEOHead';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -22,6 +23,7 @@ export default function Home() {
       <BrokerServices language={language} />
       <InfoBlocks language={language} />
       <CaseStudies language={language} />
+      <CustomsCalculator language={language} />
       <Testimonials language={language} />
     </>
   );
