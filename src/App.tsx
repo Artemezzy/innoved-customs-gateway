@@ -56,6 +56,13 @@ const App = () => (
               <Route path="/services/rastamozhka-gruzov" element={<RastamozhkaGruzovPage />} />
               <Route path="/services/rastamozhka-tovarov" element={<RastamozhkaTovarovPage />} />
               <Route path="/services/import" element={<ImportPage />} />
+              <Route path="/services/export" element={<ExportPage />} />
+              <Route path="/services/hs-code" element={<HsCodePage />} />
+              <Route path="/services/ved-consulting" element={<VedConsultingPage />} />
+              <Route path="/services/certification" element={<CertificationPage />} />
+              <Route path="/services/customs-letters" element={<CustomsLettersPage />} />
+              <Route path="/services/inspection" element={<InspectionPage />} />
+              <Route path="/services/translation" element={<TranslationPage />} />
               <Route path="/services/:slug" element={<ServiceDetailPage />} />
               <Route path="/how-we-work" element={<HowWeWorkPage />} />
               <Route path="/contact" element={<ContactPage />} />
