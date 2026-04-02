@@ -74,6 +74,9 @@ export function Footer({ language }: FooterProps) {
               <Link to="/terms" className="hover:text-primary-glow transition-colors duration-300 underline-offset-4 hover:underline">
                 {text.legal.terms}
               </Link>
+              <Link to="/map" className="hover:text-primary-glow transition-colors duration-300 underline-offset-4 hover:underline">
+                {text.legal.sitemap}
+              </Link>
             </div>
             <a href="https://webmaster.yandex.ru/siteinfo/?site=https://www.innovedbroker.ru" target="_blank" rel="noopener noreferrer" className="mt-2 inline-block">
               <img width="88" height="31" alt="Яндекс ИКС" src="https://yandex.ru/cycounter?https://www.innovedbroker.ru&theme=dark&lang=ru" className="rounded-lg" />
