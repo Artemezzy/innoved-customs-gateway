@@ -29,12 +29,10 @@ export default function SitemapPage() {
       <SEOHead
         language={language}
         page="sitemap"
-        customMeta={{
-          title: language === 'ru' ? 'Карта сайта — ИННОВЭД' : 'Sitemap — INNOVED',
-          description: language === 'ru'
-            ? 'Карта сайта ИННОВЭД — все страницы и разделы'
-            : 'INNOVED sitemap — all pages and sections',
-        }}
+        customTitle={language === 'ru' ? 'Карта сайта — ИННОВЭД' : 'Sitemap — INNOVED'}
+        customDescription={language === 'ru'
+          ? 'Карта сайта ИННОВЭД — все страницы и разделы'
+          : 'INNOVED sitemap — all pages and sections'}
       />
 
       <section className="py-12 md:py-16 bg-background">
