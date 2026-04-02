@@ -12,6 +12,7 @@ import { calculate, findHsCode, defaultExchangeRates, type CalculationResult } f
 
 interface CustomsCalculatorProps {
   language: 'ru' | 'en';
+  compact?: boolean;
 }
 
 const content = {
