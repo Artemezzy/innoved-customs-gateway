@@ -200,7 +200,7 @@ export function CustomsCalculator({ language, compact = false }: CustomsCalculat
             {t.warning}
           </div>
         )}
-        <Button onClick={handleCalculate} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" size="lg">
+        <Button onClick={handleCalculate} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" size="lg">
           <Calculator className="h-4 w-4 mr-2" />
           {t.calculate}
         </Button>
