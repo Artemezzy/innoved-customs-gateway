@@ -29,6 +29,13 @@ import TamozhennayaOchistkaPage from "./pages/TamozhennayaOchistkaPage";
 import RastamozhkaGruzovPage from "./pages/RastamozhkaGruzovPage";
 import RastamozhkaTovarovPage from "./pages/RastamozhkaTovarovPage";
 import ImportPage from "./pages/ImportPage";
+import ExportPage from "./pages/ExportPage";
+import HsCodePage from "./pages/HsCodePage";
+import VedConsultingPage from "./pages/VedConsultingPage";
+import CertificationPage from "./pages/CertificationPage";
+import CustomsLettersPage from "./pages/CustomsLettersPage";
+import InspectionPage from "./pages/InspectionPage";
+import TranslationPage from "./pages/TranslationPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
