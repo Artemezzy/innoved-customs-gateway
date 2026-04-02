@@ -27,6 +27,8 @@ import CaseTechnikiPage from "./pages/CaseTechnikiPage";
 import SitemapPage from "./pages/SitemapPage";
 import TamozhennayaOchistkaPage from "./pages/TamozhennayaOchistkaPage";
 import RastamozhkaGruzovPage from "./pages/RastamozhkaGruzovPage";
+import RastamozhkaTovarovPage from "./pages/RastamozhkaTovarovPage";
+import ImportPage from "./pages/ImportPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -45,6 +47,8 @@ const App = () => (
               <Route path="/services" element={<ServicesPage />} />
               <Route path="/services/tamozhennaya-ochistka" element={<TamozhennayaOchistkaPage />} />
               <Route path="/services/rastamozhka-gruzov" element={<RastamozhkaGruzovPage />} />
+              <Route path="/services/rastamozhka-tovarov" element={<RastamozhkaTovarovPage />} />
+              <Route path="/services/import" element={<ImportPage />} />
               <Route path="/services/:slug" element={<ServiceDetailPage />} />
               <Route path="/how-we-work" element={<HowWeWorkPage />} />
               <Route path="/contact" element={<ContactPage />} />
