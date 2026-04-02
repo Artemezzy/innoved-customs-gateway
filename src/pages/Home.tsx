@@ -23,6 +23,7 @@ export default function Home() {
       <BrokerServices language={language} />
       <InfoBlocks language={language} />
       <CaseStudies language={language} />
+      <CustomsCalculator language={language} />
       <Testimonials language={language} />
     </>
   );
