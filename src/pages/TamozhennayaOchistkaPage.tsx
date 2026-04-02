@@ -189,7 +189,7 @@ export default function TamozhennayaOchistkaPage() {
                         <TabsTrigger
                           key={stepIcons[index]?.id || `step-${index}`}
                           value={stepIcons[index]?.id || `step-${index}`}
-                          className="flex flex-col items-center gap-2 py-4 px-2 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-lg transition-all duration-300"
+                          className="flex flex-col items-center gap-2 py-4 px-2 whitespace-normal data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-lg transition-all duration-300"
                         >
                           <div className="relative">
                             <StepIcon className="w-5 h-5" />
