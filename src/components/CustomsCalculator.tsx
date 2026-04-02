@@ -153,12 +153,7 @@ export function CustomsCalculator({ language }: CustomsCalculatorProps) {
       `${t.hsCode}: ${productDesc}`,
       `${t.dutyRate}: ${dutyRateValue}`,
       `${t.value}: ${formatNumber(parseFloat(value))} ${currency}`,
-      country ? `${t.country}: ${country}` : '',
-      `${t.duty}: ${formatNumber(result.duty)} ₽`,
-      `${t.vat}: ${formatNumber(result.vat)} ₽`,
-      `${t.fee}: ${formatNumber(result.customsFee)} ₽`,
-      result.excise > 0 ? `${t.excise}: ${formatNumber(result.excise)} ₽` : '',
-      `${t.total}: ${formatNumber(result.total)} ₽`,
+      country.trim() ? `${t.country}: ${country.trim()}` : '',
     ].filter(Boolean).join('\n');
 
     navigate('/contact', { state: { prefill: greeting + '\n' + details } });
