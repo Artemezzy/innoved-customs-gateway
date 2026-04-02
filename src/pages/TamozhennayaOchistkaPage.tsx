@@ -135,27 +135,27 @@ export default function TamozhennayaOchistkaPage() {
 
               {/* Right: Calculator */}
               <div className="lg:w-2/5 w-full max-w-md lg:max-w-none">
-                <div className="bg-background rounded-xl shadow-2xl overflow-hidden">
+                <div className="bg-black/40 backdrop-blur-md rounded-xl shadow-2xl overflow-hidden border border-white/10">
                   <CustomsCalculator language={language} compact />
                 </div>
               </div>
             </div>
 
-            {/* Why choose — 4 square cards overlaid on the hero */}
+            {/* Why choose — 4 cards overlaid on the hero */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-12 animate-fade-in" style={{ animationDelay: '0.5s' }}>
               {t.whyItems.map((item, i) => {
                 const Icon = item.icon;
                 return (
                   <div
                     key={i}
-                    className="aspect-square bg-black/30 backdrop-blur-md rounded-xl border border-white/15 p-5 flex flex-col justify-between"
+                    className="bg-black/30 backdrop-blur-md rounded-xl border border-white/15 p-4 flex flex-col gap-3"
                   >
-                    <div className="w-11 h-11 rounded-lg bg-accent/20 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center">
                       <Icon className="w-5 h-5 text-accent" />
                     </div>
                     <div>
-                      <h3 className="text-sm md:text-base font-bold text-primary-foreground mb-1">{item.title}</h3>
-                      <p className="text-xs md:text-sm text-primary-foreground/70 leading-snug">{item.desc}</p>
+                      <h3 className="text-sm font-bold text-primary-foreground mb-1">{item.title}</h3>
+                      <p className="text-xs text-primary-foreground/70 leading-snug">{item.desc}</p>
                     </div>
                   </div>
                 );
