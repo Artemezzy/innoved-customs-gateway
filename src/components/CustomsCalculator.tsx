@@ -254,7 +254,7 @@ export function CustomsCalculator({ language }: CustomsCalculatorProps) {
                 </CollapsibleContent>
               </Collapsible>
 
-              <Button onClick={handleCalculate} className="w-full" size="lg">
+              <Button onClick={handleCalculate} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" size="lg">
                 <Calculator className="h-4 w-4 mr-2" />
                 {t.calculate}
               </Button>
