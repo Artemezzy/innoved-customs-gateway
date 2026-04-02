@@ -211,10 +211,10 @@ export default function TamozhennayaOchistkaPage() {
                         <TabsTrigger
                           key={stepIcons[index]?.id || `step-${index}`}
                           value={stepIcons[index]?.id || `step-${index}`}
-                          className="flex-shrink-0 flex flex-col items-center gap-1 py-3 px-3 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-lg transition-all duration-300"
+                          className="flex-shrink-0 flex flex-col items-center gap-1 py-3 px-3 whitespace-normal data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-lg transition-all duration-300 min-w-[70px]"
                         >
                           <StepIcon className="w-4 h-4" />
-                          <span className="text-[10px] font-medium whitespace-nowrap">{step.title}</span>
+                          <span className="text-[10px] font-medium text-center leading-tight">{step.title}</span>
                         </TabsTrigger>
                       );
                     })}
