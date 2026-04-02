@@ -157,13 +157,12 @@ export function CustomsCalculator({ language }: CustomsCalculatorProps) {
   return (
     <section className="py-16 md:py-24 bg-muted/30">
       <div className="container mx-auto px-4 max-w-6xl">
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary mb-4">
+        <div className="mb-10">
+          <div className="inline-flex items-center gap-2 rounded-full bg-accent/10 px-4 py-1.5 text-sm font-medium text-accent mb-2">
             <Calculator className="h-4 w-4" />
             {t.title}
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground">{t.title}</h2>
-          <p className="text-muted-foreground mt-2">{t.subtitle}</p>
+          <p className="text-muted-foreground">{t.subtitle}</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
@@ -255,7 +254,7 @@ export function CustomsCalculator({ language }: CustomsCalculatorProps) {
                 </CollapsibleContent>
               </Collapsible>
 
-              <Button onClick={handleCalculate} className="w-full" size="lg">
+              <Button onClick={handleCalculate} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" size="lg">
                 <Calculator className="h-4 w-4 mr-2" />
                 {t.calculate}
               </Button>
