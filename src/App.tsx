@@ -26,6 +26,7 @@ import CaseOborudovaniyaPage from "./pages/CaseOborudovaniyaPage";
 import CaseTechnikiPage from "./pages/CaseTechnikiPage";
 import SitemapPage from "./pages/SitemapPage";
 import TamozhennayaOchistkaPage from "./pages/TamozhennayaOchistkaPage";
+import RastamozhkaGruzovPage from "./pages/RastamozhkaGruzovPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="/about" element={<AboutPage />} />
               <Route path="/services" element={<ServicesPage />} />
               <Route path="/services/tamozhennaya-ochistka" element={<TamozhennayaOchistkaPage />} />
+              <Route path="/services/rastamozhka-gruzov" element={<RastamozhkaGruzovPage />} />
               <Route path="/services/:slug" element={<ServiceDetailPage />} />
               <Route path="/how-we-work" element={<HowWeWorkPage />} />
               <Route path="/contact" element={<ContactPage />} />
