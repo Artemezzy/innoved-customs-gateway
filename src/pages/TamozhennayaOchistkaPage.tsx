@@ -4,7 +4,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useServiceDetail } from '@/hooks/useServiceDetail';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Phone, ArrowLeft, ShieldCheck, Scale, Globe, Zap } from 'lucide-react';
+import { CheckCircle, Phone, ArrowLeft, ShieldCheck, Scale, Globe, Zap, ClipboardList, Search, FileText, ScanLine, PackageCheck } from 'lucide-react';
 import { CustomsCalculator } from '@/components/CustomsCalculator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { analytics } from '@/utils/analytics';
