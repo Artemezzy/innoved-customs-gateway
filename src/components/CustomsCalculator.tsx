@@ -162,26 +162,26 @@ export function CustomsCalculator({ language, compact = false }: CustomsCalculat
 
   if (compact) {
     return (
-      <div className="p-5 md:p-6 space-y-4">
+      <div className="p-5 md:p-6 space-y-4 text-primary-foreground">
         <div className="flex items-center gap-2 text-sm font-medium text-accent mb-1">
           <Calculator className="h-4 w-4" />
           {t.title}
         </div>
         {/* HS code */}
         <div className="space-y-1.5">
-          <Label htmlFor="hs-code">{t.hsCode}</Label>
-          <Input id="hs-code" value={hsQuery} onChange={e => setHsQuery(e.target.value)} placeholder={t.hsCodePlaceholder} />
+          <Label htmlFor="hs-code" className="text-primary-foreground/80">{t.hsCode}</Label>
+          <Input id="hs-code" value={hsQuery} onChange={e => setHsQuery(e.target.value)} placeholder={t.hsCodePlaceholder} className="bg-white/10 border-white/20 text-primary-foreground placeholder:text-primary-foreground/40" />
         </div>
         {/* Value + Currency */}
         <div className="grid grid-cols-3 gap-3">
           <div className="col-span-2 space-y-1.5">
-            <Label htmlFor="shipment-value">{t.value}</Label>
-            <Input id="shipment-value" type="number" min="0" value={value} onChange={e => setValue(e.target.value)} placeholder="100 000" />
+            <Label htmlFor="shipment-value" className="text-primary-foreground/80">{t.value}</Label>
+            <Input id="shipment-value" type="number" min="0" value={value} onChange={e => setValue(e.target.value)} placeholder="100 000" className="bg-white/10 border-white/20 text-primary-foreground placeholder:text-primary-foreground/40" />
           </div>
           <div className="space-y-1.5">
-            <Label>{t.currency}</Label>
+            <Label className="text-primary-foreground/80">{t.currency}</Label>
             <Select value={currency} onValueChange={setCurrency}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectTrigger className="bg-white/10 border-white/20 text-primary-foreground"><SelectValue /></SelectTrigger>
               <SelectContent>
                 {currencies.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
               </SelectContent>
@@ -190,12 +190,12 @@ export function CustomsCalculator({ language, compact = false }: CustomsCalculat
         </div>
         {/* Country */}
         <div className="space-y-1.5">
-          <Label htmlFor="country">{t.country}</Label>
-          <Input id="country" value={country} onChange={e => setCountry(e.target.value)} placeholder={t.countryPlaceholder} />
+          <Label htmlFor="country" className="text-primary-foreground/80">{t.country}</Label>
+          <Input id="country" value={country} onChange={e => setCountry(e.target.value)} placeholder={t.countryPlaceholder} className="bg-white/10 border-white/20 text-primary-foreground placeholder:text-primary-foreground/40" />
         </div>
         {/* Warning */}
         {codeNotFound && (
-          <div className="flex items-start gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+          <div className="flex items-start gap-2 rounded-md bg-destructive/20 p-3 text-sm text-red-300">
             <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
             {t.warning}
           </div>
@@ -206,14 +206,14 @@ export function CustomsCalculator({ language, compact = false }: CustomsCalculat
         </Button>
         {/* Result */}
         {result && (
-          <div className="border-t pt-4 space-y-3">
-            <p className="text-sm text-muted-foreground">{t.resultTitle}</p>
+          <div className="border-t border-white/20 pt-4 space-y-3">
+            <p className="text-sm text-primary-foreground/60">{t.resultTitle}</p>
             <p className="text-2xl font-bold text-accent">{formatNumber(result.total)}&nbsp;₽</p>
             <div className="space-y-1.5 text-sm">
-              <Row label={t.duty} value={result.duty} />
-              <Row label={t.vat} value={result.vat} />
-              <Row label={t.fee} value={result.customsFee} />
-              {result.excise > 0 && <Row label={t.excise} value={result.excise} />}
+              <RowCompact label={t.duty} value={result.duty} />
+              <RowCompact label={t.vat} value={result.vat} />
+              <RowCompact label={t.fee} value={result.customsFee} />
+              {result.excise > 0 && <RowCompact label={t.excise} value={result.excise} />}
             </div>
             <Button onClick={handleCta} size="lg" className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">
               {t.cta}
@@ -221,7 +221,7 @@ export function CustomsCalculator({ language, compact = false }: CustomsCalculat
             </Button>
           </div>
         )}
-        <p className="text-xs text-muted-foreground text-center">{t.disclaimer}</p>
+        <p className="text-xs text-primary-foreground/40 text-center">{t.disclaimer}</p>
       </div>
     );
   }
