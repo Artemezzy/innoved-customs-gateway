@@ -163,7 +163,7 @@ export function CustomsCalculator({ language, compact = false }: CustomsCalculat
   if (compact) {
     return (
       <div className="p-5 md:p-6 space-y-4">
-        <div className="flex items-center gap-2 text-sm font-medium text-primary mb-1">
+        <div className="flex items-center gap-2 text-sm font-medium text-accent mb-1">
           <Calculator className="h-4 w-4" />
           {t.title}
         </div>
@@ -200,7 +200,7 @@ export function CustomsCalculator({ language, compact = false }: CustomsCalculat
             {t.warning}
           </div>
         )}
-        <Button onClick={handleCalculate} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" size="lg">
+        <Button onClick={handleCalculate} className="w-full bg-accent hover:bg-accent/90 text-accent-foreground" size="lg">
           <Calculator className="h-4 w-4 mr-2" />
           {t.calculate}
         </Button>
@@ -208,7 +208,7 @@ export function CustomsCalculator({ language, compact = false }: CustomsCalculat
         {result && (
           <div className="border-t pt-4 space-y-3">
             <p className="text-sm text-muted-foreground">{t.resultTitle}</p>
-            <p className="text-2xl font-bold text-primary">{formatNumber(result.total)}&nbsp;₽</p>
+            <p className="text-2xl font-bold text-accent">{formatNumber(result.total)}&nbsp;₽</p>
             <div className="space-y-1.5 text-sm">
               <Row label={t.duty} value={result.duty} />
               <Row label={t.vat} value={result.vat} />

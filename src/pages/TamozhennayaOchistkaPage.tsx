@@ -4,7 +4,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useServiceDetail } from '@/hooks/useServiceDetail';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Phone, ArrowLeft, ShieldCheck, Scale, Globe, Zap } from 'lucide-react';
+import { CheckCircle, Phone, ArrowLeft, ShieldCheck, Scale, Globe, Zap, ClipboardList, Search, FileText, ScanLine, PackageCheck } from 'lucide-react';
 import { CustomsCalculator } from '@/components/CustomsCalculator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { analytics } from '@/utils/analytics';
@@ -61,11 +61,11 @@ const otherServices = {
 };
 
 const stepIcons = [
-  { id: 'analysis', iconLabel: '📋' },
-  { id: 'classification', iconLabel: '🔍' },
-  { id: 'declaration', iconLabel: '📄' },
-  { id: 'control', iconLabel: '🛂' },
-  { id: 'release', iconLabel: '✅' },
+  { id: 'analysis', icon: ClipboardList },
+  { id: 'classification', icon: Search },
+  { id: 'declaration', icon: FileText },
+  { id: 'control', icon: ScanLine },
+  { id: 'release', icon: PackageCheck },
 ];
 
 export default function TamozhennayaOchistkaPage() {
@@ -135,27 +135,27 @@ export default function TamozhennayaOchistkaPage() {
 
               {/* Right: Calculator */}
               <div className="lg:w-2/5 w-full max-w-md lg:max-w-none">
-                <div className="bg-background rounded-xl shadow-2xl overflow-hidden">
+                <div className="bg-black/40 backdrop-blur-md rounded-xl shadow-2xl overflow-hidden border border-white/10">
                   <CustomsCalculator language={language} compact />
                 </div>
               </div>
             </div>
 
-            {/* Why choose — 4 square cards overlaid on the hero */}
+            {/* Why choose — 4 cards overlaid on the hero */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-12 animate-fade-in" style={{ animationDelay: '0.5s' }}>
               {t.whyItems.map((item, i) => {
                 const Icon = item.icon;
                 return (
                   <div
                     key={i}
-                    className="aspect-square bg-black/30 backdrop-blur-md rounded-xl border border-white/15 p-5 flex flex-col justify-between"
+                    className="bg-black/30 backdrop-blur-md rounded-xl border border-white/15 p-4 flex flex-col gap-3"
                   >
-                    <div className="w-11 h-11 rounded-lg bg-accent/20 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center">
                       <Icon className="w-5 h-5 text-accent" />
                     </div>
                     <div>
-                      <h3 className="text-sm md:text-base font-bold text-primary-foreground mb-1">{item.title}</h3>
-                      <p className="text-xs md:text-sm text-primary-foreground/70 leading-snug">{item.desc}</p>
+                      <h3 className="text-sm font-bold text-primary-foreground mb-1">{item.title}</h3>
+                      <p className="text-xs text-primary-foreground/70 leading-snug">{item.desc}</p>
                     </div>
                   </div>
                 );
@@ -183,71 +183,85 @@ export default function TamozhennayaOchistkaPage() {
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                   {/* Desktop Tabs */}
                   <TabsList className="hidden md:grid w-full grid-cols-5 h-auto p-2 bg-muted/50 rounded-xl mb-8">
-                    {stepsSection.steps.map((step, index) => (
-                      <TabsTrigger
-                        key={stepIcons[index]?.id || `step-${index}`}
-                        value={stepIcons[index]?.id || `step-${index}`}
-                        className="flex flex-col items-center gap-2 py-4 px-2 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-lg transition-all duration-300"
-                      >
-                        <span className="text-xl">{stepIcons[index]?.iconLabel || `${index + 1}`}</span>
-                        <span className="text-xs font-medium text-center leading-tight">{step.title}</span>
-                      </TabsTrigger>
-                    ))}
+                    {stepsSection.steps.map((step, index) => {
+                      const StepIcon = stepIcons[index]?.icon || ClipboardList;
+                      return (
+                        <TabsTrigger
+                          key={stepIcons[index]?.id || `step-${index}`}
+                          value={stepIcons[index]?.id || `step-${index}`}
+                          className="flex flex-col items-center gap-2 py-4 px-2 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-lg transition-all duration-300"
+                        >
+                          <div className="relative">
+                            <StepIcon className="w-5 h-5" />
+                            <span className="absolute -top-1 -right-2 w-4 h-4 rounded-full bg-accent/20 text-[10px] flex items-center justify-center font-bold">
+                              {index + 1}
+                            </span>
+                          </div>
+                          <span className="text-xs font-medium text-center leading-tight">{step.title}</span>
+                        </TabsTrigger>
+                      );
+                    })}
                   </TabsList>
 
                   {/* Mobile Tabs */}
                   <TabsList className="md:hidden flex w-full overflow-x-auto gap-2 h-auto p-2 bg-muted/50 rounded-xl mb-8 scrollbar-hide">
-                    {stepsSection.steps.map((step, index) => (
-                      <TabsTrigger
-                        key={stepIcons[index]?.id || `step-${index}`}
-                        value={stepIcons[index]?.id || `step-${index}`}
-                        className="flex-shrink-0 flex flex-col items-center gap-1 py-3 px-4 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-lg transition-all duration-300"
-                      >
-                        <span className="text-lg">{stepIcons[index]?.iconLabel || `${index + 1}`}</span>
-                        <span className="text-[10px] font-medium whitespace-nowrap">{step.title}</span>
-                      </TabsTrigger>
-                    ))}
+                    {stepsSection.steps.map((step, index) => {
+                      const StepIcon = stepIcons[index]?.icon || ClipboardList;
+                      return (
+                        <TabsTrigger
+                          key={stepIcons[index]?.id || `step-${index}`}
+                          value={stepIcons[index]?.id || `step-${index}`}
+                          className="flex-shrink-0 flex flex-col items-center gap-1 py-3 px-3 data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-lg transition-all duration-300"
+                        >
+                          <StepIcon className="w-4 h-4" />
+                          <span className="text-[10px] font-medium whitespace-nowrap">{step.title}</span>
+                        </TabsTrigger>
+                      );
+                    })}
                   </TabsList>
 
                   {/* Content Area */}
-                  {stepsSection.steps.map((step, index) => (
-                    <TabsContent key={stepIcons[index]?.id || `step-${index}`} value={stepIcons[index]?.id || `step-${index}`} className="mt-0 animate-fade-in">
-                      <div className="bg-card border border-border rounded-2xl p-8 md:p-10 shadow-card">
-                        <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-start">
-                          <div className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-accent/10 flex items-center justify-center">
-                            <span className="text-3xl md:text-4xl">{stepIcons[index]?.iconLabel || `${index + 1}`}</span>
+                  {stepsSection.steps.map((step, index) => {
+                    const StepIcon = stepIcons[index]?.icon || ClipboardList;
+                    return (
+                      <TabsContent key={stepIcons[index]?.id || `step-${index}`} value={stepIcons[index]?.id || `step-${index}`} className="mt-0 animate-fade-in">
+                        <div className="bg-card border border-border rounded-2xl p-8 md:p-10 shadow-card">
+                          <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-start">
+                            <div className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-accent/10 flex items-center justify-center">
+                              <StepIcon className="w-8 h-8 md:w-10 md:h-10 text-accent" />
+                            </div>
+                            <div className="flex-1">
+                              <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
+                                {step.title}
+                              </h3>
+                              <p className="text-foreground/80 leading-relaxed">{step.text}</p>
+                            </div>
                           </div>
-                          <div className="flex-1">
-                            <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3">
-                              {step.title}
-                            </h3>
-                            <p className="text-foreground/80 leading-relaxed">{step.text}</p>
-                          </div>
-                        </div>
 
-                        <div className="mt-8 pt-6 border-t border-border">
-                          <div className="flex items-center justify-between text-sm text-muted-foreground">
-                            <span>{language === 'ru' ? 'Этап' : 'Step'} {index + 1} {language === 'ru' ? 'из' : 'of'} {stepsSection.steps!.length}</span>
-                            <div className="flex gap-1">
-                              {stepsSection.steps!.map((_, i) => (
-                                <button
-                                  key={i}
-                                  onClick={() => setActiveTab(stepIcons[i]?.id || `step-${i}`)}
-                                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                                    i === index
-                                      ? 'bg-accent w-6'
-                                      : i < index
-                                        ? 'bg-accent/60'
-                                        : 'bg-muted-foreground/30'
-                                  }`}
-                                />
-                              ))}
+                          <div className="mt-8 pt-6 border-t border-border">
+                            <div className="flex items-center justify-between text-sm text-muted-foreground">
+                              <span>{language === 'ru' ? 'Этап' : 'Step'} {index + 1} {language === 'ru' ? 'из' : 'of'} {stepsSection.steps!.length}</span>
+                              <div className="flex gap-1">
+                                {stepsSection.steps!.map((_, i) => (
+                                  <button
+                                    key={i}
+                                    onClick={() => setActiveTab(stepIcons[i]?.id || `step-${i}`)}
+                                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                                      i === index
+                                        ? 'bg-accent w-6'
+                                        : i < index
+                                          ? 'bg-accent/60'
+                                          : 'bg-muted-foreground/30'
+                                    }`}
+                                  />
+                                ))}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </TabsContent>
-                  ))}
+                      </TabsContent>
+                    );
+                  })}
                 </Tabs>
               </div>
             )}
@@ -285,13 +299,16 @@ export default function TamozhennayaOchistkaPage() {
               <h2 className="text-xl font-bold text-foreground mb-6">{t.otherServices}</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {otherServices[language].map(s => (
-                  <Link
+                  <Button
                     key={s.slug}
-                    to={`/services/${s.slug}`}
-                    className="text-sm text-muted-foreground hover:text-accent transition-colors duration-200 py-1"
+                    variant="outline"
+                    className="justify-start text-sm h-auto py-2.5 px-4 hover:border-accent hover:text-accent"
+                    asChild
                   >
-                    → {s.title}
-                  </Link>
+                    <Link to={`/services/${s.slug}`}>
+                      {s.title}
+                    </Link>
+                  </Button>
                 ))}
               </div>
             </div>
