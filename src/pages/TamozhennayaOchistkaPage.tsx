@@ -44,7 +44,7 @@ export default function TamozhennayaOchistkaPage() {
         customTitle={service.seo[language].title}
         customDescription={service.seo[language].description}
         customKeywords={service.seo[language].keywords}
-        canonicalPath="/tamozhennaya-ochistka"
+        canonicalPath="/services/tamozhennaya-ochistka"
       />
       <div className="min-h-screen bg-background">
         {/* Hero with ship background */}
