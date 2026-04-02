@@ -24,6 +24,7 @@ import CaseZapchasteyPage from "./pages/CaseZapchasteyPage";
 import CaseOdejdaPage from "./pages/CaseOdejdaPage";
 import CaseOborudovaniyaPage from "./pages/CaseOborudovaniyaPage";
 import CaseTechnikiPage from "./pages/CaseTechnikiPage";
+import SitemapPage from "./pages/SitemapPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -57,6 +58,7 @@ const App = () => (
               <Route path="/faq" element={<FAQPage />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
+              <Route path="/map" element={<SitemapPage />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>

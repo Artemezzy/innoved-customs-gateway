@@ -19,7 +19,8 @@ const content = {
     },
     legal: {
       privacy: 'Политика конфиденциальности',
-      terms: 'Пользовательское соглашение'
+      terms: 'Пользовательское соглашение',
+      sitemap: 'Карта сайта'
     }
   },
   en: {
@@ -35,7 +36,8 @@ const content = {
     },
     legal: {
       privacy: 'Privacy Policy',
-      terms: 'Terms of Service'
+      terms: 'Terms of Service',
+      sitemap: 'Sitemap'
     }
   }
 };
@@ -71,6 +73,9 @@ export function Footer({ language }: FooterProps) {
               </Link>
               <Link to="/terms" className="hover:text-primary-glow transition-colors duration-300 underline-offset-4 hover:underline">
                 {text.legal.terms}
+              </Link>
+              <Link to="/map" className="hover:text-primary-glow transition-colors duration-300 underline-offset-4 hover:underline">
+                {text.legal.sitemap}
               </Link>
             </div>
             <a href="https://webmaster.yandex.ru/siteinfo/?site=https://www.innovedbroker.ru" target="_blank" rel="noopener noreferrer" className="mt-2 inline-block">
