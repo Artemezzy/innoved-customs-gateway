@@ -1,6 +1,7 @@
 // Re-export types and full database from dedicated file
-export type { HsCodeEntry } from '@/data/hs-codes-database';
-export { hsCodeDatabase } from '@/data/hs-codes-database';
+import { hsCodeDatabase, type HsCodeEntry } from '@/data/hs-codes-database';
+export type { HsCodeEntry };
+export { hsCodeDatabase };
 
 // Exchange rates (mock defaults)
 export const defaultExchangeRates: Record<string, number> = {
