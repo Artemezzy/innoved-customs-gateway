@@ -15,11 +15,6 @@ export default function SitemapPage() {
     { to: '/contact', label: language === 'ru' ? 'Контакты' : 'Contact' },
     { to: '/blog', label: language === 'ru' ? 'Блог' : 'Blog' },
     { to: '/faq', label: 'FAQ' },
-    { to: '/tamozhennyj-broker', label: language === 'ru' ? 'Таможенный брокер' : 'Customs Broker' },
-    { to: '/rastamojka-zapchastey', label: language === 'ru' ? 'Растаможка запчастей' : 'Spare Parts Clearance' },
-    { to: '/rastamojka-odejdi', label: language === 'ru' ? 'Растаможка одежды' : 'Clothing Clearance' },
-    { to: '/rastamojka-oborudovaniya', label: language === 'ru' ? 'Растаможка оборудования' : 'Equipment Clearance' },
-    { to: '/rastamojka-tehniki', label: language === 'ru' ? 'Растаможка техники' : 'Machinery Clearance' },
     { to: '/privacy', label: language === 'ru' ? 'Политика конфиденциальности' : 'Privacy Policy' },
     { to: '/terms', label: language === 'ru' ? 'Пользовательское соглашение' : 'Terms of Service' },
   ];
@@ -67,6 +62,31 @@ export default function SitemapPage() {
                 {language === 'ru' ? 'Услуги' : 'Services'}
               </h2>
               <ul className="space-y-2">
+                <li>
+                  <Link to="/tamozhennyj-broker" className="text-sm text-muted-foreground hover:text-accent transition-colors">
+                    {language === 'ru' ? 'Таможенный брокер' : 'Customs Broker'}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/rastamojka-zapchastey" className="text-sm text-muted-foreground hover:text-accent transition-colors">
+                    {language === 'ru' ? 'Растаможка запчастей' : 'Spare Parts Clearance'}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/rastamojka-odejdi" className="text-sm text-muted-foreground hover:text-accent transition-colors">
+                    {language === 'ru' ? 'Растаможка одежды' : 'Clothing Clearance'}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/rastamojka-oborudovaniya" className="text-sm text-muted-foreground hover:text-accent transition-colors">
+                    {language === 'ru' ? 'Растаможка оборудования' : 'Equipment Clearance'}
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/rastamojka-tehniki" className="text-sm text-muted-foreground hover:text-accent transition-colors">
+                    {language === 'ru' ? 'Растаможка техники' : 'Machinery Clearance'}
+                  </Link>
+                </li>
                 {services.map((s) => (
                   <li key={s.slug}>
                     <Link
