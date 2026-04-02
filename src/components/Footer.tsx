@@ -36,7 +36,8 @@ const content = {
     },
     legal: {
       privacy: 'Privacy Policy',
-      terms: 'Terms of Service'
+      terms: 'Terms of Service',
+      sitemap: 'Sitemap'
     }
   }
 };
