@@ -12,6 +12,7 @@ import { calculate, findHsCode, defaultExchangeRates, type CalculationResult } f
 
 interface CustomsCalculatorProps {
   language: 'ru' | 'en';
+  compact?: boolean;
 }
 
 const content = {
@@ -83,7 +84,7 @@ function formatNumber(n: number): string {
   return n.toLocaleString('ru-RU');
 }
 
-export function CustomsCalculator({ language }: CustomsCalculatorProps) {
+export function CustomsCalculator({ language, compact = false }: CustomsCalculatorProps) {
   const t = content[language];
   const navigate = useNavigate();
 
@@ -158,6 +159,72 @@ export function CustomsCalculator({ language }: CustomsCalculatorProps) {
 
     navigate('/contact', { state: { prefill: greeting + '\n' + details } });
   };
+
+  if (compact) {
+    return (
+      <div className="p-5 md:p-6 space-y-4">
+        <div className="flex items-center gap-2 text-sm font-medium text-primary mb-1">
+          <Calculator className="h-4 w-4" />
+          {t.title}
+        </div>
+        {/* HS code */}
+        <div className="space-y-1.5">
+          <Label htmlFor="hs-code">{t.hsCode}</Label>
+          <Input id="hs-code" value={hsQuery} onChange={e => setHsQuery(e.target.value)} placeholder={t.hsCodePlaceholder} />
+        </div>
+        {/* Value + Currency */}
+        <div className="grid grid-cols-3 gap-3">
+          <div className="col-span-2 space-y-1.5">
+            <Label htmlFor="shipment-value">{t.value}</Label>
+            <Input id="shipment-value" type="number" min="0" value={value} onChange={e => setValue(e.target.value)} placeholder="100 000" />
+          </div>
+          <div className="space-y-1.5">
+            <Label>{t.currency}</Label>
+            <Select value={currency} onValueChange={setCurrency}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {currencies.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        {/* Country */}
+        <div className="space-y-1.5">
+          <Label htmlFor="country">{t.country}</Label>
+          <Input id="country" value={country} onChange={e => setCountry(e.target.value)} placeholder={t.countryPlaceholder} />
+        </div>
+        {/* Warning */}
+        {codeNotFound && (
+          <div className="flex items-start gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+            <AlertTriangle className="h-4 w-4 mt-0.5 shrink-0" />
+            {t.warning}
+          </div>
+        )}
+        <Button onClick={handleCalculate} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground" size="lg">
+          <Calculator className="h-4 w-4 mr-2" />
+          {t.calculate}
+        </Button>
+        {/* Result */}
+        {result && (
+          <div className="border-t pt-4 space-y-3">
+            <p className="text-sm text-muted-foreground">{t.resultTitle}</p>
+            <p className="text-2xl font-bold text-primary">{formatNumber(result.total)}&nbsp;₽</p>
+            <div className="space-y-1.5 text-sm">
+              <Row label={t.duty} value={result.duty} />
+              <Row label={t.vat} value={result.vat} />
+              <Row label={t.fee} value={result.customsFee} />
+              {result.excise > 0 && <Row label={t.excise} value={result.excise} />}
+            </div>
+            <Button onClick={handleCta} size="lg" className="w-full bg-accent hover:bg-accent/90 text-accent-foreground">
+              {t.cta}
+              <ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
+          </div>
+        )}
+        <p className="text-xs text-muted-foreground text-center">{t.disclaimer}</p>
+      </div>
+    );
+  }
 
   return (
     <section className="py-16 md:py-24 bg-muted/30">
