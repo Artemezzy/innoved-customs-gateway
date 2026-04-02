@@ -1,37 +1,6 @@
-// Mock HS code database (ТН ВЭД)
-export interface HsCodeEntry {
-  code: string;
-  description: string;
-  dutyRate: number; // percent
-}
-
-export const hsCodeDatabase: HsCodeEntry[] = [
-  { code: '8471', description: 'Компьютеры и вычислительные машины', dutyRate: 0 },
-  { code: '8703', description: 'Автомобили легковые', dutyRate: 15 },
-  { code: '8704', description: 'Грузовые автомобили', dutyRate: 10 },
-  { code: '6109', description: 'Футболки, майки трикотажные', dutyRate: 12 },
-  { code: '6110', description: 'Свитеры, пуловеры трикотажные', dutyRate: 12 },
-  { code: '6201', description: 'Верхняя одежда мужская', dutyRate: 10 },
-  { code: '6202', description: 'Верхняя одежда женская', dutyRate: 10 },
-  { code: '8429', description: 'Бульдозеры, грейдеры, экскаваторы', dutyRate: 5 },
-  { code: '8431', description: 'Части строительной техники', dutyRate: 0 },
-  { code: '8708', description: 'Запасные части для автомобилей', dutyRate: 5 },
-  { code: '8409', description: 'Части двигателей', dutyRate: 0 },
-  { code: '8481', description: 'Краны, клапаны, задвижки', dutyRate: 0 },
-  { code: '8501', description: 'Электродвигатели и генераторы', dutyRate: 5 },
-  { code: '8517', description: 'Телефоны, смартфоны', dutyRate: 0 },
-  { code: '8528', description: 'Телевизоры, мониторы', dutyRate: 8 },
-  { code: '8443', description: 'Принтеры, копиры', dutyRate: 0 },
-  { code: '3926', description: 'Изделия из пластмасс', dutyRate: 6.5 },
-  { code: '7308', description: 'Металлоконструкции', dutyRate: 5 },
-  { code: '9401', description: 'Мебель для сидения', dutyRate: 0 },
-  { code: '9403', description: 'Прочая мебель', dutyRate: 0 },
-  { code: '2204', description: 'Вина виноградные', dutyRate: 12.5 },
-  { code: '2208', description: 'Спиртные напитки', dutyRate: 12.5 },
-  { code: '2402', description: 'Сигары, сигареты', dutyRate: 17.1 },
-  { code: '2710', description: 'Нефтепродукты', dutyRate: 5 },
-  { code: '8474', description: 'Оборудование для обработки грунта', dutyRate: 0 },
-];
+// Re-export types and full database from dedicated file
+export type { HsCodeEntry } from '@/data/hs-codes-database';
+export { hsCodeDatabase } from '@/data/hs-codes-database';
 
 // Exchange rates (mock defaults)
 export const defaultExchangeRates: Record<string, number> = {

@@ -47,7 +47,7 @@ const content = {
     title: 'Customs Duty Calculator',
     subtitle: 'Estimate your import costs in 30 seconds',
     hsCode: 'HS Code or product description',
-    hsCodePlaceholder: 'e.g. 8703 or "cars"',
+    hsCodePlaceholder: 'e.g. 8703 or "cars" (4 digits)',
     value: 'Shipment value',
     currency: 'Currency',
     country: 'Country of origin',
