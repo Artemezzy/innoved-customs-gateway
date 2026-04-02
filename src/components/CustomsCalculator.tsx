@@ -386,3 +386,12 @@ function Row({ label, value }: { label: string; value: number }) {
     </div>
   );
 }
+
+function RowCompact({ label, value }: { label: string; value: number }) {
+  return (
+    <div className="flex justify-between text-primary-foreground/70">
+      <span>{label}</span>
+      <span>{formatNumber(value)} ₽</span>
+    </div>
+  );
+}
