@@ -84,7 +84,7 @@ function formatNumber(n: number): string {
   return n.toLocaleString('ru-RU');
 }
 
-export function CustomsCalculator({ language }: CustomsCalculatorProps) {
+export function CustomsCalculator({ language, compact = false }: CustomsCalculatorProps) {
   const t = content[language];
   const navigate = useNavigate();
 
