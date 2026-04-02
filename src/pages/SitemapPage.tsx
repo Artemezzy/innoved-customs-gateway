@@ -15,11 +15,6 @@ export default function SitemapPage() {
     { to: '/contact', label: language === 'ru' ? 'Контакты' : 'Contact' },
     { to: '/blog', label: language === 'ru' ? 'Блог' : 'Blog' },
     { to: '/faq', label: 'FAQ' },
-    { to: '/tamozhennyj-broker', label: language === 'ru' ? 'Таможенный брокер' : 'Customs Broker' },
-    { to: '/rastamojka-zapchastey', label: language === 'ru' ? 'Растаможка запчастей' : 'Spare Parts Clearance' },
-    { to: '/rastamojka-odejdi', label: language === 'ru' ? 'Растаможка одежды' : 'Clothing Clearance' },
-    { to: '/rastamojka-oborudovaniya', label: language === 'ru' ? 'Растаможка оборудования' : 'Equipment Clearance' },
-    { to: '/rastamojka-tehniki', label: language === 'ru' ? 'Растаможка техники' : 'Machinery Clearance' },
     { to: '/privacy', label: language === 'ru' ? 'Политика конфиденциальности' : 'Privacy Policy' },
     { to: '/terms', label: language === 'ru' ? 'Пользовательское соглашение' : 'Terms of Service' },
   ];
