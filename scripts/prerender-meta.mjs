@@ -390,6 +390,11 @@ function buildPrerenderedContent(page) {
     parts.push(`<nav>${linkTags}</nav>`);
   }
 
+  const extTags = EXTERNAL_LINKS.map(l =>
+    `<a href="${l.href}" target="_blank" rel="noopener noreferrer">${l.text}</a>`
+  ).join('');
+  parts.push(`<nav>${extTags}</nav>`);
+
   return parts.join('');
 }
 
