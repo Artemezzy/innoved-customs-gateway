@@ -1,42 +1,34 @@
 
 
-## Создание страницы «Политика использования файлов cookies»
+## Добавление external links в пререндеринг всех страниц
 
 ### Что делаем
 
-Создаём новую страницу `/cookies` по аналогии с `/privacy` и `/terms` — тот же компонентный паттерн (SEOHead + PageHero + секции в карточках). Контент на русском и английском, 7 разделов.
+Добавляем 5 внешних ссылок (2ГИС, Яндекс.Карты, Авито, Telegram, MAX) в пререндеренный HTML всех страниц. Ссылки будут рендериться как отдельный `<nav>` блок после внутренних ссылок.
 
 ### Технические изменения
 
-**1. Новый файл `src/pages/CookiesPage.tsx`**
+**Файл:** `scripts/prerender-meta.mjs`
 
-Структура идентична `Privacy.tsx`: объект `content` с ключами `ru` / `en`, каждый содержит `title` и массив `sections` (title + content). Раздел 2 «Какие cookies мы используем» будет содержать текстовую таблицу через `whitespace-pre-line`.
+1. **Добавить константу `EXTERNAL_LINKS`** (после `COMMON_LINKS`):
+```js
+const EXTERNAL_LINKS = [
+  { href: 'https://2gis.ru/irkutsk/firm/70000001105785879', text: 'ИННОВЭД на 2ГИС' },
+  { href: 'https://yandex.ru/maps/-/CPfFASpp', text: 'ИННОВЭД на Яндекс.Картах' },
+  { href: 'https://www.avito.ru/brands/8e77d0c48e66c4309455043654b9f0dd', text: 'ИННОВЭД на Авито' },
+  { href: 'https://t.me/innoved_broker', text: 'ИННОВЭД в Telegram' },
+  { href: 'https://max.ru/id3849109300_bot', text: 'ИННОВЭД в MAX' },
+];
+```
 
-Разделы (H2):
-1. Что такое cookies
-2. Какие cookies мы используем (подразделы по 4 категориям: строго необходимые, функциональные, аналитические, маркетинговые)
-3. Как мы используем аналитические и маркетинговые cookies
-4. Управление cookies
-5. Хранение данных и срок действия cookies
-6. Обновления политики cookies
-7. Контакты
-
-**2. Маршрут в `src/App.tsx`**
-
-Добавить `<Route path="/cookies" element={<CookiesPage />} />` рядом с `/privacy` и `/terms`.
-
-**3. SEO в `src/components/SEOHead.tsx`**
-
-Добавить запись `cookies` в `seoContent` для `ru` и `en` (title, description, keywords).
-
-**4. Ссылки в Footer**
-
-Добавить ссылку «Политика cookies» / «Cookie Policy» в блок `legal` в `src/components/Footer.tsx`.
-
-**5. Пререндеринг в `scripts/prerender-meta.mjs`**
-
-Добавить запись для `/cookies` с H1, текстом и ссылками.
+2. **Обновить `buildPrerenderedContent()`** (строка ~383) — перед `return` добавить блок external links:
+```js
+const extTags = EXTERNAL_LINKS.map(l =>
+  `<a href="${l.href}" target="_blank" rel="noopener noreferrer">${l.text}</a>`
+).join('');
+parts.push(`<nav>${extTags}</nav>`);
+```
 
 ### Объём
-5 файлов, ~250 строк нового контента.
+~12 строк в одном файле.
 
