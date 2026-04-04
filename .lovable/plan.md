@@ -1,75 +1,55 @@
 
 
-## Разделение sitemap на индексный файл и 3 дочерних
+## Пререндеринг crawlable links — план
 
-### Что делаем
+### Что это даёт
 
-Заменяем единый `sitemap.xml` на индексный файл (`sitemapindex`), который ссылается на 3 дочерних sitemap. Убираем `priority` и `changefreq`, добавляем `lastmod` с текущей датой (2026-03-28).
+Сейчас в статическом HTML внутри `<div id="root">` есть только заголовки (H1/H2/H3). Поисковые боты, которые не выполняют JS, не видят ни одной внутренней ссылки — а значит, не могут обнаружить страницы через crawling HTML (только через sitemap.xml).
 
-### Файлы
+Добавив ключевые `<a href="...">` в пререндеренный HTML, мы дадим ботам возможность переходить по ссылкам из каждой страницы, улучшая глубину индексации и связность графа ссылок.
 
-**1. `public/sitemap.xml`** — индексный файл (по образцу из вложения):
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <sitemap>
-    <loc>https://www.innovedbroker.ru/sitemap-main.xml</loc>
-  </sitemap>
-  <sitemap>
-    <loc>https://www.innovedbroker.ru/sitemap-service.xml</loc>
-  </sitemap>
-  <sitemap>
-    <loc>https://www.innovedbroker.ru/sitemap-geo.xml</loc>
-  </sitemap>
-</sitemapindex>
+### Как это будет выглядеть в HTML
+
+Внутри `<div id="root">` после заголовков добавляется блок `<nav>` с основными ссылками, релевантными для данной страницы:
+
+```text
+<div id="root">
+  <h1>Таможенное оформление импорта</h1>
+  <h2>...</h2>
+  <nav>
+    <a href="/">Главная</a>
+    <a href="/services">Услуги</a>
+    <a href="/services/export">Экспорт</a>
+    <a href="/services/certification">Сертификация</a>
+    <a href="/contact">Контакты</a>
+    <a href="/about">О компании</a>
+    ...
+  </nav>
+</div>
 ```
 
-**2. `public/sitemap-main.xml`** — все страницы кроме услуг и географии:
-- `/`
-- `/about`
-- `/how-we-work`
-- `/contact`
-- `/blog`
-- `/faq`
-- `/privacy`
-- `/terms`
-- `/rastamojka-tehniki`
-- `/rastamojka-zapchastey`
-- `/rastamojka-odejdi`
-- `/rastamojka-oborudovaniya`
+React при монтировании заменит всё содержимое `#root`, поэтому пользователь никогда не увидит эти «сырые» ссылки — они существуют только для ботов.
 
-**3. `public/sitemap-service.xml`** — раздел услуг:
-- `/services`
-- `/services/import`
-- `/services/export`
-- `/services/certification`
-- `/services/hs-code`
-- `/services/customs-letters`
-- `/services/ved-consulting`
-- `/services/inspection`
-- `/services/translation`
-- `/services/rastamozhka-tovarov`
-- `/services/rastamozhka-gruzov`
-- `/services/tamozhennaya-ochistka`
+### Стратегия ссылок по типу страницы
 
-**4. `public/sitemap-geo.xml`** — раздел географии:
-- `/tamozhennyj-broker`
-- `/tamozhennyj-broker/barnaul`
-- ... все 28 городов
+| Тип страницы | Какие ссылки добавляем |
+|---|---|
+| **Главная** (`/`) | Все основные разделы + все услуги + кейсы + география |
+| **Услуги** (`/services`) | Все 11 детальных страниц услуг |
+| **Услуга** (`/services/:slug`) | Главная, Услуги, Контакты + другие услуги (перелинковка) |
+| **Город** (`/tamozhennyj-broker/:slug`) | Главная, География, Контакты + 5-8 соседних городов |
+| **География** (`/tamozhennyj-broker`) | Все 28 городов |
+| **Кейсы** | Главная, Услуги, Контакты + другие кейсы |
+| **Остальные** (About, FAQ, Blog и т.д.) | Главная, Услуги, Контакты, О компании |
 
-Каждый URL будет в формате:
-```xml
-<url>
-  <loc>https://www.innovedbroker.ru/...</loc>
-  <lastmod>2026-03-28</lastmod>
-</url>
-```
+### Технические изменения
 
-**5. `public/robots.txt`** — обновить ссылку на sitemap (остается `sitemap.xml`, т.к. он теперь индексный — менять не нужно).
+**Файл:** `scripts/prerender-meta.mjs`
 
-### Итого: 4 файла
-- `public/sitemap.xml` — перезаписать
-- `public/sitemap-main.xml` — создать
-- `public/sitemap-service.xml` — создать
-- `public/sitemap-geo.xml` — создать
+1. Добавить поле `links` к каждой записи в массиве `pages` — массив объектов `{ href, text }`.
+2. Создать хелпер-функцию `buildPrerenderedLinks(page)`, которая генерирует `<nav>` с ссылками.
+3. Обновить `buildPrerenderedHeadings()` (переименовать в `buildPrerenderedContent()`), чтобы после заголовков вставлять блок навигации.
+4. Общие ссылки (Главная, Услуги, Контакты, О компании) вынести в константу `COMMON_LINKS` и переиспользовать.
+
+Объём изменений: ~80 строк в одном файле.
 
