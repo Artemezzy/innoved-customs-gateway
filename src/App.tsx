@@ -81,6 +81,7 @@ const App = () => (
               <Route path="/faq" element={<FAQPage />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
+              <Route path="/cookies" element={<CookiesPage />} />
               
               <Route path="/map" element={<SitemapPage />} />
               <Route path="*" element={<NotFound />} />

@@ -144,6 +144,11 @@ const seoContent = {
       description: 'INNOVED company terms of service for website usage',
       keywords: 'terms of service, terms of use, INNOVED'
     },
+    cookies: {
+      title: 'Cookie Policy - INNOVED',
+      description: 'Learn about cookies used on the INNOVED website: categories, purposes, retention periods, and preference management.',
+      keywords: 'cookies, cookie policy, INNOVED, privacy'
+    },
     broker: {
       title: 'Customs Broker Across Russia | INNOVED Service Locations',
       description: 'Customs broker services in 28 cities across Russia. Moscow, St. Petersburg, Vladivostok, Novosibirsk and more.',
