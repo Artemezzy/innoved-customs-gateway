@@ -150,7 +150,7 @@ export default function ServiceLandingPageWithForm({ slug, whyItems, stepIcons =
           <div className="max-w-4xl mx-auto">
             {stepsSection && stepsSection.steps && (
               <div className="mb-16">
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">{stepsSection.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">{service.title[language]}: {language === 'ru' ? 'этапы, преимущества и смежные услуги' : 'stages, benefits and related services'}</h2>
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                   <TabsList className="hidden md:grid w-full h-auto p-2 bg-muted/50 rounded-xl mb-8" style={{ gridTemplateColumns: `repeat(${stepsSection.steps.length}, minmax(0, 1fr))` }}>
                     {stepsSection.steps.map((step, index) => {
