@@ -207,6 +207,7 @@ function CityLanding({ data, language, ui, citySlug }: { data: CityLandingData; 
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-12 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+            <h3 className="sr-only">{language === 'ru' ? `Преимущества работы в ${data.heroTitle.replace('Таможенный брокер ', '')} и этапы сопровождения ВЭД` : `Benefits of working in ${data.heroTitle.replace('Customs Broker ', '')} and foreign trade support stages`}</h3>
             {why.map((item, i) => {
               const Icon = item.icon;
               return (
@@ -215,7 +216,7 @@ function CityLanding({ data, language, ui, citySlug }: { data: CityLandingData; 
                     <Icon className="w-5 h-5 text-accent" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-primary-foreground mb-1">{item.title}</h3>
+                    <p className="text-sm font-bold text-primary-foreground mb-1">{item.title}</p>
                     <p className="text-xs text-primary-foreground/70 leading-snug">{item.desc}</p>
                   </div>
                 </div>
