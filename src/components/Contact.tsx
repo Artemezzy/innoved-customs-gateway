@@ -117,10 +117,11 @@ export function Contact({ language }: ContactProps) {
           {/* Company Information */}
           <Card className="animate-fade-in shadow-card hover:shadow-hover transition-all duration-300 border border-border">
             <CardHeader>
-              <h2 className="text-xl font-semibold text-accent flex items-center gap-2 tracking-tight">
+              <h2 className="sr-only">{language === 'ru' ? 'Контакты таможенного брокера и форма заявки' : 'Customs broker contacts and request form'}</h2>
+              <p className="text-xl font-semibold text-accent flex items-center gap-2 tracking-tight">
                 <Building className="w-5 h-5" />
                 {text.companyInfo.title}
-              </h2>
+              </p>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center gap-3">

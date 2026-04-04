@@ -44,7 +44,7 @@ export default function BrokerPage() {
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-montserrat font-bold text-foreground text-center mb-4">
-            {t.heading}
+            {language === 'ru' ? 'Города, где доступны услуги таможенного брокера' : 'Cities where customs broker services are available'}
           </h2>
           <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-12">
             {t.description}

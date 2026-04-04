@@ -162,6 +162,7 @@ export function CaseStudies({ language }: CaseStudiesProps) {
                       <p className="text-xs uppercase tracking-widest text-primary font-semibold mb-3" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                         {sectionTitle[language]}
                       </p>
+                      {i === 0 && <h3 className="sr-only">{language === 'ru' ? 'Кейсы таможенного оформления и логистики' : 'Customs clearance and logistics case studies'}</h3>}
                       <h3 className="text-xl md:text-2xl font-bold text-foreground mb-4 text-left" style={{ fontFamily: 'Montserrat, sans-serif' }}>
                         {c.title[language]}
                       </h3>

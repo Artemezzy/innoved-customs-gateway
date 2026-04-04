@@ -122,6 +122,7 @@ export default function ServiceLandingPageWithForm({ slug, whyItems, stepIcons =
             </div>
 
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-12 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+              <h3 className="sr-only">{language === 'ru' ? 'Преимущества работы с ИННОВЭД и этапы оказания услуги' : 'Benefits of working with INNOVED and service stages'}</h3>
               {why.map((item, i) => {
                 const Icon = item.icon;
                 return (
@@ -130,7 +131,7 @@ export default function ServiceLandingPageWithForm({ slug, whyItems, stepIcons =
                       <Icon className="w-5 h-5 text-accent" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-primary-foreground mb-1">{item.title}</h3>
+                      <p className="text-sm font-bold text-primary-foreground mb-1">{item.title}</p>
                       <p className="text-xs text-primary-foreground/70 leading-snug">{item.desc}</p>
                     </div>
                   </div>
@@ -149,7 +150,7 @@ export default function ServiceLandingPageWithForm({ slug, whyItems, stepIcons =
           <div className="max-w-4xl mx-auto">
             {stepsSection && stepsSection.steps && (
               <div className="mb-16">
-                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">{stepsSection.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">{service.title[language]}: {language === 'ru' ? 'этапы, преимущества и смежные услуги' : 'stages, benefits and related services'}</h2>
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                   <TabsList className="hidden md:grid w-full h-auto p-2 bg-muted/50 rounded-xl mb-8" style={{ gridTemplateColumns: `repeat(${stepsSection.steps.length}, minmax(0, 1fr))` }}>
                     {stepsSection.steps.map((step, index) => {
@@ -191,7 +192,7 @@ export default function ServiceLandingPageWithForm({ slug, whyItems, stepIcons =
                               <StepIcon className="w-8 h-8 md:w-10 md:h-10 text-accent" />
                             </div>
                             <div className="flex-1">
-                              <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3">{step.title}</h3>
+                              <p className="text-2xl md:text-3xl font-bold text-foreground mb-3">{step.title}</p>
                               <p className="text-foreground/80 leading-relaxed">{step.text}</p>
                             </div>
                           </div>

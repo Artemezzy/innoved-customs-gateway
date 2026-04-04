@@ -37,6 +37,8 @@ export default function CaseZapchasteyPage() {
 
       <article className="py-12 md:py-16">
         <div className="container mx-auto px-4 max-w-4xl">
+          <h2 className="sr-only">{isRu ? 'Как проходит таможенное оформление: этапы, документы и результат' : 'How customs clearance works: stages, documents and results'}</h2>
+          <h3 className="sr-only">{isRu ? 'Практические детали кейса и особенности оформления' : 'Practical case details and clearance specifics'}</h3>
 
           {/* Hero image */}
           <div className="rounded-2xl overflow-hidden mb-10">

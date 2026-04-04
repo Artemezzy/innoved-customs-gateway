@@ -207,6 +207,7 @@ function CityLanding({ data, language, ui, citySlug }: { data: CityLandingData; 
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-12 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+            <h3 className="sr-only">{language === 'ru' ? `Преимущества работы в ${data.heroTitle.replace('Таможенный брокер ', '')} и этапы сопровождения ВЭД` : `Benefits of working in ${data.heroTitle.replace('Customs Broker ', '')} and foreign trade support stages`}</h3>
             {why.map((item, i) => {
               const Icon = item.icon;
               return (
@@ -215,7 +216,7 @@ function CityLanding({ data, language, ui, citySlug }: { data: CityLandingData; 
                     <Icon className="w-5 h-5 text-accent" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-primary-foreground mb-1">{item.title}</h3>
+                    <p className="text-sm font-bold text-primary-foreground mb-1">{item.title}</p>
                     <p className="text-xs text-primary-foreground/70 leading-snug">{item.desc}</p>
                   </div>
                 </div>
@@ -236,7 +237,7 @@ function CityLanding({ data, language, ui, citySlug }: { data: CityLandingData; 
                 <Ship className="w-6 h-6 text-accent" />
               </div>
               <div>
-                <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground">{data.logistics.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground">{language === 'ru' ? `Услуги таможенного брокера в ${data.heroTitle.replace('Таможенный брокер ', '')}: логистика, оформление и сопровождение` : `Customs broker services in ${data.heroTitle.replace('Customs Broker ', '')}: logistics, clearance and support`}</h2>
               </div>
             </div>
             <p className="text-muted-foreground leading-relaxed ml-16">{data.logistics.text}</p>
@@ -329,7 +330,7 @@ function CityLanding({ data, language, ui, citySlug }: { data: CityLandingData; 
                           <StepIcon className="w-8 h-8 md:w-10 md:h-10 text-accent" />
                         </div>
                         <div className="flex-1">
-                          <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3">{ui.step} {index + 1}</h3>
+                          <p className="text-2xl md:text-3xl font-bold text-foreground mb-3">{ui.step} {index + 1}</p>
                           <p className="text-foreground/80 leading-relaxed">{item}</p>
                         </div>
                       </div>

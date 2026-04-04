@@ -91,6 +91,7 @@ export default function AboutPage() {
       <SEOHead language={language} page="about" />
       
       <PageHero title={text.title} subtitle={text.subtitle} />
+      <h2 className="sr-only">{language === 'ru' ? 'О компании и команде таможенного брокера ИННОВЭД' : 'About INNOVED customs broker company and team'}</h2>
 
       <About language={language} />
 
