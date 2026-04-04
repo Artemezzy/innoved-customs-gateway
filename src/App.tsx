@@ -36,6 +36,7 @@ import CertificationPage from "./pages/CertificationPage";
 import CustomsLettersPage from "./pages/CustomsLettersPage";
 import InspectionPage from "./pages/InspectionPage";
 import TranslationPage from "./pages/TranslationPage";
+import CookiesPage from "./pages/CookiesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -80,6 +81,7 @@ const App = () => (
               <Route path="/faq" element={<FAQPage />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
+              <Route path="/cookies" element={<CookiesPage />} />
               
               <Route path="/map" element={<SitemapPage />} />
               <Route path="*" element={<NotFound />} />

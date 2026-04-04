@@ -20,6 +20,7 @@ const content = {
     legal: {
       privacy: 'Политика конфиденциальности',
       terms: 'Пользовательское соглашение',
+      cookies: 'Политика cookies',
       sitemap: 'Карта сайта'
     }
   },
@@ -37,6 +38,7 @@ const content = {
     legal: {
       privacy: 'Privacy Policy',
       terms: 'Terms of Service',
+      cookies: 'Cookie Policy',
       sitemap: 'Sitemap'
     }
   }
@@ -73,6 +75,9 @@ export function Footer({ language }: FooterProps) {
               </Link>
               <Link to="/terms" className="hover:text-primary-glow transition-colors duration-300 underline-offset-4 hover:underline">
                 {text.legal.terms}
+              </Link>
+              <Link to="/cookies" className="hover:text-primary-glow transition-colors duration-300 underline-offset-4 hover:underline">
+                {text.legal.cookies}
               </Link>
               <Link to="/map" className="hover:text-primary-glow transition-colors duration-300 underline-offset-4 hover:underline">
                 {text.legal.sitemap}

@@ -62,6 +62,11 @@ const seoContent = {
       description: 'Пользовательское соглашение компании ИННОВЭД об использовании сайта',
       keywords: 'пользовательское соглашение, условия использования, ИННОВЭД'
     },
+    cookies: {
+      title: 'Политика использования файлов cookies - ИННОВЭД',
+      description: 'Узнайте, какие cookies использует сайт ИННОВЭД: категории, цели, сроки хранения и управление настройками.',
+      keywords: 'cookies, политика cookies, файлы куки, ИННОВЭД, конфиденциальность'
+    },
     broker: {
       title: 'Таможенный брокер по всей России | География услуг ИННОВЭД',
       description: 'Услуги таможенного брокера в 28 городах России. Москва, Санкт-Петербург, Владивосток, Новосибирск и другие регионы.',
@@ -138,6 +143,11 @@ const seoContent = {
       title: 'Terms of Service - INNOVED',
       description: 'INNOVED company terms of service for website usage',
       keywords: 'terms of service, terms of use, INNOVED'
+    },
+    cookies: {
+      title: 'Cookie Policy - INNOVED',
+      description: 'Learn about cookies used on the INNOVED website: categories, purposes, retention periods, and preference management.',
+      keywords: 'cookies, cookie policy, INNOVED, privacy'
     },
     broker: {
       title: 'Customs Broker Across Russia | INNOVED Service Locations',
