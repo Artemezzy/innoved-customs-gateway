@@ -3,6 +3,7 @@ import { Header } from './Header';
 import { Footer } from './Footer';
 import { LanguageToggle } from './LanguageToggle';
 import { Bitrix24Chat } from './Bitrix24Chat';
+import { CookieConsent } from './CookieConsent';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { analytics } from '@/utils/analytics';
 
