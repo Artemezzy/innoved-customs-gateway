@@ -20,6 +20,7 @@ const content = {
     legal: {
       privacy: 'Политика конфиденциальности',
       terms: 'Пользовательское соглашение',
+      cookies: 'Политика cookies',
       sitemap: 'Карта сайта'
     }
   },
