@@ -38,6 +38,7 @@ const content = {
     legal: {
       privacy: 'Privacy Policy',
       terms: 'Terms of Service',
+      cookies: 'Cookie Policy',
       sitemap: 'Sitemap'
     }
   }
