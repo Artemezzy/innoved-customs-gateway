@@ -29,6 +29,7 @@ export function Layout({ children }: LayoutProps) {
       
       <Footer language={language} />
       <Bitrix24Chat />
+      <CookieConsent />
     </div>
   );
 }
