@@ -105,6 +105,14 @@ function getNeighborCityLinks(slug) {
 // ── Default links for generic pages ──
 const DEFAULT_LINKS = [...COMMON_LINKS, { href: '/faq', text: 'FAQ' }, { href: '/blog', text: 'Блог' }];
 
+const EXTERNAL_LINKS = [
+  { href: 'https://2gis.ru/irkutsk/firm/70000001105785879', text: 'ИННОВЭД на 2ГИС' },
+  { href: 'https://yandex.ru/maps/-/CPfFASpp', text: 'ИННОВЭД на Яндекс.Картах' },
+  { href: 'https://www.avito.ru/brands/8e77d0c48e66c4309455043654b9f0dd', text: 'ИННОВЭД на Авито' },
+  { href: 'https://t.me/innoved_broker', text: 'ИННОВЭД в Telegram' },
+  { href: 'https://max.ru/id3849109300_bot', text: 'ИННОВЭД в MAX' },
+];
+
 const CITY_TEXTS = {
   'barnaul': 'Таможенный брокер ИННОВЭД в Барнауле: оформление импорта и экспорта, растаможка грузов, подбор кодов ТН ВЭД. Учитываем специфику Алтайского края и приграничной торговли с Казахстаном и Китаем.',
   'vladivostok': 'Таможенный брокер ИННОВЭД во Владивостоке: оформление грузов через порты Приморского края, растаможка контейнеров из Китая, Японии и Кореи. Знаем специфику Дальневосточной таможни и морских перевозок.',
