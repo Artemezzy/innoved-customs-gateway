@@ -237,7 +237,7 @@ function CityLanding({ data, language, ui, citySlug }: { data: CityLandingData; 
                 <Ship className="w-6 h-6 text-accent" />
               </div>
               <div>
-                <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground">{data.logistics.title}</h2>
+                <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground">{language === 'ru' ? `Услуги таможенного брокера в ${data.heroTitle.replace('Таможенный брокер ', '')}: логистика, оформление и сопровождение` : `Customs broker services in ${data.heroTitle.replace('Customs Broker ', '')}: logistics, clearance and support`}</h2>
               </div>
             </div>
             <p className="text-muted-foreground leading-relaxed ml-16">{data.logistics.text}</p>
