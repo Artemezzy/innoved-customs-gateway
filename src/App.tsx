@@ -36,6 +36,7 @@ import CertificationPage from "./pages/CertificationPage";
 import CustomsLettersPage from "./pages/CustomsLettersPage";
 import InspectionPage from "./pages/InspectionPage";
 import TranslationPage from "./pages/TranslationPage";
+import CookiesPage from "./pages/CookiesPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
