@@ -330,7 +330,7 @@ function CityLanding({ data, language, ui, citySlug }: { data: CityLandingData; 
                           <StepIcon className="w-8 h-8 md:w-10 md:h-10 text-accent" />
                         </div>
                         <div className="flex-1">
-                          <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3">{ui.step} {index + 1}</h3>
+                          <p className="text-2xl md:text-3xl font-bold text-foreground mb-3">{ui.step} {index + 1}</p>
                           <p className="text-foreground/80 leading-relaxed">{item}</p>
                         </div>
                       </div>
