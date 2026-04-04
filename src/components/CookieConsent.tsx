@@ -18,7 +18,7 @@ export function CookieConsent() {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-sm z-50 bg-card border border-border rounded-lg shadow-lg p-4 flex items-center gap-3 animate-fade-in">
+    <div className="fixed bottom-4 left-4 right-4 md:right-auto md:left-4 md:max-w-sm z-50 bg-card border border-border rounded-lg shadow-lg p-4 flex items-center gap-3 animate-fade-in">
       <p className="text-sm text-foreground leading-snug">
         Мы используем cookie и рекомендательные технологии, чтобы улучшать работу сайта.
       </p>
