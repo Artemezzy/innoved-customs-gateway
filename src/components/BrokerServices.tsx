@@ -97,7 +97,7 @@ export function BrokerServices({ language }: BrokerServicesProps) {
           <div className="bg-muted rounded-2xl p-8 md:p-10 flex flex-col justify-between">
             <div>
               <h2 className="font-montserrat font-bold text-2xl md:text-3xl lg:text-4xl text-foreground">
-                {t.title}
+                {language === 'ru' ? 'Услуги таможенного брокера и таможенное оформление' : 'Customs broker services and customs clearance'}
               </h2>
               <p className="mt-3 text-muted-foreground text-sm md:text-base">
                 {t.subtitle}

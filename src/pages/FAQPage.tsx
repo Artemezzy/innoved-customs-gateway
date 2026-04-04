@@ -51,7 +51,7 @@ export default function FAQPage() {
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="sr-only">{language === 'ru' ? 'Вопросы и ответы' : 'Questions and answers'}</h2>
+            <h2 className="sr-only">{language === 'ru' ? 'Частые вопросы по таможенному оформлению' : 'Frequently asked questions about customs clearance'}</h2>
             {/* Category Filter */}
             <div className="flex flex-wrap gap-2 mb-8 justify-center">
               <Button

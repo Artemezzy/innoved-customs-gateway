@@ -22,7 +22,7 @@ export function Services({ language }: ServicesProps) {
 
         {!isLoading && (
           <>
-          <h2 className="sr-only">{language === 'ru' ? 'Список услуг' : 'Services list'}</h2>
+          <h2 className="sr-only">{language === 'ru' ? 'Услуги таможенного брокера для импорта и экспорта' : 'Customs broker services for import and export'}</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {services.map((service, index) => (
               <div key={service.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
