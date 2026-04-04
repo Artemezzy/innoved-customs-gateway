@@ -342,6 +342,8 @@ function buildPrerenderedContent(page) {
   if (page.h2) parts.push(`<h2>${page.h2}</h2>`);
   if (page.h3) parts.push(`<h3>${page.h3}</h3>`);
 
+  if (page.text) parts.push(`<p>${page.text}</p>`);
+
   if (page.links && page.links.length > 0) {
     const linkTags = page.links.map(l => `<a href="${l.href}">${l.text}</a>`).join('');
     parts.push(`<nav>${linkTags}</nav>`);
