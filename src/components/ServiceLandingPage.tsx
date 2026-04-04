@@ -186,7 +186,7 @@ export default function ServiceLandingPage({ slug, whyItems, stepIcons = default
                               <StepIcon className="w-8 h-8 md:w-10 md:h-10 text-accent" />
                             </div>
                             <div className="flex-1">
-                              <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-3">{step.title}</h3>
+                              <p className="text-2xl md:text-3xl font-bold text-foreground mb-3">{step.title}</p>
                               <p className="text-foreground/80 leading-relaxed">{step.text}</p>
                             </div>
                           </div>
