@@ -87,13 +87,14 @@ export function QuickContactForm({ language, serviceName }: QuickContactFormProp
     try {
       const message = serviceName ? `Заявка со страницы услуги: ${serviceName}` : '';
       const { error } = await supabase.functions.invoke('send-bitrix-lead', {
-        body: { name, phone, email: '', message },
+        body: { name, phone, email, message },
       });
       if (error) throw error;
 
       toast({ title: language === 'ru' ? 'Успех' : 'Success', description: t.success });
       analytics.formSubmit('quick-contact');
       setName('');
+      setEmail('');
       setPhone('');
     } catch {
       toast({ title: language === 'ru' ? 'Ошибка' : 'Error', description: t.errorGeneral, variant: 'destructive' });
