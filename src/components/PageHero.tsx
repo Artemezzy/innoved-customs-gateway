@@ -2,11 +2,16 @@ interface PageHeroProps {
   title: string;
   subtitle?: string;
   children?: React.ReactNode;
+  bgImage?: string;
 }
 
-export function PageHero({ title, subtitle, children }: PageHeroProps) {
+export function PageHero({ title, subtitle, children, bgImage }: PageHeroProps) {
   return (
     <section className="relative bg-foreground text-primary-foreground py-20 overflow-hidden">
+      {bgImage && (
+        <img src={bgImage} alt="" className="absolute inset-0 w-full h-full object-cover" loading="eager" />
+      )}
+      {bgImage && <div className="absolute inset-0 bg-foreground/70" />}
       {/* Triangle pattern background */}
       <svg className="absolute inset-0 w-full h-full opacity-30" preserveAspectRatio="none">
         <polygon points="0,0 120,0 60,100" className="fill-white/5" />
