@@ -8,6 +8,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHero } from '@/components/PageHero';
+import heroBg from '@/assets/hero-bg.jpg';
 
 const content = {
   ru: {
@@ -46,7 +47,7 @@ export default function FAQPage() {
   return (
     <>
       <SEOHead language={language} page="faq" />
-      <PageHero title={text.title} subtitle={text.subtitle} />
+      <PageHero title={text.title} subtitle={text.subtitle} bgImage={heroBg} />
 
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4">

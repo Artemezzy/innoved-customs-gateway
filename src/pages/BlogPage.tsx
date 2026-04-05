@@ -8,6 +8,7 @@ import { ContentCard } from '@/components/ContentCard';
 import { ContentCarousel } from '@/components/ContentCarousel';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PageHero } from '@/components/PageHero';
+import heroBg from '@/assets/hero-bg.jpg';
 
 const content = {
   ru: {
@@ -37,7 +38,7 @@ export default function BlogPage() {
   return (
     <>
       <SEOHead language={language} page="blog" />
-      <PageHero title={text.title} subtitle={text.subtitle} />
+      <PageHero title={text.title} subtitle={text.subtitle} bgImage={heroBg} />
 
       <section className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4 lg:px-12">
