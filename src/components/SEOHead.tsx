@@ -68,9 +68,9 @@ const seoContent = {
       keywords: 'cookies, политика cookies, файлы куки, ИННОВЭД, конфиденциальность'
     },
     broker: {
-      title: 'Таможенный брокер по всей России | География услуг ИННОВЭД',
-      description: 'Услуги таможенного брокера в 28 городах России. Москва, Санкт-Петербург, Владивосток, Новосибирск и другие регионы.',
-      keywords: 'таможенный брокер россия, география услуг, таможенное оформление регионы, растаможка города'
+      title: 'Таможенный брокер по всей России | Услуги таможенного оформления ИННОВЭД',
+      description: 'Таможенный брокер ИННОВЭД — профессиональное оформление импорта и экспорта в 28 городах России. Декларирование, классификация ТН ВЭД, сертификация, консультации.',
+      keywords: 'таможенный брокер, таможенный представитель, таможенное оформление, растаможка, декларирование, ТН ВЭД, импорт экспорт, ИННОВЭД'
     },
     caseTehniki: {
       title: 'Растаможка техники | Кейс ИННОВЭД',
@@ -150,9 +150,9 @@ const seoContent = {
       keywords: 'cookies, cookie policy, INNOVED, privacy'
     },
     broker: {
-      title: 'Customs Broker Across Russia | INNOVED Service Locations',
-      description: 'Customs broker services in 28 cities across Russia. Moscow, St. Petersburg, Vladivostok, Novosibirsk and more.',
-      keywords: 'customs broker russia, service locations, customs clearance regions, cargo clearance cities'
+      title: 'Customs Broker Across Russia | Professional Customs Clearance INNOVED',
+      description: 'INNOVED customs broker — professional import and export clearance in 28 cities across Russia. Declaration, HS code classification, certification, consulting.',
+      keywords: 'customs broker, customs representative, customs clearance, cargo clearance, declaration, HS code, import export, INNOVED'
     },
     caseTehniki: {
       title: 'Appliance Customs Clearance | INNOVED Case Study',
