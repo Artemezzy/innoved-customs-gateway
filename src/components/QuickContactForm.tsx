@@ -63,13 +63,17 @@ export function QuickContactForm({ language, serviceName }: QuickContactFormProp
   const isValidEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
   const isValidPhone = (p: string) => !p.trim() || /^[\d\s\+\-\(\)]{7,20}$/.test(p);
 
-  const isValidPhone = (p: string) => /^[\d\s\+\-\(\)]{7,20}$/.test(p);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim() || !phone.trim()) {
+    if (!name.trim() || !email.trim()) {
       toast({ title: language === 'ru' ? 'Ошибка' : 'Error', description: t.errorRequired, variant: 'destructive' });
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      toast({ title: language === 'ru' ? 'Ошибка' : 'Error', description: t.errorEmail, variant: 'destructive' });
       return;
     }
 
