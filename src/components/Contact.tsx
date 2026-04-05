@@ -65,24 +65,24 @@ export function Contact({ language }: ContactProps) {
     }
   }, [prefill]);
 
-  const isValidPhone = (phone: string) => /^[\d\s\+\-\(\)]{7,20}$/.test(phone);
-  const isValidEmail = (email: string) => !email || (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 255);
+  const isValidPhone = (phone: string) => !phone || /^[\d\s\+\-\(\)]{7,20}$/.test(phone);
+  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 255;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name.trim() || !formData.phone.trim() || !formData.consent) {
+    if (!formData.name.trim() || !formData.email.trim() || !formData.consent) {
       toast({ title: "Ошибка", description: text.error, variant: "destructive" });
-      return;
-    }
-
-    if (!isValidPhone(formData.phone)) {
-      toast({ title: "Ошибка", description: language === 'ru' ? "Укажите корректный номер телефона" : "Please enter a valid phone number", variant: "destructive" });
       return;
     }
 
     if (!isValidEmail(formData.email)) {
       toast({ title: "Ошибка", description: language === 'ru' ? "Укажите корректный email" : "Please enter a valid email", variant: "destructive" });
+      return;
+    }
+
+    if (!isValidPhone(formData.phone)) {
+      toast({ title: "Ошибка", description: language === 'ru' ? "Укажите корректный номер телефона" : "Please enter a valid phone number", variant: "destructive" });
       return;
     }
 
