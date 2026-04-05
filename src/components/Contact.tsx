@@ -65,24 +65,24 @@ export function Contact({ language }: ContactProps) {
     }
   }, [prefill]);
 
-  const isValidPhone = (phone: string) => /^[\d\s\+\-\(\)]{7,20}$/.test(phone);
-  const isValidEmail = (email: string) => !email || (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 255);
+  const isValidPhone = (phone: string) => !phone || /^[\d\s\+\-\(\)]{7,20}$/.test(phone);
+  const isValidEmail = (email: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 255;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.name.trim() || !formData.phone.trim() || !formData.consent) {
+    if (!formData.name.trim() || !formData.email.trim() || !formData.consent) {
       toast({ title: "Ошибка", description: text.error, variant: "destructive" });
-      return;
-    }
-
-    if (!isValidPhone(formData.phone)) {
-      toast({ title: "Ошибка", description: language === 'ru' ? "Укажите корректный номер телефона" : "Please enter a valid phone number", variant: "destructive" });
       return;
     }
 
     if (!isValidEmail(formData.email)) {
       toast({ title: "Ошибка", description: language === 'ru' ? "Укажите корректный email" : "Please enter a valid email", variant: "destructive" });
+      return;
+    }
+
+    if (!isValidPhone(formData.phone)) {
+      toast({ title: "Ошибка", description: language === 'ru' ? "Укажите корректный номер телефона" : "Please enter a valid phone number", variant: "destructive" });
       return;
     }
 
@@ -187,12 +187,12 @@ export function Contact({ language }: ContactProps) {
                   <Input id="name" type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required className="transition-all duration-300 focus:ring-2 focus:ring-accent" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-sm font-medium">{text.form.phone} *</Label>
-                  <Input id="phone" type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} required className="transition-all duration-300 focus:ring-2 focus:ring-accent" />
+                  <Label htmlFor="phone" className="text-sm font-medium">{text.form.phone}</Label>
+                  <Input id="phone" type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="transition-all duration-300 focus:ring-2 focus:ring-accent" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium">{text.form.email}</Label>
-                  <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="transition-all duration-300 focus:ring-2 focus:ring-accent" />
+                  <Label htmlFor="email" className="text-sm font-medium">{text.form.email} *</Label>
+                  <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required className="transition-all duration-300 focus:ring-2 focus:ring-accent" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="additionalInfo" className="text-sm font-medium">{text.form.additionalInfo}</Label>

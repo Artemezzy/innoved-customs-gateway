@@ -78,14 +78,14 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    if (!isValidPhone(phone)) {
+    if (phone && !isValidPhone(phone)) {
       return new Response(
         JSON.stringify({ error: 'Укажите корректный номер телефона' }),
         { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
     }
 
-    if (email && !isValidEmail(email)) {
+    if (!isValidEmail(email)) {
       return new Response(
         JSON.stringify({ error: 'Укажите корректный email' }),
         { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
@@ -104,8 +104,8 @@ const handler = async (req: Request): Promise<Response> => {
       body: JSON.stringify({
         fields: {
           NAME: name,
-          PHONE: [{ VALUE: phone, VALUE_TYPE: 'WORK' }],
-          ...(email && { EMAIL: [{ VALUE: email, VALUE_TYPE: 'WORK' }] }),
+          ...(phone && { PHONE: [{ VALUE: phone, VALUE_TYPE: 'WORK' }] }),
+          EMAIL: [{ VALUE: email, VALUE_TYPE: 'WORK' }],
         },
       }),
     });
@@ -127,8 +127,8 @@ const handler = async (req: Request): Promise<Response> => {
         fields: {
           TITLE: `Заявка с сайта — ${name}`,
           NAME: name,
-          PHONE: [{ VALUE: phone, VALUE_TYPE: 'WORK' }],
-          ...(email && { EMAIL: [{ VALUE: email, VALUE_TYPE: 'WORK' }] }),
+          ...(phone && { PHONE: [{ VALUE: phone, VALUE_TYPE: 'WORK' }] }),
+          EMAIL: [{ VALUE: email, VALUE_TYPE: 'WORK' }],
           ...(message && { COMMENTS: message }),
           CONTACT_ID: contactId,
           SOURCE_ID: 'WEB',
