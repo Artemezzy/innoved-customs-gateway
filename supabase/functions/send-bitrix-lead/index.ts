@@ -104,8 +104,8 @@ const handler = async (req: Request): Promise<Response> => {
       body: JSON.stringify({
         fields: {
           NAME: name,
-          PHONE: [{ VALUE: phone, VALUE_TYPE: 'WORK' }],
-          ...(email && { EMAIL: [{ VALUE: email, VALUE_TYPE: 'WORK' }] }),
+          ...(phone && { PHONE: [{ VALUE: phone, VALUE_TYPE: 'WORK' }] }),
+          EMAIL: [{ VALUE: email, VALUE_TYPE: 'WORK' }],
         },
       }),
     });
