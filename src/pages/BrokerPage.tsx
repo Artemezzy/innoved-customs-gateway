@@ -11,6 +11,7 @@ import {
   ClipboardList, Search, FileText, ScanLine, PackageCheck, Scale, HelpCircle, Briefcase
 } from 'lucide-react';
 import { analytics } from '@/utils/analytics';
+import heroBg from '@/assets/hero-bg.jpg';
 
 const content = {
   ru: {
