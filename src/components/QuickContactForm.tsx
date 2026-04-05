@@ -56,8 +56,12 @@ export function QuickContactForm({ language, serviceName }: QuickContactFormProp
   const t = texts[language];
   const { toast } = useToast();
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const isValidEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+  const isValidPhone = (p: string) => !p.trim() || /^[\d\s\+\-\(\)]{7,20}$/.test(p);
 
   const isValidPhone = (p: string) => /^[\d\s\+\-\(\)]{7,20}$/.test(p);
 
