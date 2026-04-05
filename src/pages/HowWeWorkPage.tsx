@@ -4,6 +4,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useEffect } from 'react';
 import { analytics } from '@/utils/analytics';
 import { PageHero } from '@/components/PageHero';
+import heroBg from '@/assets/hero-bg.jpg';
 
 const content = {
   ru: {
@@ -27,7 +28,7 @@ export default function HowWeWorkPage() {
   return (
     <>
       <SEOHead language={language} page="howWeWork" />
-      <PageHero title={text.title} subtitle={text.subtitle} />
+      <PageHero title={text.title} subtitle={text.subtitle} bgImage={heroBg} />
       <HowWeWork language={language} showHeader={false} />
     </>
   );
