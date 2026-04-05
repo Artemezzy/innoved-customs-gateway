@@ -92,7 +92,7 @@ const content = {
     geoTitle: 'Service Locations',
     geoDesc: 'We provide customs clearance services in key logistics hubs across Russia. Select your city:',
     ctaTitle: 'Need Help with Customs Clearance?',
-    ctaText: 'Submit a request — we'll call back within 15 minutes and provide a free consultation on your cargo.',
+    ctaText: "Submit a request — we'll call back within 15 minutes and provide a free consultation on your cargo.",
     ctaButton: 'Submit a request',
     step: 'Step',
     of: 'of',
