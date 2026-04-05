@@ -167,7 +167,7 @@ export default function BrokerPage() {
       <div className="min-h-screen bg-background">
         {/* Hero */}
         <section className="relative min-h-screen flex items-center overflow-hidden">
-          <img src="/images/hero-bg.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" loading="eager" />
+          <img src={heroBg} alt="" className="absolute inset-0 w-full h-full object-cover" loading="eager" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30" />
 
           <div className="relative z-10 container mx-auto px-4 pt-24 pb-12">
