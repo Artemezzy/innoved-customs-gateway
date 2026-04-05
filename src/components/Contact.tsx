@@ -187,12 +187,12 @@ export function Contact({ language }: ContactProps) {
                   <Input id="name" type="text" value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} required className="transition-all duration-300 focus:ring-2 focus:ring-accent" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone" className="text-sm font-medium">{text.form.phone} *</Label>
-                  <Input id="phone" type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} required className="transition-all duration-300 focus:ring-2 focus:ring-accent" />
+                  <Label htmlFor="phone" className="text-sm font-medium">{text.form.phone}</Label>
+                  <Input id="phone" type="tel" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="transition-all duration-300 focus:ring-2 focus:ring-accent" />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-sm font-medium">{text.form.email}</Label>
-                  <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="transition-all duration-300 focus:ring-2 focus:ring-accent" />
+                  <Label htmlFor="email" className="text-sm font-medium">{text.form.email} *</Label>
+                  <Input id="email" type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} required className="transition-all duration-300 focus:ring-2 focus:ring-accent" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="additionalInfo" className="text-sm font-medium">{text.form.additionalInfo}</Label>

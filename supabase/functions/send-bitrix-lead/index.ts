@@ -78,14 +78,14 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    if (!isValidPhone(phone)) {
+    if (phone && !isValidPhone(phone)) {
       return new Response(
         JSON.stringify({ error: 'Укажите корректный номер телефона' }),
         { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
     }
 
-    if (email && !isValidEmail(email)) {
+    if (!isValidEmail(email)) {
       return new Response(
         JSON.stringify({ error: 'Укажите корректный email' }),
         { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
