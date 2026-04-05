@@ -150,9 +150,9 @@ const seoContent = {
       keywords: 'cookies, cookie policy, INNOVED, privacy'
     },
     broker: {
-      title: 'Customs Broker Across Russia | INNOVED Service Locations',
-      description: 'Customs broker services in 28 cities across Russia. Moscow, St. Petersburg, Vladivostok, Novosibirsk and more.',
-      keywords: 'customs broker russia, service locations, customs clearance regions, cargo clearance cities'
+      title: 'Customs Broker Across Russia | Professional Customs Clearance INNOVED',
+      description: 'INNOVED customs broker — professional import and export clearance in 28 cities across Russia. Declaration, HS code classification, certification, consulting.',
+      keywords: 'customs broker, customs representative, customs clearance, cargo clearance, declaration, HS code, import export, INNOVED'
     },
     caseTehniki: {
       title: 'Appliance Customs Clearance | INNOVED Case Study',
