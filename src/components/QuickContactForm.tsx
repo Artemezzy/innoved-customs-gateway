@@ -119,14 +119,24 @@ export function QuickContactForm({ language, serviceName }: QuickContactFormProp
           />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="quick-phone" className="text-sm text-primary-foreground/80">{t.phone} *</Label>
+          <Label htmlFor="quick-email" className="text-sm text-primary-foreground/80">{t.email} *</Label>
+          <Input
+            id="quick-email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="bg-white/10 border-white/20 text-primary-foreground placeholder:text-primary-foreground/40 focus:ring-accent"
+            required
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="quick-phone" className="text-sm text-primary-foreground/80">{t.phone}</Label>
           <Input
             id="quick-phone"
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             className="bg-white/10 border-white/20 text-primary-foreground placeholder:text-primary-foreground/40 focus:ring-accent"
-            required
           />
         </div>
         <Button
