@@ -17,11 +17,13 @@ const texts = {
   ru: {
     title: 'Оставить заявку',
     name: 'Имя',
+    email: 'Эл. почта',
     phone: 'Телефон',
     submit: 'Отправить заявку',
     sending: 'Отправка...',
     success: 'Заявка отправлена успешно!',
-    errorRequired: 'Пожалуйста, заполните имя и телефон.',
+    errorRequired: 'Пожалуйста, заполните имя и адрес эл. почты.',
+    errorEmail: 'Укажите корректный адрес эл. почты',
     errorPhone: 'Укажите корректный номер телефона',
     errorGeneral: 'Произошла ошибка при отправке. Попробуйте позже.',
     consent: 'Отправляя заявку, я даю согласие на обработку персональных данных, в соответствии с',
@@ -33,11 +35,13 @@ const texts = {
   en: {
     title: 'Submit a request',
     name: 'Name',
+    email: 'Email',
     phone: 'Phone',
     submit: 'Send request',
     sending: 'Sending...',
     success: 'Request sent successfully!',
-    errorRequired: 'Please fill in name and phone.',
+    errorRequired: 'Please fill in name and email.',
+    errorEmail: 'Please enter a valid email address',
     errorPhone: 'Please enter a valid phone number',
     errorGeneral: 'An error occurred. Please try again later.',
     consent: 'By submitting, I consent to the processing of personal data in accordance with the',
@@ -52,16 +56,24 @@ export function QuickContactForm({ language, serviceName }: QuickContactFormProp
   const t = texts[language];
   const { toast } = useToast();
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isValidPhone = (p: string) => /^[\d\s\+\-\(\)]{7,20}$/.test(p);
+  const isValidEmail = (e: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+  const isValidPhone = (p: string) => !p.trim() || /^[\d\s\+\-\(\)]{7,20}$/.test(p);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim() || !phone.trim()) {
+    if (!name.trim() || !email.trim()) {
       toast({ title: language === 'ru' ? 'Ошибка' : 'Error', description: t.errorRequired, variant: 'destructive' });
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      toast({ title: language === 'ru' ? 'Ошибка' : 'Error', description: t.errorEmail, variant: 'destructive' });
       return;
     }
 
@@ -75,13 +87,14 @@ export function QuickContactForm({ language, serviceName }: QuickContactFormProp
     try {
       const message = serviceName ? `Заявка со страницы услуги: ${serviceName}` : '';
       const { error } = await supabase.functions.invoke('send-bitrix-lead', {
-        body: { name, phone, email: '', message },
+        body: { name, phone, email, message },
       });
       if (error) throw error;
 
       toast({ title: language === 'ru' ? 'Успех' : 'Success', description: t.success });
       analytics.formSubmit('quick-contact');
       setName('');
+      setEmail('');
       setPhone('');
     } catch {
       toast({ title: language === 'ru' ? 'Ошибка' : 'Error', description: t.errorGeneral, variant: 'destructive' });
@@ -106,14 +119,24 @@ export function QuickContactForm({ language, serviceName }: QuickContactFormProp
           />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="quick-phone" className="text-sm text-primary-foreground/80">{t.phone} *</Label>
+          <Label htmlFor="quick-email" className="text-sm text-primary-foreground/80">{t.email} *</Label>
+          <Input
+            id="quick-email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="bg-white/10 border-white/20 text-primary-foreground placeholder:text-primary-foreground/40 focus:ring-accent"
+            required
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="quick-phone" className="text-sm text-primary-foreground/80">{t.phone}</Label>
           <Input
             id="quick-phone"
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             className="bg-white/10 border-white/20 text-primary-foreground placeholder:text-primary-foreground/40 focus:ring-accent"
-            required
           />
         </div>
         <Button
