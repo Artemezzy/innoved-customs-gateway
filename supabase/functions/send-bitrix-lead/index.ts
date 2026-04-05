@@ -127,8 +127,8 @@ const handler = async (req: Request): Promise<Response> => {
         fields: {
           TITLE: `Заявка с сайта — ${name}`,
           NAME: name,
-          PHONE: [{ VALUE: phone, VALUE_TYPE: 'WORK' }],
-          ...(email && { EMAIL: [{ VALUE: email, VALUE_TYPE: 'WORK' }] }),
+          ...(phone && { PHONE: [{ VALUE: phone, VALUE_TYPE: 'WORK' }] }),
+          EMAIL: [{ VALUE: email, VALUE_TYPE: 'WORK' }],
           ...(message && { COMMENTS: message }),
           CONTACT_ID: contactId,
           SOURCE_ID: 'WEB',
