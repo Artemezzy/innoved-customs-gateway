@@ -4,6 +4,7 @@ import { analytics } from '@/utils/analytics';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import { FileText, Users, Package } from 'lucide-react';
+import { QuickContactForm } from '@/components/QuickContactForm';
 
 interface HeroProps {
   language: 'ru' | 'en';
@@ -83,17 +84,17 @@ function StatCard({ number, suffix, label, icon: Icon, delay }: StatCardProps) {
   return (
     <div
       ref={ref}
-      className="flex items-center gap-4 bg-black/30 backdrop-blur-md rounded-xl px-5 py-4 border border-white/15 animate-fade-in"
+      className="flex items-center gap-3 bg-black/30 backdrop-blur-md rounded-xl px-4 py-3 border border-white/15 animate-fade-in"
       style={{ animationDelay: `${delay}s` }}
     >
-      <div className="w-11 h-11 rounded-lg bg-accent/20 flex items-center justify-center shrink-0">
+      <div className="w-10 h-10 rounded-lg bg-accent/20 flex items-center justify-center shrink-0">
         <Icon className="w-5 h-5 text-accent" />
       </div>
       <div>
-        <div className="text-3xl font-montserrat font-bold text-primary-foreground tracking-tight leading-none">
+        <div className="text-2xl font-montserrat font-bold text-primary-foreground tracking-tight leading-none">
           {count}<span className="text-primary-foreground/60">{suffix}</span>
         </div>
-        <p className="text-primary-foreground/70 text-sm font-medium mt-0.5 leading-snug">
+        <p className="text-primary-foreground/70 text-xs font-medium mt-0.5 leading-snug">
           {label}
         </p>
       </div>
@@ -109,24 +110,15 @@ export function Hero({ language }: HeroProps) {
     ? ['Бесплатная консультация', 'Оформление от 5 000 ₽', 'Расчёт платежей за один день']
     : ['Free consultation', 'Clearance from 5,000 ₽', 'Payment calculation in one day'];
 
-  const handleButtonClick = () => {
-    analytics.contactClick('contact-form');
-    navigate('/contact');
-  };
-
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
-      {/* Background Image */}
       <img
         src={heroBg}
         alt="Контейнерный порт — таможенное оформление грузов"
         className="absolute inset-0 w-full h-full object-cover"
       />
-
-      {/* Light overlay for text readability - not heavy darkening */}
       <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-black/10" />
 
-      {/* Content */}
       <div className="relative z-10 container mx-auto px-4 pt-24 pb-12">
         <div className="flex flex-col lg:flex-row items-center lg:items-start gap-10 lg:gap-12">
           {/* Left Column — Text & CTA */}
@@ -142,44 +134,13 @@ export function Hero({ language }: HeroProps) {
               {text.subtitle}
             </p>
 
-            <Button
-              size="lg"
-              className="mt-8 bg-accent hover:bg-accent/90 text-accent-foreground px-10 py-5 text-lg font-bold shadow-lg animate-fade-in"
-              style={{ animationDelay: '0.3s' }}
-              onClick={handleButtonClick}
-            >
-              {text.button}
-            </Button>
-
-            <span
-              className="mt-3 text-sm text-primary-foreground/50 animate-fade-in"
-              style={{ animationDelay: '0.4s' }}
-            >
-              {text.reassurance}
-            </span>
-          </div>
-
-          {/* Right Column — Achievement Stats */}
-          <div className="lg:w-2/5 flex flex-col gap-4 w-full max-w-sm lg:max-w-none">
-            {text.stats.map((stat, index) => (
-              <StatCard
-                key={index}
-                number={stat.number}
-                suffix={stat.suffix}
-                label={stat.label}
-                icon={stat.icon}
-                delay={0.3 + index * 0.15}
-              />
-            ))}
-
             {/* USP Tags */}
-            <div className="flex flex-wrap gap-2 mt-2">
+            <div className="flex flex-wrap gap-2 mt-8 animate-fade-in" style={{ animationDelay: '0.3s' }}>
               {uspItems.map((item, i) => (
                 <span
                   key={i}
-                  className="bg-white/15 backdrop-blur-sm border border-white/20 text-primary-foreground text-xs sm:text-sm font-medium px-4 py-2 rounded-lg animate-fade-in"
+                  className="bg-white/15 backdrop-blur-sm border border-white/20 text-primary-foreground text-xs sm:text-sm font-medium px-4 py-2 rounded-lg"
                   style={{
-                    animationDelay: `${0.75 + i * 0.12}s`,
                     transform: `rotate(${i === 0 ? '-1.5' : i === 1 ? '1' : '-0.5'}deg)`,
                   }}
                 >
@@ -188,6 +149,27 @@ export function Hero({ language }: HeroProps) {
               ))}
             </div>
           </div>
+
+          {/* Right Column — Quick Contact Form */}
+          <div className="lg:w-2/5 w-full max-w-md lg:max-w-none animate-fade-in" style={{ animationDelay: '0.3s' }}>
+            <div className="bg-black/40 backdrop-blur-md rounded-xl shadow-2xl overflow-hidden border border-white/10">
+              <QuickContactForm language={language} />
+            </div>
+          </div>
+        </div>
+
+        {/* Achievement Stats Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-12 animate-fade-in" style={{ animationDelay: '0.5s' }}>
+          {text.stats.map((stat, index) => (
+            <StatCard
+              key={index}
+              number={stat.number}
+              suffix={stat.suffix}
+              label={stat.label}
+              icon={stat.icon}
+              delay={0.5 + index * 0.15}
+            />
+          ))}
         </div>
       </div>
     </section>
