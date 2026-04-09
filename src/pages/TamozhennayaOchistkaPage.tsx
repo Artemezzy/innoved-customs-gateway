@@ -4,7 +4,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useServiceDetail } from '@/hooks/useServiceDetail';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
-import { Phone, ArrowLeft, ShieldCheck, Scale, Globe, Zap, FileText, Search, ClipboardList, PackageCheck, Import, Upload, RefreshCw } from 'lucide-react';
+import { Phone, ArrowLeft, ShieldCheck, Scale, Globe, Zap, FileText, Search, ClipboardList, PackageCheck, ArrowDownToLine, ArrowUpFromLine, RefreshCw } from 'lucide-react';
 import { CustomsCalculator } from '@/components/CustomsCalculator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
