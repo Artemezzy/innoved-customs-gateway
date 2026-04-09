@@ -347,8 +347,8 @@ function generateServicePages() {
     description: s.desc,
     keywords: s.kw,
     h1: s.name,
-    h2: `${s.name}: этапы, преимущества и смежные услуги`,
-    h3: 'Преимущества работы с Инновэд и этапы оказания услуги',
+    h2: s.h2Override || `${s.name}: этапы, преимущества и смежные услуги`,
+    h3: s.h3Override || 'Преимущества работы с Инновэд и этапы оказания услуги',
     text: s.preText,
     links: [
       ...COMMON_LINKS,

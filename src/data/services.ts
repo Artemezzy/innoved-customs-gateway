@@ -1297,8 +1297,8 @@ export const servicesData: ServiceData[] = [
     slug: 'tamozhennaya-ochistka',
     icon: 'ShieldCheck',
     title: {
-      ru: 'Таможенная очистка',
-      en: 'Customs Clearance',
+      ru: 'Таможенная очистка грузов без задержек и скрытых платежей',
+      en: 'Customs Clearance Without Delays and Hidden Fees',
     },
     seo: {
       ru: {
