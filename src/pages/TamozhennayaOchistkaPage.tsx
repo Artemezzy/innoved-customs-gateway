@@ -30,13 +30,13 @@ const whyItems = {
 
 const procedures = {
   ru: [
-    { icon: Import, title: 'Импорт', text: 'При ввозе товаров на территорию ЕАЭС мы берём на себя полный цикл таможенного оформления: от проверки документов до выпуска груза в свободное обращение.' },
-    { icon: Upload, title: 'Экспорт', text: 'При вывозе товаров с территории ЕАЭС обеспечиваем корректное декларирование, валютный контроль и соблюдение экспортных ограничений.' },
+    { icon: ArrowDownToLine, title: 'Импорт', text: 'При ввозе товаров на территорию ЕАЭС мы берём на себя полный цикл таможенного оформления: от проверки документов до выпуска груза в свободное обращение.' },
+    { icon: ArrowUpFromLine, title: 'Экспорт', text: 'При вывозе товаров с территории ЕАЭС обеспечиваем корректное декларирование, валютный контроль и соблюдение экспортных ограничений.' },
     { icon: RefreshCw, title: 'Сложные режимы: транзит, переработка, временный ввоз', text: 'Оформляем грузы в специальных таможенных режимах с учётом всех особенностей законодательства и сроков.' },
   ],
   en: [
-    { icon: Import, title: 'Import', text: 'When importing goods into the EAEU, we handle the full customs clearance cycle: from document review to release of goods into free circulation.' },
-    { icon: Upload, title: 'Export', text: 'When exporting goods from the EAEU, we ensure correct declaration, currency control, and compliance with export restrictions.' },
+    { icon: ArrowDownToLine, title: 'Import', text: 'When importing goods into the EAEU, we handle the full customs clearance cycle: from document review to release of goods into free circulation.' },
+    { icon: ArrowUpFromLine, title: 'Export', text: 'When exporting goods from the EAEU, we ensure correct declaration, currency control, and compliance with export restrictions.' },
     { icon: RefreshCw, title: 'Complex regimes: transit, processing, temporary import', text: 'We process goods under special customs regimes considering all legal specifics and deadlines.' },
   ],
 };
