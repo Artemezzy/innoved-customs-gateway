@@ -8,6 +8,7 @@ import { CustomsCalculator } from '@/components/CustomsCalculator';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CheckCircle, Ship, Globe, Briefcase, Phone, ArrowRight, ClipboardList, Search, FileText, ScanLine, PackageCheck, ShieldCheck, MapPin } from 'lucide-react';
+import { MoscowCityLanding } from '@/components/MoscowCityLanding';
 
 // City content imports
 import { vladivostokContent } from '@/data/city-content/vladivostok';
