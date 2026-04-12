@@ -78,6 +78,7 @@ interface MoscowCityLandingProps {
 
 export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText }: MoscowCityLandingProps) {
   const why = whyItems[language];
+  const autoplayPlugin = useRef(Autoplay({ delay: 7000, stopOnInteraction: true, stopOnMouseEnter: true }));
   const otherCities = cities.filter(c => c.slug !== 'moskva').slice(0, 15);
   const ui = language === 'ru'
     ? { contactUs: 'Оставить заявку', otherCities: 'Услуги в других городах' }
@@ -247,7 +248,38 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
               <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-6 text-left">
                 {language === 'ru' ? 'Отзывы клиентов' : 'Client Testimonials'}
               </h2>
-              <Testimonials language={language} />
+              <Carousel opts={{ align: 'center', loop: true }} plugins={[autoplayPlugin.current]} className="w-full">
+                <CarouselContent>
+                  {testimonials.map((t, i) => (
+                    <CarouselItem key={i}>
+                      <Card className="bg-card shadow-sm border border-border">
+                        <CardContent className="p-5">
+                          <div className="flex gap-1 mb-3">
+                            {Array.from({ length: t.rating }).map((_, j) => (
+                              <Star key={j} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                            ))}
+                          </div>
+                          <blockquote className="text-sm text-foreground mb-4 leading-relaxed">
+                            "{t.text[language]}"
+                          </blockquote>
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-9 w-9 bg-primary">
+                              {t.photo && <AvatarImage src={t.photo} alt={t.name.ru} className="object-cover" />}
+                              <AvatarFallback className="bg-primary text-primary-foreground font-semibold text-xs">{t.initials}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <div className="font-semibold text-foreground text-sm">{t.name[language]}</div>
+                              <div className="text-xs text-muted-foreground">{t.company[language]}</div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
             </div>
             {/* Certificates right */}
             <div className="lg:w-1/2">
