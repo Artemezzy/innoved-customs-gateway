@@ -223,34 +223,50 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
         </div>
       </section>
 
-      {/* Certificates */}
+      {/* Testimonials + Certificates side by side */}
       <section className="py-10 md:py-14 bg-background">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-10 text-left">
-            {language === 'ru' ? 'Сертификаты' : 'Certificates'}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-2xl border border-border bg-card">
-              <img src={certBkBest} alt="Сертификат качества компании БК-БЕСТ ТЕК" className="w-48 h-auto rounded-lg shadow-sm" loading="lazy" />
-              <p className="text-foreground font-medium text-center sm:text-left">
-                {language === 'ru' ? 'Сертификат качества компании БК-БЕСТ ТЕК' : 'Quality certificate of BK-BEST TEK company'}
-              </p>
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Testimonials left */}
+            <div className="lg:w-1/2">
+              <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-6 text-left">
+                {language === 'ru' ? 'Отзывы клиентов' : 'Client Testimonials'}
+              </h2>
+              <Testimonials language={language} />
             </div>
-            <div className="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-2xl border border-border bg-card">
-              <img src={certGhv} alt="Сертификат качества компании GHV (Китай)" className="w-48 h-auto rounded-lg shadow-sm" loading="lazy" />
-              <p className="text-foreground font-medium text-center sm:text-left">
-                {language === 'ru' ? 'Сертификат качества компании GHV (Китай)' : 'Quality certificate of GHV company (China)'}
-              </p>
+            {/* Certificates right */}
+            <div className="lg:w-1/2">
+              <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-6 text-left">
+                {language === 'ru' ? 'Сертификаты' : 'Certificates'}
+              </h2>
+              <div className="grid grid-cols-1 gap-4">
+                <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl border border-border bg-card">
+                  <img src={certBkBest} alt="Сертификат качества компании БК-БЕСТ ТЕК" className="w-36 h-auto rounded-lg shadow-sm" loading="lazy" />
+                  <p className="text-foreground font-medium text-center sm:text-left text-sm">
+                    {language === 'ru' ? 'Сертификат качества компании БК-БЕСТ ТЕК' : 'Quality certificate of BK-BEST TEK company'}
+                  </p>
+                </div>
+                <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl border border-border bg-card">
+                  <img src={certGhv} alt="Сертификат качества компании GHV (Китай)" className="w-36 h-auto rounded-lg shadow-sm" loading="lazy" />
+                  <p className="text-foreground font-medium text-center sm:text-left text-sm">
+                    {language === 'ru' ? 'Сертификат качества компании GHV (Китай)' : 'Quality certificate of GHV company (China)'}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <Testimonials language={language} />
-
       {/* Case Studies */}
-      <CaseStudies language={language} />
+      <section className="py-10 md:py-14 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-6 text-left">
+            {language === 'ru' ? 'Наши кейсы' : 'Our Case Studies'}
+          </h2>
+          <CaseStudies language={language} />
+        </div>
+      </section>
 
       {/* Other cities */}
       <section className="py-10 md:py-14 bg-background">
