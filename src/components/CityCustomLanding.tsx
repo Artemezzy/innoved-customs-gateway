@@ -5,12 +5,13 @@ import { Button } from '@/components/ui/button';
 import { CaseStudies } from '@/components/CaseStudies';
 import { Phone, ShieldCheck, Globe, Ship, MapPin, FileText, Calculator, Award, ClipboardList, PackageCheck, Truck, Star } from 'lucide-react';
 import { cities } from '@/data/cities';
+import { customsOfficesByCity } from '@/data/customs-offices';
 import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import Autoplay from 'embla-carousel-autoplay';
 import { useRef, useState } from 'react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
 import certBkBest from '@/assets/cert-bk-best.webp';
 import certGhv from '@/assets/cert-ghv.webp';
 import gallery01 from '@/assets/gallery-01.png';
@@ -23,7 +24,7 @@ import alexanderPhoto from '@/assets/testimonial-alexander.webp';
 const testimonials = [
   { name: { ru: 'Александр М.', en: 'Alexander M.' }, company: { ru: 'ООО "ТСЛОГИСТИКА"', en: 'TSLOGISTIKA LLC' }, text: { ru: 'Работаем с ИННОВЭД с лета 2025 года. Всегда быстрое оформление документов и профессиональный подход.', en: 'Working with INNOVAD since summer 2025. Always quick processing and professional approach.' }, initials: 'АМ', rating: 5, photo: alexanderPhoto },
   { name: { ru: 'Виктория С.', en: 'Victoria S.' }, company: { ru: 'ИП Староспичихина В.', en: 'IE Starospichihina V.' }, text: { ru: 'Очень удобно работать дистанционно — всё решается оперативно через мессенджеры.', en: 'Very convenient to work remotely — everything resolved via messengers.' }, initials: 'ВС', rating: 5, photo: victoriaPhoto },
-  { name: { ru: 'Светлана К.', en: 'Svetlana K.' }, company: { ru: 'ООО "Мебельный Мир"', en: 'Furniture World LLC' }, text: { ru: 'Грамотные специалисты, помогли с сертификацией и оформлением сложного груза.', en: 'Competent specialists, helped with certification and clearance of complex cargo.' }, initials: 'СК', rating: 5, photo: svetlanaPhoto },
+  { name: { ru: 'Светлана К.', en: 'Светлана К.' }, company: { ru: 'ООО "Мебельный Мир"', en: 'Furniture World LLC' }, text: { ru: 'Грамотные специалисты, помогли с сертификацией и оформлением сложного груза.', en: 'Competent specialists, helped with certification and clearance of complex cargo.' }, initials: 'СК', rating: 5, photo: svetlanaPhoto },
   { name: { ru: 'Баир Д.', en: 'Bair D.' }, company: { ru: 'ООО "ВостокТрейд"', en: 'VostokTrade LLC' }, text: { ru: 'Надёжный партнёр для ВЭД. Быстро решают любые вопросы с таможней.', en: 'Reliable FTA partner. Quickly resolve any customs issues.' }, initials: 'БД', rating: 5, photo: bairPhoto },
 ];
 
@@ -51,13 +52,6 @@ const services = [
   { icon: FileText, text: { ru: 'Подготовка товаросопроводительных документов', en: 'Preparation of shipping documents' } },
 ];
 
-const customsOffices = [
-  { code: '10132000', name: 'Московская таможня', city: 'Москва', address: 'Георгиевский проспект, д. 9' },
-  { code: '10001000', name: 'Внуковская таможня', city: 'Москва', address: '1-й Рейсовый пр-д, д. 2, стр. 1' },
-  { code: '10002000', name: 'Домодедовская таможня', city: 'Домодедово', address: 'Территория аэропорта Домодедово, владение 1' },
-  { code: '10005000', name: 'Шереметьевская таможня', city: 'Химки (Шереметьево)', address: 'Территория международного аэропорта Шереметьево, владение 1' },
-];
-
 const cargoTypes = [
   'Продукты питания', 'Электроника', 'Мебель и фурнитура', 'Бытовая техника',
   'Промышленное оборудование', 'Станки', 'Сборные', 'Контейнерные',
@@ -70,25 +64,40 @@ const cargoTypesEn = [
   'General cargo', 'Clothing', 'Auto parts',
 ];
 
-interface MoscowCityLandingProps {
+const cityPrepositional: Record<string, string> = {
+  'barnaul': 'Барнауле', 'vladivostok': 'Владивостоке', 'volgograd': 'Волгограде',
+  'voronezh': 'Воронеже', 'ekaterinburg': 'Екатеринбурге', 'izhevsk': 'Ижевске',
+  'irkutsk': 'Иркутске', 'kazan': 'Казани', 'krasnodar': 'Краснодаре',
+  'krasnoyarsk': 'Красноярске', 'makhachkala': 'Махачкале', 'moskva': 'Москве',
+  'nakhodka': 'Находке', 'nizhny-novgorod': 'Нижнем Новгороде', 'novorossiysk': 'Новороссийске',
+  'novosibirsk': 'Новосибирске', 'omsk': 'Омске', 'rostov-na-donu': 'Ростове-на-Дону',
+  'samara': 'Самаре', 'sankt-peterburg': 'Санкт-Петербурге', 'saratov': 'Саратове',
+  'tolyatti': 'Тольятти', 'tyumen': 'Тюмени', 'ulyanovsk': 'Ульяновске',
+  'khabarovsk': 'Хабаровске', 'chelyabinsk': 'Челябинске', 'yaroslavl': 'Ярославле',
+  'zabaykalsk': 'Забайкальске',
+};
+
+interface CityCustomLandingProps {
   language: Language;
   heroTitle: string;
   heroSubtitle: string;
   introText: string;
+  citySlug: string;
 }
 
-export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText }: MoscowCityLandingProps) {
+export function CityCustomLanding({ language, heroTitle, heroSubtitle, introText, citySlug }: CityCustomLandingProps) {
   const why = whyItems[language];
   const autoplayPlugin = useRef(Autoplay({ delay: 7000, stopOnInteraction: true, stopOnMouseEnter: true }));
   const [zoomedCert, setZoomedCert] = useState<string | null>(null);
-  const otherCities = cities.filter(c => c.slug !== 'moskva').slice(0, 15);
+  const otherCities = cities.filter(c => c.slug !== citySlug).slice(0, 15);
+  const offices = customsOfficesByCity[citySlug] || [];
+  const cityPrep = cityPrepositional[citySlug] || '';
   const ui = language === 'ru'
     ? { contactUs: 'Оставить заявку', otherCities: 'Услуги в других городах' }
     : { contactUs: 'Submit a request', otherCities: 'Services in other cities' };
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero */}
       <section className="relative min-h-screen flex items-center overflow-hidden">
         <img src="/images/port-bg.webp" alt="" className="absolute inset-0 w-full h-full object-cover" loading="eager" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-black/20" />
@@ -133,7 +142,6 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
         </div>
       </section>
 
-      {/* Services */}
       <section className="py-10 md:py-14 bg-background">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-10 text-left">
@@ -155,7 +163,6 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
         </div>
       </section>
 
-      {/* Pricing */}
       <section className="py-10 md:py-14 bg-muted/30">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-10 text-left">
@@ -163,13 +170,13 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
           </h2>
           <div className="flex flex-col md:flex-row gap-8 items-stretch">
             <div className="md:w-1/2">
-              <img src={gallery01} alt={language === 'ru' ? 'Таможенное оформление в Москве — ИННОВЭД' : 'Customs clearance in Moscow — INNOVAD'} className="w-full rounded-2xl" loading="lazy" />
+              <img src={gallery01} alt={language === 'ru' ? `Таможенное оформление в ${cityPrep} — ИННОВЭД` : `Customs clearance — INNOVAD`} className="w-full rounded-2xl" loading="lazy" />
             </div>
             <div className="md:w-1/2 rounded-2xl bg-card border border-border p-8 flex flex-col justify-center">
               <p className="text-muted-foreground leading-relaxed mb-4">
                 {language === 'ru'
-                  ? 'ООО «ИННОВЭД» — ваш надежный партнер в сфере таможенного оформления в Москве. Мы предлагаем комплексные решения по подготовке и подаче всей необходимой документации, обеспечивая оперативное прохождение товаров через таможенный контроль без задержек. Наши специалисты обладают многолетним опытом в работе с самыми разными категориями грузов — от простых товарных партий до сложного технологического оборудования и многоартикульных поставок.'
-                  : 'INNOVAD LLC is your reliable partner in customs clearance in Moscow. We offer comprehensive solutions for preparing and submitting all necessary documentation, ensuring fast passage of goods through customs control without delays.'}
+                  ? `ООО «ИННОВЭД» — ваш надежный партнер в сфере таможенного оформления в ${cityPrep}. Мы предлагаем комплексные решения по подготовке и подаче всей необходимой документации, обеспечивая оперативное прохождение товаров через таможенный контроль без задержек. Наши специалисты обладают многолетним опытом в работе с самыми разными категориями грузов — от простых товарных партий до сложного технологического оборудования и многоартикульных поставок.`
+                  : `INNOVAD LLC is your reliable partner in customs clearance. We offer comprehensive solutions for preparing and submitting all necessary documentation, ensuring fast passage of goods through customs control without delays.`}
               </p>
               <p className="text-muted-foreground leading-relaxed mb-4">
                 {language === 'ru'
@@ -186,38 +193,38 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
         </div>
       </section>
 
-      {/* Customs offices table */}
-      <section className="py-10 md:py-14 bg-background">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-10 text-left">
-            {language === 'ru' ? 'С какими таможнями мы работаем' : 'Customs offices we work with'}
-          </h2>
-          <div className="overflow-x-auto rounded-2xl border border-border">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="bg-muted/50">
-                  <th className="px-6 py-4 text-sm font-semibold text-foreground">{language === 'ru' ? 'Код' : 'Code'}</th>
-                  <th className="px-6 py-4 text-sm font-semibold text-foreground">{language === 'ru' ? 'Название' : 'Name'}</th>
-                  <th className="px-6 py-4 text-sm font-semibold text-foreground">{language === 'ru' ? 'Город' : 'City'}</th>
-                  <th className="px-6 py-4 text-sm font-semibold text-foreground">{language === 'ru' ? 'Адрес' : 'Address'}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {customsOffices.map((o, i) => (
-                  <tr key={o.code} className={i % 2 === 0 ? 'bg-card' : 'bg-muted/20'}>
-                    <td className="px-6 py-4 text-sm text-muted-foreground font-mono">{o.code}</td>
-                    <td className="px-6 py-4 text-sm text-foreground font-medium">{o.name}</td>
-                    <td className="px-6 py-4 text-sm text-muted-foreground">{o.city}</td>
-                    <td className="px-6 py-4 text-sm text-muted-foreground">{o.address}</td>
+      {offices.length > 0 && (
+        <section className="py-10 md:py-14 bg-background">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-10 text-left">
+              {language === 'ru' ? 'С какими таможнями мы работаем' : 'Customs offices we work with'}
+            </h2>
+            <div className="overflow-x-auto rounded-2xl border border-border">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="bg-muted/50">
+                    <th className="px-6 py-4 text-sm font-semibold text-foreground">{language === 'ru' ? 'Код' : 'Code'}</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-foreground">{language === 'ru' ? 'Название' : 'Name'}</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-foreground">{language === 'ru' ? 'Город' : 'City'}</th>
+                    <th className="px-6 py-4 text-sm font-semibold text-foreground">{language === 'ru' ? 'Адрес' : 'Address'}</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {offices.map((o, i) => (
+                    <tr key={o.code} className={i % 2 === 0 ? 'bg-card' : 'bg-muted/20'}>
+                      <td className="px-6 py-4 text-sm text-muted-foreground font-mono">{o.code}</td>
+                      <td className="px-6 py-4 text-sm text-foreground font-medium">{o.name}</td>
+                      <td className="px-6 py-4 text-sm text-muted-foreground">{o.city}</td>
+                      <td className="px-6 py-4 text-sm text-muted-foreground">{o.address}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* Cargo types */}
       <section className="py-10 md:py-14 bg-muted/30">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-10 text-left">
@@ -241,11 +248,9 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
         </div>
       </section>
 
-      {/* Testimonials + Certificates side by side */}
       <section className="py-10 md:py-14 bg-background">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Certificates left */}
             <div className="lg:w-1/2">
               <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-6 text-left">
                 {language === 'ru' ? 'Сертификаты' : 'Certificates'}
@@ -265,7 +270,6 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
                 </div>
               </div>
             </div>
-            {/* Testimonials right */}
             <div className="lg:w-1/2">
               <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-6 text-left">
                 {language === 'ru' ? 'Отзывы клиентов' : 'Client Testimonials'}
@@ -307,7 +311,6 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
         </div>
       </section>
 
-      {/* Case Studies */}
       <section className="py-10 md:py-14 bg-muted/30">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-6 text-left">
@@ -317,7 +320,6 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
         </div>
       </section>
 
-      {/* Other cities */}
       <section className="py-10 md:py-14 bg-background">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-10 text-left">
