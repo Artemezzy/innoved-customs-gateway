@@ -80,6 +80,7 @@ interface MoscowCityLandingProps {
 export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText }: MoscowCityLandingProps) {
   const why = whyItems[language];
   const autoplayPlugin = useRef(Autoplay({ delay: 7000, stopOnInteraction: true, stopOnMouseEnter: true }));
+  const [zoomedCert, setZoomedCert] = useState<string | null>(null);
   const otherCities = cities.filter(c => c.slug !== 'moskva').slice(0, 15);
   const ui = language === 'ru'
     ? { contactUs: 'Оставить заявку', otherCities: 'Услуги в других городах' }
@@ -331,6 +332,12 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
           </div>
         </div>
       </section>
+
+      <Dialog open={!!zoomedCert} onOpenChange={() => setZoomedCert(null)}>
+        <DialogContent className="max-w-2xl p-2 bg-background">
+          {zoomedCert && <img src={zoomedCert} alt="Сертификат" className="w-full h-auto rounded-lg" />}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
