@@ -232,7 +232,7 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
               <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-6 text-left">
                 {language === 'ru' ? 'Отзывы клиентов' : 'Client Testimonials'}
               </h2>
-              <Testimonials language={language} embedded />
+              <Testimonials language={language} />
             </div>
             {/* Certificates right */}
             <div className="lg:w-1/2">
@@ -264,7 +264,7 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
           <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-6 text-left">
             {language === 'ru' ? 'Наши кейсы' : 'Our Case Studies'}
           </h2>
-          <CaseStudies language={language} embedded />
+          <CaseStudies language={language} />
         </div>
       </section>
 
