@@ -302,6 +302,7 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
               </Carousel>
             </div>
           </div>
+        </div>
       </section>
 
       {/* Case Studies */}
