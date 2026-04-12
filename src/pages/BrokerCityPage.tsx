@@ -8,6 +8,7 @@ import { CustomsCalculator } from '@/components/CustomsCalculator';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CheckCircle, Ship, Globe, Briefcase, Phone, ArrowRight, ClipboardList, Search, FileText, ScanLine, PackageCheck, ShieldCheck, MapPin } from 'lucide-react';
+import { MoscowCityLanding } from '@/components/MoscowCityLanding';
 
 // City content imports
 import { vladivostokContent } from '@/data/city-content/vladivostok';
@@ -141,6 +142,8 @@ export default function BrokerCityPage() {
   const t = cityContent[language];
   const ui = texts[language];
 
+  const isMoscow = city === 'moskva';
+
   return (
     <>
       <SEOHead
@@ -151,7 +154,16 @@ export default function BrokerCityPage() {
         customKeywords={(t as any).seoKeywords}
         canonicalPath={`/tamozhennyj-broker/${city}`}
       />
-      <CityLanding data={t} language={language} ui={ui} citySlug={city!} />
+      {isMoscow ? (
+        <MoscowCityLanding
+          language={language}
+          heroTitle={t.heroTitle}
+          heroSubtitle={t.heroSubtitle}
+          introText={t.intro.text}
+        />
+      ) : (
+        <CityLanding data={t} language={language} ui={ui} citySlug={city!} />
+      )}
     </>
   );
 }

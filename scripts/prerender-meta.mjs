@@ -361,21 +361,35 @@ function generateServicePages() {
 
 
 function generateCityPages() {
-  return cities.map(city => ({
-    path: `/tamozhennyj-broker/${city.slug}`,
-    title: `Таможенный брокер ${city.name} | Инновэд`,
-    description: `Услуги таможенного брокера в городе ${city.name}. Таможенное оформление импорта и экспорта, растаможка грузов, сертификация. Инновэд.`,
-    keywords: `таможенный брокер ${city.name}, растаможка ${city.name}, таможенное оформление ${city.name}, Инновэд`,
-    h1: `Таможенный брокер ${city.name}`,
-    h2: `Услуги таможенного брокера в ${city.name}: логистика, оформление и сопровождение`,
-    h3: `Преимущества работы в ${city.name} и этапы сопровождения ВЭД`,
-    text: CITY_TEXTS[city.slug] || `Таможенный брокер Инновэд в ${city.name}: полный цикл таможенного оформления импорта и экспорта, растаможка грузов, электронное декларирование. Работаем удалённо с любым таможенным постом.`,
-    links: [
-      ...COMMON_LINKS,
-      { href: '/tamozhennyj-broker', text: 'География услуг' },
-      ...getNeighborCityLinks(city.slug),
-    ],
-  }));
+  const moscowH2Override = [
+    'Услуги компании ООО «ИННОВЭД»',
+    'Стоимость наших услуг',
+    'С какими таможнями мы работаем',
+    'Виды грузов',
+    'Сертификаты',
+    'Отзывы клиентов',
+    'Наши кейсы',
+    'Услуги в других городах',
+  ];
+
+  return cities.map(city => {
+    const isMoscow = city.slug === 'moskva';
+    return {
+      path: `/tamozhennyj-broker/${city.slug}`,
+      title: `Таможенный брокер ${city.name} | Инновэд`,
+      description: `Услуги таможенного брокера в городе ${city.name}. Таможенное оформление импорта и экспорта, растаможка грузов, сертификация. Инновэд.`,
+      keywords: `таможенный брокер ${city.name}, растаможка ${city.name}, таможенное оформление ${city.name}, Инновэд`,
+      h1: `Таможенный брокер ${city.name}`,
+      h2: isMoscow ? moscowH2Override : `Услуги таможенного брокера в ${city.name}: логистика, оформление и сопровождение`,
+      h3: isMoscow ? undefined : `Преимущества работы в ${city.name} и этапы сопровождения ВЭД`,
+      text: CITY_TEXTS[city.slug] || `Таможенный брокер Инновэд в ${city.name}: полный цикл таможенного оформления импорта и экспорта, растаможка грузов, электронное декларирование. Работаем удалённо с любым таможенным постом.`,
+      links: [
+        ...COMMON_LINKS,
+        { href: '/tamozhennyj-broker', text: 'География услуг' },
+        ...getNeighborCityLinks(city.slug),
+      ],
+    };
+  });
 }
 
 // ── Build helpers ──
