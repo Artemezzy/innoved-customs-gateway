@@ -9,7 +9,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Autoplay from 'embla-carousel-autoplay';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import certBkBest from '@/assets/cert-bk-best.webp';
 import certGhv from '@/assets/cert-ghv.webp';
 import gallery01 from '@/assets/gallery-01.png';
@@ -250,13 +251,13 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
               </h2>
               <div className="grid grid-cols-1 gap-4">
                 <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl border border-border bg-card">
-                  <img src={certBkBest} alt="Сертификат качества компании БК-БЕСТ ТЕК" className="w-36 h-auto rounded-lg shadow-sm" loading="lazy" />
+                  <img src={certBkBest} alt="Сертификат качества компании БК-БЕСТ ТЕК" className="w-36 h-auto rounded-lg shadow-sm cursor-pointer transition-transform duration-300 hover:scale-110" loading="lazy" onClick={() => setZoomedCert(certBkBest)} />
                   <p className="text-foreground font-medium text-center sm:text-left text-sm">
                     {language === 'ru' ? 'Сертификат качества компании БК-БЕСТ ТЕК' : 'Quality certificate of BK-BEST TEK company'}
                   </p>
                 </div>
                 <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl border border-border bg-card">
-                  <img src={certGhv} alt="Сертификат качества компании GHV (Китай)" className="w-36 h-auto rounded-lg shadow-sm" loading="lazy" />
+                  <img src={certGhv} alt="Сертификат качества компании GHV (Китай)" className="w-36 h-auto rounded-lg shadow-sm cursor-pointer transition-transform duration-300 hover:scale-110" loading="lazy" onClick={() => setZoomedCert(certGhv)} />
                   <p className="text-foreground font-medium text-center sm:text-left text-sm">
                     {language === 'ru' ? 'Сертификат качества компании GHV (Китай)' : 'Quality certificate of GHV company (China)'}
                   </p>
