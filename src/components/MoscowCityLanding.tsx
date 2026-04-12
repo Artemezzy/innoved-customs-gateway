@@ -2,14 +2,29 @@ import { Link } from 'react-router-dom';
 import { Language } from '@/contexts/LanguageContext';
 import { CustomsCalculator } from '@/components/CustomsCalculator';
 import { Button } from '@/components/ui/button';
-import { Testimonials } from '@/components/Testimonials';
 import { CaseStudies } from '@/components/CaseStudies';
-import { Phone, ShieldCheck, Globe, Ship, MapPin, FileText, Calculator, Award, ClipboardList, PackageCheck, Truck } from 'lucide-react';
+import { Phone, ShieldCheck, Globe, Ship, MapPin, FileText, Calculator, Award, ClipboardList, PackageCheck, Truck, Star } from 'lucide-react';
 import { cities } from '@/data/cities';
+import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import Autoplay from 'embla-carousel-autoplay';
+import { useRef } from 'react';
 import certBkBest from '@/assets/cert-bk-best.webp';
 import certGhv from '@/assets/cert-ghv.webp';
 import gallery01 from '@/assets/gallery-01.png';
 import gallery03 from '@/assets/gallery-03.png';
+import victoriaPhoto from '@/assets/testimonial-victoria.webp';
+import svetlanaPhoto from '@/assets/testimonial-svetlana.webp';
+import bairPhoto from '@/assets/testimonial-bair.webp';
+import alexanderPhoto from '@/assets/testimonial-alexander.webp';
+
+const testimonials = [
+  { name: { ru: 'Александр М.', en: 'Alexander M.' }, company: { ru: 'ООО "ТСЛОГИСТИКА"', en: 'TSLOGISTIKA LLC' }, text: { ru: 'Работаем с ИННОВЭД с лета 2025 года. Всегда быстрое оформление документов и профессиональный подход.', en: 'Working with INNOVAD since summer 2025. Always quick processing and professional approach.' }, initials: 'АМ', rating: 5, photo: alexanderPhoto },
+  { name: { ru: 'Виктория С.', en: 'Victoria S.' }, company: { ru: 'ИП Староспичихина В.', en: 'IE Starospichihina V.' }, text: { ru: 'Очень удобно работать дистанционно — всё решается оперативно через мессенджеры.', en: 'Very convenient to work remotely — everything resolved via messengers.' }, initials: 'ВС', rating: 5, photo: victoriaPhoto },
+  { name: { ru: 'Светлана К.', en: 'Svetlana K.' }, company: { ru: 'ООО "Мебельный Мир"', en: 'Furniture World LLC' }, text: { ru: 'Грамотные специалисты, помогли с сертификацией и оформлением сложного груза.', en: 'Competent specialists, helped with certification and clearance of complex cargo.' }, initials: 'СК', rating: 5, photo: svetlanaPhoto },
+  { name: { ru: 'Баир Д.', en: 'Bair D.' }, company: { ru: 'ООО "ВостокТрейд"', en: 'VostokTrade LLC' }, text: { ru: 'Надёжный партнёр для ВЭД. Быстро решают любые вопросы с таможней.', en: 'Reliable FTA partner. Quickly resolve any customs issues.' }, initials: 'БД', rating: 5, photo: bairPhoto },
+];
 
 const whyItems = {
   ru: [
