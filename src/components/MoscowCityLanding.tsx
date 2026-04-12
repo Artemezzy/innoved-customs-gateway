@@ -2,14 +2,29 @@ import { Link } from 'react-router-dom';
 import { Language } from '@/contexts/LanguageContext';
 import { CustomsCalculator } from '@/components/CustomsCalculator';
 import { Button } from '@/components/ui/button';
-import { Testimonials } from '@/components/Testimonials';
 import { CaseStudies } from '@/components/CaseStudies';
-import { Phone, ShieldCheck, Globe, Ship, MapPin, FileText, Calculator, Award, ClipboardList, PackageCheck, Truck } from 'lucide-react';
+import { Phone, ShieldCheck, Globe, Ship, MapPin, FileText, Calculator, Award, ClipboardList, PackageCheck, Truck, Star } from 'lucide-react';
 import { cities } from '@/data/cities';
+import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import Autoplay from 'embla-carousel-autoplay';
+import { useRef } from 'react';
 import certBkBest from '@/assets/cert-bk-best.webp';
 import certGhv from '@/assets/cert-ghv.webp';
 import gallery01 from '@/assets/gallery-01.png';
 import gallery03 from '@/assets/gallery-03.png';
+import victoriaPhoto from '@/assets/testimonial-victoria.webp';
+import svetlanaPhoto from '@/assets/testimonial-svetlana.webp';
+import bairPhoto from '@/assets/testimonial-bair.webp';
+import alexanderPhoto from '@/assets/testimonial-alexander.webp';
+
+const testimonials = [
+  { name: { ru: 'Александр М.', en: 'Alexander M.' }, company: { ru: 'ООО "ТСЛОГИСТИКА"', en: 'TSLOGISTIKA LLC' }, text: { ru: 'Работаем с ИННОВЭД с лета 2025 года. Всегда быстрое оформление документов и профессиональный подход.', en: 'Working with INNOVAD since summer 2025. Always quick processing and professional approach.' }, initials: 'АМ', rating: 5, photo: alexanderPhoto },
+  { name: { ru: 'Виктория С.', en: 'Victoria S.' }, company: { ru: 'ИП Староспичихина В.', en: 'IE Starospichihina V.' }, text: { ru: 'Очень удобно работать дистанционно — всё решается оперативно через мессенджеры.', en: 'Very convenient to work remotely — everything resolved via messengers.' }, initials: 'ВС', rating: 5, photo: victoriaPhoto },
+  { name: { ru: 'Светлана К.', en: 'Svetlana K.' }, company: { ru: 'ООО "Мебельный Мир"', en: 'Furniture World LLC' }, text: { ru: 'Грамотные специалисты, помогли с сертификацией и оформлением сложного груза.', en: 'Competent specialists, helped with certification and clearance of complex cargo.' }, initials: 'СК', rating: 5, photo: svetlanaPhoto },
+  { name: { ru: 'Баир Д.', en: 'Bair D.' }, company: { ru: 'ООО "ВостокТрейд"', en: 'VostokTrade LLC' }, text: { ru: 'Надёжный партнёр для ВЭД. Быстро решают любые вопросы с таможней.', en: 'Reliable FTA partner. Quickly resolve any customs issues.' }, initials: 'БД', rating: 5, photo: bairPhoto },
+];
 
 const whyItems = {
   ru: [
@@ -63,6 +78,7 @@ interface MoscowCityLandingProps {
 
 export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText }: MoscowCityLandingProps) {
   const why = whyItems[language];
+  const autoplayPlugin = useRef(Autoplay({ delay: 7000, stopOnInteraction: true, stopOnMouseEnter: true }));
   const otherCities = cities.filter(c => c.slug !== 'moskva').slice(0, 15);
   const ui = language === 'ru'
     ? { contactUs: 'Оставить заявку', otherCities: 'Услуги в других городах' }
@@ -232,7 +248,38 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
               <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-6 text-left">
                 {language === 'ru' ? 'Отзывы клиентов' : 'Client Testimonials'}
               </h2>
-              <Testimonials language={language} />
+              <Carousel opts={{ align: 'center', loop: true }} plugins={[autoplayPlugin.current]} className="w-full">
+                <CarouselContent>
+                  {testimonials.map((t, i) => (
+                    <CarouselItem key={i}>
+                      <Card className="bg-card shadow-sm border border-border">
+                        <CardContent className="p-5">
+                          <div className="flex gap-1 mb-3">
+                            {Array.from({ length: t.rating }).map((_, j) => (
+                              <Star key={j} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                            ))}
+                          </div>
+                          <blockquote className="text-sm text-foreground mb-4 leading-relaxed">
+                            "{t.text[language]}"
+                          </blockquote>
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-9 w-9 bg-primary">
+                              {t.photo && <AvatarImage src={t.photo} alt={t.name.ru} className="object-cover" />}
+                              <AvatarFallback className="bg-primary text-primary-foreground font-semibold text-xs">{t.initials}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <div className="font-semibold text-foreground text-sm">{t.name[language]}</div>
+                              <div className="text-xs text-muted-foreground">{t.company[language]}</div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
             </div>
             {/* Certificates right */}
             <div className="lg:w-1/2">
