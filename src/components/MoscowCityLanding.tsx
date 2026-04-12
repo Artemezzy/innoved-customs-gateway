@@ -116,7 +116,7 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
       </section>
 
       {/* Services */}
-      <section className="py-16 md:py-20 bg-background">
+      <section className="py-10 md:py-14 bg-background">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-10 text-left">
             {language === 'ru' ? 'Услуги компании ООО «ИННОВЭД»' : 'INNOVAD LLC Services'}
@@ -138,14 +138,14 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
       </section>
 
       {/* Pricing */}
-      <section className="py-16 md:py-20 bg-muted/30">
+      <section className="py-10 md:py-14 bg-muted/30">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-10 text-left">
             {language === 'ru' ? 'Стоимость наших услуг' : 'Our Service Pricing'}
           </h2>
           <div className="flex flex-col md:flex-row gap-8 items-stretch">
             <div className="md:w-1/2">
-              <img src={gallery01} alt={language === 'ru' ? 'Таможенное оформление в Москве — ИННОВЭД' : 'Customs clearance in Moscow — INNOVAD'} className="w-full h-full object-cover rounded-2xl" loading="lazy" />
+              <img src={gallery01} alt={language === 'ru' ? 'Таможенное оформление в Москве — ИННОВЭД' : 'Customs clearance in Moscow — INNOVAD'} className="w-full rounded-2xl" loading="lazy" />
             </div>
             <div className="md:w-1/2 rounded-2xl bg-card border border-border p-8 flex flex-col justify-center">
               <p className="text-muted-foreground leading-relaxed mb-4">
@@ -169,7 +169,7 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
       </section>
 
       {/* Customs offices table */}
-      <section className="py-16 md:py-20 bg-background">
+      <section className="py-10 md:py-14 bg-background">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-10 text-left">
             {language === 'ru' ? 'С какими таможнями мы работаем' : 'Customs offices we work with'}
@@ -200,7 +200,7 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
       </section>
 
       {/* Cargo types */}
-      <section className="py-16 md:py-20 bg-muted/30">
+      <section className="py-10 md:py-14 bg-muted/30">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-10 text-left">
             {language === 'ru' ? 'Виды грузов' : 'Cargo Types'}
@@ -217,14 +217,14 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
               </ul>
             </div>
             <div className="md:w-1/2">
-              <img src={gallery03} alt={language === 'ru' ? 'Виды грузов для таможенного оформления' : 'Cargo types for customs clearance'} className="w-full h-full object-cover rounded-2xl" loading="lazy" />
+              <img src={gallery03} alt={language === 'ru' ? 'Виды грузов для таможенного оформления' : 'Cargo types for customs clearance'} className="w-full rounded-2xl" loading="lazy" />
             </div>
           </div>
         </div>
       </section>
 
       {/* Certificates */}
-      <section className="py-16 md:py-20 bg-background">
+      <section className="py-10 md:py-14 bg-background">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-10 text-left">
             {language === 'ru' ? 'Сертификаты' : 'Certificates'}
@@ -253,7 +253,7 @@ export function MoscowCityLanding({ language, heroTitle, heroSubtitle, introText
       <CaseStudies language={language} />
 
       {/* Other cities */}
-      <section className="py-16 md:py-20 bg-background">
+      <section className="py-10 md:py-14 bg-background">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-10 text-left">
             {ui.otherCities}
