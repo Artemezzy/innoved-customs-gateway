@@ -1,104 +1,37 @@
 import { Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SEOHead } from '@/components/SEOHead';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { cities } from '@/data/cities';
 import { QuickContactForm } from '@/components/QuickContactForm';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CaseStudies } from '@/components/CaseStudies';
 import {
-  MapPin, ArrowRight, Phone, CheckCircle, ShieldCheck, Globe, Ship,
-  ClipboardList, Search, FileText, ScanLine, PackageCheck, Scale, HelpCircle, Briefcase
+  MapPin, Phone, ShieldCheck, Globe, Ship, Scale,
+  PackageCheck, ClipboardList, Calculator, Award, FileText, Truck, Star,
 } from 'lucide-react';
 import { analytics } from '@/utils/analytics';
+import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import Autoplay from 'embla-carousel-autoplay';
 import heroBg from '@/assets/hero-bg.jpg';
+import certBkBest from '@/assets/cert-bk-best.webp';
+import certGhv from '@/assets/cert-ghv.webp';
+import gallery01 from '@/assets/gallery-01.png';
+import gallery03 from '@/assets/gallery-03.png';
+import victoriaPhoto from '@/assets/testimonial-victoria.webp';
+import svetlanaPhoto from '@/assets/testimonial-svetlana.webp';
+import bairPhoto from '@/assets/testimonial-bair.webp';
+import alexanderPhoto from '@/assets/testimonial-alexander.webp';
 
-const content = {
-  ru: {
-    heroTitle: 'ТАМОЖЕННЫЙ БРОКЕР',
-    heroDesc: 'Таможенный брокер — это лицензированный специалист, который берёт на себя все вопросы взаимодействия с таможенными органами: подготовку документов, подачу деклараций, расчёт платежей и контроль выпуска грузов. Если вы импортируете или экспортируете товары, брокер экономит ваше время и защищает от штрафов и задержек.',
-    whoTitle: 'Кто такой таможенный брокер',
-    whoText: 'Таможенный брокер (таможенный представитель) — юридическое лицо, включённое в Реестр таможенных представителей и уполномоченное совершать таможенные операции от имени декларанта. Брокер несёт солидарную ответственность за правильность декларирования, соблюдение запретов и ограничений, полноту уплаты таможенных платежей. Работа с профессиональным брокером — это гарантия легального оформления, минимизации рисков и оптимизации расходов.',
-    servicesTitle: 'Какие услуги оказывает таможенный брокер',
-    services: [
-      'Подготовка и подача таможенных деклараций',
-      'Классификация товаров по ТН ВЭД',
-      'Расчёт таможенных платежей и пошлин',
-      'Получение разрешительных документов и сертификатов',
-      'Консультации по вопросам ВЭД',
-      'Представление интересов в таможенных органах',
-      'Организация досмотра и экспертиз',
-      'Сопровождение таможенного транзита',
-    ],
-    whenTitle: 'Когда нужен таможенный брокер',
-    whenItems: [
-      'Первый импорт или экспорт — нет опыта работы с таможней',
-      'Сложные или подсанкционные товары — высокий риск ошибок',
-      'Оптимизация таможенных платежей — выбор кода ТН ВЭД, льгот',
-      'Таможенная проверка или корректировка стоимости',
-      'Большие объёмы поставок — нужна автоматизация и скорость',
-      'Удалённая работа — груз в одном городе, вы в другом',
-    ],
-    stepsTitle: 'Этапы работы с таможенным брокером',
-    steps: [
-      'Заявка и первичная консультация: обсуждаем задачу, считаем стоимость',
-      'Анализ документов и товара: проверяем контракт, инвойсы, сертификаты',
-      'Классификация по ТН ВЭД: подбираем оптимальный код товара',
-      'Подготовка и подача декларации: формируем ДТ и подаём в таможню',
-      'Таможенный контроль: сопровождаем проверку и досмотр',
-      'Уплата платежей и выпуск: обеспечиваем оплату и получаем выпуск',
-    ],
-    geoTitle: 'География услуг',
-    geoDesc: 'Мы оказываем услуги таможенного оформления в ключевых логистических центрах России. Выберите ваш город:',
-    ctaTitle: 'Нужна помощь с таможенным оформлением?',
-    ctaText: 'Оставьте заявку — мы перезвоним в течение 15 минут и бесплатно проконсультируем по вашему грузу.',
-    ctaButton: 'Оставить заявку',
-    step: 'Этап',
-    of: 'из',
-  },
-  en: {
-    heroTitle: 'CUSTOMS BROKER',
-    heroDesc: 'A customs broker is a licensed specialist who handles all interactions with customs authorities: document preparation, declaration filing, duty calculation, and cargo release control. If you import or export goods, a broker saves your time and protects you from fines and delays.',
-    whoTitle: 'What is a Customs Broker',
-    whoText: 'A customs broker (customs representative) is a legal entity registered in the Customs Representatives Registry, authorized to perform customs operations on behalf of the declarant. The broker bears joint liability for correct declaration, compliance with prohibitions and restrictions, and full payment of customs duties. Working with a professional broker guarantees legal clearance, risk minimization, and cost optimization.',
-    servicesTitle: 'Customs Broker Services',
-    services: [
-      'Preparation and filing of customs declarations',
-      'Product classification by HS codes',
-      'Calculation of customs duties and payments',
-      'Obtaining permits and certificates',
-      'Foreign trade consulting',
-      'Representation before customs authorities',
-      'Inspection and expertise coordination',
-      'Customs transit support',
-    ],
-    whenTitle: 'When Do You Need a Customs Broker',
-    whenItems: [
-      'First import or export — no experience with customs',
-      'Complex or regulated goods — high risk of errors',
-      'Customs payment optimization — HS code selection, benefits',
-      'Customs audit or value adjustment',
-      'High shipment volumes — need automation and speed',
-      'Remote processing — cargo in one city, you in another',
-    ],
-    stepsTitle: 'How We Work Together',
-    steps: [
-      'Request and initial consultation: discuss the task, calculate costs',
-      'Document and product analysis: review contract, invoices, certificates',
-      'HS code classification: select the optimal product code',
-      'Declaration preparation and filing: create and submit customs declaration',
-      'Customs control: accompany inspection and examination',
-      'Payment and release: ensure duty payment and obtain release',
-    ],
-    geoTitle: 'Service Locations',
-    geoDesc: 'We provide customs clearance services in key logistics hubs across Russia. Select your city:',
-    ctaTitle: 'Need Help with Customs Clearance?',
-    ctaText: "Submit a request — we'll call back within 15 minutes and provide a free consultation on your cargo.",
-    ctaButton: 'Submit a request',
-    step: 'Step',
-    of: 'of',
-  },
-};
+const testimonials = [
+  { name: { ru: 'Александр М.', en: 'Alexander M.' }, company: { ru: 'ООО "ТСЛОГИСТИКА"', en: 'TSLOGISTIKA LLC' }, text: { ru: 'Работаем с ИННОВЭД с лета 2025 года. Всегда быстрое оформление документов и профессиональный подход.', en: 'Working with INNOVAD since summer 2025. Always quick processing and professional approach.' }, initials: 'АМ', rating: 5, photo: alexanderPhoto },
+  { name: { ru: 'Виктория С.', en: 'Victoria S.' }, company: { ru: 'ИП Староспичихина В.', en: 'IE Starospichihina V.' }, text: { ru: 'Очень удобно работать дистанционно — всё решается оперативно через мессенджеры.', en: 'Very convenient to work remotely — everything resolved via messengers.' }, initials: 'ВС', rating: 5, photo: victoriaPhoto },
+  { name: { ru: 'Светлана К.', en: 'Светлана К.' }, company: { ru: 'ООО "Мебельный Мир"', en: 'Furniture World LLC' }, text: { ru: 'Грамотные специалисты, помогли с сертификацией и оформлением сложного груза.', en: 'Competent specialists, helped with certification and clearance of complex cargo.' }, initials: 'СК', rating: 5, photo: svetlanaPhoto },
+  { name: { ru: 'Баир Д.', en: 'Bair D.' }, company: { ru: 'ООО "ВостокТрейд"', en: 'VostokTrade LLC' }, text: { ru: 'Надёжный партнёр для ВЭД. Быстро решают любые вопросы с таможней.', en: 'Reliable FTA partner. Quickly resolve any customs issues.' }, initials: 'БД', rating: 5, photo: bairPhoto },
+];
 
 const whyItems = {
   ru: [
@@ -115,42 +48,66 @@ const whyItems = {
   ],
 };
 
-const stepIcons = [
-  { id: 'request', icon: ClipboardList },
-  { id: 'analysis', icon: Search },
-  { id: 'classify', icon: FileText },
-  { id: 'declare', icon: ScanLine },
-  { id: 'control', icon: PackageCheck },
-  { id: 'release', icon: ShieldCheck },
+const services = [
+  { icon: Ship, text: { ru: 'Таможенное оформление экспорта при вывозе товаров с территории ЕАЭС', en: 'Export customs clearance for goods leaving the EAEU territory' } },
+  { icon: PackageCheck, text: { ru: 'Таможенное оформление импорта при ввозе товаров с территории ЕАЭС', en: 'Import customs clearance for goods entering the EAEU territory' } },
+  { icon: ClipboardList, text: { ru: 'Консультация по вопросам ВЭД', en: 'Foreign trade consulting' } },
+  { icon: Calculator, text: { ru: 'Рассчёт таможенных платежей', en: 'Customs duty calculation' } },
+  { icon: Award, text: { ru: 'Подготовка сертификатов и деклараций соответствия', en: 'Preparation of certificates and declarations of conformity' } },
+  { icon: FileText, text: { ru: 'Подготовка товаросопроводительных документов', en: 'Preparation of shipping documents' } },
 ];
 
-const cityRegions = {
-  ru: [
-    { name: 'Центральная Россия', slugs: ['moskva', 'nizhny-novgorod', 'voronezh', 'yaroslavl'] },
-    { name: 'Северо-Запад', slugs: ['sankt-peterburg'] },
-    { name: 'Юг России', slugs: ['krasnodar', 'novorossiysk', 'rostov-na-donu', 'volgograd', 'makhachkala'] },
-    { name: 'Поволжье', slugs: ['kazan', 'samara', 'saratov', 'tolyatti', 'ulyanovsk', 'izhevsk'] },
-    { name: 'Урал', slugs: ['ekaterinburg', 'chelyabinsk', 'tyumen'] },
-    { name: 'Сибирь', slugs: ['novosibirsk', 'omsk', 'krasnoyarsk', 'barnaul', 'irkutsk'] },
-    { name: 'Дальний Восток', slugs: ['vladivostok', 'khabarovsk', 'nakhodka', 'zabaykalsk'] },
-  ],
-  en: [
-    { name: 'Central Russia', slugs: ['moskva', 'nizhny-novgorod', 'voronezh', 'yaroslavl'] },
-    { name: 'Northwest', slugs: ['sankt-peterburg'] },
-    { name: 'Southern Russia', slugs: ['krasnodar', 'novorossiysk', 'rostov-na-donu', 'volgograd', 'makhachkala'] },
-    { name: 'Volga Region', slugs: ['kazan', 'samara', 'saratov', 'tolyatti', 'ulyanovsk', 'izhevsk'] },
-    { name: 'Ural', slugs: ['ekaterinburg', 'chelyabinsk', 'tyumen'] },
-    { name: 'Siberia', slugs: ['novosibirsk', 'omsk', 'krasnoyarsk', 'barnaul', 'irkutsk'] },
-    { name: 'Far East', slugs: ['vladivostok', 'khabarovsk', 'nakhodka', 'zabaykalsk'] },
-  ],
+const cargoTypes = [
+  'Продукты питания', 'Электроника', 'Мебель и фурнитура', 'Бытовая техника',
+  'Промышленное оборудование', 'Станки', 'Сборные', 'Контейнерные',
+  'Генеральные', 'Одежда', 'Автозапчасти',
+];
+
+const cargoTypesEn = [
+  'Food products', 'Electronics', 'Furniture & fittings', 'Household appliances',
+  'Industrial equipment', 'Machine tools', 'Consolidated', 'Containerized',
+  'General cargo', 'Clothing', 'Auto parts',
+];
+
+const content = {
+  ru: {
+    heroTitle: 'ТАМОЖЕННЫЙ БРОКЕР',
+    heroDesc: 'Таможенный брокер — это лицензированный специалист, который берёт на себя все вопросы взаимодействия с таможенными органами: подготовку документов, подачу деклараций, расчёт платежей и контроль выпуска грузов. Если вы импортируете или экспортируете товары, брокер экономит ваше время и защищает от штрафов и задержек.',
+    ctaButton: 'Оставить заявку',
+    citiesTitle: 'Города нашего присутствия',
+    servicesTitle: 'Услуги компании ООО «ИННОВЭД»',
+    pricingTitle: 'Стоимость наших услуг',
+    cargoTitle: 'Виды грузов',
+    certsTitle: 'Сертификаты',
+    reviewsTitle: 'Отзывы клиентов',
+    casesTitle: 'Наши кейсы',
+    pricingText1: 'ООО «ИННОВЭД» — ваш надежный партнер в сфере таможенного оформления по всей России. Мы предлагаем комплексные решения по подготовке и подаче всей необходимой документации, обеспечивая оперативное прохождение товаров через таможенный контроль без задержек.',
+    pricingText2: 'Мы ценим время и интересы наших клиентов, поэтому предлагаем прозрачные и гибкие тарифы, рассчитанные под конкретные задачи вашего бизнеса. При большом объеме поставок предоставляются индивидуальные условия, а также выгодные скидки на оформление деклараций.',
+    pricingText3: 'Выбирая «ИННОВЭД», вы получаете гарантированное качество услуг, персональное сопровождение на каждом этапе взаимодействия и уверенность в том, что ваш груз пройдет все таможенные процедуры корректно и в срок.',
+  },
+  en: {
+    heroTitle: 'CUSTOMS BROKER',
+    heroDesc: 'A customs broker is a licensed specialist who handles all interactions with customs authorities: document preparation, declaration filing, duty calculation, and cargo release control. If you import or export goods, a broker saves your time and protects you from fines and delays.',
+    ctaButton: 'Submit a request',
+    citiesTitle: 'Our Locations',
+    servicesTitle: 'INNOVAD LLC Services',
+    pricingTitle: 'Our Service Pricing',
+    cargoTitle: 'Cargo Types',
+    certsTitle: 'Certificates',
+    reviewsTitle: 'Client Testimonials',
+    casesTitle: 'Our Case Studies',
+    pricingText1: 'INNOVAD LLC is your reliable partner in customs clearance across Russia. We offer comprehensive solutions for preparing and submitting all necessary documentation, ensuring fast passage of goods through customs control without delays.',
+    pricingText2: 'We value our clients\' time and interests, offering transparent and flexible tariffs tailored to your specific business needs. Volume discounts and loyalty programs are available for regular clients.',
+    pricingText3: 'By choosing INNOVAD, you get guaranteed service quality, personal support at every stage, and confidence that your cargo will pass all customs procedures correctly and on time.',
+  },
 };
 
 export default function BrokerPage() {
   const { language } = useLanguage();
   const t = content[language];
   const why = whyItems[language];
-  const regions = cityRegions[language];
-  const [activeTab, setActiveTab] = useState(stepIcons[0].id);
+  const autoplayPlugin = useRef(Autoplay({ delay: 7000, stopOnInteraction: true, stopOnMouseEnter: true }));
+  const [zoomedCert, setZoomedCert] = useState<string | null>(null);
 
   useEffect(() => {
     analytics.pageView('/tamozhennyj-broker', 'Таможенный брокер');
@@ -158,18 +115,13 @@ export default function BrokerPage() {
 
   return (
     <>
-      <SEOHead
-        language={language}
-        page="broker"
-        canonicalPath="/tamozhennyj-broker"
-      />
+      <SEOHead language={language} page="broker" canonicalPath="/tamozhennyj-broker" />
 
       <div className="min-h-screen bg-background">
         {/* Hero */}
         <section className="relative min-h-screen flex items-center overflow-hidden">
           <img src={heroBg} alt="" className="absolute inset-0 w-full h-full object-cover" loading="eager" />
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30" />
-
           <div className="relative z-10 container mx-auto px-4 pt-24 pb-12">
             <div className="flex flex-col lg:flex-row items-start gap-10 lg:gap-12">
               <div className="lg:w-3/5 flex flex-col items-start">
@@ -183,15 +135,12 @@ export default function BrokerPage() {
                   <Link to="/contact"><Phone className="w-5 h-5" />{t.ctaButton}</Link>
                 </Button>
               </div>
-
               <div className="lg:w-2/5 w-full max-w-md lg:max-w-none">
                 <div className="bg-black/40 backdrop-blur-md rounded-xl shadow-2xl overflow-hidden border border-white/10">
                   <QuickContactForm language={language} serviceName="Таможенный брокер" />
                 </div>
               </div>
             </div>
-
-            {/* Why cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-12 animate-fade-in" style={{ animationDelay: '0.5s' }}>
               <h3 className="sr-only">{language === 'ru' ? 'Преимущества работы с таможенным брокером ИННОВЭД' : 'Benefits of working with INNOVED customs broker'}</h3>
               {why.map((item, i) => {
@@ -212,160 +161,156 @@ export default function BrokerPage() {
           </div>
         </section>
 
-        <div className="container mx-auto px-4 py-12">
-          <div className="max-w-4xl mx-auto">
-
-            {/* Who is a broker */}
-            <section className="mb-16">
-              <div className="flex items-start gap-4 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
-                  <Briefcase className="w-6 h-6 text-accent" />
-                </div>
-                <div>
-                  <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground">{t.whoTitle}</h2>
-                </div>
-              </div>
-              <p className="text-muted-foreground leading-relaxed ml-16">{t.whoText}</p>
-            </section>
-
-            {/* Services */}
-            <section className="mb-16">
-              <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-8">{t.servicesTitle}</h2>
-              <div className="grid sm:grid-cols-2 gap-4">
-                {t.services.map((item, i) => (
-                  <div key={i} className="flex items-start gap-3 p-4 rounded-xl border border-border bg-card hover:border-accent/30 transition-colors">
-                    <CheckCircle className="w-5 h-5 text-accent shrink-0 mt-0.5" />
-                    <span className="text-sm text-foreground">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* When needed */}
-            <section className="mb-16">
-              <div className="flex items-start gap-4 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
-                  <HelpCircle className="w-6 h-6 text-accent" />
-                </div>
-                <div>
-                  <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground">{t.whenTitle}</h2>
-                </div>
-              </div>
-              <div className="space-y-3 ml-16">
-                {t.whenItems.map((item, i) => (
-                  <div key={i} className="flex items-start gap-3 p-4 rounded-xl border border-border bg-card">
-                    <CheckCircle className="w-5 h-5 text-accent shrink-0 mt-0.5" />
-                    <span className="text-sm text-foreground">{item}</span>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* Steps as Tabs */}
-            <section className="mb-16">
-              <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-8">{t.stepsTitle}</h2>
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="hidden md:grid w-full h-auto p-2 bg-muted/50 rounded-xl mb-8" style={{ gridTemplateColumns: `repeat(${stepIcons.length}, minmax(0, 1fr))` }}>
-                  {t.steps.map((item, index) => {
-                    const StepIcon = stepIcons[index].icon;
-                    const tabId = stepIcons[index].id;
-                    return (
-                      <TabsTrigger key={tabId} value={tabId} className="flex flex-col items-center gap-2 py-4 px-2 whitespace-normal data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-lg transition-all duration-300">
-                        <div className="relative">
-                          <StepIcon className="w-5 h-5" />
-                          <span className="absolute -top-1 -right-2 w-4 h-4 rounded-full bg-accent/20 text-[10px] flex items-center justify-center font-bold">{index + 1}</span>
-                        </div>
-                        <span className="text-xs font-medium text-center leading-tight">{item.length > 40 ? item.split(':')[0] : item}</span>
-                      </TabsTrigger>
-                    );
-                  })}
-                </TabsList>
-
-                <TabsList className="md:hidden flex w-full overflow-x-auto gap-2 h-auto p-2 bg-muted/50 rounded-xl mb-8 scrollbar-hide">
-                  {t.steps.map((_, index) => {
-                    const StepIcon = stepIcons[index].icon;
-                    const tabId = stepIcons[index].id;
-                    return (
-                      <TabsTrigger key={tabId} value={tabId} className="flex-shrink-0 flex flex-col items-center gap-1 py-3 px-3 whitespace-normal data-[state=active]:bg-accent data-[state=active]:text-accent-foreground rounded-lg transition-all duration-300 min-w-[70px]">
-                        <StepIcon className="w-4 h-4" />
-                        <span className="text-[10px] font-medium text-center leading-tight">{index + 1}</span>
-                      </TabsTrigger>
-                    );
-                  })}
-                </TabsList>
-
-                {t.steps.map((item, index) => {
-                  const StepIcon = stepIcons[index].icon;
-                  const tabId = stepIcons[index].id;
-                  return (
-                    <TabsContent key={tabId} value={tabId} className="mt-0 animate-fade-in">
-                      <div className="bg-card border border-border rounded-2xl p-8 md:p-10 shadow-card">
-                        <div className="flex flex-col md:flex-row gap-6 md:gap-10 items-start">
-                          <div className="flex-shrink-0 w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-accent/10 flex items-center justify-center">
-                            <StepIcon className="w-8 h-8 md:w-10 md:h-10 text-accent" />
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-2xl md:text-3xl font-bold text-foreground mb-3">{t.step} {index + 1}</p>
-                            <p className="text-foreground/80 leading-relaxed">{item}</p>
-                          </div>
-                        </div>
-                        <div className="mt-8 pt-6 border-t border-border">
-                          <div className="flex items-center justify-between text-sm text-muted-foreground">
-                            <span>{t.step} {index + 1} {t.of} {t.steps.length}</span>
-                            <div className="flex gap-1">
-                              {t.steps.map((_, i) => (
-                                <button key={i} onClick={() => setActiveTab(stepIcons[i].id)} className={`w-2 h-2 rounded-full transition-all duration-300 ${i === index ? 'bg-accent w-6' : i < index ? 'bg-accent/60' : 'bg-muted-foreground/30'}`} />
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </TabsContent>
-                  );
-                })}
-              </Tabs>
-            </section>
-
-            {/* Geography by regions */}
-            <section className="mb-16">
-              <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-4">{t.geoTitle}</h2>
-              <p className="text-muted-foreground mb-8">{t.geoDesc}</p>
-              <div className="space-y-8">
-                {regions.map((region) => (
-                  <div key={region.name}>
-                    <h3 className="text-lg font-semibold text-foreground mb-3">{region.name}</h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-                      {region.slugs.map((slug) => {
-                        const city = cities.find(c => c.slug === slug);
-                        if (!city) return null;
-                        return (
-                          <Button key={slug} variant="outline" className="justify-start text-sm h-auto py-2.5 px-4 whitespace-normal text-left hover:border-accent hover:text-accent gap-2" asChild>
-                            <Link to={`/tamozhennyj-broker/${slug}`}>
-                              <MapPin className="w-3.5 h-3.5 shrink-0" />
-                              {city.name[language]}
-                            </Link>
-                          </Button>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-
-            {/* CTA */}
-            <div className="bg-accent/5 rounded-xl p-8 text-center mb-16 border border-accent/20">
-              <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-4">{t.ctaTitle}</h2>
-              <p className="text-muted-foreground leading-relaxed mb-6 max-w-2xl mx-auto">{t.ctaText}</p>
-              <Link to="/contact">
-                <Button size="lg" className="gap-2 bg-accent hover:bg-accent/90 text-accent-foreground">
-                  <Phone className="w-4 h-4" />{t.ctaButton}
+        {/* Cities */}
+        <section className="py-10 md:py-14 bg-background">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-8">{t.citiesTitle}</h2>
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-7 gap-3">
+              {cities.map(city => (
+                <Button key={city.slug} variant="outline" className="text-sm h-auto py-3 px-4 whitespace-normal text-center hover:border-accent hover:text-accent gap-2" asChild>
+                  <Link to={`/tamozhennyj-broker/${city.slug}`}>
+                    <MapPin className="w-3.5 h-3.5 shrink-0" />
+                    {city.name[language]}
+                  </Link>
                 </Button>
-              </Link>
+              ))}
             </div>
           </div>
-        </div>
+        </section>
+
+        {/* Services */}
+        <section className="py-10 md:py-14 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-10">{t.servicesTitle}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {services.map((s, i) => {
+                const Icon = s.icon;
+                return (
+                  <div key={i} className="p-6 rounded-2xl border border-border bg-card hover:border-accent hover:shadow-lg transition-all duration-300 flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+                      <Icon className="w-6 h-6 text-accent" />
+                    </div>
+                    <p className="text-foreground font-medium leading-snug">{s.text[language]}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Pricing */}
+        <section className="py-10 md:py-14 bg-background">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-10">{t.pricingTitle}</h2>
+            <div className="flex flex-col md:flex-row gap-8 items-stretch">
+              <div className="md:w-1/2">
+                <img src={gallery01} alt={language === 'ru' ? 'Таможенное оформление — ИННОВЭД' : 'Customs clearance — INNOVAD'} className="w-full rounded-2xl" loading="lazy" />
+              </div>
+              <div className="md:w-1/2 rounded-2xl bg-card border border-border p-8 flex flex-col justify-center">
+                <p className="text-muted-foreground leading-relaxed mb-4">{t.pricingText1}</p>
+                <p className="text-muted-foreground leading-relaxed mb-4">{t.pricingText2}</p>
+                <p className="text-muted-foreground leading-relaxed">{t.pricingText3}</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Cargo Types */}
+        <section className="py-10 md:py-14 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-10">{t.cargoTitle}</h2>
+            <div className="flex flex-col md:flex-row gap-8 items-stretch">
+              <div className="md:w-1/2 rounded-2xl bg-card border border-border p-8 flex flex-col justify-center">
+                <ul className="space-y-3">
+                  {(language === 'ru' ? cargoTypes : cargoTypesEn).map((item, i) => (
+                    <li key={i} className="flex items-center gap-3">
+                      <Truck className="w-4 h-4 text-accent flex-shrink-0" />
+                      <span className="text-foreground">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="md:w-1/2">
+                <img src={gallery03} alt={language === 'ru' ? 'Виды грузов для таможенного оформления' : 'Cargo types for customs clearance'} className="w-full rounded-2xl" loading="lazy" />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Certificates & Testimonials */}
+        <section className="py-10 md:py-14 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col lg:flex-row gap-8">
+              <div className="lg:w-1/2">
+                <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-6">{t.certsTitle}</h2>
+                <div className="grid grid-cols-1 gap-4">
+                  <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl border border-border bg-card">
+                    <img src={certBkBest} alt="Сертификат качества компании БК-БЕСТ ТЕК" className="w-36 h-auto rounded-lg shadow-sm cursor-pointer transition-transform duration-300 hover:scale-110" loading="lazy" onClick={() => setZoomedCert(certBkBest)} />
+                    <p className="text-foreground font-medium text-center sm:text-left text-sm">
+                      {language === 'ru' ? 'Сертификат качества компании БК-БЕСТ ТЕК' : 'Quality certificate of BK-BEST TEK company'}
+                    </p>
+                  </div>
+                  <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl border border-border bg-card">
+                    <img src={certGhv} alt="Сертификат качества компании GHV (Китай)" className="w-36 h-auto rounded-lg shadow-sm cursor-pointer transition-transform duration-300 hover:scale-110" loading="lazy" onClick={() => setZoomedCert(certGhv)} />
+                    <p className="text-foreground font-medium text-center sm:text-left text-sm">
+                      {language === 'ru' ? 'Сертификат качества компании GHV (Китай)' : 'Quality certificate of GHV company (China)'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="lg:w-1/2">
+                <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-6">{t.reviewsTitle}</h2>
+                <Carousel opts={{ align: 'center', loop: true }} plugins={[autoplayPlugin.current]} className="w-full">
+                  <CarouselContent>
+                    {testimonials.map((item, i) => (
+                      <CarouselItem key={i}>
+                        <Card className="bg-card shadow-sm border border-border">
+                          <CardContent className="p-5">
+                            <div className="flex gap-1 mb-3">
+                              {Array.from({ length: item.rating }).map((_, j) => (
+                                <Star key={j} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                              ))}
+                            </div>
+                            <blockquote className="text-sm text-foreground mb-4 leading-relaxed">
+                              "{item.text[language]}"
+                            </blockquote>
+                            <div className="flex items-center gap-3">
+                              <Avatar className="h-9 w-9 bg-primary">
+                                {item.photo && <AvatarImage src={item.photo} alt={item.name.ru} className="object-cover" />}
+                                <AvatarFallback className="bg-primary text-primary-foreground font-semibold text-xs">{item.initials}</AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <div className="font-semibold text-foreground text-sm">{item.name[language]}</div>
+                                <div className="text-xs text-muted-foreground">{item.company[language]}</div>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious />
+                  <CarouselNext />
+                </Carousel>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Cases */}
+        <section className="py-10 md:py-14 bg-muted/30">
+          <div className="container mx-auto px-4">
+            <h2 className="text-2xl md:text-3xl font-montserrat font-bold text-foreground mb-6">{t.casesTitle}</h2>
+            <CaseStudies language={language} />
+          </div>
+        </section>
       </div>
+
+      <Dialog open={!!zoomedCert} onOpenChange={() => setZoomedCert(null)}>
+        <DialogContent className="max-w-2xl p-2 bg-background">
+          {zoomedCert && <img src={zoomedCert} alt="Сертификат" className="w-full h-auto rounded-lg" />}
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
