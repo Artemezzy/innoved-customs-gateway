@@ -1,25 +1,68 @@
 
 
-## Plan: Add 2GIS Widget Below USP Tags in Hero Section
+## Переработка страницы /tamozhennyj-broker/moskva в кастомный лендинг
 
-**What**: Insert the 2GIS review/rating widget (`iframe`) directly below the three USP tags ("Бесплатная консультация", "Оформление от 5 000 ₽", "Расчёт платежей за один день") in the Hero component on the home page.
+### Что делаем
 
-**How**: In `src/components/Hero.tsx`, add an `iframe` element right after the USP tags `div` (after line 150), wrapped in a small container with matching animation delay. The iframe will use the provided 2GIS widget URL with `width="150px"` and `height="50px"`, styled to blend with the dark hero overlay (no border, slight margin-top).
+Страница Москвы переходит с общего шаблона `CityLanding` на кастомную структуру. Hero остаётся, всё остальное содержимое заменяется на 8 новых блоков.
 
-**File**: `src/components/Hero.tsx`
-- After the closing `</div>` of the USP tags block (line 150), insert:
-```tsx
-<div className="mt-4 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-  <iframe
-    frameBorder="0"
-    width="150"
-    height="50"
-    src="https://widget.2gis.ru/api/widget?org_id=70000001105785878&branch_id=70000001105785879&size=medium&theme=light"
-    title="2GIS Rating"
-    className="rounded-lg"
-  />
-</div>
-```
+### Структура страницы
 
-This places the widget naturally in the visual flow — under the USP badges, before the stats row, aligned left on desktop and centered on mobile (inheriting the parent's text alignment classes).
+**Hero** — без изменений: фон `port-bg.webp`, H1 «Таможенный брокер Москва», калькулятор, карточки преимуществ.
+
+**H2: Услуги компании ООО «ИННОВЭД»** — 6 карточек (3×2 grid) с hover-эффектом. Содержимое:
+1. Таможенное оформление экспорта при вывозе товаров с территории ЕАЭС
+2. Таможенное оформление импорта при ввозе товаров с территории ЕАЭС
+3. Консультация по вопросам ВЭД
+4. Рассчёт таможенных платежей
+5. Подготовка сертификатов и деклараций соответствия
+6. Подготовка товаросопроводительных документов
+
+**H2: Стоимость наших услуг** — слева изображение `/gallery/gallery-01.webp`, справа текст в закруглённом блоке. Город «Москве» подставляется из данных.
+
+**H2: С какими таможнями мы работаем** — таблица из Excel-файла, только строки по Москве:
+| Код | Название | Город | Адрес |
+|-----|----------|-------|-------|
+| 10132000 | Московская таможня | Москва | Георгиевский проспект, д. 9 |
+| 10001000 | Внуковская таможня | Москва | 1-й Рейсовый пр-д, д. 2, стр. 1 |
+| 10002000 | Домодедовская таможня | Домодедово | Территория аэропорта Домодедово, владение 1 |
+| 10005000 | Шереметьевская таможня | Химки (Шереметьево) | Территория международного аэропорта Шереметьево, владение 1 |
+
+**H2: Виды грузов** — слева список из 11 пунктов в закруглённом блоке, справа изображение `/gallery/gallery-03.webp`.
+
+**H2: Сертификаты** — два сертификата (C1.webp, C2.webp) в ряд, справа от каждого подпись.
+
+**H2: Отзывы клиентов** — встраиваем компонент `Testimonials`.
+
+**H2: Наши кейсы** — встраиваем компонент `CaseStudies`.
+
+**H2: Услуги в других городах** — 15 кнопок-ссылок (3×5 grid) на другие города.
+
+### Технические изменения
+
+**Подход**: Вместо изменения общего шаблона BrokerCityPage (который используется 28 городами), добавляем условную проверку: если `city === 'moskva'`, рендерим кастомный компонент `MoscowCityLanding`, иначе — стандартный `CityLanding`.
+
+**Файл `src/pages/BrokerCityPage.tsx`** (~200 строк нового кода):
+- Новый компонент `MoscowCityLanding` внутри файла
+- Импорт: `CaseStudies`, `Testimonials`
+- Hero: переиспользуем текущий Hero-блок (без изменений)
+- 6 карточек услуг: `grid grid-cols-1 md:grid-cols-3`, hover-эффект `hover:border-accent hover:shadow-lg transition-all`
+- Блок стоимости: `flex flex-col md:flex-row`, слева `<img>` gallery-01, справа текст в `rounded-2xl bg-card border`
+- Таблица таможен: стилизованная HTML-таблица с 4 строками (данные захардкожены для Москвы)
+- Виды грузов: `flex flex-col md:flex-row-reverse`, справа `<img>` gallery-03, слева список в `rounded-2xl`
+- Сертификаты: 2 изображения из `src/assets/` (скопируем C1.webp и C2.webp) с подписями
+- Testimonials и CaseStudies: прямой импорт компонентов
+- Другие города: `grid grid-cols-3 sm:grid-cols-5`, 15 кнопок
+
+**Копирование изображений**:
+- `C1.webp` → `src/assets/cert-bk-best.webp`
+- `C2.webp` → `src/assets/cert-ghv.webp`
+
+**Файл `scripts/prerender-meta.mjs`**:
+- В `generateCityPages()` добавить для `moskva` override массивов h2/h3:
+  - h2Override: массив из 8 заголовков (Услуги, Стоимость, Таможни, Виды грузов, Сертификаты, Отзывы, Кейсы, Другие города)
+  - h3Override: не требуется (нет H3 на странице)
+
+### Объём
+~200 строк кастомного компонента в BrokerCityPage.tsx, ~10 строк в prerender-meta.mjs, 2 файла изображений.
 

@@ -148,17 +148,6 @@ export function Hero({ language }: HeroProps) {
                 </span>
               ))}
             </div>
-
-            <div className="mt-4 animate-fade-in" style={{ animationDelay: '0.4s' }}>
-              <iframe
-                frameBorder="0"
-                width="150"
-                height="50"
-                src="https://widget.2gis.ru/api/widget?org_id=70000001105785878&branch_id=70000001105785879&size=medium&theme=light"
-                title="2GIS Rating"
-                className="rounded-lg"
-              />
-            </div>
           </div>
 
           {/* Right Column — Quick Contact Form */}
