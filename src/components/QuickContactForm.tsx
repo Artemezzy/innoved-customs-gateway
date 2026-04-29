@@ -26,11 +26,9 @@ const texts = {
     errorEmail: 'Укажите корректный адрес эл. почты',
     errorPhone: 'Укажите корректный номер телефона',
     errorGeneral: 'Произошла ошибка при отправке. Попробуйте позже.',
-    consent: 'Отправляя заявку, я даю согласие на обработку персональных данных, в соответствии с',
-    privacy: 'Политикой конфиденциальности',
-    and: 'и',
-    terms: 'Пользовательским соглашением',
-    consentEnd: ', ознакомление с текстом которых подтверждаю.',
+    consent: 'Нажимая кнопку «Отправить заявку», я даю свое согласие на обработку моих персональных данных, в соответствии с Федеральным законом от 27.07.2006 года №152-ФЗ «О персональных данных», на условиях и для целей, определенных в',
+    privacy: 'Политике обработки персональных данных',
+    consentEnd: '.',
   },
   en: {
     title: 'Submit a request',
@@ -44,11 +42,9 @@ const texts = {
     errorEmail: 'Please enter a valid email address',
     errorPhone: 'Please enter a valid phone number',
     errorGeneral: 'An error occurred. Please try again later.',
-    consent: 'By submitting, I consent to the processing of personal data in accordance with the',
-    privacy: 'Privacy Policy',
-    and: 'and',
-    terms: 'Terms of Service',
-    consentEnd: ', confirming that I have read them.',
+    consent: 'By clicking "Send request", I consent to the processing of my personal data, in accordance with Federal Law No. 152-FZ of 27.07.2006 "On Personal Data", under the terms and for the purposes defined in the',
+    privacy: 'Personal Data Processing Policy',
+    consentEnd: '.',
   },
 };
 
@@ -150,9 +146,7 @@ export function QuickContactForm({ language, serviceName }: QuickContactFormProp
       </form>
       <p className="mt-4 text-[11px] leading-relaxed text-primary-foreground/60">
         {t.consent}{' '}
-        <Link to="/privacy" className="text-accent hover:underline">{t.privacy}</Link>{' '}
-        {t.and}{' '}
-        <Link to="/terms" className="text-accent hover:underline">{t.terms}</Link>
+        <Link to="/privacy" className="text-accent hover:underline">{t.privacy}</Link>
         {t.consentEnd}
       </p>
     </div>

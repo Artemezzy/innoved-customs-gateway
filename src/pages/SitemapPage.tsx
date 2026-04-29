@@ -15,7 +15,7 @@ export default function SitemapPage() {
     { to: '/contact', label: language === 'ru' ? 'Контакты' : 'Contact' },
     { to: '/blog', label: language === 'ru' ? 'Блог' : 'Blog' },
     { to: '/faq', label: 'FAQ' },
-    { to: '/privacy', label: language === 'ru' ? 'Политика конфиденциальности' : 'Privacy Policy' },
+    { to: '/privacy', label: language === 'ru' ? 'Политика обработки персональных данных' : 'Privacy Policy' },
     { to: '/terms', label: language === 'ru' ? 'Пользовательское соглашение' : 'Terms of Service' },
   ];
 

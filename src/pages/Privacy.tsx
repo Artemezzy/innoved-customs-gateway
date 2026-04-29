@@ -4,7 +4,7 @@ import { PageHero } from '@/components/PageHero';
 
 const content = {
   ru: {
-    title: 'Политика конфиденциальности',
+    title: 'Политика обработки персональных данных',
     sections: [
       {
         title: '1. Общие положения',
