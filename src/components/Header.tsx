@@ -174,6 +174,14 @@ export function Header({ language, onLanguageChange }: HeaderProps) {
             >
               {text.cta}
             </Button>
+            <Link
+              to="/lk/login"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors w-full mt-2"
+            >
+              <User className="w-4 h-4" />
+              {language === 'ru' ? 'Личный кабинет' : 'Client area'}
+            </Link>
           </nav>
         )}
       </div>
