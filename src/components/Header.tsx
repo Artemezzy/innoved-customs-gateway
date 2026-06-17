@@ -127,6 +127,13 @@ export function Header({ language, onLanguageChange }: HeaderProps) {
             >
               {text.cta}
             </Button>
+            <Link
+              to="/lk/login"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-xs xl:text-sm font-medium hover:bg-primary/90 transition-colors whitespace-nowrap"
+            >
+              <User className="w-3.5 h-3.5" />
+              {language === 'ru' ? 'Личный кабинет' : 'Client area'}
+            </Link>
             <LanguageToggle currentLanguage={language} onLanguageChange={onLanguageChange} />
           </div>
 
