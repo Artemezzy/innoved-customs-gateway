@@ -1,0 +1,112 @@
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { lkApi } from '@/api/lkClient';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
+const schema = z.object({
+  client_id: z.coerce.number().min(1, 'Выберите клиента'),
+  title: z.string().min(3, 'Минимум 3 символа'),
+});
+type FormData = z.infer<typeof schema>;
+
+interface Props {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  fixedClientId?: number;
+}
+
+export function CreateShipmentModal({ open, onOpenChange, fixedClientId }: Props) {
+  const qc = useQueryClient();
+  const form = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: { client_id: fixedClientId || 0, title: '' },
+  });
+
+  const { data: clients } = useQuery({
+    queryKey: ['lk', 'clients'],
+    queryFn: () => lkApi.clients(),
+    enabled: open && !fixedClientId,
+  });
+
+  const create = useMutation({
+    mutationFn: (d: FormData) => lkApi.createShipment({ client_id: d.client_id, title: d.title }),
+    onSuccess: () => {
+      toast.success('Поставка создана');
+      qc.invalidateQueries({ queryKey: ['lk', 'shipments'] });
+      onOpenChange(false);
+      form.reset({ client_id: fixedClientId || 0, title: '' });
+    },
+    onError: (e: any) => toast.error(e.message || 'Ошибка'),
+  });
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Создать поставку</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={form.handleSubmit((d) => create.mutate(d))} className="space-y-3 py-2">
+          {!fixedClientId && (
+            <div>
+              <Label>Клиент</Label>
+              <Select
+                value={String(form.watch('client_id') || '')}
+                onValueChange={(v) => form.setValue('client_id', Number(v), { shouldValidate: true })}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Выберите клиента" />
+                </SelectTrigger>
+                <SelectContent>
+                  {clients?.map((c) => (
+                    <SelectItem key={c.id} value={String(c.id)}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {form.formState.errors.client_id && (
+                <p className="text-xs text-destructive mt-1">
+                  {form.formState.errors.client_id.message}
+                </p>
+              )}
+            </div>
+          )}
+          <div>
+            <Label htmlFor="title">Название поставки</Label>
+            <Input id="title" {...form.register('title')} />
+            {form.formState.errors.title && (
+              <p className="text-xs text-destructive mt-1">{form.formState.errors.title.message}</p>
+            )}
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+              Отмена
+            </Button>
+            <Button type="submit" disabled={create.isPending}>
+              {create.isPending ? 'Создание…' : 'Создать'}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}

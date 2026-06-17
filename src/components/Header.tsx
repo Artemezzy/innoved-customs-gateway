@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Send, Mail, Phone, Menu, X, Download } from 'lucide-react';
+import { Send, Mail, Phone, Menu, X, Download, User } from 'lucide-react';
 import maxIcon from '@/assets/max-icon-white.webp';
 import { analytics } from '@/utils/analytics';
 import { useState } from 'react';
@@ -127,6 +127,13 @@ export function Header({ language, onLanguageChange }: HeaderProps) {
             >
               {text.cta}
             </Button>
+            <Link
+              to="/lk/login"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-xs xl:text-sm font-medium hover:bg-primary/90 transition-colors whitespace-nowrap"
+            >
+              <User className="w-3.5 h-3.5" />
+              {language === 'ru' ? 'Личный кабинет' : 'Client area'}
+            </Link>
             <LanguageToggle currentLanguage={language} onLanguageChange={onLanguageChange} />
           </div>
 
@@ -167,6 +174,14 @@ export function Header({ language, onLanguageChange }: HeaderProps) {
             >
               {text.cta}
             </Button>
+            <Link
+              to="/lk/login"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors w-full mt-2"
+            >
+              <User className="w-4 h-4" />
+              {language === 'ru' ? 'Личный кабинет' : 'Client area'}
+            </Link>
           </nav>
         )}
       </div>
