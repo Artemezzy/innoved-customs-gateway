@@ -48,7 +48,7 @@ export function CreateShipmentModal({ open, onOpenChange, fixedClientId }: Props
   });
 
   const create = useMutation({
-    mutationFn: (d: FormData) => lkApi.createShipment(d),
+    mutationFn: (d: FormData) => lkApi.createShipment({ client_id: d.client_id, title: d.title }),
     onSuccess: () => {
       toast.success('Поставка создана');
       qc.invalidateQueries({ queryKey: ['lk', 'shipments'] });
