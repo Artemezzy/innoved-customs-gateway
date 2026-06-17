@@ -221,14 +221,18 @@ export async function mockMessages(shipmentId: number, _since?: number) {
   return _messages.filter((m) => m.shipment_id === shipmentId).sort((a, b) => (a.created_at < b.created_at ? -1 : 1));
 }
 
-export async function mockSendMessage(shipmentId: number, text: string) {
+export async function mockSendMessage(
+  shipmentId: number,
+  text: string,
+  sender?: { role: 'manager' | 'client'; name: string; user_id: number }
+) {
   await delay(120);
   const msg: Message = {
     id: _nextMsgId++,
     shipment_id: shipmentId,
-    user_id: 999,
-    sender_name: 'Вы',
-    role: 'client',
+    user_id: sender?.user_id ?? 999,
+    sender_name: sender?.name ?? 'Вы',
+    role: sender?.role ?? 'client',
     text,
     is_read: true,
     created_at: new Date().toISOString(),
