@@ -100,8 +100,12 @@ export const lkApi = {
           'GET',
           `/shipments/${shipmentId}/messages${since ? `?since=${since}` : ''}`
         ),
-  sendMessage: (shipmentId: number, text: string) =>
+  sendMessage: (
+    shipmentId: number,
+    text: string,
+    sender?: { role: 'manager' | 'client'; name: string; user_id: number }
+  ) =>
     USE_MOCK
-      ? mock.mockSendMessage(shipmentId, text)
+      ? mock.mockSendMessage(shipmentId, text, sender)
       : request<import('@/types/lk').Message>('POST', `/shipments/${shipmentId}/messages`, { text }),
 };
