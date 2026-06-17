@@ -1,68 +1,82 @@
+## Личный кабинет (ЛК) для INNOVED — план реализации
 
+Добавляем закрытую часть сайта `/lk/*` с авторизацией, ролями (manager/client), поставками, документами и чатом. Публичная часть сайта не меняется (кроме кнопки «Личный кабинет» в шапке).
 
-## Переработка страницы /tamozhennyj-broker/moskva в кастомный лендинг
+### 1. Маршрутизация и структура (src/App.tsx)
 
-### Что делаем
+Оборачиваем всё в новый `AuthProvider`. Внутри `BrowserRouter` → два «верхних» маршрута:
 
-Страница Москвы переходит с общего шаблона `CityLanding` на кастомную структуру. Hero остаётся, всё остальное содержимое заменяется на 8 новых блоков.
+- `/lk/login` и `/lk/*` — рендерятся БЕЗ публичного `Layout` (без Header/Footer), используют `LKLayout`.
+- `/*` — все существующие публичные роуты, как сейчас, внутри `Layout`. Ни один существующий путь не меняется.
 
-### Структура страницы
+```text
+<AuthProvider>
+  <BrowserRouter>
+    <LanguageProvider>
+      Routes:
+        /lk/login            → LKLoginPage (без LKLayout)
+        /lk/*                → LKLayout + вложенные Routes (dashboard, clients, clients/:id, shipments, shipments/:id, messages)
+        /*                   → Layout + все текущие публичные Routes без изменений
+```
 
-**Hero** — без изменений: фон `port-bg.webp`, H1 «Таможенный брокер Москва», калькулятор, карточки преимуществ.
+### 2. Новые файлы
 
-**H2: Услуги компании ООО «ИННОВЭД»** — 6 карточек (3×2 grid) с hover-эффектом. Содержимое:
-1. Таможенное оформление экспорта при вывозе товаров с территории ЕАЭС
-2. Таможенное оформление импорта при ввозе товаров с территории ЕАЭС
-3. Консультация по вопросам ВЭД
-4. Рассчёт таможенных платежей
-5. Подготовка сертификатов и деклараций соответствия
-6. Подготовка товаросопроводительных документов
+**Контекст и API**
 
-**H2: Стоимость наших услуг** — слева изображение `/gallery/gallery-01.webp`, справа текст в закруглённом блоке. Город «Москве» подставляется из данных.
+- `src/contexts/AuthContext.tsx` — token в памяти (не localStorage), user `{id,name,role,clientId}`, `login()`, `logout()`, `useAuth()`.
+- `src/api/lkClient.ts` — axios, baseURL `/api`, request-interceptor с `Authorization: Bearer`, response-interceptor: на 401 → `logout()` + редирект `/lk/login`.
+- `src/api/lkMock.ts` — мок-данные и mock-обработчики (флаг `USE_MOCK = true`), чтобы UI работал без бэка.
+- `src/types/lk.ts` — типы и константы `STATUS_LABELS`, `STATUS_COLORS` (как в ТЗ).
 
-**H2: С какими таможнями мы работаем** — таблица из Excel-файла, только строки по Москве:
-| Код | Название | Город | Адрес |
-|-----|----------|-------|-------|
-| 10132000 | Московская таможня | Москва | Георгиевский проспект, д. 9 |
-| 10001000 | Внуковская таможня | Москва | 1-й Рейсовый пр-д, д. 2, стр. 1 |
-| 10002000 | Домодедовская таможня | Домодедово | Территория аэропорта Домодедово, владение 1 |
-| 10005000 | Шереметьевская таможня | Химки (Шереметьево) | Территория международного аэропорта Шереметьево, владение 1 |
+**Layout и общие компоненты ЛК (`src/components/lk/`)**
 
-**H2: Виды грузов** — слева список из 11 пунктов в закруглённом блоке, справа изображение `/gallery/gallery-03.webp`.
+- `LKLayout.tsx` — сайдбар 240px, фон `hsl(214 84% 20%)`, логотип, навигация по роли, кнопка «Выйти», mobile drawer (shadcn Sheet), гард: нет токена → `Navigate /lk/login`.
+- `StatusBadge.tsx` — цветной пилл по `STATUS_COLORS/LABELS`.
+- `DocumentsPanel.tsx` — список карточек документов + Dialog загрузки (file input, Select doc_type, Switch видимости/редактируемости для менеджера), multipart POST.
+- `ChatPanel.tsx` — пузыри менеджер слева / клиент справа, имя+время, `useQuery` с `refetchInterval: 8000`, фиксированный ввод снизу.
+- `CreateClientModal.tsx`, `CreateShipmentModal.tsx` — Dialog + React Hook Form + Zod.
 
-**H2: Сертификаты** — два сертификата (C1.webp, C2.webp) в ряд, справа от каждого подпись.
+**Страницы (`src/pages/lk/`)**
 
-**H2: Отзывы клиентов** — встраиваем компонент `Testimonials`.
+- `LKLoginPage.tsx` — full-screen navy-gradient, центр-карточка, логотип `@/assets/logo.png`, email+password, toast ошибки, редирект по роли (manager → `/lk/dashboard`, client → `/lk/shipments`).
+- `LKDashboardPage.tsx` — 3 stat Cards + таблица клиентов (клик → детальная).
+- `LKClientsPage.tsx` — поиск + кнопка «Создать клиента» → модалка → после создания Dialog с логином/паролем и кнопками копирования.
+- `LKClientDetailPage.tsx` — карточка клиента + его поставки.
+- `LKShipmentsPage.tsx` — менеджер: фильтры статус+клиент; клиент: только свои, без фильтров. `StatusBadge` в строках.
+- `LKShipmentDetailPage.tsx` — 2 колонки (desktop): слева Tabs «Документы/Чат», справа карточка инфы. Менеджер — `Select` статуса; клиент — read-only `StatusBadge`.
+- `LKMessagesPage.tsx` — список поставок с непрочитанными, клик → `/lk/shipments/:id`.
 
-**H2: Наши кейсы** — встраиваем компонент `CaseStudies`.
+### 3. Изменения в существующих файлах
 
-**H2: Услуги в других городах** — 15 кнопок-ссылок (3×5 grid) на другие города.
+- `src/App.tsx` — перестройка `Routes` под схему выше; обернуть в `AuthProvider`. Все существующие публичные роуты сохраняются как есть.
+- `src/components/Header.tsx` — добавить кнопку «Личный кабинет» (`<Link to="/lk/login">` с иконкой `User` из lucide) в desktop-навигацию и в mobile-меню. Никакая другая логика шапки не меняется.
 
-### Технические изменения
+### 4. Технические детали
 
-**Подход**: Вместо изменения общего шаблона BrokerCityPage (который используется 28 городами), добавляем условную проверку: если `city === 'moskva'`, рендерим кастомный компонент `MoscowCityLanding`, иначе — стандартный `CityLanding`.
+- Только существующие shadcn/ui-компоненты: Button, Input, Card, Dialog, Sheet, Select, Tabs, Switch, Badge, Table, Label, Separator, ScrollArea, Skeleton, Alert, Form.
+- TanStack Query (`QueryClient` уже создан в App.tsx) для всех запросов; форма — React Hook Form + Zod.
+- Состояния: загрузка — `Skeleton`, ошибка — `Alert variant="destructive"`, успех — `sonner toast`.
+- Цвета — только семантические токены (`bg-primary`, `text-primary-foreground`, `bg-accent` …). Никаких hex/`text-white` напрямую — для тёмных пузырей чата использовать `bg-primary text-primary-foreground`.
+- Весь текст — русский. Языковой переключатель в ЛК не используется.
+- Токен только в памяти `AuthContext` (refresh страницы — повторный логин; это явное требование).
 
-**Файл `src/pages/BrokerCityPage.tsx`** (~200 строк нового кода):
-- Новый компонент `MoscowCityLanding` внутри файла
-- Импорт: `CaseStudies`, `Testimonials`
-- Hero: переиспользуем текущий Hero-блок (без изменений)
-- 6 карточек услуг: `grid grid-cols-1 md:grid-cols-3`, hover-эффект `hover:border-accent hover:shadow-lg transition-all`
-- Блок стоимости: `flex flex-col md:flex-row`, слева `<img>` gallery-01, справа текст в `rounded-2xl bg-card border`
-- Таблица таможен: стилизованная HTML-таблица с 4 строками (данные захардкожены для Москвы)
-- Виды грузов: `flex flex-col md:flex-row-reverse`, справа `<img>` gallery-03, слева список в `rounded-2xl`
-- Сертификаты: 2 изображения из `src/assets/` (скопируем C1.webp и C2.webp) с подписями
-- Testimonials и CaseStudies: прямой импорт компонентов
-- Другие города: `grid grid-cols-3 sm:grid-cols-5`, 15 кнопок
+### 5. Зависимость
 
-**Копирование изображений**:
-- `C1.webp` → `src/assets/cert-bk-best.webp`
-- `C2.webp` → `src/assets/cert-ghv.webp`
+Нужно добавить `axios` (в проекте его сейчас нет). Альтернатива — обёртка над `fetch`; если хотите без новой зависимости, скажите, и сделаю `lkClient` на `fetch`.
 
-**Файл `scripts/prerender-meta.mjs`**:
-- В `generateCityPages()` добавить для `moskva` override массивов h2/h3:
-  - h2Override: массив из 8 заголовков (Услуги, Стоимость, Таможни, Виды грузов, Сертификаты, Отзывы, Кейсы, Другие города)
-  - h3Override: не требуется (нет H3 на странице)
+### 6. Порядок реализации
 
-### Объём
-~200 строк кастомного компонента в BrokerCityPage.tsx, ~10 строк в prerender-meta.mjs, 2 файла изображений.
+1. `types/lk.ts` → `AuthContext` → `lkClient` + `lkMock`
+2. `LKLayout` + гард → `LKLoginPage` → подключить роуты в `App.tsx` → кнопка в `Header`
+3. `LKShipmentsPage` → `LKShipmentDetailPage` (+ `StatusBadge`, `DocumentsPanel`, `ChatPanel`)
+4. `LKClientsPage` (+ `CreateClientModal`) → `LKClientDetailPage` → `LKDashboardPage` → `LKMessagesPage`
 
+### Что НЕ делается
+
+- Бэкенд/Edge-функции не пишутся (фронт работает на моках через `USE_MOCK = true`); реальный `/api` подключается заменой флага.
+- Никаких изменений в публичных страницах, SEO, prerender-скрипте, переводах, формах сайта.
+
+### Уточняющие вопросы (не блокирующие, можно ответить «делай как удобно»)
+
+1. Добавлять `axios` или сделать `lkClient` на `fetch`? Делай как удобно.
+2. Кнопка «Личный кабинет» в шапке — для всех языков (RU/EN одинаково «Личный кабинет / Client area»)? Делай как удобно.
