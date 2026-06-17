@@ -129,7 +129,7 @@ export function Header({ language, onLanguageChange }: HeaderProps) {
             </Button>
             <Link
               to="/lk/login"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-xs xl:text-sm font-medium hover:bg-primary/90 transition-colors whitespace-nowrap"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white/10 text-primary-foreground text-xs xl:text-sm font-medium hover:bg-white/20 hover:text-primary-glow transition-colors whitespace-nowrap border border-white/20"
             >
               <User className="w-3.5 h-3.5" />
               {language === 'ru' ? 'Личный кабинет' : 'Client area'}
@@ -177,7 +177,7 @@ export function Header({ language, onLanguageChange }: HeaderProps) {
             <Link
               to="/lk/login"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors w-full mt-2"
+              className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-md bg-white/10 text-primary-foreground text-sm font-medium hover:bg-white/20 hover:text-primary-glow transition-colors w-full mt-2 border border-white/20"
             >
               <User className="w-4 h-4" />
               {language === 'ru' ? 'Личный кабинет' : 'Client area'}
