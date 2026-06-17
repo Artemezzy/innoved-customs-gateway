@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { Send, Mail, Phone, Menu, X, Download } from 'lucide-react';
+import { Send, Mail, Phone, Menu, X, Download, User } from 'lucide-react';
 import maxIcon from '@/assets/max-icon-white.webp';
 import { analytics } from '@/utils/analytics';
 import { useState } from 'react';
