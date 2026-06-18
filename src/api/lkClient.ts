@@ -1,8 +1,10 @@
 import { getAuthToken, triggerLogout } from '@/contexts/AuthContext';
 import * as mock from './lkMock';
+import type { LKUser } from '@/types/lk';
 
-export const USE_MOCK = true;
+export const USE_MOCK = false;
 const BASE_URL = '/api';
+type LoginResponseRaw = { token: string; role: 'manager' | 'client'; name: string };
 
 async function request<T>(
   method: string,
@@ -38,10 +40,17 @@ async function request<T>(
 
 export async function lkLogin(email: string, password: string) {
   if (USE_MOCK) return mock.mockLogin(email, password);
-  return request<{ token: string; user: import('@/types/lk').LKUser }>('POST', '/auth/login', {
-    email,
-    password,
-  });
+
+  const res = await request<LoginResponseRaw>('POST', '/auth/login', { email, password });
+
+  const user: LKUser = {
+    id: 0,              // id пока не возвращаем из backend, можно расширить позже
+    name: res.name,
+    role: res.role,
+    clientId: null,     // при желании можно добавить client_id в payload токена и сюда прокинуть
+  };
+
+  return { token: res.token, user };
 }
 
 export const lkApi = {
