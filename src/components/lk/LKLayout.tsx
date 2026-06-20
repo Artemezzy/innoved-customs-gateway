@@ -27,7 +27,7 @@ export function LKLayout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  if (!token || !user) {
+  if (!token) {
     return <Navigate to="/lk/login" replace />;
   }
 
