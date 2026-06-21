@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
-import logoImg from '@/assets/logo.png';
 
 export default function LKLoginPage() {
   const { token, user, login } = useAuth();
@@ -14,6 +13,7 @@ export default function LKLoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+
 
   if (token && user) {
     return <Navigate to={user.role === 'manager' ? '/lk/dashboard' : '/lk/shipments'} replace />;
@@ -43,10 +43,10 @@ export default function LKLoginPage() {
     >
       <Card className="w-full max-w-md p-8">
         <div className="flex flex-col items-center mb-6">
-          <img src={logoImg} alt="ИННОВЭД" className="h-14 w-auto mb-3" />
           <h1 className="text-2xl font-bold">Личный кабинет</h1>
           <p className="text-sm text-muted-foreground mt-1">Войдите в свой аккаунт</p>
         </div>
+
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
             <Label htmlFor="email">Email</Label>
@@ -74,12 +74,8 @@ export default function LKLoginPage() {
             {loading ? 'Вход…' : 'Войти'}
           </Button>
         </form>
-        <div className="mt-6 text-xs text-muted-foreground border-t pt-4">
-          <div className="font-medium mb-1">Тестовые учётные записи:</div>
-          <div>Менеджер: manager@innoved.ru / manager</div>
-          <div>Клиент: client@technoimport.ru / client</div>
-        </div>
       </Card>
     </div>
   );
 }
+

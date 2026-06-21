@@ -13,7 +13,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
-import logoImg from '@/assets/logo.png';
+
 
 interface NavItem {
   to: string;
@@ -51,11 +51,11 @@ export function LKLayout({ children }: { children: ReactNode }) {
       className="flex h-full w-full flex-col text-white"
       style={{ backgroundColor: 'hsl(214 84% 20%)' }}
     >
-      <div className="flex items-center gap-2 px-5 py-5 border-b border-white/10">
-        <img src={logoImg} alt="ИННОВЭД" className="h-8 w-auto brightness-0 invert" />
-        <div className="font-bold text-lg tracking-wide">ИННОВЭД</div>
+      <div className="flex items-center px-5 py-5 border-b border-white/10">
+        <div className="font-bold text-lg tracking-wide">Личный кабинет</div>
       </div>
       <nav className="flex-1 px-3 py-4 space-y-1">
+
         {navItems.map((item) => {
           const active =
             location.pathname === item.to ||
@@ -108,11 +108,9 @@ export function LKLayout({ children }: { children: ReactNode }) {
 
       {/* Mobile top bar */}
       <div className="md:hidden fixed top-0 inset-x-0 z-40 h-14 border-b bg-background flex items-center justify-between px-4">
-        <div className="flex items-center gap-2">
-          <img src={logoImg} alt="" className="h-6 w-auto" />
-          <span className="font-semibold">ИННОВЭД ЛК</span>
-        </div>
+        <div className="font-semibold">Личный кабинет</div>
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
               <Menu className="h-5 w-5" />
