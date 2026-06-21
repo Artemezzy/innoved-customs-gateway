@@ -40,8 +40,8 @@ async function request<T>(
     body: isFormData
       ? body
       : body !== undefined
-      ? JSON.stringify(body)
-      : undefined,
+        ? JSON.stringify(body)
+        : undefined,
   });
 
   if (res.status === 401) {
@@ -104,17 +104,17 @@ export const lkApi = {
     USE_MOCK
       ? mock.mockClients(q)
       : request<import('@/types/lk').Client[]>(
-          'GET',
-          `/clients${q ? `?q=${encodeURIComponent(q)}` : ''}`
-        ),
+        'GET',
+        `/clients${q ? `?q=${encodeURIComponent(q)}` : ''}`
+      ),
 
   createClient: (data: Partial<import('@/types/lk').Client>) =>
     USE_MOCK
       ? mock.mockCreateClient(data)
       : request<{
-          client: import('@/types/lk').Client;
-          credentials: { email: string; password: string };
-        }>('POST', '/clients', data),
+        client: import('@/types/lk').Client;
+        credentials: { email: string; password: string };
+      }>('POST', '/clients', data),
 
   client: (id: number) =>
     USE_MOCK
@@ -147,28 +147,28 @@ export const lkApi = {
     USE_MOCK
       ? mock.mockUpdateShipment(id, data)
       : request<import('@/types/lk').Shipment>(
-          'PUT',
-          `/shipments/${id}`,
-          data
-        ),
+        'PUT',
+        `/shipments/${id}`,
+        data
+      ),
 
   documents: (shipmentId: number) =>
     USE_MOCK
       ? mock.mockDocuments(shipmentId)
       : request<import('@/types/lk').LKDocument[]>(
-          'GET',
-          `/shipments/${shipmentId}/documents`
-        ),
+        'GET',
+        `/shipments/${shipmentId}/documents`
+      ),
 
   uploadDocument: (shipmentId: number, form: FormData) =>
     USE_MOCK
       ? mock.mockUploadDocument(shipmentId, form)
       : request<import('@/types/lk').LKDocument>(
-          'POST',
-          `/shipments/${shipmentId}/documents`,
-          form,
-          true
-        ),
+        'POST',
+        `/shipments/${shipmentId}/documents`,
+        form,
+        true
+      ),
 
   deleteDocument: (shipmentId: number, docId: number) =>
     USE_MOCK
@@ -179,9 +179,9 @@ export const lkApi = {
     USE_MOCK
       ? mock.mockMessages(shipmentId, since)
       : request<import('@/types/lk').Message[]>(
-          'GET',
-          `/shipments/${shipmentId}/messages${since ? `?since=${since}` : ''}`
-        ),
+        'GET',
+        `/shipments/${shipmentId}/messages${since ? `?since=${since}` : ''}`
+      ),
 
   sendMessage: (
     shipmentId: number,
@@ -191,6 +191,17 @@ export const lkApi = {
     USE_MOCK
       ? mock.mockSendMessage(shipmentId, text, sender)
       : request<import('@/types/lk').Message>('POST', `/shipments/${shipmentId}/messages`, {
-          text,
-        }),
+        text,
+      }),
+
+  // НОВОЕ: сброс пароля клиента
+  resetClientPassword: (clientId: number) =>
+    // если когда-нибудь захочешь замокать, можно добавить в lkMock такую функцию
+    request<{
+      user_id: number;
+      client_id: number;
+      login: string;
+      name: string;
+      new_password: string;
+    }>('POST', `/clients/${clientId}/reset-password`),
 };
