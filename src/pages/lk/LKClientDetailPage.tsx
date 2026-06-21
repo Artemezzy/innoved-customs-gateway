@@ -53,6 +53,10 @@ export default function LKClientDetailPage() {
   const resetPasswordMutation = useMutation({
     mutationFn: () => lkApi.resetClientPassword(clientId),
     onSuccess: (res) => {
+      if (!res) {
+        toast.error('Сервер не вернул данные о новом пароле');
+        return;
+      }
       setCreds({ login: res.login, password: res.new_password });
       setCredsOpen(true);
       toast.success('Пароль клиента сброшен');
