@@ -62,7 +62,19 @@ async function request<T>(
     return undefined as T;
   }
 
-  return res.json();
+  const text = await res.text();
+
+  if (!text) {
+    // пустой ответ — вернём undefined и не будем падать
+    return undefined as T;
+  }
+
+  try {
+    return JSON.parse(text) as T;
+  } catch (e) {
+    console.error('Failed to parse JSON', { text, e });
+    throw new Error('Некорректный ответ сервера');
+  }
 }
 
 // ---------- Public API ----------
