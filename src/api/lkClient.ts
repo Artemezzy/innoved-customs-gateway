@@ -145,10 +145,10 @@ export const lkApi = {
     );
   },
 
-  createShipment: (data: { client_id: number; title: string }) =>
+  createShipment: (data: { title: string; client_id?: number }) =>
     USE_MOCK
-      ? mock.mockCreateShipment(data)
-      : request<import('@/types/lk').Shipment>('POST', '/shipments', data),
+      ? mock.mockCreateShipment({ client_id: data.client_id ?? 0, title: data.title })
+      : request<{ id: number }>('POST', '/shipments', data),
 
   shipment: (id: number) =>
     USE_MOCK

@@ -1,22 +1,25 @@
-## Изменения в ЛК
+## Обновление создания поставки в ЛК
 
-### 1. Чекбокс видимости документа → 1/0
-Файл: `src/components/lk/DocumentsPanel.tsx`
+Адаптирую UI под новую логику бэкенда: менеджер выбирает клиента, клиент создаёт поставку только с названием.
 
-В мутации `upload` поля `visible_to_client` и `editable_by_client` сейчас отправляются как строки `"true"`/`"false"`. Заменю на `"1"`/`"0"`:
+### 1. `src/api/lkClient.ts`
+Изменю сигнатуру `createShipment`, чтобы `client_id` был опциональным, и возвращаемый тип — `{ id: number }`:
 
 ```ts
-fd.append('visible_to_client', visible ? '1' : '0');
-fd.append('editable_by_client', editable ? '1' : '0');
+createShipment: (data: { title: string; client_id?: number }) =>
+  request<{ id: number }>('POST', '/shipments', data),
 ```
 
-### 2. Кликабельная вся строка поставки
-Файл: `src/pages/lk/LKShipmentsPage.tsx`
+### 2. `src/components/lk/CreateShipmentModal.tsx`
+- Получу роль из `useAuth()`.
+- Для `client`: схема валидации только с `title`, форма без селекта клиента, в `mutationFn` отправляется `{ title }`.
+- Для `manager`: оставляю текущую логику с `client_id` (или `fixedClientId`, если задан).
+- В `onSuccess` показываю toast «Поставка создана» и инвалидирую `['lk', 'shipments']` (уже есть).
 
-Сейчас `<Link>` обёрнут только вокруг `#{id}` в первой ячейке. Сделаю кликабельной всю строку:
+### 3. `src/pages/lk/LKShipmentsPage.tsx`
+Сейчас кнопка «Новая поставка» отображается только для менеджера (`{isManager && ...}`). Покажу её и клиенту тоже, чтобы он мог создать поставку.
 
-- На `<TableRow>` добавлю `onClick={() => navigate(\`/lk/shipments/${s.id}\`)}` и классы `cursor-pointer hover:bg-muted/50`.
-- В первой ячейке оставлю отображение `#{id}` уже без `<Link>` (чтобы не было вложенной навигации), сохранив стиль ссылки через `text-primary`.
-- Импортирую `useNavigate` из `react-router-dom`.
-
-Логика API и фильтров не меняется.
+### Что НЕ меняется
+- GET/PUT `/api/shipments` и связанные методы клиента.
+- Логика фильтров, навигации и таблицы поставок.
+- Mock-режим (`USE_MOCK = false`, не используется).
