@@ -150,6 +150,9 @@ export const lkApi = {
       ? mock.mockCreateShipment({ client_id: data.client_id ?? 0, title: data.title })
       : request<{ id: number }>('POST', '/shipments', data),
 
+  deleteShipment: (id: number) =>
+    request<{ ok: boolean }>('DELETE', `/shipments/${id}`),
+
   shipment: (id: number) =>
     USE_MOCK
       ? mock.mockShipment(id)
