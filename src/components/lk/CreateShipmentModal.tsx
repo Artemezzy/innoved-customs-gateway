@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   Dialog,
   DialogContent,
@@ -22,12 +23,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-const schema = z.object({
-  client_id: z.coerce.number().min(1, 'Выберите клиента'),
-  title: z.string().min(3, 'Минимум 3 символа'),
-});
-type FormData = z.infer<typeof schema>;
-
 interface Props {
   open: boolean;
   onOpenChange: (v: boolean) => void;
@@ -36,24 +31,45 @@ interface Props {
 
 export function CreateShipmentModal({ open, onOpenChange, fixedClientId }: Props) {
   const qc = useQueryClient();
+  const { user } = useAuth();
+  const isManager = user?.role === 'manager';
+  const needsClientSelect = isManager && !fixedClientId;
+
+  const schema = needsClientSelect
+    ? z.object({
+        client_id: z.coerce.number().min(1, 'Выберите клиента'),
+        title: z.string().min(3, 'Минимум 3 символа'),
+      })
+    : z.object({
+        client_id: z.coerce.number().optional(),
+        title: z.string().min(3, 'Минимум 3 символа'),
+      });
+  type FormData = z.infer<typeof schema>;
+
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
-    defaultValues: { client_id: fixedClientId || 0, title: '' },
+    defaultValues: { client_id: fixedClientId || 0, title: '' } as FormData,
   });
 
   const { data: clients } = useQuery({
     queryKey: ['lk', 'clients'],
     queryFn: () => lkApi.clients(),
-    enabled: open && !fixedClientId,
+    enabled: open && needsClientSelect,
   });
 
   const create = useMutation({
-    mutationFn: (d: FormData) => lkApi.createShipment({ client_id: d.client_id, title: d.title }),
-    onSuccess: () => {
-      toast.success('Поставка создана');
+    mutationFn: (d: FormData) => {
+      if (isManager) {
+        const cid = fixedClientId ?? d.client_id;
+        return lkApi.createShipment({ client_id: Number(cid), title: d.title });
+      }
+      return lkApi.createShipment({ title: d.title });
+    },
+    onSuccess: (res) => {
+      toast.success(`Поставка создана${res?.id ? ` (#${res.id})` : ''}`);
       qc.invalidateQueries({ queryKey: ['lk', 'shipments'] });
       onOpenChange(false);
-      form.reset({ client_id: fixedClientId || 0, title: '' });
+      form.reset({ client_id: fixedClientId || 0, title: '' } as FormData);
     },
     onError: (e: any) => toast.error(e.message || 'Ошибка'),
   });
@@ -65,12 +81,12 @@ export function CreateShipmentModal({ open, onOpenChange, fixedClientId }: Props
           <DialogTitle>Создать поставку</DialogTitle>
         </DialogHeader>
         <form onSubmit={form.handleSubmit((d) => create.mutate(d))} className="space-y-3 py-2">
-          {!fixedClientId && (
+          {needsClientSelect && (
             <div>
               <Label>Клиент</Label>
               <Select
-                value={String(form.watch('client_id') || '')}
-                onValueChange={(v) => form.setValue('client_id', Number(v), { shouldValidate: true })}
+                value={String((form.watch('client_id') as number) || '')}
+                onValueChange={(v) => form.setValue('client_id', Number(v) as any, { shouldValidate: true })}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Выберите клиента" />
@@ -83,9 +99,9 @@ export function CreateShipmentModal({ open, onOpenChange, fixedClientId }: Props
                   ))}
                 </SelectContent>
               </Select>
-              {form.formState.errors.client_id && (
+              {(form.formState.errors as any).client_id && (
                 <p className="text-xs text-destructive mt-1">
-                  {form.formState.errors.client_id.message}
+                  {(form.formState.errors as any).client_id.message}
                 </p>
               )}
             </div>
@@ -94,7 +110,7 @@ export function CreateShipmentModal({ open, onOpenChange, fixedClientId }: Props
             <Label htmlFor="title">Название поставки</Label>
             <Input id="title" {...form.register('title')} />
             {form.formState.errors.title && (
-              <p className="text-xs text-destructive mt-1">{form.formState.errors.title.message}</p>
+              <p className="text-xs text-destructive mt-1">{form.formState.errors.title.message as string}</p>
             )}
           </div>
           <DialogFooter>
