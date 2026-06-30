@@ -57,11 +57,10 @@ export default function LKShipmentsPage() {
     <div className="space-y-4">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <h1 className="text-2xl font-bold">{isManager ? 'Поставки' : 'Мои поставки'}</h1>
-        {isManager && (
-          <Button onClick={() => setOpen(true)}>
-            <Plus className="h-4 w-4 mr-1.5" /> Новая поставка
-          </Button>
-        )}
+        <Button onClick={() => setOpen(true)}>
+          <Plus className="h-4 w-4 mr-1.5" /> Новая поставка
+        </Button>
+
       </div>
 
       {isManager && (
