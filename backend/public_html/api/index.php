@@ -280,6 +280,27 @@ if ($method === 'PUT' && $seg[0] === 'shipments' && isset($seg[1]) && !isset($se
     out(['ok' => true]);
 }
 
+// DELETE /api/shipments/:id
+if ($method === 'DELETE' && $seg[0] === 'shipments' && isset($seg[1]) && !isset($seg[2])) {
+    // Только менеджер может удалять поставки
+    auth(true);
+
+    $id = (int)$seg[1];
+
+    // Проверяем, что такая поставка существует
+    $st = db()->prepare('SELECT id FROM lk_shipments WHERE id=?');
+    $st->execute([$id]);
+    $shipment = $st->fetch();
+    if (!$shipment) {
+        err('Поставка не найдена', 404);
+    }
+
+    // Удаляем запись из lk_shipments
+    db()->prepare('DELETE FROM lk_shipments WHERE id=?')->execute([$id]);
+
+    out(['ok' => true]);
+}
+
 // GET /api/shipments/:id/documents
 if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'documents' && !isset($seg[3])) {
     $me  = auth();
