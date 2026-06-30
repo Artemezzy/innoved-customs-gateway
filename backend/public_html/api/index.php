@@ -222,14 +222,35 @@ if ($method === 'GET' && $seg[0] === 'shipments' && !isset($seg[1])) {
 
 // POST /api/shipments
 if ($method === 'POST' && $seg[0] === 'shipments' && !isset($seg[1])) {
-    auth(true);
-    $b = body();
-    if (empty($b['client_id'])) err('client_id обязателен');
+    $me = auth();           // авторизуем любого пользователя (менеджер или клиент)
+    $b  = body();
+
+    // Определяем client_id в зависимости от роли
+    if ($me['role'] === 'manager') {
+        // менеджер должен явно указать клиента
+        if (empty($b['client_id'])) {
+            err('client_id обязателен для менеджера');
+        }
+        $clientId = (int)$b['client_id'];
+    } elseif ($me['role'] === 'client') {
+        // клиент создаёт поставку только для себя
+        if (empty($me['client_id'])) {
+            err('У пользователя-клиента не задан client_id', 400);
+        }
+        $clientId = (int)$me['client_id'];
+    } else {
+        // на всякий случай блокируем любые другие роли
+        err('Недопустимая роль для создания поставки', 403);
+    }
+
+    $title = $b['title'] ?? 'Поставка';
+
     $st = db()->prepare(
         "INSERT INTO lk_shipments(client_id,title,status,created_at,updated_at)
          VALUES(?,?,'new',NOW(),NOW())"
     );
-    $st->execute([(int)$b['client_id'], $b['title'] ?? 'Поставка']);
+    $st->execute([$clientId, $title]);
+
     out(['id' => (int)db()->lastInsertId()], 201);
 }
 
