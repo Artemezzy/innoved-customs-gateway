@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
 import { lkApi } from '@/api/lkClient';
@@ -28,6 +28,7 @@ import { ShipmentStatus, STATUS_LABELS } from '@/types/lk';
 
 export default function LKShipmentsPage() {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const isManager = user?.role === 'manager';
   const [status, setStatus] = useState<string>('');
   const [clientId, setClientId] = useState<string>('');
@@ -102,11 +103,13 @@ export default function LKShipmentsPage() {
             </TableHeader>
             <TableBody>
               {shipments.data?.map((s) => (
-                <TableRow key={s.id}>
+                <TableRow
+                  key={s.id}
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => navigate(`/lk/shipments/${s.id}`)}
+                >
                   <TableCell>
-                    <Link to={`/lk/shipments/${s.id}`} className="text-primary hover:underline">
-                      #{s.id}
-                    </Link>
+                    <span className="text-primary">#{s.id}</span>
                   </TableCell>
                   <TableCell className="font-medium">{s.title}</TableCell>
                   {isManager && <TableCell>{s.client_name}</TableCell>}
