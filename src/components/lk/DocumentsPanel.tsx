@@ -61,8 +61,8 @@ export function DocumentsPanel({ shipmentId }: Props) {
       fd.append('file', file);
       fd.append('doc_type', docType);
       fd.append('uploader_role', user?.role || 'client');
-      fd.append('visible_to_client', String(visible));
-      fd.append('editable_by_client', String(editable));
+      fd.append('visible_to_client', visible ? '1' : '0');
+      fd.append('editable_by_client', editable ? '1' : '0');
       return lkApi.uploadDocument(shipmentId, fd);
     },
     onSuccess: () => {
