@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { FileText, Link as LinkIcon, Download, Upload, Plus } from 'lucide-react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { FileText, Link as LinkIcon, Download, Upload, Plus, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
 import { CertFile } from '@/types/lk';
@@ -10,23 +10,28 @@ import { Label } from '@/components/ui/label';
 
 interface Props {
   requestId: number;
-  files: CertFile[];
+  itemId: number;
 }
 
-export function CertFilesPanel({ requestId, files }: Props) {
+export function CertFilesPanel({ requestId, itemId }: Props) {
   const qc = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [url, setUrl] = useState('');
 
-  const invalidate = () => {
-    qc.invalidateQueries({ queryKey: ['lk', 'cert-request', requestId] });
-  };
+  const queryKey = ['lk', 'cert-item-files', requestId, itemId];
+
+  const filesQ = useQuery({
+    queryKey,
+    queryFn: () => lkApi.certItemFiles(requestId, itemId),
+  });
+
+  const invalidate = () => qc.invalidateQueries({ queryKey });
 
   const uploadFile = useMutation({
     mutationFn: (file: File) => {
       const fd = new FormData();
       fd.append('file', file);
-      return lkApi.uploadCertFile(requestId, fd);
+      return lkApi.uploadCertFile(requestId, itemId, fd);
     },
     onSuccess: () => {
       toast.success('Файл загружен');
@@ -36,7 +41,7 @@ export function CertFilesPanel({ requestId, files }: Props) {
   });
 
   const addUrl = useMutation({
-    mutationFn: (u: string) => lkApi.addCertFileUrl(requestId, u),
+    mutationFn: (u: string) => lkApi.addCertFileUrl(requestId, itemId, u),
     onSuccess: () => {
       toast.success('Ссылка добавлена');
       setUrl('');
@@ -47,16 +52,23 @@ export function CertFilesPanel({ requestId, files }: Props) {
 
   const download = async (f: CertFile) => {
     try {
-      await lkApi.downloadCertFile(requestId, f.id, f.filename);
+      await lkApi.downloadCertFile(requestId, itemId, f.id, f.filename);
     } catch (e: any) {
       toast.error(e?.message || 'Не удалось скачать');
     }
   };
 
+  const files = filesQ.data ?? [];
+
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        {files.length === 0 && (
+        {filesQ.isLoading && (
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" /> Загрузка вложений…
+          </div>
+        )}
+        {!filesQ.isLoading && files.length === 0 && (
           <div className="text-sm text-muted-foreground">Вложений пока нет</div>
         )}
         {files.map((f) => (
@@ -122,10 +134,10 @@ export function CertFilesPanel({ requestId, files }: Props) {
           </div>
         </div>
         <div>
-          <Label htmlFor="cert-url">Добавить ссылку</Label>
+          <Label htmlFor={`cert-url-${itemId}`}>Добавить ссылку</Label>
           <div className="flex gap-2 mt-1">
             <Input
-              id="cert-url"
+              id={`cert-url-${itemId}`}
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="https://…"

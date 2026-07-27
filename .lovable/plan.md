@@ -1,64 +1,47 @@
-## Цель
-Заменить одиночную форму "Данные заявки" на таблицу товарных позиций с построчным CRUD, синхронно с новым бэкенд-контрактом.
 
-## 1. Типы (`src/types/lk.ts`)
-- Удалить старый `CertRequestDetails extends CertRequestFields`.
-- Оставить `CertRequestFields` только если используется где-то ещё; иначе удалить.
-- Добавить:
+## Goal
+Align the UI with the new backend contract where files/links belong to a specific cert-request **item** (товарная позиция), not the whole request.
+
+Current state:
+- `lkClient.ts` — already migrated to the new per-item endpoints (`certItemFiles`, `uploadCertFile(requestId, itemId, ...)`, `addCertFileUrl(requestId, itemId, url)`, `downloadCertFile(requestId, itemId, fileId)`).
+- `types/lk.ts` — `CertRequestDetails` still contains `files: CertFile[]` (stale).
+- `LKCertRequestDetailPage.tsx` — still destructures `files` from `detail.data` and renders a global `CertFilesPanel`.
+- `CertFilesPanel.tsx` — takes `{ requestId, files }` and uses request-level upload/download.
+- `CertItemsPanel.tsx` — pure item CRUD, no files UI.
+
+## Changes
+
+### 1. `src/types/lk.ts`
+- Remove `files` from `CertRequestDetails`:
   ```ts
-  export interface CertRequestItem {
-    id: number;
-    position_no: number;
-    company: string;
-    product: string;
-    tn_ved: string;
-    tech_description: string;
-    tr_ts: string;
-    cert_form: string;
-    cert_scheme: string;
-    cost: string;
-    comment: string;
-  }
   export interface CertRequestDetails {
     request: CertRequest;
     items: CertRequestItem[];
-    files: CertFile[];
   }
   ```
 
-## 2. API-клиент (`src/api/lkClient.ts`)
-- `certRequest(id)` теперь возвращает `{ request, items, files }` без плоского маппинга.
-- Удалить `updateCertRequestFields` (маршрут PUT /fields больше не существует).
-- Добавить методы:
-  - `certRequestItems(id)` → GET `/cert-requests/:id/items`
-  - `addCertRequestItem(id, data?)` → POST `/cert-requests/:id/items`
-  - `updateCertRequestItem(id, itemId, data)` → PUT `/cert-requests/:id/items/:itemId`
-  - `deleteCertRequestItem(id, itemId)` → DELETE `/cert-requests/:id/items/:itemId`
-- В `lkMock.ts` — заглушки для новых методов (минимум для типовой сборки, реально не используются, USE_MOCK=false).
+### 2. `src/components/lk/CertFilesPanel.tsx`
+- New props: `{ requestId: number; itemId: number }`.
+- Drop the `files` prop; fetch files internally with `useQuery(['lk','cert-item-files', requestId, itemId], () => lkApi.certItemFiles(requestId, itemId))`.
+- Mutations call `uploadCertFile(requestId, itemId, fd)` / `addCertFileUrl(requestId, itemId, url)`, invalidate the item-files query.
+- Download uses `downloadCertFile(requestId, itemId, f.id, f.filename)`.
+- Render loading / empty / list identically, keep the same visual layout, but scoped to one item.
 
-## 3. Страница `LKCertRequestDetailPage.tsx`
-- Убрать `useForm`, массив `FIELDS`, `EMPTY`, мутацию `save`, кнопку "Сохранить изменения".
-- В блоке "Данные заявки" рендерить новый компонент `CertItemsPanel` с `requestId` и `items` из `detail.data.items`.
-- Хедер/статус/файлы/чат — без изменений; `detail.data.status` заменить на `detail.data.request.status`, `detail.data.files` остаётся.
+### 3. `src/components/lk/CertItemsPanel.tsx`
+- In each row/card, add a collapsible "Файлы и ссылки" section that mounts `<CertFilesPanel requestId={requestId} itemId={item.id} />`.
+  - Desktop table: render a full-width sub-row under each item row (via a `<tr><td colSpan=...>` panel), togglable with a chevron button in the actions column. Default: collapsed.
+  - Mobile card: a `Collapsible` / simple toggle button "Файлы (n)" that reveals the panel inside the card.
+- No other logic changes; item CRUD stays intact.
 
-## 4. Новый компонент `src/components/lk/CertItemsPanel.tsx`
-- Props: `requestId: number; items: CertRequestItem[]`.
-- Desktop (`md+`): таблица с колонками — № / Компания / Товар / ТН ВЭД / Тех. описание / ТР ТС / Форма / Схема / Стоимость / Комментарий / Действия. Каждое поле — `Input`/`Textarea` в контролируемом локальном стейте на строку.
-- Mobile (`<md`): стек `Card`-ов, по одной позиции = одна карточка с теми же полями по вертикали. Реализация — CSS (`hidden md:table` / `md:hidden` grid of cards), без `useIsMobile`, чтобы избежать SSR-скачков.
-- Автосохранение строки: `onBlur` любого поля → если значение изменилось от исходного — `updateCertRequestItem` (debounce не нужен, blur достаточно). Индикация: небольшой спиннер/точка "сохранение…" рядом с номером строки, toast только на ошибку.
-- Кнопка "Сохранить строку" рядом с корзиной — форсированный PUT (на случай если пользователь хочет явно).
-- Кнопка "+ Добавить товар" под таблицей/списком → `addCertRequestItem`, при успехе invalidate `['lk','cert-request',requestId]`.
-- Кнопка удаления (иконка `Trash2`) с `AlertDialog` подтверждением. Скрыта/`disabled`, если `items.length <= 1`.
-- Все мутации инвалидируют `['lk','cert-request',requestId]` и `['lk','cert-requests']`.
+### 4. `src/pages/lk/LKCertRequestDetailPage.tsx`
+- Stop destructuring `files`; use `const { request, items } = detail.data`.
+- Remove the standalone "Вложения" `Card` block (files now live per-item inside `CertItemsPanel`).
+- Keep the "Данные заявки" and "Чат" cards.
 
-## 5. Внутренний под-компонент `CertItemRow` (в том же файле)
-- Держит локальный стейт полей, инициализируемый из props; при изменении `item.id` — reset.
-- Экспортирует общий рендер строки/карточки через флаг `variant: 'row' | 'card'`.
+### 5. Cleanup
+- Remove now-unused `mockUploadCertFile` reference paths only if trivial; otherwise leave mock untouched (`USE_MOCK = false` in prod). No behavior impact.
 
-## Технические детали
-- Не трогать: `CertFilesPanel`, `CertChatPanel`, `CertRequestStatusSelect`, роутинг, LKLayout.
-- Проверить остальные использования удаляемого `updateCertRequestFields` и старой формы полей на верхнем уровне details — судя по коду, только `LKCertRequestDetailPage` и mock.
-- После изменений — `tsgo` для проверки типов.
-
-## Что НЕ меняется
-Вложения, чат, статус, индикаторы непрочитанного, права доступа по ролям.
+## Verification
+- Typecheck passes (no `files` references remain on `CertRequestDetails`).
+- Open a cert request detail page: items render, each item exposes a files toggle, expanding fetches `/cert-requests/:id/items/:itemId/files`, upload/link/download all hit the new URLs.
+- No 404 on the old `/cert-requests/:id/files*` routes from the UI.

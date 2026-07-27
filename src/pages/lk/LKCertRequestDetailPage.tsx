@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CertRequestStatusSelect } from '@/components/lk/CertRequestStatusSelect';
-import { CertFilesPanel } from '@/components/lk/CertFilesPanel';
+
 import { CertChatPanel } from '@/components/lk/CertChatPanel';
 import { CertItemsPanel } from '@/components/lk/CertItemsPanel';
 
@@ -41,7 +41,7 @@ export default function LKCertRequestDetailPage() {
     );
   }
 
-  const { request, items, files } = detail.data;
+  const { request, items } = detail.data;
 
   return (
     <div className="space-y-6">
@@ -58,11 +58,6 @@ export default function LKCertRequestDetailPage() {
       <Card className="p-5">
         <h2 className="font-semibold mb-4">Данные заявки</h2>
         <CertItemsPanel requestId={requestId} items={items} />
-      </Card>
-
-      <Card className="p-5">
-        <h2 className="font-semibold mb-4">Вложения</h2>
-        <CertFilesPanel requestId={requestId} files={files} />
       </Card>
 
       <Card className="p-5">

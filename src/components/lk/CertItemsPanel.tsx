@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, Plus, Save, Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronRight, Loader2, Paperclip, Plus, Save, Trash2 } from 'lucide-react';
+import { CertFilesPanel } from '@/components/lk/CertFilesPanel';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
 import { CertRequestItem } from '@/types/lk';
@@ -123,6 +124,7 @@ interface RowProps {
 
 function CertItemRow({ requestId, item, variant, canDelete, onInvalidate }: RowProps) {
   const [values, setValues] = useState<CertRequestItem>(item);
+  const [filesOpen, setFilesOpen] = useState(false);
 
   useEffect(() => {
     setValues(item);
@@ -178,7 +180,7 @@ function CertItemRow({ requestId, item, variant, canDelete, onInvalidate }: RowP
         <AlertDialogHeader>
           <AlertDialogTitle>Удалить позицию №{item.position_no}?</AlertDialogTitle>
           <AlertDialogDescription>
-            Данные позиции будут удалены безвозвратно.
+            Данные позиции и её вложения будут удалены безвозвратно.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -191,43 +193,70 @@ function CertItemRow({ requestId, item, variant, canDelete, onInvalidate }: RowP
 
   const busy = update.isPending;
 
+  const toggleFilesBtn = (
+    <Button
+      size="icon"
+      variant="ghost"
+      onClick={() => setFilesOpen((v) => !v)}
+      title={filesOpen ? 'Скрыть вложения' : 'Показать вложения'}
+    >
+      {filesOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+    </Button>
+  );
+
   if (variant === 'row') {
+    const colCount = 1 + FIELDS.length + 1;
     return (
-      <tr className="border-b align-top">
-        <td className="p-2 text-muted-foreground">
-          <div className="flex items-center gap-1">
-            {item.position_no}
-            {busy && <Loader2 className="h-3 w-3 animate-spin" />}
-          </div>
-        </td>
-        {FIELDS.map((f) => (
-          <td key={f.key} className="p-1.5 min-w-[140px]">
-            {f.textarea ? (
-              <Textarea
-                rows={2}
-                value={(values as any)[f.key] || ''}
-                onChange={(e) => setField(f.key, e.target.value)}
-                onBlur={() => saveIfChanged(f.key)}
-                className="min-w-[180px]"
-              />
-            ) : (
-              <Input
-                value={(values as any)[f.key] || ''}
-                onChange={(e) => setField(f.key, e.target.value)}
-                onBlur={() => saveIfChanged(f.key)}
-              />
-            )}
+      <>
+        <tr className="border-b align-top">
+          <td className="p-2 text-muted-foreground">
+            <div className="flex items-center gap-1">
+              {item.position_no}
+              {busy && <Loader2 className="h-3 w-3 animate-spin" />}
+            </div>
           </td>
-        ))}
-        <td className="p-1.5">
-          <div className="flex items-center gap-1">
-            <Button size="icon" variant="ghost" onClick={saveAll} disabled={busy} title="Сохранить строку">
-              <Save className="h-4 w-4" />
-            </Button>
-            {deleteBtn}
-          </div>
-        </td>
-      </tr>
+          {FIELDS.map((f) => (
+            <td key={f.key} className="p-1.5 min-w-[140px]">
+              {f.textarea ? (
+                <Textarea
+                  rows={2}
+                  value={(values as any)[f.key] || ''}
+                  onChange={(e) => setField(f.key, e.target.value)}
+                  onBlur={() => saveIfChanged(f.key)}
+                  className="min-w-[180px]"
+                />
+              ) : (
+                <Input
+                  value={(values as any)[f.key] || ''}
+                  onChange={(e) => setField(f.key, e.target.value)}
+                  onBlur={() => saveIfChanged(f.key)}
+                />
+              )}
+            </td>
+          ))}
+          <td className="p-1.5">
+            <div className="flex items-center gap-1">
+              {toggleFilesBtn}
+              <Button size="icon" variant="ghost" onClick={saveAll} disabled={busy} title="Сохранить строку">
+                <Save className="h-4 w-4" />
+              </Button>
+              {deleteBtn}
+            </div>
+          </td>
+        </tr>
+        {filesOpen && (
+          <tr className="border-b bg-muted/20">
+            <td colSpan={colCount} className="p-4">
+              <div className="flex items-center gap-2 mb-3 text-sm font-medium">
+                <Paperclip className="h-4 w-4 text-primary" />
+                Вложения к позиции №{item.position_no}
+                {item.product ? <span className="text-muted-foreground font-normal">— {item.product}</span> : null}
+              </div>
+              <CertFilesPanel requestId={requestId} itemId={item.id} />
+            </td>
+          </tr>
+        )}
+      </>
     );
   }
 
@@ -266,6 +295,26 @@ function CertItemRow({ requestId, item, variant, canDelete, onInvalidate }: RowP
           </div>
         ))}
       </div>
+
+      <div className="pt-2 border-t">
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={() => setFilesOpen((v) => !v)}
+          className="w-full justify-start"
+        >
+          {filesOpen ? <ChevronDown className="h-4 w-4 mr-1.5" /> : <ChevronRight className="h-4 w-4 mr-1.5" />}
+          <Paperclip className="h-4 w-4 mr-1.5" />
+          Вложения к позиции №{item.position_no}
+        </Button>
+        {filesOpen && (
+          <div className="mt-3">
+            <CertFilesPanel requestId={requestId} itemId={item.id} />
+          </div>
+        )}
+      </div>
     </Card>
   );
 }
+
