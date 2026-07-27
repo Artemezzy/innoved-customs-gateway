@@ -155,7 +155,7 @@ export function CertFilesPanel({ requestId, itemId }: Props) {
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={() => handleDelete(f)}
+                onClick={(e) => handleDelete(e, f)}
                 disabled={deleteFile.isPending}
                 title="Удалить вложение"
                 aria-label="Удалить вложение"
