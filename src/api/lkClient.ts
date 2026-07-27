@@ -367,6 +367,12 @@ export const lkApi = {
     URL.revokeObjectURL(url);
   },
 
+  deleteCertFile: (requestId: number, itemId: number, fileId: number) =>
+  request<{ ok: boolean }>(
+    'DELETE',
+    `/cert-requests/${requestId}/items/${itemId}/files/${fileId}`
+  ),
+
   exportCertRequest: async (requestId: number) => {
     const token = getAuthToken();
     const res = await fetch(`${BASE_URL}/cert-requests/${requestId}/export`, {

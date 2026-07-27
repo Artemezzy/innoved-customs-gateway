@@ -989,6 +989,64 @@ if (
     exit;
 }
 
+// DELETE /api/cert-requests/:id/items/:itemId/files/:fileId — удалить вложение
+if (
+    $method === 'DELETE'
+    && $seg[0] === 'cert-requests'
+    && isset($seg[1])
+    && ($seg[2] ?? '') === 'items'
+    && isset($seg[3])
+    && ($seg[4] ?? '') === 'files'
+    && isset($seg[5])
+    && !isset($seg[6])
+) {
+    $me  = auth();
+    $rid = (int)$seg[1];
+    $iid = (int)$seg[3];
+    $fid = (int)$seg[5];
+
+    // Проверяем доступ к заявке
+    cert_request_guard($me, $rid);
+
+    // Проверяем, что позиция товара существует и принадлежит этой заявке
+    $stItem = db()->prepare('SELECT id, request_id FROM lk_cert_request_items WHERE id=?');
+    $stItem->execute([$iid]);
+    $item = $stItem->fetch();
+    if (!$item || (int)$item['request_id'] !== $rid) {
+        err('Позиция товара не найдена или не принадлежит заявке', 404);
+    }
+
+    // Ищем файл/ссылку
+    $stFile = db()->prepare(
+        'SELECT * FROM lk_cert_request_files WHERE id=? AND request_id=? AND item_id=?'
+    );
+    $stFile->execute([$fid, $rid, $iid]);
+    $file = $stFile->fetch();
+    if (!$file) {
+        err('Вложение не найдено', 404);
+    }
+
+    // Если это настоящий файл — удаляем с диска
+    if ($file['file_type'] === 'file' && !empty($file['filename_stored'])) {
+        $path = UPLOAD_PATH.'/cert/'.$rid.'/'.$file['filename_stored'];
+        if (file_exists($path)) {
+            @unlink($path);
+        }
+    }
+
+    // Удаляем запись из БД
+    db()->prepare(
+        'DELETE FROM lk_cert_request_files WHERE id=? AND request_id=? AND item_id=?'
+    )->execute([$fid, $rid, $iid]);
+
+    // Обновляем метаданные заявки (чтобы has_unread корректно считался)
+    db()->prepare(
+        'UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?'
+    )->execute([$me['role'], $rid]);
+
+    out(['ok' => true]);
+}
+
 // GET /api/cert-requests/:id/items/:itemId/files
 if (
     $method === 'GET'
