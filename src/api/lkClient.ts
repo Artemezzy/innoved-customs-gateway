@@ -94,11 +94,13 @@ export async function lkLogin(email: string, password: string) {
   });
 
   const user: LKUser = {
-    id: 0, // временно; можно расширить backend и передавать id
+    id: res.id ?? 0,
     name: res.name,
     role: res.role,
-    clientId: null, // можно позже добавить client_id в payload токена
+    clientId: res.client_id ?? null,
+    certCenterId: res.cert_center_id ?? null,
   };
+
 
   console.log('lkLogin result', { token: res.token, user });
 
