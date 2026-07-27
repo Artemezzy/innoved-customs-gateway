@@ -27,17 +27,22 @@ interface Props {
   items: CertRequestItem[];
 }
 
-const FIELDS: Array<{ key: keyof Omit<CertRequestItem, 'id' | 'position_no'>; label: string; textarea?: boolean }> = [
-  { key: 'company', label: 'Компания' },
-  { key: 'product', label: 'Товар' },
-  { key: 'tn_ved', label: 'ТН ВЭД' },
-  { key: 'tech_description', label: 'Тех. описание', textarea: true },
-  { key: 'tr_ts', label: 'ТР ТС' },
-  { key: 'cert_form', label: 'Форма сертификации' },
-  { key: 'cert_scheme', label: 'Схема сертификации' },
-  { key: 'cost', label: 'Стоимость' },
-  { key: 'comment', label: 'Комментарий', textarea: true },
+const FIELDS: Array<{ key: keyof Omit<CertRequestItem, 'id' | 'position_no'>; label: string; textarea?: boolean; tone: 'green' | 'yellow' }> = [
+  { key: 'company', label: 'Компания', tone: 'green' },
+  { key: 'product', label: 'Товар', tone: 'green' },
+  { key: 'tn_ved', label: 'ТН ВЭД', tone: 'green' },
+  { key: 'tech_description', label: 'Тех. описание', textarea: true, tone: 'green' },
+  { key: 'tr_ts', label: 'ТР ТС', tone: 'yellow' },
+  { key: 'cert_form', label: 'Форма сертификации', tone: 'yellow' },
+  { key: 'cert_scheme', label: 'Схема сертификации', tone: 'yellow' },
+  { key: 'cost', label: 'Стоимость', tone: 'yellow' },
+  { key: 'comment', label: 'Комментарий', textarea: true, tone: 'yellow' },
 ];
+
+const toneClass = (tone: 'green' | 'yellow') =>
+  tone === 'green'
+    ? 'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-900'
+    : 'bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-900';
 
 export function CertItemsPanel({ requestId, items }: Props) {
   const qc = useQueryClient();
@@ -193,22 +198,11 @@ function CertItemRow({ requestId, item, variant, canDelete, onInvalidate }: RowP
 
   const busy = update.isPending;
 
-  const toggleFilesBtn = (
-    <Button
-      size="icon"
-      variant="ghost"
-      onClick={() => setFilesOpen((v) => !v)}
-      title={filesOpen ? 'Скрыть вложения' : 'Показать вложения'}
-    >
-      {filesOpen ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-    </Button>
-  );
-
   if (variant === 'row') {
     const colCount = 1 + FIELDS.length + 1;
     return (
       <>
-        <tr className="border-b align-top">
+        <tr className="align-top">
           <td className="p-2 text-muted-foreground">
             <div className="flex items-center gap-1">
               {item.position_no}
@@ -223,25 +217,40 @@ function CertItemRow({ requestId, item, variant, canDelete, onInvalidate }: RowP
                   value={(values as any)[f.key] || ''}
                   onChange={(e) => setField(f.key, e.target.value)}
                   onBlur={() => saveIfChanged(f.key)}
-                  className="min-w-[180px]"
+                  className={`min-w-[180px] ${toneClass(f.tone)}`}
                 />
               ) : (
                 <Input
                   value={(values as any)[f.key] || ''}
                   onChange={(e) => setField(f.key, e.target.value)}
                   onBlur={() => saveIfChanged(f.key)}
+                  className={toneClass(f.tone)}
                 />
               )}
             </td>
           ))}
           <td className="p-1.5">
             <div className="flex items-center gap-1">
-              {toggleFilesBtn}
               <Button size="icon" variant="ghost" onClick={saveAll} disabled={busy} title="Сохранить строку">
                 <Save className="h-4 w-4" />
               </Button>
               {deleteBtn}
             </div>
+          </td>
+        </tr>
+        <tr className="border-b">
+          <td colSpan={colCount} className="px-1.5 pb-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setFilesOpen((v) => !v)}
+              className="w-full justify-center"
+            >
+              {filesOpen ? <ChevronDown className="h-4 w-4 mr-1.5" /> : <ChevronRight className="h-4 w-4 mr-1.5" />}
+              <Paperclip className="h-4 w-4 mr-1.5" />
+              {filesOpen ? 'Скрыть вложения' : 'Показать вложения'} к позиции №{item.position_no}
+            </Button>
           </td>
         </tr>
         {filesOpen && (
@@ -284,12 +293,14 @@ function CertItemRow({ requestId, item, variant, canDelete, onInvalidate }: RowP
                 value={(values as any)[f.key] || ''}
                 onChange={(e) => setField(f.key, e.target.value)}
                 onBlur={() => saveIfChanged(f.key)}
+                className={toneClass(f.tone)}
               />
             ) : (
               <Input
                 value={(values as any)[f.key] || ''}
                 onChange={(e) => setField(f.key, e.target.value)}
                 onBlur={() => saveIfChanged(f.key)}
+                className={toneClass(f.tone)}
               />
             )}
           </div>
