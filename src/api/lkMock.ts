@@ -290,6 +290,7 @@ let _certRequests: (CertRequest & { items: CertRequestItem[]; files: CertFile[] 
     updated_at: '2026-06-15T14:00:00Z',
     has_unread_messages: true,
     has_unread_changes: false,
+    has_unread: true,
     items: [
       {
         id: 1,
@@ -383,6 +384,7 @@ export async function mockCreateCertRequest(data: { company: string; cert_center
     updated_at: now,
     has_unread_messages: false,
     has_unread_changes: true,
+    has_unread: true,
     items: [
       {
         id: 1,
@@ -410,6 +412,7 @@ export async function mockCertRequest(id: number): Promise<CertRequestDetails> {
   if (!r) throw new Error('Заявка не найдена');
   r.has_unread_messages = false;
   r.has_unread_changes = false;
+  r.has_unread = false;
   const { items: _i, files: _fs, ...rest } = r as any;
   return { request: { ...rest }, items: [...r.items] };
 }
