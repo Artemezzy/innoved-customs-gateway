@@ -125,7 +125,9 @@ export interface CertRequest {
   has_unread_changes: boolean;
 }
 
-export interface CertRequestFields {
+export interface CertRequestItem {
+  id: number;
+  position_no: number;
   company: string;
   product: string;
   tn_ved: string;
@@ -145,8 +147,9 @@ export interface CertFile {
   created_at: string;
 }
 
-export interface CertRequestDetails extends CertRequestFields {
-  status: CertRequestStatus;
+export interface CertRequestDetails {
+  request: CertRequest;
+  items: CertRequestItem[];
   files: CertFile[];
 }
 
