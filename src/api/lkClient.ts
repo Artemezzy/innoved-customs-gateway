@@ -207,7 +207,7 @@ export const lkApi = {
   sendMessage: (
     shipmentId: number,
     text: string,
-    sender?: { role: 'manager' | 'client'; name: string; user_id: number }
+    sender?: { role: import('@/types/lk').Role; name: string; user_id: number }
   ) =>
     USE_MOCK
       ? mock.mockSendMessage(shipmentId, text, sender)
