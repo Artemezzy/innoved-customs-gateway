@@ -101,7 +101,7 @@ export function CertFilesPanel({ requestId, itemId }: Props) {
                   </a>
                 )}
               </div>
-              {f.file_type === 'file' && (
+              {f.file_type === 'file' ? (
                 <Button
                   size="sm"
                   variant="default"
@@ -111,6 +111,19 @@ export function CertFilesPanel({ requestId, itemId }: Props) {
                 >
                   <Download className="h-4 w-4 mr-1.5" />
                   Скачать
+                </Button>
+              ) : (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  asChild
+                  title="Открыть ссылку"
+                  aria-label="Открыть ссылку"
+                >
+                  <a href={f.url || '#'} target="_blank" rel="noopener noreferrer">
+                    <LinkIcon className="h-4 w-4 mr-1.5" />
+                    Открыть
+                  </a>
                 </Button>
               )}
             </div>
