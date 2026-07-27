@@ -295,6 +295,11 @@ export const lkApi = {
   deleteCertRequestItem: (id: number, itemId: number) =>
     request<{ ok: boolean }>('DELETE', `/cert-requests/${id}/items/${itemId}`),
 
+  updateCertRequestStatus: (id: number, status: import('@/types/lk').CertRequestStatus) =>
+    USE_MOCK
+      ? mock.mockUpdateCertRequestStatus(id, status)
+      : request<{ ok: boolean }>('PUT', `/cert-requests/${id}`, { status }),
+
   deleteCertRequest: (id: number) =>
     USE_MOCK
       ? mock.mockDeleteCertRequest(id)
