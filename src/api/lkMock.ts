@@ -225,7 +225,7 @@ export async function mockMessages(shipmentId: number, _since?: number) {
 export async function mockSendMessage(
   shipmentId: number,
   text: string,
-  sender?: { role: 'manager' | 'client'; name: string; user_id: number }
+  sender?: { role: import('@/types/lk').Role; name: string; user_id: number }
 ) {
   await delay(120);
   const msg: Message = {
