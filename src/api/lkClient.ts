@@ -7,9 +7,13 @@ const BASE_URL = '/api';
 
 type LoginResponseRaw = {
   token: string;
-  role: 'manager' | 'client';
+  role: 'manager' | 'client' | 'cert_center';
   name: string;
+  id?: number;
+  client_id?: number | null;
+  cert_center_id?: number | null;
 };
+
 
 async function request<T>(
   method: string,
