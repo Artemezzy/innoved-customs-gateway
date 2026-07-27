@@ -27,17 +27,22 @@ interface Props {
   items: CertRequestItem[];
 }
 
-const FIELDS: Array<{ key: keyof Omit<CertRequestItem, 'id' | 'position_no'>; label: string; textarea?: boolean }> = [
-  { key: 'company', label: 'Компания' },
-  { key: 'product', label: 'Товар' },
-  { key: 'tn_ved', label: 'ТН ВЭД' },
-  { key: 'tech_description', label: 'Тех. описание', textarea: true },
-  { key: 'tr_ts', label: 'ТР ТС' },
-  { key: 'cert_form', label: 'Форма сертификации' },
-  { key: 'cert_scheme', label: 'Схема сертификации' },
-  { key: 'cost', label: 'Стоимость' },
-  { key: 'comment', label: 'Комментарий', textarea: true },
+const FIELDS: Array<{ key: keyof Omit<CertRequestItem, 'id' | 'position_no'>; label: string; textarea?: boolean; tone: 'green' | 'yellow' }> = [
+  { key: 'company', label: 'Компания', tone: 'green' },
+  { key: 'product', label: 'Товар', tone: 'green' },
+  { key: 'tn_ved', label: 'ТН ВЭД', tone: 'green' },
+  { key: 'tech_description', label: 'Тех. описание', textarea: true, tone: 'green' },
+  { key: 'tr_ts', label: 'ТР ТС', tone: 'yellow' },
+  { key: 'cert_form', label: 'Форма сертификации', tone: 'yellow' },
+  { key: 'cert_scheme', label: 'Схема сертификации', tone: 'yellow' },
+  { key: 'cost', label: 'Стоимость', tone: 'yellow' },
+  { key: 'comment', label: 'Комментарий', textarea: true, tone: 'yellow' },
 ];
+
+const toneClass = (tone: 'green' | 'yellow') =>
+  tone === 'green'
+    ? 'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-900'
+    : 'bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-900';
 
 export function CertItemsPanel({ requestId, items }: Props) {
   const qc = useQueryClient();
