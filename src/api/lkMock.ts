@@ -363,7 +363,7 @@ export async function mockCertRequests(
   if (params.status) list = list.filter((r) => r.status === params.status);
   if (params.cert_center_id) list = list.filter((r) => r.cert_center_id === params.cert_center_id);
   return list
-    .map(({ fields: _f, files: _fs, ...rest }) => rest)
+    .map(({ items: _i, files: _fs, ...rest }) => rest)
     .sort((a, b) => (a.updated_at < b.updated_at ? 1 : -1));
 }
 
@@ -383,17 +383,21 @@ export async function mockCreateCertRequest(data: { company: string; cert_center
     updated_at: now,
     has_unread_messages: false,
     has_unread_changes: true,
-    fields: {
-      company: data.company,
-      product: '',
-      tn_ved: '',
-      tech_description: '',
-      tr_ts: '',
-      cert_form: '',
-      cert_scheme: '',
-      cost: '',
-      comment: '',
-    },
+    items: [
+      {
+        id: 1,
+        position_no: 1,
+        company: data.company,
+        product: '',
+        tn_ved: '',
+        tech_description: '',
+        tr_ts: '',
+        cert_form: '',
+        cert_scheme: '',
+        cost: '',
+        comment: '',
+      },
+    ],
     files: [],
   });
   recalcCenterCounts();
@@ -406,7 +410,8 @@ export async function mockCertRequest(id: number): Promise<CertRequestDetails> {
   if (!r) throw new Error('Заявка не найдена');
   r.has_unread_messages = false;
   r.has_unread_changes = false;
-  return { ...r.fields, status: r.status, files: [...r.files] };
+  const { items: _i, files: _fs, ...rest } = r;
+  return { request: { ...rest }, items: [...r.items], files: [...r.files] };
 }
 
 export async function mockUpdateCertRequestStatus(id: number, status: CertRequestStatus) {
@@ -414,16 +419,6 @@ export async function mockUpdateCertRequestStatus(id: number, status: CertReques
   const r = _certRequests.find((x) => x.id === id);
   if (!r) throw new Error('Заявка не найдена');
   r.status = status;
-  r.updated_at = new Date().toISOString();
-  return { ok: true };
-}
-
-export async function mockUpdateCertRequestFields(id: number, fields: CertRequestFields) {
-  await delay(150);
-  const r = _certRequests.find((x) => x.id === id);
-  if (!r) throw new Error('Заявка не найдена');
-  r.fields = { ...fields };
-  r.company = fields.company;
   r.updated_at = new Date().toISOString();
   return { ok: true };
 }
