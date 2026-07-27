@@ -254,3 +254,263 @@ export async function mockSendMessage(
 export function _setMockSenderHint(_role: 'manager' | 'client', _name: string) {
   // not used; UI passes through send and we infer; kept for future
 }
+
+// ============ Certification mocks ============
+
+let _certCenters: CertCenter[] = [
+  {
+    id: 1,
+    name: 'ООО «СертПлюс»',
+    contact_person: 'Смирнова О.П.',
+    phone: '+7 (495) 800-11-22',
+    email: 'info@sertplus.ru',
+    requests_count: 0,
+    created_at: '2025-02-10T10:00:00Z',
+  },
+  {
+    id: 2,
+    name: 'АНО «ТестСертификация»',
+    contact_person: 'Козлов В.А.',
+    phone: '+7 (812) 700-33-44',
+    email: 'kozlov@testcert.ru',
+    requests_count: 0,
+    created_at: '2025-05-01T09:00:00Z',
+  },
+];
+
+let _certRequests: (CertRequest & { fields: CertRequestFields; files: CertFile[] })[] = [
+  {
+    id: 501,
+    number: 'CR-2026-001',
+    company: 'ООО «ТехноИмпорт»',
+    cert_center_id: 1,
+    cert_center_name: _certCenters[0].name,
+    status: 'in_progress',
+    created_at: '2026-06-01T10:00:00Z',
+    updated_at: '2026-06-15T14:00:00Z',
+    has_unread_messages: true,
+    has_unread_changes: false,
+    fields: {
+      company: 'ООО «ТехноИмпорт»',
+      product: 'Электрический чайник',
+      tn_ved: '8516710000',
+      tech_description: 'Бытовой электрочайник, 1.7 л, 2200 Вт',
+      tr_ts: 'ТР ТС 004/2011, ТР ТС 020/2011',
+      cert_form: 'Декларация о соответствии',
+      cert_scheme: '1д',
+      cost: '35 000 ₽',
+      comment: 'Срочно, партия к 20.06',
+    },
+    files: [
+      { id: 1, file_type: 'file', url: '/uploads/tech.pdf', filename: 'tech.pdf', created_at: '2026-06-01T10:05:00Z' },
+      { id: 2, file_type: 'link', url: 'https://example.com/spec', created_at: '2026-06-01T10:07:00Z' },
+    ],
+  },
+  {
+    id: 502,
+    number: 'CR-2026-002',
+    company: 'ИП Петров А.С.',
+    cert_center_id: 2,
+    cert_center_name: _certCenters[1].name,
+    status: 'open',
+    created_at: '2026-06-10T09:00:00Z',
+    updated_at: '2026-06-10T09:00:00Z',
+    has_unread_messages: false,
+    has_unread_changes: true,
+    fields: {
+      company: 'ИП Петров А.С.',
+      product: 'Детская игрушка',
+      tn_ved: '9503004900',
+      tech_description: '',
+      tr_ts: 'ТР ТС 008/2011',
+      cert_form: '',
+      cert_scheme: '',
+      cost: '',
+      comment: '',
+    },
+    files: [],
+  },
+];
+
+let _certMessages: CertMessage[] = [
+  { id: 1, cert_request_id: 501, user_id: 1, sender_name: 'Менеджер ИННОВЭД', role: 'manager', text: 'Добрый день, направляю заявку.', is_read: true, created_at: '2026-06-01T10:10:00Z' },
+  { id: 2, cert_request_id: 501, user_id: 10, sender_name: 'Смирнова О.П.', role: 'cert_center', text: 'Приняли, работаем.', is_read: false, created_at: '2026-06-02T11:00:00Z' },
+];
+
+let _nextCertCenterId = 3;
+let _nextCertRequestId = 600;
+let _nextCertFileId = 100;
+let _nextCertMsgId = 100;
+
+function recalcCenterCounts() {
+  for (const c of _certCenters) {
+    c.requests_count = _certRequests.filter((r) => r.cert_center_id === c.id).length;
+  }
+}
+recalcCenterCounts();
+
+export async function mockCertCenters(q?: string): Promise<CertCenter[]> {
+  await delay(150);
+  recalcCenterCounts();
+  if (!q) return [..._certCenters];
+  const lo = q.toLowerCase();
+  return _certCenters.filter(
+    (c) => c.name.toLowerCase().includes(lo) || c.email.toLowerCase().includes(lo)
+  );
+}
+
+export async function mockCreateCertCenter(data: Partial<CertCenter>) {
+  await delay();
+  const center: CertCenter = {
+    id: _nextCertCenterId++,
+    name: data.name || '',
+    contact_person: data.contact_person || '',
+    phone: data.phone || '',
+    email: data.email || '',
+    requests_count: 0,
+    created_at: new Date().toISOString(),
+  };
+  _certCenters.push(center);
+  const password = Math.random().toString(36).slice(-10);
+  return { center, credentials: { email: center.email, password } };
+}
+
+export async function mockCertRequests(
+  params: { status?: string; cert_center_id?: number } = {}
+): Promise<CertRequest[]> {
+  await delay(150);
+  let list = [..._certRequests];
+  if (params.status) list = list.filter((r) => r.status === params.status);
+  if (params.cert_center_id) list = list.filter((r) => r.cert_center_id === params.cert_center_id);
+  return list
+    .map(({ fields: _f, files: _fs, ...rest }) => rest)
+    .sort((a, b) => (a.updated_at < b.updated_at ? 1 : -1));
+}
+
+export async function mockCreateCertRequest(data: { company: string; cert_center_id: number }) {
+  await delay();
+  const center = _certCenters.find((c) => c.id === data.cert_center_id);
+  const id = _nextCertRequestId++;
+  const now = new Date().toISOString();
+  _certRequests.push({
+    id,
+    number: `CR-2026-${String(id).padStart(3, '0')}`,
+    company: data.company,
+    cert_center_id: data.cert_center_id,
+    cert_center_name: center?.name || '',
+    status: 'open',
+    created_at: now,
+    updated_at: now,
+    has_unread_messages: false,
+    has_unread_changes: true,
+    fields: {
+      company: data.company,
+      product: '',
+      tn_ved: '',
+      tech_description: '',
+      tr_ts: '',
+      cert_form: '',
+      cert_scheme: '',
+      cost: '',
+      comment: '',
+    },
+    files: [],
+  });
+  recalcCenterCounts();
+  return { id };
+}
+
+export async function mockCertRequest(id: number): Promise<CertRequestDetails> {
+  await delay(120);
+  const r = _certRequests.find((x) => x.id === id);
+  if (!r) throw new Error('Заявка не найдена');
+  r.has_unread_messages = false;
+  r.has_unread_changes = false;
+  return { ...r.fields, status: r.status, files: [...r.files] };
+}
+
+export async function mockUpdateCertRequestStatus(id: number, status: CertRequestStatus) {
+  await delay(120);
+  const r = _certRequests.find((x) => x.id === id);
+  if (!r) throw new Error('Заявка не найдена');
+  r.status = status;
+  r.updated_at = new Date().toISOString();
+  return { ok: true };
+}
+
+export async function mockUpdateCertRequestFields(id: number, fields: CertRequestFields) {
+  await delay(150);
+  const r = _certRequests.find((x) => x.id === id);
+  if (!r) throw new Error('Заявка не найдена');
+  r.fields = { ...fields };
+  r.company = fields.company;
+  r.updated_at = new Date().toISOString();
+  return { ok: true };
+}
+
+export async function mockDeleteCertRequest(id: number) {
+  await delay(120);
+  _certRequests = _certRequests.filter((r) => r.id !== id);
+  _certMessages = _certMessages.filter((m) => m.cert_request_id !== id);
+  recalcCenterCounts();
+  return { ok: true };
+}
+
+export async function mockUploadCertFile(id: number, form: FormData): Promise<CertFile> {
+  await delay();
+  const r = _certRequests.find((x) => x.id === id);
+  if (!r) throw new Error('Заявка не найдена');
+  const url = form.get('url');
+  if (typeof url === 'string' && url) {
+    const f: CertFile = {
+      id: _nextCertFileId++,
+      file_type: 'link',
+      url,
+      created_at: new Date().toISOString(),
+    };
+    r.files.push(f);
+    r.updated_at = f.created_at;
+    return f;
+  }
+  const file = form.get('file') as File | null;
+  const f: CertFile = {
+    id: _nextCertFileId++,
+    file_type: 'file',
+    url: `/uploads/${file?.name || 'file'}`,
+    filename: file?.name || 'file',
+    created_at: new Date().toISOString(),
+  };
+  r.files.push(f);
+  r.updated_at = f.created_at;
+  return f;
+}
+
+export async function mockCertMessages(id: number, _since?: number): Promise<CertMessage[]> {
+  await delay(120);
+  return _certMessages
+    .filter((m) => m.cert_request_id === id)
+    .sort((a, b) => (a.created_at < b.created_at ? -1 : 1));
+}
+
+export async function mockSendCertMessage(
+  id: number,
+  text: string,
+  sender?: { role: import('@/types/lk').Role; name: string; user_id: number }
+): Promise<CertMessage> {
+  await delay(120);
+  const msg: CertMessage = {
+    id: _nextCertMsgId++,
+    cert_request_id: id,
+    user_id: sender?.user_id ?? 999,
+    sender_name: sender?.name ?? 'Вы',
+    role: sender?.role ?? 'manager',
+    text,
+    is_read: true,
+    created_at: new Date().toISOString(),
+  };
+  _certMessages.push(msg);
+  const r = _certRequests.find((x) => x.id === id);
+  if (r) r.updated_at = msg.created_at;
+  return msg;
+}
+
