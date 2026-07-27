@@ -656,28 +656,61 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[
 
 // POST /api/cert-requests  (только менеджер, привязывает к центру)
 if ($method === 'POST' && $seg[0] === 'cert-requests' && !isset($seg[1])) {
-    auth(true);
+    $me = auth(true);
     $b = body();
+
     if (empty($b['cert_center_id'])) err('cert_center_id обязателен');
+
+    $certCenterId = (int)$b['cert_center_id'];
+    $company = trim((string)($b['company'] ?? ''));
+
+    $cc = db()->prepare('SELECT id FROM lk_cert_centers WHERE id=? AND is_active=1 LIMIT 1');
+    $cc->execute([$certCenterId]);
+    if (!$cc->fetch()) err('Сертификационный центр не найден', 404);
+
     db()->beginTransaction();
     try {
         $st = db()->prepare(
-            "INSERT INTO lk_cert_requests(cert_center_id,status,created_by,created_at,updated_at,manager_seen_at)
-             VALUES(?,'open',?,NOW(),NOW(),NOW())"
+            "INSERT INTO lk_cert_requests(
+                cert_center_id,
+                status,
+                created_by,
+                created_at,
+                updated_at,
+                updated_by_role,
+                manager_seen_at,
+                center_seen_at
+            ) VALUES (?, 'open', ?, NOW(), NOW(), 'manager', NOW(), NULL)"
         );
-        $st->execute([(int)$b['cert_center_id'], auth()['sub'] ?? null]);
-        $rid = db()->lastInsertId();
+        $st->execute([$certCenterId, (int)$me['sub']]);
+        $rid = (int)db()->lastInsertId();
 
-        db()->prepare(
-            'INSERT INTO lk_cert_request_items(request_id,position_no,company,created_at,updated_at)
-             VALUES(?,1,?,NOW(),NOW())'
-        )->execute([$rid, $b['company'] ?? '']);
+        $stItem = db()->prepare(
+            "INSERT INTO lk_cert_request_items(
+                request_id,
+                position_no,
+                company,
+                product,
+                tn_ved,
+                tech_description,
+                tr_ts,
+                cert_form,
+                cert_scheme,
+                cost,
+                comment,
+                created_at,
+                updated_at
+            ) VALUES (?, 1, ?, '', '', '', '', '', '', '', '', NOW(), NOW())"
+        );
+        $stItem->execute([$rid, $company]);
 
         db()->commit();
     } catch (\Throwable $e) {
-        db()->rollBack(); err('Ошибка БД: '.$e->getMessage());
+        db()->rollBack();
+        err('Ошибка БД: '.$e->getMessage());
     }
-    out(['id' => (int)$rid], 201);
+
+    out(['id' => $rid], 201);
 }
 
 // PUT /api/cert-requests/:id/items/:itemId — редактировать одну позицию (обе стороны)
