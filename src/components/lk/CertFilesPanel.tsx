@@ -127,31 +127,16 @@ export function CertFilesPanel({ requestId, itemId }: Props) {
                   <div className="truncate text-sm font-medium">{displayName}</div>
                 )}
               </div>
-              {isExternalLink ? (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  asChild
-                  title="Открыть ссылку"
-                  aria-label="Открыть ссылку"
-                >
-                  <a href={f.url!} target="_blank" rel="noopener noreferrer">
-                    <LinkIcon className="h-4 w-4 mr-1.5" />
-                    Открыть
-                  </a>
-                </Button>
-              ) : (
-                <Button
-                  size="sm"
-                  variant="default"
-                  onClick={(e) => download(e, f)}
-                  title="Скачать"
-                  aria-label="Скачать файл"
-                >
-                  <Download className="h-4 w-4 mr-1.5" />
-                  Скачать
-                </Button>
-              )}
+              <Button
+                size="sm"
+                variant="default"
+                onClick={(e) => download(e, f)}
+                title="Скачать"
+                aria-label="Скачать файл"
+              >
+                <Download className="h-4 w-4 mr-1.5" />
+                Скачать
+              </Button>
               <Button
                 size="sm"
                 variant="ghost"
