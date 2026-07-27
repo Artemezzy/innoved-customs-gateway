@@ -50,6 +50,21 @@ export function CertFilesPanel({ requestId, itemId }: Props) {
     onError: (e: any) => toast.error(e?.message || 'Не удалось добавить ссылку'),
   });
 
+  const deleteFile = useMutation({
+    mutationFn: (fileId: number) => lkApi.deleteCertFile(requestId, itemId, fileId),
+    onSuccess: () => {
+      toast.success('Вложение удалено');
+      invalidate();
+    },
+    onError: (e: any) => toast.error(e?.message || 'Не удалось удалить вложение'),
+  });
+
+  const handleDelete = (f: CertFile) => {
+    if (window.confirm('Удалить вложение?')) {
+      deleteFile.mutate(f.id);
+    }
+  };
+
   const download = async (f: CertFile) => {
     try {
       await lkApi.downloadCertFile(requestId, itemId, f.id, f.filename);
