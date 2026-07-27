@@ -94,19 +94,17 @@ export function CertFilesPanel({ requestId, itemId }: Props) {
                   {f.url}
                 </a>
               )}
-              <div className="text-xs text-muted-foreground">
-                {new Date(f.created_at).toLocaleString('ru-RU')}
-              </div>
             </div>
             {f.file_type === 'file' && (
               <Button
-                size="icon"
-                variant="outline"
+                size="sm"
+                variant="default"
                 onClick={() => download(f)}
                 title="Скачать"
                 aria-label="Скачать файл"
               >
-                <Download className="h-4 w-4" />
+                <Download className="h-4 w-4 mr-1.5" />
+                Скачать
               </Button>
             )}
           </div>
