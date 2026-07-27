@@ -71,44 +71,51 @@ export function CertFilesPanel({ requestId, itemId }: Props) {
         {!filesQ.isLoading && files.length === 0 && (
           <div className="text-sm text-muted-foreground">Вложений пока нет</div>
         )}
-        {files.map((f) => (
-          <div
-            key={f.id}
-            className="flex items-center gap-3 rounded-md border p-2 bg-background"
-          >
-            {f.file_type === 'file' ? (
-              <FileText className="h-4 w-4 text-primary shrink-0" />
-            ) : (
-              <LinkIcon className="h-4 w-4 text-primary shrink-0" />
-            )}
-            <div className="flex-1 min-w-0">
+        {files.map((f) => {
+          const displayName =
+            f.file_type === 'file'
+              ? f.filename || f.url || `Файл №${f.id}`
+              : f.url || `Ссылка №${f.id}`;
+
+          return (
+            <div
+              key={f.id}
+              className="flex items-center gap-3 rounded-md border p-2 bg-background"
+            >
               {f.file_type === 'file' ? (
-                <div className="truncate text-sm font-medium">{f.filename || f.url}</div>
+                <FileText className="h-4 w-4 text-primary shrink-0" />
               ) : (
-                <a
-                  href={f.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="truncate text-sm text-primary hover:underline block"
+                <LinkIcon className="h-4 w-4 text-primary shrink-0" />
+              )}
+              <div className="flex-1 min-w-0">
+                {f.file_type === 'file' ? (
+                  <div className="truncate text-sm font-medium">{displayName}</div>
+                ) : (
+                  <a
+                    href={f.url || '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="truncate text-sm text-primary hover:underline block"
+                  >
+                    {displayName}
+                  </a>
+                )}
+              </div>
+              {f.file_type === 'file' && (
+                <Button
+                  size="sm"
+                  variant="default"
+                  onClick={() => download(f)}
+                  title="Скачать"
+                  aria-label="Скачать файл"
                 >
-                  {f.url}
-                </a>
+                  <Download className="h-4 w-4 mr-1.5" />
+                  Скачать
+                </Button>
               )}
             </div>
-            {f.file_type === 'file' && (
-              <Button
-                size="sm"
-                variant="default"
-                onClick={() => download(f)}
-                title="Скачать"
-                aria-label="Скачать файл"
-              >
-                <Download className="h-4 w-4 mr-1.5" />
-                Скачать
-              </Button>
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t">
