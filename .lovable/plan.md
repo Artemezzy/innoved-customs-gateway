@@ -1,24 +1,24 @@
-## Добавить экспорт заявки в CSV
+## Изменения в `src/components/lk/CertFilesPanel.tsx`
 
-### 1. `src/api/lkClient.ts`
-Добавить в объект `lkApi` метод `exportCertRequest(requestId)` — по аналогии с `downloadCertFile`: fetch с `Authorization: Bearer <token>`, blob, программный клик по `<a download="cert-request-<id>.csv">`.
+1. **Кнопка скачивания — сделать заметной и всегда активной.**
+   - Заменить `variant="outline"` size="icon" на полноценную кнопку с текстом «Скачать» + иконкой `Download`, `variant="default"` (акцентный цвет), чтобы её было видно.
+   - Оставить `aria-label` и `title`.
 
-### 2. `src/pages/lk/LKCertRequestsPage.tsx`
-- Импортировать `Download` из `lucide-react`.
-- Добавить новую колонку действий (ghost icon-кнопка) в каждой строке таблицы — видна и менеджеру, и cert_center.
-- В `onClick`: `e.stopPropagation()` + `lkApi.exportCertRequest(r.id)`.
-- `title="Скачать в Excel"`, `aria-label`.
-- Обновить `colSpan` пустого состояния (+1 колонка для всех ролей; у менеджера +1 к уже существующей колонке удаления).
-- Обернуть вызов в try/catch с `toast.error` при ошибке.
+2. **Убрать «информацию об обновлении вложений».**
+   - Удалить строку с датой `new Date(f.created_at).toLocaleString('ru-RU')` под именем файла/ссылки.
 
-### 3. `src/pages/lk/LKCertRequestDetailPage.tsx`
-- Импортировать `Download`.
-- В правой части верхнего блока (рядом со статусом) добавить `Button variant="outline" size="sm"` с иконкой и текстом «Скачать в Excel», `onClick={() => lkApi.exportCertRequest(requestId)}` с обработкой ошибки через toast.
+## Изменения в `src/components/lk/CertItemsPanel.tsx`
 
-### Что НЕ трогаем
-Чат, статусы, позиции товаров, файлы, mock-слой (метод только для реального API — USE_MOCK=false).
+3. **Подсветка полей в таблице/карточке:**
+   - Зелёные (мягкий): `company`, `product`, `tn_ved`, `tech_description` → класс типа `bg-green-50` (в textarea/input `className`).
+   - Жёлтые (мягкий): `tr_ts`, `cert_form`, `cert_scheme`, `cost`, `comment` → `bg-yellow-50`.
+   - Реализовать через маппинг `FIELD_COLORS: Record<key, 'green'|'yellow'>` и передавать соответствующий className в `<Input>` / `<Textarea>` в обоих вариантах (`row` и `card`).
 
-### Проверка
-- Build/тайпчек проходит.
-- В списке иконка скачивания не открывает деталь заявки.
-- На детальной странице кнопка отдаёт тот же CSV.
+4. **Кнопка «Показать вложения» — на всю ширину под строкой позиции.**
+   - **Desktop (`variant='row'`):** убрать `toggleFilesBtn` из ячейки действий (там останутся «Сохранить» и «Удалить»). Добавить дополнительный `<tr>` под каждой строкой позиции с `<td colSpan={colCount}>`, внутри — кнопка `variant="outline"` size="sm" `className="w-full justify-center"` с текстом «Показать вложения» / «Скрыть вложения» и иконкой `Paperclip` + `ChevronDown/Right`. Существующий блок раскрытия вложений остаётся ниже, как и раньше.
+   - **Mobile (`variant='card'`):** кнопка уже стоит внизу карточки на всю ширину — оставить как есть (соответствует требованию).
+
+## Технические детали
+
+- Цвета оставить утилитарными Tailwind (`bg-green-50`, `bg-yellow-50`) — это соответствует «мягкому» тону; тёмная тема ЛК уже использует нейтральный фон карточек, поэтому мягкие пастельные подсветки будут читаемы. Текст остаётся дефолтным.
+- Никаких изменений в API, типах, роутинге и остальной логике (чат, статусы, экспорт, has_unread) не затрагиваем.
