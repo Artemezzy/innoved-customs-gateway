@@ -14,7 +14,6 @@ type LoginResponseRaw = {
   cert_center_id?: number | null;
 };
 
-
 async function request<T>(
   method: string,
   path: string,
@@ -101,7 +100,6 @@ export async function lkLogin(email: string, password: string) {
     certCenterId: res.cert_center_id ?? null,
   };
 
-
   console.log('lkLogin result', { token: res.token, user });
 
   return { token: res.token, user };
@@ -122,17 +120,17 @@ export const lkApi = {
     USE_MOCK
       ? mock.mockClients(q)
       : request<import('@/types/lk').Client[]>(
-        'GET',
-        `/clients${q ? `?q=${encodeURIComponent(q)}` : ''}`
-      ),
+          'GET',
+          `/clients${q ? `?q=${encodeURIComponent(q)}` : ''}`
+        ),
 
   createClient: (data: Partial<import('@/types/lk').Client>) =>
     USE_MOCK
       ? mock.mockCreateClient(data)
       : request<{
-        client: import('@/types/lk').Client;
-        credentials: { email: string; password: string };
-      }>('POST', '/clients', data),
+          client: import('@/types/lk').Client;
+          credentials: { email: string; password: string };
+        }>('POST', '/clients', data),
 
   client: (id: number) =>
     USE_MOCK
@@ -168,28 +166,28 @@ export const lkApi = {
     USE_MOCK
       ? mock.mockUpdateShipment(id, data)
       : request<import('@/types/lk').Shipment>(
-        'PUT',
-        `/shipments/${id}`,
-        data
-      ),
+          'PUT',
+          `/shipments/${id}`,
+          data
+        ),
 
   documents: (shipmentId: number) =>
     USE_MOCK
       ? mock.mockDocuments(shipmentId)
       : request<import('@/types/lk').LKDocument[]>(
-        'GET',
-        `/shipments/${shipmentId}/documents`
-      ),
+          'GET',
+          `/shipments/${shipmentId}/documents`
+        ),
 
   uploadDocument: (shipmentId: number, form: FormData) =>
     USE_MOCK
       ? mock.mockUploadDocument(shipmentId, form)
       : request<import('@/types/lk').LKDocument>(
-        'POST',
-        `/shipments/${shipmentId}/documents`,
-        form,
-        true
-      ),
+          'POST',
+          `/shipments/${shipmentId}/documents`,
+          form,
+          true
+        ),
 
   deleteDocument: (shipmentId: number, docId: number) =>
     USE_MOCK
@@ -200,9 +198,9 @@ export const lkApi = {
     USE_MOCK
       ? mock.mockMessages(shipmentId, since)
       : request<import('@/types/lk').Message[]>(
-        'GET',
-        `/shipments/${shipmentId}/messages${since ? `?since=${since}` : ''}`
-      ),
+          'GET',
+          `/shipments/${shipmentId}/messages${since ? `?since=${since}` : ''}`
+        ),
 
   sendMessage: (
     shipmentId: number,
@@ -212,12 +210,11 @@ export const lkApi = {
     USE_MOCK
       ? mock.mockSendMessage(shipmentId, text, sender)
       : request<import('@/types/lk').Message>('POST', `/shipments/${shipmentId}/messages`, {
-        text,
-      }),
+          text,
+        }),
 
   // НОВОЕ: сброс пароля клиента
   resetClientPassword: (clientId: number) =>
-    // если когда-нибудь захочешь замокать, можно добавить в lkMock такую функцию
     request<{
       user_id: number;
       client_id: number;
@@ -231,17 +228,17 @@ export const lkApi = {
     USE_MOCK
       ? mock.mockCertCenters(q)
       : request<import('@/types/lk').CertCenter[]>(
-        'GET',
-        `/cert-centers${q ? `?q=${encodeURIComponent(q)}` : ''}`
-      ),
+          'GET',
+          `/cert-centers${q ? `?q=${encodeURIComponent(q)}` : ''}`
+        ),
 
   createCertCenter: (data: Partial<import('@/types/lk').CertCenter>) =>
     USE_MOCK
       ? mock.mockCreateCertCenter(data)
       : request<{
-        center: import('@/types/lk').CertCenter;
-        credentials: { email: string; password: string };
-      }>('POST', '/cert-centers', data),
+          center: import('@/types/lk').CertCenter;
+          credentials: { email: string; password: string };
+        }>('POST', '/cert-centers', data),
 
   resetCertCenterPassword: (id: number) =>
     request<{
@@ -275,11 +272,19 @@ export const lkApi = {
       ? mock.mockCertRequest(id)
       : request<import('@/types/lk').CertRequestDetails>('GET', `/cert-requests/${id}`),
 
+  // товары внутри заявки
   certRequestItems: (id: number) =>
     request<import('@/types/lk').CertRequestItem[]>('GET', `/cert-requests/${id}/items`),
 
-  addCertRequestItem: (id: number, data?: Partial<import('@/types/lk').CertRequestItem>) =>
-    request<import('@/types/lk').CertRequestItem>('POST', `/cert-requests/${id}/items`, data ?? {}),
+  addCertRequestItem: (
+    id: number,
+    data?: Partial<import('@/types/lk').CertRequestItem>
+  ) =>
+    request<import('@/types/lk').CertRequestItem>(
+      'POST',
+      `/cert-requests/${id}/items`,
+      data ?? {}
+    ),
 
   updateCertRequestItem: (
     id: number,
@@ -295,7 +300,10 @@ export const lkApi = {
   deleteCertRequestItem: (id: number, itemId: number) =>
     request<{ ok: boolean }>('DELETE', `/cert-requests/${id}/items/${itemId}`),
 
-  updateCertRequestStatus: (id: number, status: import('@/types/lk').CertRequestStatus) =>
+  updateCertRequestStatus: (
+    id: number,
+    status: import('@/types/lk').CertRequestStatus
+  ) =>
     USE_MOCK
       ? mock.mockUpdateCertRequestStatus(id, status)
       : request<{ ok: boolean }>('PUT', `/cert-requests/${id}`, { status }),
@@ -305,33 +313,48 @@ export const lkApi = {
       ? mock.mockDeleteCertRequest(id)
       : request<{ ok: boolean }>('DELETE', `/cert-requests/${id}`),
 
-  uploadCertFile: (id: number, form: FormData) =>
-    USE_MOCK
-      ? mock.mockUploadCertFile(id, form)
-      : request<import('@/types/lk').CertFile>(
-        'POST',
-        `/cert-requests/${id}/files`,
-        form,
-        true
-      ),
+  // файлы/ссылки для КОНКРЕТНОЙ позиции товара
+  certItemFiles: (requestId: number, itemId: number) =>
+    request<import('@/types/lk').CertFile[]>(
+      'GET',
+      `/cert-requests/${requestId}/items/${itemId}/files`
+    ),
 
-  addCertFileUrl: (id: number, url: string) => {
+  uploadCertFile: (requestId: number, itemId: number, form: FormData) =>
+    USE_MOCK
+      ? mock.mockUploadCertFile(requestId, form)
+      : request<import('@/types/lk').CertFile>(
+          'POST',
+          `/cert-requests/${requestId}/items/${itemId}/files`,
+          form,
+          true
+        ),
+
+  addCertFileUrl: (requestId: number, itemId: number, url: string) => {
     const fd = new FormData();
     fd.append('url', url);
-    if (USE_MOCK) return mock.mockUploadCertFile(id, fd);
+    if (USE_MOCK) return mock.mockUploadCertFile(requestId, fd);
     return request<import('@/types/lk').CertFile>(
       'POST',
-      `/cert-requests/${id}/files`,
+      `/cert-requests/${requestId}/items/${itemId}/files`,
       fd,
       true
     );
   },
 
-  downloadCertFile: async (id: number, fileId: number, filename?: string) => {
+  downloadCertFile: async (
+    requestId: number,
+    itemId: number,
+    fileId: number,
+    filename?: string
+  ) => {
     const token = getAuthToken();
-    const res = await fetch(`${BASE_URL}/cert-requests/${id}/files/${fileId}/download`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    });
+    const res = await fetch(
+      `${BASE_URL}/cert-requests/${requestId}/items/${itemId}/files/${fileId}/download`,
+      {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      }
+    );
     if (!res.ok) throw new Error(`Не удалось скачать (HTTP ${res.status})`);
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
@@ -348,9 +371,9 @@ export const lkApi = {
     USE_MOCK
       ? mock.mockCertMessages(id, since)
       : request<import('@/types/lk').CertMessage[]>(
-        'GET',
-        `/cert-requests/${id}/messages${since ? `?since=${since}` : ''}`
-      ),
+          'GET',
+          `/cert-requests/${id}/messages${since ? `?since=${since}` : ''}`
+        ),
 
   sendCertMessage: (
     id: number,
@@ -359,7 +382,9 @@ export const lkApi = {
   ) =>
     USE_MOCK
       ? mock.mockSendCertMessage(id, text, sender)
-      : request<import('@/types/lk').CertMessage>('POST', `/cert-requests/${id}/messages`, {
-        text,
-      }),
+      : request<import('@/types/lk').CertMessage>(
+          'POST',
+          `/cert-requests/${id}/messages`,
+          { text }
+        ),
 };

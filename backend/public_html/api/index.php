@@ -656,7 +656,6 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset
     out([
         'request' => $r,
         'items' => $items,
-        'files' => $files
     ]);
 }
 
@@ -762,52 +761,158 @@ if ($method === 'DELETE' && $seg[0] === 'cert-requests' && isset($seg[1]) && !is
     out(['ok' => true]);
 }
 
-// POST /api/cert-requests/:id/files  (файл или ссылка, поле "Фото")
-if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'files') {
-    $me = auth();
+// POST /api/cert-requests/:id/items/:itemId/files  (файл или ссылка к позиции товара)
+if (
+    $method === 'POST'
+    && $seg[0] === 'cert-requests'
+    && isset($seg[1])
+    && ($seg[2] ?? '') === 'items'
+    && isset($seg[3])
+    && ($seg[4] ?? '') === 'files'
+) {
+    $me  = auth();
     $rid = (int)$seg[1];
+    $iid = (int)$seg[3];
+
+    // проверяем, что заявка существует и доступна
     cert_request_guard($me, $rid);
 
+    // проверяем, что позиция товара существует и принадлежит этой заявке
+    $stItem = db()->prepare('SELECT id, request_id FROM lk_cert_request_items WHERE id=?');
+    $stItem->execute([$iid]);
+    $item = $stItem->fetch();
+    if (!$item || (int)$item['request_id'] !== $rid) {
+        err('Позиция товара не найдена или не принадлежит заявке', 404);
+    }
+
+    // ССЫЛКА
     if (!empty($_POST['url'])) {
         db()->prepare(
-            'INSERT INTO lk_cert_request_files(request_id,file_type,url,uploader_id,uploader_role,created_at)
-             VALUES(?,\'link\',?,?,?,NOW())'
-        )->execute([$rid, $_POST['url'], $me['sub'], $me['role']]);
+            'INSERT INTO lk_cert_request_files(
+                request_id,
+                item_id,
+                file_type,
+                url,
+                uploader_id,
+                uploader_role,
+                created_at
+            ) VALUES(?,?,?,?,?,?,NOW())'
+        )->execute([$rid, $iid, 'link', $_POST['url'], $me['sub'], $me['role']]);
+
+        db()->prepare(
+            'UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?'
+        )->execute([$me['role'], $rid]);
+
         out(['ok' => true], 201);
     }
 
-    if (empty($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) err('Файл не загружен');
+    // ФАЙЛ
+    if (empty($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
+        err('Файл не загружен');
+    }
     $file = $_FILES['file'];
     if ($file['size'] > MAX_FILE_SIZE) err('Файл слишком большой (макс. 20 МБ)');
     $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-    if (!in_array($ext, ['pdf','doc','docx','xls','xlsx','jpg','jpeg','png'])) err('Недопустимый тип файла');
+    if (!in_array($ext, ['pdf','doc','docx','xls','xlsx','jpg','jpeg','png'])) {
+        err('Недопустимый тип файла');
+    }
 
     $dir = UPLOAD_PATH.'/cert/'.$rid;
     if (!is_dir($dir)) mkdir($dir, 0755, true);
     $stored = uniqid('cf_').'.'.$ext;
-    if (!move_uploaded_file($file['tmp_name'], $dir.'/'.$stored)) err('Ошибка сохранения файла');
+    if (!move_uploaded_file($file['tmp_name'], $dir.'/'.$stored)) {
+        err('Ошибка сохранения файла');
+    }
 
     db()->prepare(
-        'INSERT INTO lk_cert_request_files(request_id,file_type,filename_original,filename_stored,uploader_id,uploader_role,created_at)
-         VALUES(?,\'file\',?,?,?,?,NOW())'
-    )->execute([$rid, $file['name'], $stored, $me['sub'], $me['role']]);
+        'INSERT INTO lk_cert_request_files(
+            request_id,
+            item_id,
+            file_type,
+            filename_original,
+            filename_stored,
+            uploader_id,
+            uploader_role,
+            created_at
+        ) VALUES(?,?,?,?,?,?,?,NOW())'
+    )->execute([$rid, $iid, 'file', $file['name'], $stored, $me['sub'], $me['role']]);
 
-    db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
+    db()->prepare(
+        'UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?'
+    )->execute([$me['role'], $rid]);
+
     out(['id' => (int)db()->lastInsertId()], 201);
 }
 
-// GET /api/cert-requests/:id/files/:fileId/download
-if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'files' && isset($seg[3]) && ($seg[4] ?? '') === 'download') {
-    $me = auth();
-    $rid = (int)$seg[1]; $fid = (int)$seg[3];
+// GET /api/cert-requests/:id/items/:itemId/files/:fileId/download
+if (
+    $method === 'GET'
+    && $seg[0] === 'cert-requests'
+    && isset($seg[1])
+    && ($seg[2] ?? '') === 'items'
+    && isset($seg[3])
+    && ($seg[4] ?? '') === 'files'
+    && isset($seg[5])
+    && ($seg[6] ?? '') === 'download'
+) {
+    $me  = auth();
+    $rid = (int)$seg[1];
+    $iid = (int)$seg[3];
+    $fid = (int)$seg[5];
+
     cert_request_guard($me, $rid);
-    $st = db()->prepare('SELECT * FROM lk_cert_request_files WHERE id=? AND request_id=?');
-    $st->execute([$fid, $rid]); $f = $st->fetch(); if (!$f || $f['file_type'] !== 'file') err('Не найдено', 404);
+
+    $stItem = db()->prepare('SELECT id, request_id FROM lk_cert_request_items WHERE id=?');
+    $stItem->execute([$iid]);
+    $item = $stItem->fetch();
+    if (!$item || (int)$item['request_id'] !== $rid) {
+        err('Позиция товара не найдена или не принадлежит заявке', 404);
+    }
+
+    $st = db()->prepare(
+        'SELECT * FROM lk_cert_request_files WHERE id=? AND request_id=? AND item_id=?'
+    );
+    $st->execute([$fid, $rid, $iid]);
+    $f = $st->fetch();
+    if (!$f || $f['file_type'] !== 'file') err('Не найдено', 404);
+
     $path = UPLOAD_PATH.'/cert/'.$rid.'/'.$f['filename_stored'];
     if (!file_exists($path)) err('Файл не найден', 404);
+
     header('Content-Type: application/octet-stream');
     header('Content-Disposition: attachment; filename*=UTF-8\'\''.rawurlencode($f['filename_original']));
-    readfile($path); exit;
+    readfile($path);
+    exit;
+}
+
+// GET /api/cert-requests/:id/items/:itemId/files
+if (
+    $method === 'GET'
+    && $seg[0] === 'cert-requests'
+    && isset($seg[1])
+    && ($seg[2] ?? '') === 'items'
+    && isset($seg[3])
+    && ($seg[4] ?? '') === 'files'
+    && !isset($seg[5])
+) {
+    $me  = auth();
+    $rid = (int)$seg[1];
+    $iid = (int)$seg[3];
+
+    cert_request_guard($me, $rid);
+
+    $stItem = db()->prepare('SELECT id, request_id FROM lk_cert_request_items WHERE id=?');
+    $stItem->execute([$iid]);
+    $item = $stItem->fetch();
+    if (!$item || (int)$item['request_id'] !== $rid) {
+        err('Позиция товара не найдена или не принадлежит заявке', 404);
+    }
+
+    $st = db()->prepare(
+        'SELECT * FROM lk_cert_request_files WHERE request_id=? AND item_id=? ORDER BY created_at DESC'
+    );
+    $st->execute([$rid, $iid]);
+    out($st->fetchAll());
 }
 
 // ================= ЧАТ ЗАЯВКИ =================
