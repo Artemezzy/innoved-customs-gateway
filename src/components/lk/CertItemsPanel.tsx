@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Loader2, Plus, Save, Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronRight, Loader2, Paperclip, Plus, Save, Trash2 } from 'lucide-react';
+import { CertFilesPanel } from '@/components/lk/CertFilesPanel';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
 import { CertRequestItem } from '@/types/lk';
