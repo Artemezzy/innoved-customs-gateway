@@ -452,4 +452,314 @@ if ($method === 'GET' && $seg[0] === 'managers' && ($seg[1] ?? '') === 'messages
     out($st->fetchAll());
 }
 
+// ================= СЕРТИФИКАЦИОННЫЕ ЦЕНТРЫ =================
+
+// GET /api/cert-centers  (только менеджер)
+if ($method === 'GET' && $seg[0] === 'cert-centers' && !isset($seg[1])) {
+    auth(true);
+    $q = '%'.($_GET['q'] ?? '').'%';
+    $st = db()->prepare(
+        'SELECT cc.*, COUNT(r.id) AS requests_count
+         FROM lk_cert_centers cc
+         LEFT JOIN lk_cert_requests r ON r.cert_center_id=cc.id
+         WHERE cc.is_active=1 AND cc.name LIKE ?
+         GROUP BY cc.id ORDER BY cc.name'
+    );
+    $st->execute([$q]);
+    out($st->fetchAll());
+}
+
+// POST /api/cert-centers  (менеджер создаёт сертификационный центр)
+if ($method === 'POST' && $seg[0] === 'cert-centers' && !isset($seg[1])) {
+    auth(true);
+    $b = body();
+    foreach (['name','email'] as $f) if (empty($b[$f])) err("Поле $f обязательно");
+    $ex = db()->prepare('SELECT id FROM lk_users WHERE email=?'); $ex->execute([$b['email']]);
+    if ($ex->fetch()) err('Email уже используется');
+
+    $pass = gen_pass();
+    $hash = password_hash($pass, PASSWORD_BCRYPT);
+    db()->beginTransaction();
+    try {
+        $st = db()->prepare(
+            'INSERT INTO lk_cert_centers(name,contact_person,phone,email,is_active,created_at)
+             VALUES(?,?,?,?,1,NOW())'
+        );
+        $st->execute([$b['name'], $b['contact_person'] ?? '', $b['phone'] ?? '', $b['email']]);
+        $ccid = db()->lastInsertId();
+
+        $st2 = db()->prepare(
+            'INSERT INTO lk_users(email,password_hash,name,role,cert_center_id,is_active,created_at)
+             VALUES(?,?,?,\'cert_center\',?,1,NOW())'
+        );
+        $st2->execute([$b['email'], $hash, $b['contact_person'] ?? $b['name'], $ccid]);
+
+        db()->commit();
+    } catch (\Throwable $e) {
+        db()->rollBack();
+        err('Ошибка БД: '.$e->getMessage());
+    }
+    out(['cert_center_id' => (int)$ccid, 'login' => $b['email'], 'password' => $pass], 201);
+}
+
+// POST /api/cert-centers/:id/reset-password
+if ($method === 'POST' && $seg[0] === 'cert-centers' && isset($seg[1]) && ($seg[2] ?? '') === 'reset-password') {
+    auth(true);
+    $ccId = (int)$seg[1];
+    $st = db()->prepare('SELECT id, email, name FROM lk_users WHERE cert_center_id=? AND role=\'cert_center\' AND is_active=1 LIMIT 1');
+    $st->execute([$ccId]);
+    $u = $st->fetch();
+    if (!$u) err('Пользователь не найден', 404);
+    $newPass = gen_pass();
+    db()->prepare('UPDATE lk_users SET password_hash=?, updated_at=NOW() WHERE id=?')
+       ->execute([password_hash($newPass, PASSWORD_BCRYPT), $u['id']]);
+    out(['login' => $u['email'], 'new_password' => $newPass]);
+}
+
+// ================= ЗАЯВКИ НА СЕРТИФИКАЦИЮ =================
+
+// GET /api/cert-requests  (менеджер видит все, центр — только свои)
+if ($method === 'GET' && $seg[0] === 'cert-requests' && !isset($seg[1])) {
+    $me = auth();
+    $sql = 'SELECT r.*, cc.name AS cert_center_name, f.company
+            FROM lk_cert_requests r
+            JOIN lk_cert_centers cc ON cc.id=r.cert_center_id
+            LEFT JOIN lk_cert_request_fields f ON f.request_id=r.id
+            WHERE 1=1';
+    $p = [];
+
+    if ($me['role'] === 'cert_center') {
+        $sql .= ' AND r.cert_center_id=?';
+        $p[] = $me['cert_center_id'];
+    } elseif ($me['role'] !== 'manager') {
+        err('Недопустимая роль', 403);
+    }
+
+    if (!empty($_GET['status'])) {
+        $sql .= ' AND r.status=?';
+        $p[] = $_GET['status'];
+    }
+
+    if (!empty($_GET['cert_center_id']) && $me['role'] === 'manager') {
+        $sql .= ' AND r.cert_center_id=?';
+        $p[] = (int)$_GET['cert_center_id'];
+    }
+
+    $sql .= ' ORDER BY r.created_at DESC';
+    $st = db()->prepare($sql);
+    $st->execute($p);
+    $rows = $st->fetchAll();
+
+    foreach ($rows as &$row) {
+        if ($me['role'] === 'manager') {
+            $msgSt = db()->prepare(
+                "SELECT COUNT(*)
+                 FROM lk_cert_messages
+                 WHERE request_id=? AND is_read=0 AND role='cert_center'"
+            );
+            $msgSt->execute([(int)$row['id']]);
+            $row['has_unread_messages'] = ((int)$msgSt->fetchColumn()) > 0;
+
+            $row['has_unread_changes'] =
+                strtotime($row['updated_at']) > strtotime($row['manager_seen_at'] ?? '1970-01-01 00:00:00');
+        } else {
+            $msgSt = db()->prepare(
+                "SELECT COUNT(*)
+                 FROM lk_cert_messages
+                 WHERE request_id=? AND is_read=0 AND role='manager'"
+            );
+            $msgSt->execute([(int)$row['id']]);
+            $row['has_unread_messages'] = ((int)$msgSt->fetchColumn()) > 0;
+
+            $row['has_unread_changes'] =
+                strtotime($row['updated_at']) > strtotime($row['center_seen_at'] ?? '1970-01-01 00:00:00');
+        }
+
+        $row['has_unread'] = $row['has_unread_messages'] || $row['has_unread_changes'];
+    }
+    unset($row);
+
+    out($rows);
+}
+
+// POST /api/cert-requests  (только менеджер, привязывает к центру)
+if ($method === 'POST' && $seg[0] === 'cert-requests' && !isset($seg[1])) {
+    auth(true);
+    $b = body();
+    if (empty($b['cert_center_id'])) err('cert_center_id обязателен');
+    db()->beginTransaction();
+    try {
+        $st = db()->prepare(
+            "INSERT INTO lk_cert_requests(cert_center_id,status,created_by,created_at,updated_at,manager_seen_at)
+             VALUES(?,'open',?,NOW(),NOW(),NOW())"
+        );
+        $st->execute([(int)$b['cert_center_id'], auth()['sub'] ?? null]);
+        $rid = db()->lastInsertId();
+        db()->prepare('INSERT INTO lk_cert_request_fields(request_id) VALUES(?)')->execute([$rid]);
+        db()->commit();
+    } catch (\Throwable $e) {
+        db()->rollBack(); err('Ошибка БД: '.$e->getMessage());
+    }
+    out(['id' => (int)$rid], 201);
+}
+
+function cert_request_guard(array $me, int $rid): array {
+    $st = db()->prepare('SELECT * FROM lk_cert_requests WHERE id=?');
+    $st->execute([$rid]); $r = $st->fetch();
+    if (!$r) err('Заявка не найдена', 404);
+    if ($me['role'] === 'cert_center' && $r['cert_center_id'] != $me['cert_center_id']) err('Нет доступа', 403);
+    if (!in_array($me['role'], ['manager','cert_center'])) err('Нет доступа', 403);
+    return $r;
+}
+
+// GET /api/cert-requests/:id  (детали заявки + поля)
+if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset($seg[2])) {
+    $me = auth();
+    $rid = (int)$seg[1];
+    $r = cert_request_guard($me, $rid);
+
+    $seenCol = $me['role'] === 'manager' ? 'manager_seen_at' : 'center_seen_at';
+    db()->prepare("UPDATE lk_cert_requests SET $seenCol=NOW() WHERE id=?")->execute([$rid]);
+
+    $st = db()->prepare('SELECT * FROM lk_cert_request_fields WHERE request_id=?');
+    $st->execute([$rid]); $fields = $st->fetch();
+
+    $stf = db()->prepare('SELECT * FROM lk_cert_request_files WHERE request_id=? ORDER BY created_at DESC');
+    $stf->execute([$rid]); $files = $stf->fetchAll();
+
+    out(['request' => $r, 'fields' => $fields, 'files' => $files]);
+}
+
+// PUT /api/cert-requests/:id  (смена статуса — менеджер и центр)
+if ($method === 'PUT' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset($seg[2])) {
+    $me = auth();
+    $rid = (int)$seg[1];
+    cert_request_guard($me, $rid);
+    $b = body();
+    if (!in_array($b['status'] ?? '', ['open','in_progress','closed'])) err('Недопустимый статус');
+    $seenCol = $me['role'] === 'manager' ? 'manager_seen_at' : 'center_seen_at';
+    db()->prepare("UPDATE lk_cert_requests SET status=?, updated_at=NOW(), updated_by_role=?, $seenCol=NOW() WHERE id=?")
+       ->execute([$b['status'], $me['role'], $rid]);
+    out(['ok' => true]);
+}
+
+// PUT /api/cert-requests/:id/fields  (редактирование 10 полей — обе стороны)
+if ($method === 'PUT' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'fields') {
+    $me = auth();
+    $rid = (int)$seg[1];
+    cert_request_guard($me, $rid);
+    $b = body();
+    $allowed = ['company','product','tn_ved','tech_description','tr_ts','cert_form','cert_scheme','cost','comment'];
+    $set = []; $vals = [];
+    foreach ($allowed as $f) if (array_key_exists($f, $b)) { $set[] = "$f=?"; $vals[] = $b[$f]; }
+    if (!$set) err('Нет данных для обновления');
+    $vals[] = $rid;
+    db()->prepare('UPDATE lk_cert_request_fields SET '.implode(',', $set).' WHERE request_id=?')->execute($vals);
+
+    $seenCol = $me['role'] === 'manager' ? 'manager_seen_at' : 'center_seen_at';
+    db()->prepare("UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=?, $seenCol=NOW() WHERE id=?")
+       ->execute([$me['role'], $rid]);
+    out(['ok' => true]);
+}
+
+// DELETE /api/cert-requests/:id  (только менеджер)
+if ($method === 'DELETE' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset($seg[2])) {
+    auth(true);
+    $rid = (int)$seg[1];
+    $st = db()->prepare('SELECT id FROM lk_cert_requests WHERE id=?'); $st->execute([$rid]);
+    if (!$st->fetch()) err('Заявка не найдена', 404);
+    db()->prepare('DELETE FROM lk_cert_requests WHERE id=?')->execute([$rid]);
+    out(['ok' => true]);
+}
+
+// POST /api/cert-requests/:id/files  (файл или ссылка, поле "Фото")
+if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'files') {
+    $me = auth();
+    $rid = (int)$seg[1];
+    cert_request_guard($me, $rid);
+
+    if (!empty($_POST['url'])) {
+        db()->prepare(
+            'INSERT INTO lk_cert_request_files(request_id,file_type,url,uploader_id,uploader_role,created_at)
+             VALUES(?,\'link\',?,?,?,NOW())'
+        )->execute([$rid, $_POST['url'], $me['sub'], $me['role']]);
+        out(['ok' => true], 201);
+    }
+
+    if (empty($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) err('Файл не загружен');
+    $file = $_FILES['file'];
+    if ($file['size'] > MAX_FILE_SIZE) err('Файл слишком большой (макс. 20 МБ)');
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    if (!in_array($ext, ['pdf','doc','docx','xls','xlsx','jpg','jpeg','png'])) err('Недопустимый тип файла');
+
+    $dir = UPLOAD_PATH.'/cert/'.$rid;
+    if (!is_dir($dir)) mkdir($dir, 0755, true);
+    $stored = uniqid('cf_').'.'.$ext;
+    if (!move_uploaded_file($file['tmp_name'], $dir.'/'.$stored)) err('Ошибка сохранения файла');
+
+    db()->prepare(
+        'INSERT INTO lk_cert_request_files(request_id,file_type,filename_original,filename_stored,uploader_id,uploader_role,created_at)
+         VALUES(?,\'file\',?,?,?,?,NOW())'
+    )->execute([$rid, $file['name'], $stored, $me['sub'], $me['role']]);
+
+    db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
+    out(['id' => (int)db()->lastInsertId()], 201);
+}
+
+// GET /api/cert-requests/:id/files/:fileId/download
+if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'files' && isset($seg[3]) && ($seg[4] ?? '') === 'download') {
+    $me = auth();
+    $rid = (int)$seg[1]; $fid = (int)$seg[3];
+    cert_request_guard($me, $rid);
+    $st = db()->prepare('SELECT * FROM lk_cert_request_files WHERE id=? AND request_id=?');
+    $st->execute([$fid, $rid]); $f = $st->fetch(); if (!$f || $f['file_type'] !== 'file') err('Не найдено', 404);
+    $path = UPLOAD_PATH.'/cert/'.$rid.'/'.$f['filename_stored'];
+    if (!file_exists($path)) err('Файл не найден', 404);
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename*=UTF-8\'\''.rawurlencode($f['filename_original']));
+    readfile($path); exit;
+}
+
+// ================= ЧАТ ЗАЯВКИ =================
+
+// GET /api/cert-requests/:id/messages
+if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'messages') {
+    $me = auth();
+    $rid = (int)$seg[1];
+    cert_request_guard($me, $rid);
+    $since = $_GET['since'] ?? '1970-01-01 00:00:00';
+    $st = db()->prepare(
+        'SELECT m.*, u.name AS sender_name
+         FROM lk_cert_messages m JOIN lk_users u ON u.id=m.user_id
+         WHERE m.request_id=? AND m.created_at>? ORDER BY m.created_at ASC'
+    );
+    $st->execute([$rid, $since]);
+    $other = $me['role'] === 'manager' ? 'cert_center' : 'manager';
+    db()->prepare('UPDATE lk_cert_messages SET is_read=1 WHERE request_id=? AND role=? AND is_read=0')
+       ->execute([$rid, $other]);
+    out($st->fetchAll());
+}
+
+// POST /api/cert-requests/:id/messages
+if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'messages') {
+    $me = auth();
+    $rid = (int)$seg[1];
+    cert_request_guard($me, $rid);
+    $text = trim(body()['text'] ?? '');
+    if (!$text) err('Пустое сообщение');
+    db()->prepare('INSERT INTO lk_cert_messages(request_id,user_id,role,text,is_read,created_at) VALUES(?,?,?,?,0,NOW())')
+       ->execute([$rid, $me['sub'], $me['role'], $text]);
+    db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
+    out(['id' => (int)db()->lastInsertId()], 201);
+}
+
+// GET /api/managers/cert-stats  (для дашборда менеджера, опционально)
+if ($method === 'GET' && $seg[0] === 'managers' && ($seg[1] ?? '') === 'cert-stats') {
+    auth(true);
+    out([
+        'cert_centers_count' => (int) db()->query('SELECT COUNT(*) FROM lk_cert_centers WHERE is_active=1')->fetchColumn(),
+        'cert_requests_open' => (int) db()->query("SELECT COUNT(*) FROM lk_cert_requests WHERE status!='closed'")->fetchColumn(),
+    ]);
+}
+
 err('Маршрут не найден', 404);
