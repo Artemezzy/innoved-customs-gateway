@@ -147,6 +147,17 @@ export function CertFilesPanel({ requestId, itemId }: Props) {
                   Скачать
                 </Button>
               )}
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => handleDelete(f)}
+                disabled={deleteFile.isPending}
+                title="Удалить вложение"
+                aria-label="Удалить вложение"
+                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
             </div>
           );
         })}
