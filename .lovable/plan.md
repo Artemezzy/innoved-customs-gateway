@@ -1,24 +1,28 @@
-## Изменения в `src/components/lk/CertFilesPanel.tsx`
+## Добавление удаления вложений в заявках на сертификацию
 
-1. **Кнопка скачивания — сделать заметной и всегда активной.**
-   - Заменить `variant="outline"` size="icon" на полноценную кнопку с текстом «Скачать» + иконкой `Download`, `variant="default"` (акцентный цвет), чтобы её было видно.
-   - Оставить `aria-label` и `title`.
+### 1. `src/api/lkClient.ts`
+Добавить метод `deleteCertFile`:
+```ts
+deleteCertFile: (requestId: number, itemId: number, fileId: number) =>
+  request<{ ok: boolean }>(
+    'DELETE',
+    `/cert-requests/${requestId}/items/${itemId}/files/${fileId}`
+  ),
+```
+(Метод уже присутствует в файле — проверю и при необходимости приведу к нужной сигнатуре.)
 
-2. **Убрать «информацию об обновлении вложений».**
-   - Удалить строку с датой `new Date(f.created_at).toLocaleString('ru-RU')` под именем файла/ссылки.
+### 2. `src/types/lk.ts`
+В `CertFile` добавить опциональное поле `filename_original?: string` (сохраняя обратную совместимость с `filename`).
 
-## Изменения в `src/components/lk/CertItemsPanel.tsx`
+### 3. `src/components/lk/CertFilesPanel.tsx`
+- Импортировать `Trash2` из `lucide-react`.
+- Добавить мутацию `deleteFile` через `useMutation`, вызывающую `lkApi.deleteCertFile(requestId, itemId, fileId)`, с инвалидацией `['lk','cert-item-files', requestId, itemId]` и toast.
+- В строке каждого вложения (и для `file`, и для `link`) добавить кнопку с иконкой `Trash2` (variant `ghost`, destructive-цвет) рядом с существующей кнопкой «Скачать»/«Открыть».
+- Показ подтверждения через `window.confirm('Удалить вложение?')` перед вызовом.
+- Кнопки видны обеим ролям — проверка прав на бэкенде.
 
-3. **Подсветка полей в таблице/карточке:**
-   - Зелёные (мягкий): `company`, `product`, `tn_ved`, `tech_description` → класс типа `bg-green-50` (в textarea/input `className`).
-   - Жёлтые (мягкий): `tr_ts`, `cert_form`, `cert_scheme`, `cost`, `comment` → `bg-yellow-50`.
-   - Реализовать через маппинг `FIELD_COLORS: Record<key, 'green'|'yellow'>` и передавать соответствующий className в `<Input>` / `<Textarea>` в обоих вариантах (`row` и `card`).
+### 4. Проверка
+- Билд-чек.
+- Ручная проверка: удаление файла и ссылки в позиции; список обновляется, тост об успехе; при ошибке — тост об ошибке.
 
-4. **Кнопка «Показать вложения» — на всю ширину под строкой позиции.**
-   - **Desktop (`variant='row'`):** убрать `toggleFilesBtn` из ячейки действий (там останутся «Сохранить» и «Удалить»). Добавить дополнительный `<tr>` под каждой строкой позиции с `<td colSpan={colCount}>`, внутри — кнопка `variant="outline"` size="sm" `className="w-full justify-center"` с текстом «Показать вложения» / «Скрыть вложения» и иконкой `Paperclip` + `ChevronDown/Right`. Существующий блок раскрытия вложений остаётся ниже, как и раньше.
-   - **Mobile (`variant='card'`):** кнопка уже стоит внизу карточки на всю ширину — оставить как есть (соответствует требованию).
-
-## Технические детали
-
-- Цвета оставить утилитарными Tailwind (`bg-green-50`, `bg-yellow-50`) — это соответствует «мягкому» тону; тёмная тема ЛК уже использует нейтральный фон карточек, поэтому мягкие пастельные подсветки будут читаемы. Текст остаётся дефолтным.
-- Никаких изменений в API, типах, роутинге и остальной логике (чат, статусы, экспорт, has_unread) не затрагиваем.
+Ничего другого не трогаем.

@@ -145,6 +145,7 @@ export interface CertFile {
   file_type: 'file' | 'link';
   url: string;
   filename?: string;
+  filename_original?: string;
   created_at: string;
 }
 

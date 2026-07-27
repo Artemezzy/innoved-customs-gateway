@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { FileText, Link as LinkIcon, Download, Upload, Plus, Loader2 } from 'lucide-react';
+import { FileText, Link as LinkIcon, Download, Upload, Plus, Loader2, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
 import { CertFile } from '@/types/lk';
@@ -49,6 +49,21 @@ export function CertFilesPanel({ requestId, itemId }: Props) {
     },
     onError: (e: any) => toast.error(e?.message || 'Не удалось добавить ссылку'),
   });
+
+  const deleteFile = useMutation({
+    mutationFn: (fileId: number) => lkApi.deleteCertFile(requestId, itemId, fileId),
+    onSuccess: () => {
+      toast.success('Вложение удалено');
+      invalidate();
+    },
+    onError: (e: any) => toast.error(e?.message || 'Не удалось удалить вложение'),
+  });
+
+  const handleDelete = (f: CertFile) => {
+    if (window.confirm('Удалить вложение?')) {
+      deleteFile.mutate(f.id);
+    }
+  };
 
   const download = async (f: CertFile) => {
     try {
@@ -132,6 +147,17 @@ export function CertFilesPanel({ requestId, itemId }: Props) {
                   Скачать
                 </Button>
               )}
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => handleDelete(f)}
+                disabled={deleteFile.isPending}
+                title="Удалить вложение"
+                aria-label="Удалить вложение"
+                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
             </div>
           );
         })}
