@@ -270,28 +270,30 @@ export const lkApi = {
       ? mock.mockCreateCertRequest(data)
       : request<{ id: number }>('POST', '/cert-requests', data),
 
-  certRequest: async (id: number): Promise<import('@/types/lk').CertRequestDetails> => {
-    if (USE_MOCK) return mock.mockCertRequest(id);
-    const res = await request<{
-      request: { status: import('@/types/lk').CertRequestStatus };
-      fields: import('@/types/lk').CertRequestFields;
-      files: import('@/types/lk').CertFile[];
-    }>('GET', `/cert-requests/${id}`);
-    return { ...res.fields, status: res.request.status, files: res.files || [] };
-  },
-
-  updateCertRequestStatus: (id: number, status: import('@/types/lk').CertRequestStatus) =>
+  certRequest: (id: number) =>
     USE_MOCK
-      ? mock.mockUpdateCertRequestStatus(id, status)
-      : request<{ ok: boolean }>('PUT', `/cert-requests/${id}`, { status }),
+      ? mock.mockCertRequest(id)
+      : request<import('@/types/lk').CertRequestDetails>('GET', `/cert-requests/${id}`),
 
-  updateCertRequestFields: (
+  certRequestItems: (id: number) =>
+    request<import('@/types/lk').CertRequestItem[]>('GET', `/cert-requests/${id}/items`),
+
+  addCertRequestItem: (id: number, data?: Partial<import('@/types/lk').CertRequestItem>) =>
+    request<import('@/types/lk').CertRequestItem>('POST', `/cert-requests/${id}/items`, data ?? {}),
+
+  updateCertRequestItem: (
     id: number,
-    fields: import('@/types/lk').CertRequestFields
+    itemId: number,
+    data: Partial<import('@/types/lk').CertRequestItem>
   ) =>
-    USE_MOCK
-      ? mock.mockUpdateCertRequestFields(id, fields)
-      : request<{ ok: boolean }>('PUT', `/cert-requests/${id}/fields`, fields),
+    request<import('@/types/lk').CertRequestItem>(
+      'PUT',
+      `/cert-requests/${id}/items/${itemId}`,
+      data
+    ),
+
+  deleteCertRequestItem: (id: number, itemId: number) =>
+    request<{ ok: boolean }>('DELETE', `/cert-requests/${id}/items/${itemId}`),
 
   deleteCertRequest: (id: number) =>
     USE_MOCK
