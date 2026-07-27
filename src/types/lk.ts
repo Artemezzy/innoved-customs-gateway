@@ -150,7 +150,6 @@ export interface CertFile {
 export interface CertRequestDetails {
   request: CertRequest;
   items: CertRequestItem[];
-  files: CertFile[];
 }
 
 export interface CertMessage {
