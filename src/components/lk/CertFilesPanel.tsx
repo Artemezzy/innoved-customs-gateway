@@ -59,19 +59,24 @@ export function CertFilesPanel({ requestId, itemId }: Props) {
     onError: (e: any) => toast.error(e?.message || 'Не удалось удалить вложение'),
   });
 
-  const handleDelete = (f: CertFile) => {
+  const handleDelete = (e: React.MouseEvent, f: CertFile) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (window.confirm('Удалить вложение?')) {
       deleteFile.mutate(f.id);
     }
   };
 
-  const download = async (f: CertFile) => {
+  const download = async (e: React.MouseEvent, f: CertFile) => {
+    e.preventDefault();
+    e.stopPropagation();
     try {
       await lkApi.downloadCertFile(requestId, itemId, f.id, f.filename);
-    } catch (e: any) {
-      toast.error(e?.message || 'Не удалось скачать');
+    } catch (err: any) {
+      toast.error(err?.message || 'Не удалось скачать');
     }
   };
+
 
   const files = filesQ.data ?? [];
 
