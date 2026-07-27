@@ -682,6 +682,110 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[
     out($st->fetchAll());
 }
 
+// GET /api/cert-requests/:id/export  — выгрузка заявки в Excel-совместимый CSV
+if (
+    $method === 'GET'
+    && $seg[0] === 'cert-requests'
+    && isset($seg[1])
+    && ($seg[2] ?? '') === 'export'
+) {
+    $me  = auth();
+    $rid = (int)$seg[1];
+
+    // Проверяем доступ к заявке (менеджер или привязанный сертификационный центр)
+    $request = cert_request_guard($me, $rid);
+
+    // Готовим выборку по позициям товара
+    $sti = db()->prepare(
+        'SELECT i.position_no,
+                i.company,
+                i.product,
+                i.tn_ved,
+                i.tech_description,
+                i.tr_ts,
+                i.cert_form,
+                i.cert_scheme,
+                i.cost,
+                i.comment,
+                cc.name AS cert_center_name
+         FROM lk_cert_request_items i
+         JOIN lk_cert_requests r ON r.id = i.request_id
+         JOIN lk_cert_centers cc ON cc.id = r.cert_center_id
+         WHERE i.request_id = ?
+         ORDER BY i.position_no ASC, i.id ASC'
+    );
+    $sti->execute([$rid]);
+    $items = $sti->fetchAll();
+
+    // Заголовки для файла
+    $filename = 'cert-request-' . $rid . '.csv';
+
+    // Заголовки HTTP для скачивания (Excel дружит с CSV + BOM)[web:227][web:228]
+    header('Pragma: public');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Cache-Control: private', false);
+    header('Content-Description: File Transfer');
+    header('Content-Type: text/csv; charset=UTF-8');
+    header('Content-Disposition: attachment; filename="'.$filename.'"');
+    header('Content-Transfer-Encoding: binary');
+
+    $out = fopen('php://output', 'w');
+
+    // UTF-8 BOM, чтобы Excel корректно прочитал русские буквы[web:228]
+    fwrite($out, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+    // Первая строка — шапка таблицы (названия столбцов)
+    // Можно менять формулировки, но структура должна соответствовать текущим полям
+    fputcsv(
+        $out,
+        [
+            '№ позиции',          // position_no
+            'Компания',           // company
+            'Товар',              // product
+            'ТН ВЭД',             // tn_ved
+            'Техническое описание', // tech_description
+            'ТР ТС',              // tr_ts
+            'Форма сертификации', // cert_form
+            'Схема сертификации', // cert_scheme
+            'Стоимость',          // cost
+            'Комментарий',        // comment
+            'Сертификационный центр', // cert_center_name (одинаковый для всех строк)
+            '№ заявки',           // request.id
+            'Дата создания',      // request.created_at
+            'Статус',             // request.status
+        ],
+        ';' // разделитель — точка с запятой, Excel его хорошо понимает[web:220]
+    );
+
+    // Строки с данными по каждой товарной позиции
+    foreach ($items as $row) {
+        fputcsv(
+            $out,
+            [
+                (int)$row['position_no'],
+                (string)$row['company'],
+                (string)$row['product'],
+                (string)$row['tn_ved'],
+                (string)$row['tech_description'],
+                (string)$row['tr_ts'],
+                (string)$row['cert_form'],
+                (string)$row['cert_scheme'],
+                (string)$row['cost'],
+                (string)$row['comment'],
+                (string)$row['cert_center_name'],
+                (int)$request['id'],
+                (string)$request['created_at'],
+                (string)$request['status'],
+            ],
+            ';'
+        );
+    }
+
+    fclose($out);
+    exit;
+}
+
 // POST /api/cert-requests/:id/items — добавить новую позицию товара (менеджер и центр)
 if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'items' && !isset($seg[3])) {
     $me = auth();
