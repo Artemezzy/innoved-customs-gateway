@@ -683,6 +683,37 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[
     out($st->fetchAll());
 }
 
+// POST /api/cert-requests/:id/items — добавить новую позицию товара (менеджер и центр)
+if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'items' && !isset($seg[3])) {
+    $me = auth();
+    $rid = (int)$seg[1];
+    cert_request_guard($me, $rid);
+    $b = body();
+
+    $st = db()->prepare('SELECT COALESCE(MAX(position_no),0)+1 FROM lk_cert_request_items WHERE request_id=?');
+    $st->execute([$rid]);
+    $nextPos = (int)$st->fetchColumn();
+
+    $allowed = ['company','product','tn_ved','tech_description','tr_ts','cert_form','cert_scheme','cost','comment'];
+    $cols = ['request_id','position_no'];
+    $vals = [$rid, $nextPos];
+    $marks = ['?','?'];
+
+    foreach ($allowed as $f) {
+        $cols[] = $f;
+        $vals[] = $b[$f] ?? '';
+        $marks[] = '?';
+    }
+
+    $sql = 'INSERT INTO lk_cert_request_items('.implode(',', $cols).',created_at,updated_at) VALUES('.implode(',', $marks).',NOW(),NOW())';
+    db()->prepare($sql)->execute($vals);
+    $itemId = (int)db()->lastInsertId();
+
+    db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
+
+    out(['id' => $itemId, 'position_no' => $nextPos], 201);
+}
+
 // PUT /api/cert-requests/:id/items/:itemId — редактировать одну позицию (обе стороны)
 if ($method === 'PUT' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'items' && isset($seg[3])) {
     $me = auth();
