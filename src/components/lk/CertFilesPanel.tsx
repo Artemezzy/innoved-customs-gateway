@@ -99,7 +99,13 @@ export function CertFilesPanel({ requestId, itemId }: Props) {
               </div>
             </div>
             {f.file_type === 'file' && (
-              <Button size="icon" variant="ghost" onClick={() => download(f)}>
+              <Button
+                size="icon"
+                variant="outline"
+                onClick={() => download(f)}
+                title="Скачать"
+                aria-label="Скачать файл"
+              >
                 <Download className="h-4 w-4" />
               </Button>
             )}
