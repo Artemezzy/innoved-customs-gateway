@@ -356,16 +356,64 @@ export const lkApi = {
       }
     );
     if (!res.ok) throw new Error(`Не удалось скачать (HTTP ${res.status})`);
+
+    const contentType = res.headers.get('content-type') || '';
+    const contentDisposition = res.headers.get('content-disposition') || '';
+
+    // Извлекаем имя файла из Content-Disposition, если пришло
+    let serverFilename: string | undefined;
+    const utfMatch = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i);
+    const asciiMatch = contentDisposition.match(/filename="?([^"]+)"?/i);
+    if (utfMatch) {
+      try { serverFilename = decodeURIComponent(utfMatch[1]); } catch { serverFilename = utfMatch[1]; }
+    } else if (asciiMatch) {
+      serverFilename = asciiMatch[1];
+    }
+
+    // Если сервер вернул JSON со ссылкой — качаем по ней (или открываем)
+    if (contentType.includes('application/json')) {
+      const data = await res.json().catch(() => null as any);
+      const url: string | undefined =
+        data?.url || data?.download_url || data?.file_url || data?.href;
+      if (!url) {
+        console.error('Download JSON без url', data);
+        throw new Error('Сервер вернул JSON без ссылки на файл');
+      }
+
+      // Пробуем скачать содержимое по этой ссылке
+      try {
+        const fileRes = await fetch(url, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        if (!fileRes.ok) throw new Error(`HTTP ${fileRes.status}`);
+        const blob = await fileRes.blob();
+        const objectUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = objectUrl;
+        a.download = filename || serverFilename || data?.filename || `file-${fileId}`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(objectUrl);
+        return;
+      } catch (e) {
+        // Фолбэк — просто открыть ссылку
+        window.open(url, '_blank', 'noopener,noreferrer');
+        return;
+      }
+    }
+
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = filename || `file-${fileId}`;
+    a.download = filename || serverFilename || `file-${fileId}`;
     document.body.appendChild(a);
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
   },
+
 
   deleteCertFile: (requestId: number, itemId: number, fileId: number) =>
   request<{ ok: boolean }>(
