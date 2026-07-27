@@ -367,6 +367,23 @@ export const lkApi = {
     URL.revokeObjectURL(url);
   },
 
+  exportCertRequest: async (requestId: number) => {
+    const token = getAuthToken();
+    const res = await fetch(`${BASE_URL}/cert-requests/${requestId}/export`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!res.ok) throw new Error(`Не удалось экспортировать заявку (HTTP ${res.status})`);
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `cert-request-${requestId}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  },
+
   certMessages: (id: number, since?: number) =>
     USE_MOCK
       ? mock.mockCertMessages(id, since)
