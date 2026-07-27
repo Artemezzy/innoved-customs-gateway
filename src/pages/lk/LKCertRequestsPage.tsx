@@ -140,6 +140,7 @@ export default function LKCertRequestsPage() {
                 <TableHead>Сертцентр</TableHead>
                 <TableHead>Статус</TableHead>
                 <TableHead className="w-16"></TableHead>
+                <TableHead className="w-12"></TableHead>
                 {isManager && <TableHead className="w-12"></TableHead>}
               </TableRow>
             </TableHeader>
@@ -160,6 +161,24 @@ export default function LKCertRequestsPage() {
                       hasUnreadMessages={r.has_unread_messages}
                       hasUnreadChanges={r.has_unread_changes}
                     />
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      title="Скачать в Excel"
+                      aria-label="Скачать в Excel"
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        try {
+                          await lkApi.exportCertRequest(r.id);
+                        } catch (err: any) {
+                          toast.error(err?.message || 'Не удалось скачать');
+                        }
+                      }}
+                    >
+                      <Download className="h-4 w-4" />
+                    </Button>
                   </TableCell>
                   {isManager && (
                     <TableCell>
@@ -182,7 +201,7 @@ export default function LKCertRequestsPage() {
               {requests.data?.length === 0 && (
                 <TableRow>
                   <TableCell
-                    colSpan={isManager ? 7 : 6}
+                    colSpan={isManager ? 8 : 7}
                     className="text-center text-muted-foreground py-8"
                   >
                     Заявок нет

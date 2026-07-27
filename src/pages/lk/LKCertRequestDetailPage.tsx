@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Download } from 'lucide-react';
+import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -49,7 +50,21 @@ export default function LKCertRequestDetailPage() {
         <Button variant="ghost" size="sm" onClick={() => navigate('/lk/cert-requests')}>
           <ArrowLeft className="h-4 w-4 mr-1.5" /> К списку
         </Button>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={async () => {
+              try {
+                await lkApi.exportCertRequest(requestId);
+              } catch (err: any) {
+                toast.error(err?.message || 'Не удалось скачать');
+              }
+            }}
+          >
+            <Download className="h-4 w-4 mr-1.5" />
+            Скачать в Excel
+          </Button>
           <span className="text-sm text-muted-foreground">Статус:</span>
           <CertRequestStatusSelect requestId={requestId} value={request.status} />
         </div>
