@@ -41,6 +41,69 @@ function out(mixed $d, int $c = 200): never { http_response_code($c); echo json_
 function err(string $m, int $c = 400): never { out(['error' => $m], $c); }
 function body(): array { return (array) json_decode(file_get_contents('php://input'), true); }
 
+/**
+ * Отдать файл как бинарный download-ответ с корректными заголовками.
+ * Сбрасывает буферы вывода и заменяет ранее выставленный Content-Type: application/json.
+ */
+function send_file_download(string $path, string $originalName): never {
+    // Полностью очищаем всё, что могло попасть в буфер (пробелы, BOM, отладка)
+    while (ob_get_level() > 0) { ob_end_clean(); }
+
+    // Определяем MIME по содержимому файла, с фолбэком по расширению
+    $mime = null;
+    if (function_exists('finfo_open')) {
+        $fi = finfo_open(FILEINFO_MIME_TYPE);
+        if ($fi) { $mime = finfo_file($fi, $path) ?: null; finfo_close($fi); }
+    }
+    if (!$mime) {
+        $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+        $map = [
+            'pdf'  => 'application/pdf',
+            'png'  => 'image/png',
+            'jpg'  => 'image/jpeg', 'jpeg' => 'image/jpeg',
+            'gif'  => 'image/gif',
+            'webp' => 'image/webp',
+            'svg'  => 'image/svg+xml',
+            'zip'  => 'application/zip',
+            'rar'  => 'application/vnd.rar',
+            '7z'   => 'application/x-7z-compressed',
+            'doc'  => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'xls'  => 'application/vnd.ms-excel',
+            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'ppt'  => 'application/vnd.ms-powerpoint',
+            'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'txt'  => 'text/plain; charset=utf-8',
+            'csv'  => 'text/csv; charset=utf-8',
+            'json' => 'application/json; charset=utf-8',
+            'xml'  => 'application/xml; charset=utf-8',
+        ];
+        $mime = $map[$ext] ?? 'application/octet-stream';
+    }
+
+    // ASCII-фолбэк имени файла для старых клиентов
+    $asciiName = preg_replace('/[^A-Za-z0-9._-]+/', '_', $originalName);
+    if ($asciiName === '' || $asciiName === null) { $asciiName = 'file'; }
+
+    // Заменяем ранее выставленный Content-Type: application/json
+    header('Content-Type: ' . $mime, true);
+    header(
+        'Content-Disposition: attachment; filename="' . $asciiName . '"; '
+        . "filename*=UTF-8''" . rawurlencode($originalName),
+        true
+    );
+    header('Content-Length: ' . filesize($path));
+    header('X-Content-Type-Options: nosniff');
+    header('Cache-Control: private, no-store');
+    header('Pragma: no-cache');
+    // Позволяем фронту прочитать имя файла из Content-Disposition
+    header('Access-Control-Expose-Headers: Content-Disposition, Content-Length, Content-Type');
+
+    readfile($path);
+    exit;
+}
+
+
 function b64u(string $s): string { return rtrim(strtr(base64_encode($s), '+/', '-_'), '='); }
 function jwt_make(array $p): string {
     $h = b64u(json_encode(['alg'=>'HS256','typ'=>'JWT']));
@@ -384,10 +447,8 @@ if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?
     $path = UPLOAD_PATH.'/'.$sid.'/'.$doc['filename_stored'];
     if (!file_exists($path)) err('Файл не найден', 404);
 
-    header('Content-Type: application/octet-stream');
-    header('Content-Disposition: attachment; filename*=UTF-8\'\''.rawurlencode($doc['filename_original']));
-    header('Content-Length: '.filesize($path));
-    readfile($path); exit;
+    send_file_download($path, $doc['filename_original']);
+
 }
 
 // DELETE /api/shipments/:id/documents/:docId
@@ -984,10 +1045,8 @@ if (
     $path = UPLOAD_PATH.'/cert/'.$rid.'/'.$f['filename_stored'];
     if (!file_exists($path)) err('Файл не найден', 404);
 
-    header('Content-Type: application/octet-stream');
-    header('Content-Disposition: attachment; filename*=UTF-8\'\''.rawurlencode($f['filename_original']));
-    readfile($path);
-    exit;
+    send_file_download($path, $f['filename_original']);
+
 }
 
 // DELETE /api/cert-requests/:id/items/:itemId/files/:fileId — удалить вложение
