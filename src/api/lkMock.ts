@@ -73,9 +73,10 @@ let _nextMsgId = 100;
 
 // ----------- mock users -----------
 const MOCK_USERS: Array<{ email: string; password: string; user: LKUser }> = [
-  { email: 'manager@innoved.ru', password: 'manager', user: { id: 1, name: 'Менеджер ИННОВЭД', role: 'manager', clientId: null } },
-  { email: 'client@technoimport.ru', password: 'client', user: { id: 2, name: 'Иванов И.И.', role: 'client', clientId: 1 } },
+  { email: 'manager@innoved.ru', password: 'manager', user: { id: 1, name: 'Менеджер ИННОВЭД', role: 'manager', clientId: null, certCenterId: null } },
+  { email: 'client@technoimport.ru', password: 'client', user: { id: 2, name: 'Иванов И.И.', role: 'client', clientId: 1, certCenterId: null } },
 ];
+
 
 export async function mockLogin(email: string, password: string) {
   await delay();
