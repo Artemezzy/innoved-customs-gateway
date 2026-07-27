@@ -72,36 +72,55 @@ export function CertFilesPanel({ requestId, itemId }: Props) {
           <div className="text-sm text-muted-foreground">Вложений пока нет</div>
         )}
         {files.map((f) => {
+          const isExternalLink =
+            f.file_type === 'link' &&
+            !!f.url &&
+            /^https?:\/\//i.test(f.url);
           const displayName =
             f.file_type === 'file'
-              ? f.filename || f.url || `Файл №${f.id}`
-              : f.url || `Ссылка №${f.id}`;
+              ? f.filename || `Файл №${f.id}`
+              : isExternalLink
+                ? f.url!
+                : f.filename || f.url || `Вложение №${f.id}`;
 
           return (
             <div
               key={f.id}
               className="flex items-center gap-3 rounded-md border p-2 bg-background"
             >
-              {f.file_type === 'file' ? (
-                <FileText className="h-4 w-4 text-primary shrink-0" />
-              ) : (
+              {isExternalLink ? (
                 <LinkIcon className="h-4 w-4 text-primary shrink-0" />
+              ) : (
+                <FileText className="h-4 w-4 text-primary shrink-0" />
               )}
               <div className="flex-1 min-w-0">
-                {f.file_type === 'file' ? (
-                  <div className="truncate text-sm font-medium">{displayName}</div>
-                ) : (
+                {isExternalLink ? (
                   <a
-                    href={f.url || '#'}
+                    href={f.url!}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="truncate text-sm text-primary hover:underline block"
                   >
                     {displayName}
                   </a>
+                ) : (
+                  <div className="truncate text-sm font-medium">{displayName}</div>
                 )}
               </div>
-              {f.file_type === 'file' ? (
+              {isExternalLink ? (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  asChild
+                  title="Открыть ссылку"
+                  aria-label="Открыть ссылку"
+                >
+                  <a href={f.url!} target="_blank" rel="noopener noreferrer">
+                    <LinkIcon className="h-4 w-4 mr-1.5" />
+                    Открыть
+                  </a>
+                </Button>
+              ) : (
                 <Button
                   size="sm"
                   variant="default"
@@ -111,19 +130,6 @@ export function CertFilesPanel({ requestId, itemId }: Props) {
                 >
                   <Download className="h-4 w-4 mr-1.5" />
                   Скачать
-                </Button>
-              ) : (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  asChild
-                  title="Открыть ссылку"
-                  aria-label="Открыть ссылку"
-                >
-                  <a href={f.url || '#'} target="_blank" rel="noopener noreferrer">
-                    <LinkIcon className="h-4 w-4 mr-1.5" />
-                    Открыть
-                  </a>
                 </Button>
               )}
             </div>
