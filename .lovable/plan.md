@@ -1,47 +1,35 @@
+## Summary
 
-## Goal
-Align the UI with the new backend contract where files/links belong to a specific cert-request **item** (товарная позиция), not the whole request.
+Verify and harden the per-item file download UI in certification requests so both `manager` and `cert_center` roles can download attached files.
 
-Current state:
-- `lkClient.ts` — already migrated to the new per-item endpoints (`certItemFiles`, `uploadCertFile(requestId, itemId, ...)`, `addCertFileUrl(requestId, itemId, url)`, `downloadCertFile(requestId, itemId, fileId)`).
-- `types/lk.ts` — `CertRequestDetails` still contains `files: CertFile[]` (stale).
-- `LKCertRequestDetailPage.tsx` — still destructures `files` from `detail.data` and renders a global `CertFilesPanel`.
-- `CertFilesPanel.tsx` — takes `{ requestId, files }` and uses request-level upload/download.
-- `CertItemsPanel.tsx` — pure item CRUD, no files UI.
+## Current state (verified)
 
-## Changes
+- `src/components/lk/CertFilesPanel.tsx` already receives `{ requestId, itemId }`, fetches files via `useQuery(['lk','cert-item-files', requestId, itemId], …)`, and renders a `<Download>` icon button for every `file_type === 'file'` entry that calls `lkApi.downloadCertFile(requestId, itemId, f.id, f.filename)`.
+- `src/components/lk/CertItemsPanel.tsx` already mounts `<CertFilesPanel requestId={requestId} itemId={item.id} />` for each item (desktop sub-row and mobile card collapsible).
+- `src/pages/lk/LKCertRequestDetailPage.tsx` already renders `CertItemsPanel` inside the «Данные заявки» card and has no global attachments block.
+- `src/api/lkClient.ts` already implements `downloadCertFile` hitting `GET /api/cert-requests/:requestId/items/:itemId/files/:fileId/download`.
+- `src/types/lk.ts` defines `CertFile.filename?: string`.
 
-### 1. `src/types/lk.ts`
-- Remove `files` from `CertRequestDetails`:
-  ```ts
-  export interface CertRequestDetails {
-    request: CertRequest;
-    items: CertRequestItem[];
-  }
-  ```
+So the requested button and wiring are already in place. The work is to confirm there are no runtime/typing issues and to fix anything that prevents the download from working.
 
-### 2. `src/components/lk/CertFilesPanel.tsx`
-- New props: `{ requestId: number; itemId: number }`.
-- Drop the `files` prop; fetch files internally with `useQuery(['lk','cert-item-files', requestId, itemId], () => lkApi.certItemFiles(requestId, itemId))`.
-- Mutations call `uploadCertFile(requestId, itemId, fd)` / `addCertFileUrl(requestId, itemId, url)`, invalidate the item-files query.
-- Download uses `downloadCertFile(requestId, itemId, f.id, f.filename)`.
-- Render loading / empty / list identically, keep the same visual layout, but scoped to one item.
+## Plan
 
-### 3. `src/components/lk/CertItemsPanel.tsx`
-- In each row/card, add a collapsible "Файлы и ссылки" section that mounts `<CertFilesPanel requestId={requestId} itemId={item.id} />`.
-  - Desktop table: render a full-width sub-row under each item row (via a `<tr><td colSpan=...>` panel), togglable with a chevron button in the actions column. Default: collapsed.
-  - Mobile card: a `Collapsible` / simple toggle button "Файлы (n)" that reveals the panel inside the card.
-- No other logic changes; item CRUD stays intact.
+1. **Typecheck / build**
+   - Run `bunx tsc --noEmit` (or project typecheck) to confirm no TS errors from `downloadCertFile` usage or `CertFile` fields.
 
-### 4. `src/pages/lk/LKCertRequestDetailPage.tsx`
-- Stop destructuring `files`; use `const { request, items } = detail.data`.
-- Remove the standalone "Вложения" `Card` block (files now live per-item inside `CertItemsPanel`).
-- Keep the "Данные заявки" and "Чат" cards.
+2. **Field-name consistency check**
+   - If the backend returns `filename_original` instead of `filename`, update `CertFile` interface and the render/download filename fallback so the button is visible and downloads use the correct name.
 
-### 5. Cleanup
-- Remove now-unused `mockUploadCertFile` reference paths only if trivial; otherwise leave mock untouched (`USE_MOCK = false` in prod). No behavior impact.
+3. **UI hardening (only if verification reveals a problem)**
+   - Ensure the download button is always rendered for `file_type === 'file'` regardless of role.
+   - Add an accessible `title="Скачать"` to the download button.
+   - Keep the existing layout; no changes to `CertItemsPanel`, `LKCertRequestDetailPage`, or `lkClient.ts` unless a bug is found.
 
-## Verification
-- Typecheck passes (no `files` references remain on `CertRequestDetails`).
-- Open a cert request detail page: items render, each item exposes a files toggle, expanding fetches `/cert-requests/:id/items/:itemId/files`, upload/link/download all hit the new URLs.
-- No 404 on the old `/cert-requests/:id/files*` routes from the UI.
+4. **Browser verification**
+   - Open `/lk/cert-requests/:id` under `manager` role: expand a row with files, click the Download icon, confirm the browser starts a download and no 404/401 errors appear for `/cert-requests/:id/items/:itemId/files/:fileId/download`.
+   - Repeat under `cert_center` role.
+   - Confirm no old `/cert-requests/:id/files*` requests are made.
+
+## Expected result
+
+Both roles see a working Download icon next to each uploaded file inside every item's «Вложения» panel, and files download via the new per-item endpoint.
