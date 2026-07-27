@@ -65,6 +65,20 @@ function gen_pass(int $n = 10): string {
     return substr(str_shuffle('abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789!@#'), 0, $n);
 }
 
+function cert_request_guard(array $me, int $rid): array {
+    $st = db()->prepare('SELECT * FROM lk_cert_requests WHERE id=?');
+    $st->execute([$rid]);
+    $r = $st->fetch();
+    if (!$r) err('Заявка не найдена', 404);
+    if ($me['role'] === 'cert_center' && (int)$r['cert_center_id'] !== (int)($me['cert_center_id'] ?? 0)) {
+        err('Нет доступа', 403);
+    }
+    if (!in_array($me['role'], ['manager', 'cert_center'])) {
+        err('Нет доступа', 403);
+    }
+    return $r;
+}
+
 // POST /api/auth/login
 if ($method === 'POST' && $seg[0] === 'auth' && ($seg[1] ?? '') === 'login') {
     $b = body();
@@ -73,12 +87,13 @@ if ($method === 'POST' && $seg[0] === 'auth' && ($seg[1] ?? '') === 'login') {
     $u = $st->fetch();
     if (!$u || !password_verify($b['password'] ?? '', $u['password_hash'])) err('Неверный email или пароль', 401);
     $token = jwt_make([
-        'sub'       => $u['id'],
-        'role'      => $u['role'],
-        'client_id' => $u['client_id'],
-        'name'      => $u['name'],
-        'exp'       => time() + 86400 * 7,
-    ]);
+    'sub'            => $u['id'],
+    'role'           => $u['role'],
+    'client_id'      => $u['client_id'],
+    'cert_center_id' => $u['cert_center_id'] ?? null,
+    'name'           => $u['name'],
+    'exp'            => time() + 86400 * 7,
+        ]);
     out(['token' => $token, 'role' => $u['role'], 'name' => $u['name']]);
 }
 
@@ -666,32 +681,6 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[
     $st = db()->prepare('SELECT * FROM lk_cert_request_items WHERE request_id=? ORDER BY position_no ASC, id ASC');
     $st->execute([$rid]);
     out($st->fetchAll());
-}
-
-// POST /api/cert-requests  (только менеджер, привязывает к центру)
-if ($method === 'POST' && $seg[0] === 'cert-requests' && !isset($seg[1])) {
-    auth(true);
-    $b = body();
-    if (empty($b['cert_center_id'])) err('cert_center_id обязателен');
-    db()->beginTransaction();
-    try {
-        $st = db()->prepare(
-            "INSERT INTO lk_cert_requests(cert_center_id,status,created_by,created_at,updated_at,manager_seen_at)
-             VALUES(?,'open',?,NOW(),NOW(),NOW())"
-        );
-        $st->execute([(int)$b['cert_center_id'], auth()['sub'] ?? null]);
-        $rid = db()->lastInsertId();
-
-        db()->prepare(
-            'INSERT INTO lk_cert_request_items(request_id,position_no,company,created_at,updated_at)
-             VALUES(?,1,?,NOW(),NOW())'
-        )->execute([$rid, $b['company'] ?? '']);
-
-        db()->commit();
-    } catch (\Throwable $e) {
-        db()->rollBack(); err('Ошибка БД: '.$e->getMessage());
-    }
-    out(['id' => (int)$rid], 201);
 }
 
 // PUT /api/cert-requests/:id/items/:itemId — редактировать одну позицию (обе стороны)
