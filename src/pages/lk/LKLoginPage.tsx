@@ -15,8 +15,11 @@ export default function LKLoginPage() {
   const [loading, setLoading] = useState(false);
 
 
+  const roleHome = (role: string) =>
+    role === 'manager' ? '/lk/dashboard' : role === 'cert_center' ? '/lk/cert-requests' : '/lk/shipments';
+
   if (token && user) {
-    return <Navigate to={user.role === 'manager' ? '/lk/dashboard' : '/lk/shipments'} replace />;
+    return <Navigate to={roleHome(user.role)} replace />;
   }
 
   const onSubmit = async (e: React.FormEvent) => {
@@ -25,13 +28,14 @@ export default function LKLoginPage() {
     try {
       const u = await login(email, password);
       toast.success('Вход выполнен');
-      navigate(u.role === 'manager' ? '/lk/dashboard' : '/lk/shipments');
+      navigate(roleHome(u.role));
     } catch (err: any) {
       toast.error(err.message || 'Ошибка входа');
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div

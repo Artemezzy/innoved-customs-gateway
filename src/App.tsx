@@ -102,9 +102,14 @@ const LKRoutes = () => (
       <Route path="shipments" element={<LKShipmentsPage />} />
       <Route path="shipments/:id" element={<LKShipmentDetailPage />} />
       <Route path="messages" element={<LKMessagesPage />} />
+      <Route path="cert-centers" element={<LKCertCentersPage />} />
+      <Route path="cert-centers/:id" element={<LKCertCenterDetailPage />} />
+      <Route path="cert-requests" element={<LKCertRequestsPage />} />
+      <Route path="cert-requests/:id" element={<LKCertRequestDetailPage />} />
     </Routes>
   </LKLayout>
 );
+
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

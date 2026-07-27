@@ -5,8 +5,11 @@ import {
   Users,
   Package,
   MessageSquare,
+  Award,
+  ClipboardList,
   LogOut,
   Menu,
+
   X,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -38,8 +41,13 @@ export function LKLayout({ children }: { children: ReactNode }) {
           { to: '/lk/clients', label: 'Клиенты', icon: Users },
           { to: '/lk/shipments', label: 'Поставки', icon: Package },
           { to: '/lk/messages', label: 'Сообщения', icon: MessageSquare },
+          { to: '/lk/cert-centers', label: 'Сертификационные центры', icon: Award },
+          { to: '/lk/cert-requests', label: 'Заявки на сертификацию', icon: ClipboardList },
         ]
-      : [{ to: '/lk/shipments', label: 'Мои поставки', icon: Package }];
+      : user.role === 'cert_center'
+        ? [{ to: '/lk/cert-requests', label: 'Мои заявки', icon: ClipboardList }]
+        : [{ to: '/lk/shipments', label: 'Мои поставки', icon: Package }];
+
 
   const handleLogout = () => {
     logout();
@@ -81,8 +89,13 @@ export function LKLayout({ children }: { children: ReactNode }) {
         <div className="mb-3">
           <div className="text-sm font-medium truncate">{user.name}</div>
           <div className="text-xs text-white/60">
-            {user.role === 'manager' ? 'Менеджер' : 'Клиент'}
+            {user.role === 'manager'
+              ? 'Менеджер'
+              : user.role === 'cert_center'
+                ? 'Сертификационный центр'
+                : 'Клиент'}
           </div>
+
         </div>
         <Button
           variant="secondary"
