@@ -123,6 +123,7 @@ export interface CertRequest {
   updated_at: string;
   has_unread_messages: boolean;
   has_unread_changes: boolean;
+  has_unread: boolean;
 }
 
 export interface CertRequestItem {

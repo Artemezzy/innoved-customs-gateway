@@ -151,7 +151,18 @@ export default function LKCertRequestsPage() {
                   className="cursor-pointer hover:bg-muted/50"
                   onClick={() => navigate(`/lk/cert-requests/${r.id}`)}
                 >
-                  <TableCell><span className="text-primary">{r.number}</span></TableCell>
+                  <TableCell>
+                    <span className="inline-flex items-center gap-2">
+                      <span className="text-primary">{r.number}</span>
+                      {r.has_unread && (
+                        <span
+                          className="inline-flex h-2 w-2 rounded-full bg-red-500"
+                          title="Есть непросмотренные изменения"
+                          aria-label="Есть непросмотренные изменения"
+                        />
+                      )}
+                    </span>
+                  </TableCell>
                   <TableCell className="font-medium">{r.company}</TableCell>
                   <TableCell>{new Date(r.created_at).toLocaleDateString('ru-RU')}</TableCell>
                   <TableCell>{r.cert_center_name}</TableCell>
