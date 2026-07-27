@@ -656,6 +656,7 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset
     out([
         'request' => $r,
         'items' => $items,
+        'files'   => $files, // ← добавить
     ]);
 }
 
