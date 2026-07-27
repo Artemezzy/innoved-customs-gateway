@@ -982,10 +982,8 @@ if (
     $path = UPLOAD_PATH.'/cert/'.$rid.'/'.$f['filename_stored'];
     if (!file_exists($path)) err('Файл не найден', 404);
 
-    header('Content-Type: application/octet-stream');
-    header('Content-Disposition: attachment; filename*=UTF-8\'\''.rawurlencode($f['filename_original']));
-    readfile($path);
-    exit;
+    send_file_download($path, $f['filename_original']);
+
 }
 
 // DELETE /api/cert-requests/:id/items/:itemId/files/:fileId — удалить вложение
