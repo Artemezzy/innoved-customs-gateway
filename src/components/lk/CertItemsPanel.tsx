@@ -293,12 +293,14 @@ function CertItemRow({ requestId, item, variant, canDelete, onInvalidate }: RowP
                 value={(values as any)[f.key] || ''}
                 onChange={(e) => setField(f.key, e.target.value)}
                 onBlur={() => saveIfChanged(f.key)}
+                className={toneClass(f.tone)}
               />
             ) : (
               <Input
                 value={(values as any)[f.key] || ''}
                 onChange={(e) => setField(f.key, e.target.value)}
                 onBlur={() => saveIfChanged(f.key)}
+                className={toneClass(f.tone)}
               />
             )}
           </div>
