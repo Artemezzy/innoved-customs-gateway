@@ -144,7 +144,7 @@ export function CertFilesPanel({ requestId, itemId }: Props) {
                 <Button
                   size="sm"
                   variant="default"
-                  onClick={() => download(f)}
+                  onClick={(e) => download(e, f)}
                   title="Скачать"
                   aria-label="Скачать файл"
                 >
