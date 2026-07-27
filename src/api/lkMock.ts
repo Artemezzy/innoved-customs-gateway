@@ -4,7 +4,7 @@ import {
   CertMessage,
   CertRequest,
   CertRequestDetails,
-  CertRequestFields,
+  CertRequestItem,
   CertRequestStatus,
   Client,
   LKDocument,
@@ -278,7 +278,7 @@ let _certCenters: CertCenter[] = [
   },
 ];
 
-let _certRequests: (CertRequest & { fields: CertRequestFields; files: CertFile[] })[] = [
+let _certRequests: (CertRequest & { items: CertRequestItem[]; files: CertFile[] })[] = [
   {
     id: 501,
     number: 'CR-2026-001',
@@ -290,45 +290,25 @@ let _certRequests: (CertRequest & { fields: CertRequestFields; files: CertFile[]
     updated_at: '2026-06-15T14:00:00Z',
     has_unread_messages: true,
     has_unread_changes: false,
-    fields: {
-      company: 'ООО «ТехноИмпорт»',
-      product: 'Электрический чайник',
-      tn_ved: '8516710000',
-      tech_description: 'Бытовой электрочайник, 1.7 л, 2200 Вт',
-      tr_ts: 'ТР ТС 004/2011, ТР ТС 020/2011',
-      cert_form: 'Декларация о соответствии',
-      cert_scheme: '1д',
-      cost: '35 000 ₽',
-      comment: 'Срочно, партия к 20.06',
-    },
+    items: [
+      {
+        id: 1,
+        position_no: 1,
+        company: 'ООО «ТехноИмпорт»',
+        product: 'Электрический чайник',
+        tn_ved: '8516710000',
+        tech_description: 'Бытовой электрочайник, 1.7 л, 2200 Вт',
+        tr_ts: 'ТР ТС 004/2011, ТР ТС 020/2011',
+        cert_form: 'Декларация о соответствии',
+        cert_scheme: '1д',
+        cost: '35 000 ₽',
+        comment: 'Срочно, партия к 20.06',
+      },
+    ],
     files: [
       { id: 1, file_type: 'file', url: '/uploads/tech.pdf', filename: 'tech.pdf', created_at: '2026-06-01T10:05:00Z' },
       { id: 2, file_type: 'link', url: 'https://example.com/spec', created_at: '2026-06-01T10:07:00Z' },
     ],
-  },
-  {
-    id: 502,
-    number: 'CR-2026-002',
-    company: 'ИП Петров А.С.',
-    cert_center_id: 2,
-    cert_center_name: _certCenters[1].name,
-    status: 'open',
-    created_at: '2026-06-10T09:00:00Z',
-    updated_at: '2026-06-10T09:00:00Z',
-    has_unread_messages: false,
-    has_unread_changes: true,
-    fields: {
-      company: 'ИП Петров А.С.',
-      product: 'Детская игрушка',
-      tn_ved: '9503004900',
-      tech_description: '',
-      tr_ts: 'ТР ТС 008/2011',
-      cert_form: '',
-      cert_scheme: '',
-      cost: '',
-      comment: '',
-    },
-    files: [],
   },
 ];
 
@@ -383,7 +363,7 @@ export async function mockCertRequests(
   if (params.status) list = list.filter((r) => r.status === params.status);
   if (params.cert_center_id) list = list.filter((r) => r.cert_center_id === params.cert_center_id);
   return list
-    .map(({ fields: _f, files: _fs, ...rest }) => rest)
+    .map(({ items: _i, files: _fs, ...rest }) => rest)
     .sort((a, b) => (a.updated_at < b.updated_at ? 1 : -1));
 }
 
@@ -403,17 +383,21 @@ export async function mockCreateCertRequest(data: { company: string; cert_center
     updated_at: now,
     has_unread_messages: false,
     has_unread_changes: true,
-    fields: {
-      company: data.company,
-      product: '',
-      tn_ved: '',
-      tech_description: '',
-      tr_ts: '',
-      cert_form: '',
-      cert_scheme: '',
-      cost: '',
-      comment: '',
-    },
+    items: [
+      {
+        id: 1,
+        position_no: 1,
+        company: data.company,
+        product: '',
+        tn_ved: '',
+        tech_description: '',
+        tr_ts: '',
+        cert_form: '',
+        cert_scheme: '',
+        cost: '',
+        comment: '',
+      },
+    ],
     files: [],
   });
   recalcCenterCounts();
@@ -426,7 +410,8 @@ export async function mockCertRequest(id: number): Promise<CertRequestDetails> {
   if (!r) throw new Error('Заявка не найдена');
   r.has_unread_messages = false;
   r.has_unread_changes = false;
-  return { ...r.fields, status: r.status, files: [...r.files] };
+  const { items: _i, files: _fs, ...rest } = r;
+  return { request: { ...rest }, items: [...r.items], files: [...r.files] };
 }
 
 export async function mockUpdateCertRequestStatus(id: number, status: CertRequestStatus) {
@@ -434,16 +419,6 @@ export async function mockUpdateCertRequestStatus(id: number, status: CertReques
   const r = _certRequests.find((x) => x.id === id);
   if (!r) throw new Error('Заявка не найдена');
   r.status = status;
-  r.updated_at = new Date().toISOString();
-  return { ok: true };
-}
-
-export async function mockUpdateCertRequestFields(id: number, fields: CertRequestFields) {
-  await delay(150);
-  const r = _certRequests.find((x) => x.id === id);
-  if (!r) throw new Error('Заявка не найдена');
-  r.fields = { ...fields };
-  r.company = fields.company;
   r.updated_at = new Date().toISOString();
   return { ok: true };
 }
