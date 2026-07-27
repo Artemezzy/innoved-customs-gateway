@@ -612,7 +612,7 @@ function cert_request_guard(array $me, int $rid): array {
     return $r;
 }
 
-// GET /api/cert-requests/:id  (детали заявки + поля)
+// GET /api/cert-requests/:id  (детали заявки + позиции товаров)
 if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset($seg[2])) {
     $me = auth();
     $rid = (int)$seg[1];
@@ -621,13 +621,14 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset
     $seenCol = $me['role'] === 'manager' ? 'manager_seen_at' : 'center_seen_at';
     db()->prepare("UPDATE lk_cert_requests SET $seenCol=NOW() WHERE id=?")->execute([$rid]);
 
-    $st = db()->prepare('SELECT * FROM lk_cert_request_fields WHERE request_id=?');
-    $st->execute([$rid]); $fields = $st->fetch();
+    $sti = db()->prepare('SELECT * FROM lk_cert_request_items WHERE request_id=? ORDER BY position_no ASC, id ASC');
+    $sti->execute([$rid]);
+    $items = $sti->fetchAll();
 
     $stf = db()->prepare('SELECT * FROM lk_cert_request_files WHERE request_id=? ORDER BY created_at DESC');
     $stf->execute([$rid]); $files = $stf->fetchAll();
 
-    out(['request' => $r, 'fields' => $fields, 'files' => $files]);
+    out(['request' => $r, 'items' => $items, 'files' => $files]);
 }
 
 // PUT /api/cert-requests/:id  (смена статуса — менеджер и центр)
@@ -643,22 +644,77 @@ if ($method === 'PUT' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset
     out(['ok' => true]);
 }
 
-// PUT /api/cert-requests/:id/fields  (редактирование 10 полей — обе стороны)
-if ($method === 'PUT' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'fields') {
+// GET /api/cert-requests/:id/items — список товарных позиций заявки
+if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'items') {
     $me = auth();
     $rid = (int)$seg[1];
     cert_request_guard($me, $rid);
+    $st = db()->prepare('SELECT * FROM lk_cert_request_items WHERE request_id=? ORDER BY position_no ASC, id ASC');
+    $st->execute([$rid]);
+    out($st->fetchAll());
+}
+
+// POST /api/cert-requests  (только менеджер, привязывает к центру)
+if ($method === 'POST' && $seg[0] === 'cert-requests' && !isset($seg[1])) {
+    auth(true);
+    $b = body();
+    if (empty($b['cert_center_id'])) err('cert_center_id обязателен');
+    db()->beginTransaction();
+    try {
+        $st = db()->prepare(
+            "INSERT INTO lk_cert_requests(cert_center_id,status,created_by,created_at,updated_at,manager_seen_at)
+             VALUES(?,'open',?,NOW(),NOW(),NOW())"
+        );
+        $st->execute([(int)$b['cert_center_id'], auth()['sub'] ?? null]);
+        $rid = db()->lastInsertId();
+
+        db()->prepare(
+            'INSERT INTO lk_cert_request_items(request_id,position_no,company,created_at,updated_at)
+             VALUES(?,1,?,NOW(),NOW())'
+        )->execute([$rid, $b['company'] ?? '']);
+
+        db()->commit();
+    } catch (\Throwable $e) {
+        db()->rollBack(); err('Ошибка БД: '.$e->getMessage());
+    }
+    out(['id' => (int)$rid], 201);
+}
+
+// PUT /api/cert-requests/:id/items/:itemId — редактировать одну позицию (обе стороны)
+if ($method === 'PUT' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'items' && isset($seg[3])) {
+    $me = auth();
+    $rid = (int)$seg[1];
+    $iid = (int)$seg[3];
+    cert_request_guard($me, $rid);
+
+    $chk = db()->prepare('SELECT id FROM lk_cert_request_items WHERE id=? AND request_id=?');
+    $chk->execute([$iid, $rid]);
+    if (!$chk->fetch()) err('Позиция не найдена', 404);
+
     $b = body();
     $allowed = ['company','product','tn_ved','tech_description','tr_ts','cert_form','cert_scheme','cost','comment'];
     $set = []; $vals = [];
     foreach ($allowed as $f) if (array_key_exists($f, $b)) { $set[] = "$f=?"; $vals[] = $b[$f]; }
     if (!$set) err('Нет данных для обновления');
-    $vals[] = $rid;
-    db()->prepare('UPDATE lk_cert_request_fields SET '.implode(',', $set).' WHERE request_id=?')->execute($vals);
+    $vals[] = $iid;
+    db()->prepare('UPDATE lk_cert_request_items SET '.implode(',', $set).', updated_at=NOW() WHERE id=?')->execute($vals);
 
-    $seenCol = $me['role'] === 'manager' ? 'manager_seen_at' : 'center_seen_at';
-    db()->prepare("UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=?, $seenCol=NOW() WHERE id=?")
-       ->execute([$me['role'], $rid]);
+    db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
+    out(['ok' => true]);
+}
+
+// DELETE /api/cert-requests/:id/items/:itemId — удалить позицию (обе стороны, минимум 1 позиция должна остаться)
+if ($method === 'DELETE' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'items' && isset($seg[3])) {
+    $me = auth();
+    $rid = (int)$seg[1];
+    $iid = (int)$seg[3];
+    cert_request_guard($me, $rid);
+
+    $cnt = (int) db()->query("SELECT COUNT(*) FROM lk_cert_request_items WHERE request_id=$rid")->fetchColumn();
+    if ($cnt <= 1) err('В заявке должна остаться хотя бы одна позиция товара');
+
+    db()->prepare('DELETE FROM lk_cert_request_items WHERE id=? AND request_id=?')->execute([$iid, $rid]);
+    db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
     out(['ok' => true]);
 }
 
