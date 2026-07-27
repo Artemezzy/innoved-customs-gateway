@@ -410,8 +410,8 @@ export async function mockCertRequest(id: number): Promise<CertRequestDetails> {
   if (!r) throw new Error('Заявка не найдена');
   r.has_unread_messages = false;
   r.has_unread_changes = false;
-  const { items: _i, files: _fs, ...rest } = r;
-  return { request: { ...rest }, items: [...r.items], files: [...r.files] };
+  const { items: _i, files: _fs, ...rest } = r as any;
+  return { request: { ...rest }, items: [...r.items] };
 }
 
 export async function mockUpdateCertRequestStatus(id: number, status: CertRequestStatus) {
