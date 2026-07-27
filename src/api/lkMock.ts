@@ -4,7 +4,7 @@ import {
   CertMessage,
   CertRequest,
   CertRequestDetails,
-  CertRequestFields,
+  CertRequestItem,
   CertRequestStatus,
   Client,
   LKDocument,
