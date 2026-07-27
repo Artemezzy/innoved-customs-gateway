@@ -521,11 +521,18 @@ if ($method === 'POST' && $seg[0] === 'cert-centers' && isset($seg[1]) && ($seg[
 // GET /api/cert-requests  (менеджер видит все, центр — только свои)
 if ($method === 'GET' && $seg[0] === 'cert-requests' && !isset($seg[1])) {
     $me = auth();
-    $sql = 'SELECT r.*, cc.name AS cert_center_name, f.company
+    $sql = "SELECT r.*,
+                   cc.name AS cert_center_name,
+                   (
+                     SELECT i.company
+                     FROM lk_cert_request_items i
+                     WHERE i.request_id = r.id
+                     ORDER BY i.position_no ASC, i.id ASC
+                     LIMIT 1
+                   ) AS company
             FROM lk_cert_requests r
-            JOIN lk_cert_centers cc ON cc.id=r.cert_center_id
-            LEFT JOIN lk_cert_request_fields f ON f.request_id=r.id
-            WHERE 1=1';
+            JOIN lk_cert_centers cc ON cc.id = r.cert_center_id
+            WHERE 1=1";
     $p = [];
 
     if ($me['role'] === 'cert_center') {
@@ -540,44 +547,17 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && !isset($seg[1])) {
         $p[] = $_GET['status'];
     }
 
-    if (!empty($_GET['cert_center_id']) && $me['role'] === 'manager') {
-        $sql .= ' AND r.cert_center_id=?';
-        $p[] = (int)$_GET['cert_center_id'];
-    }
-
     $sql .= ' ORDER BY r.created_at DESC';
+
     $st = db()->prepare($sql);
     $st->execute($p);
     $rows = $st->fetchAll();
 
     foreach ($rows as &$row) {
-        if ($me['role'] === 'manager') {
-            $msgSt = db()->prepare(
-                "SELECT COUNT(*)
-                 FROM lk_cert_messages
-                 WHERE request_id=? AND is_read=0 AND role='cert_center'"
-            );
-            $msgSt->execute([(int)$row['id']]);
-            $row['has_unread_messages'] = ((int)$msgSt->fetchColumn()) > 0;
-
-            $row['has_unread_changes'] =
-                strtotime($row['updated_at']) > strtotime($row['manager_seen_at'] ?? '1970-01-01 00:00:00');
-        } else {
-            $msgSt = db()->prepare(
-                "SELECT COUNT(*)
-                 FROM lk_cert_messages
-                 WHERE request_id=? AND is_read=0 AND role='manager'"
-            );
-            $msgSt->execute([(int)$row['id']]);
-            $row['has_unread_messages'] = ((int)$msgSt->fetchColumn()) > 0;
-
-            $row['has_unread_changes'] =
-                strtotime($row['updated_at']) > strtotime($row['center_seen_at'] ?? '1970-01-01 00:00:00');
-        }
-
-        $row['has_unread'] = $row['has_unread_messages'] || $row['has_unread_changes'];
+        $row['has_unread'] = $me['role'] === 'manager'
+            ? (strtotime($row['updated_at']) > strtotime($row['manager_seen_at'] ?? '1970-01-01'))
+            : (strtotime($row['updated_at']) > strtotime($row['center_seen_at'] ?? '1970-01-01'));
     }
-    unset($row);
 
     out($rows);
 }
@@ -655,9 +635,14 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset
     $items = $sti->fetchAll();
 
     $stf = db()->prepare('SELECT * FROM lk_cert_request_files WHERE request_id=? ORDER BY created_at DESC');
-    $stf->execute([$rid]); $files = $stf->fetchAll();
+    $stf->execute([$rid]);
+    $files = $stf->fetchAll();
 
-    out(['request' => $r, 'items' => $items, 'files' => $files]);
+    out([
+        'request' => $r,
+        'items' => $items,
+        'files' => $files
+    ]);
 }
 
 // PUT /api/cert-requests/:id  (смена статуса — менеджер и центр)
