@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { FileText, Link as LinkIcon, Download, Upload, Plus, Loader2 } from 'lucide-react';
+import { FileText, Link as LinkIcon, Download, Upload, Plus, Loader2, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
 import { CertFile } from '@/types/lk';
