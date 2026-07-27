@@ -47,6 +47,11 @@ import LKClientDetailPage from "./pages/lk/LKClientDetailPage";
 import LKShipmentsPage from "./pages/lk/LKShipmentsPage";
 import LKShipmentDetailPage from "./pages/lk/LKShipmentDetailPage";
 import LKMessagesPage from "./pages/lk/LKMessagesPage";
+import LKCertCentersPage from "./pages/lk/LKCertCentersPage";
+import LKCertCenterDetailPage from "./pages/lk/LKCertCenterDetailPage";
+import LKCertRequestsPage from "./pages/lk/LKCertRequestsPage";
+import LKCertRequestDetailPage from "./pages/lk/LKCertRequestDetailPage";
+
 
 const queryClient = new QueryClient();
 
