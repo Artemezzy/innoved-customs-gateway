@@ -225,4 +225,134 @@ export const lkApi = {
       name: string;
       new_password: string;
     }>('POST', `/clients/${clientId}/reset-password`),
+
+  // ============ Certification centers ============
+  certCenters: (q?: string) =>
+    USE_MOCK
+      ? mock.mockCertCenters(q)
+      : request<import('@/types/lk').CertCenter[]>(
+        'GET',
+        `/cert-centers${q ? `?q=${encodeURIComponent(q)}` : ''}`
+      ),
+
+  createCertCenter: (data: Partial<import('@/types/lk').CertCenter>) =>
+    USE_MOCK
+      ? mock.mockCreateCertCenter(data)
+      : request<{
+        center: import('@/types/lk').CertCenter;
+        credentials: { email: string; password: string };
+      }>('POST', '/cert-centers', data),
+
+  resetCertCenterPassword: (id: number) =>
+    request<{
+      user_id: number;
+      cert_center_id: number;
+      login: string;
+      name: string;
+      new_password: string;
+    }>('POST', `/cert-centers/${id}/reset-password`),
+
+  // ============ Certification requests ============
+  certRequests: (params: { status?: string; cert_center_id?: number } = {}) => {
+    if (USE_MOCK) return mock.mockCertRequests(params);
+    const qs = new URLSearchParams();
+    if (params.status) qs.set('status', params.status);
+    if (params.cert_center_id) qs.set('cert_center_id', String(params.cert_center_id));
+    const q = qs.toString();
+    return request<import('@/types/lk').CertRequest[]>(
+      'GET',
+      `/cert-requests${q ? `?${q}` : ''}`
+    );
+  },
+
+  createCertRequest: (data: { company: string; cert_center_id: number }) =>
+    USE_MOCK
+      ? mock.mockCreateCertRequest(data)
+      : request<{ id: number }>('POST', '/cert-requests', data),
+
+  certRequest: async (id: number): Promise<import('@/types/lk').CertRequestDetails> => {
+    if (USE_MOCK) return mock.mockCertRequest(id);
+    const res = await request<{
+      request: { status: import('@/types/lk').CertRequestStatus };
+      fields: import('@/types/lk').CertRequestFields;
+      files: import('@/types/lk').CertFile[];
+    }>('GET', `/cert-requests/${id}`);
+    return { ...res.fields, status: res.request.status, files: res.files || [] };
+  },
+
+  updateCertRequestStatus: (id: number, status: import('@/types/lk').CertRequestStatus) =>
+    USE_MOCK
+      ? mock.mockUpdateCertRequestStatus(id, status)
+      : request<{ ok: boolean }>('PUT', `/cert-requests/${id}`, { status }),
+
+  updateCertRequestFields: (
+    id: number,
+    fields: import('@/types/lk').CertRequestFields
+  ) =>
+    USE_MOCK
+      ? mock.mockUpdateCertRequestFields(id, fields)
+      : request<{ ok: boolean }>('PUT', `/cert-requests/${id}/fields`, fields),
+
+  deleteCertRequest: (id: number) =>
+    USE_MOCK
+      ? mock.mockDeleteCertRequest(id)
+      : request<{ ok: boolean }>('DELETE', `/cert-requests/${id}`),
+
+  uploadCertFile: (id: number, form: FormData) =>
+    USE_MOCK
+      ? mock.mockUploadCertFile(id, form)
+      : request<import('@/types/lk').CertFile>(
+        'POST',
+        `/cert-requests/${id}/files`,
+        form,
+        true
+      ),
+
+  addCertFileUrl: (id: number, url: string) => {
+    const fd = new FormData();
+    fd.append('url', url);
+    if (USE_MOCK) return mock.mockUploadCertFile(id, fd);
+    return request<import('@/types/lk').CertFile>(
+      'POST',
+      `/cert-requests/${id}/files`,
+      fd,
+      true
+    );
+  },
+
+  downloadCertFile: async (id: number, fileId: number, filename?: string) => {
+    const token = getAuthToken();
+    const res = await fetch(`${BASE_URL}/cert-requests/${id}/files/${fileId}/download`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!res.ok) throw new Error(`Не удалось скачать (HTTP ${res.status})`);
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || `file-${fileId}`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  },
+
+  certMessages: (id: number, since?: number) =>
+    USE_MOCK
+      ? mock.mockCertMessages(id, since)
+      : request<import('@/types/lk').CertMessage[]>(
+        'GET',
+        `/cert-requests/${id}/messages${since ? `?since=${since}` : ''}`
+      ),
+
+  sendCertMessage: (
+    id: number,
+    text: string,
+    sender?: { role: import('@/types/lk').Role; name: string; user_id: number }
+  ) =>
+    USE_MOCK
+      ? mock.mockSendCertMessage(id, text, sender)
+      : request<import('@/types/lk').CertMessage>('POST', `/cert-requests/${id}/messages`, {
+        text,
+      }),
 };
