@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CertRequestStatusSelect } from '@/components/lk/CertRequestStatusSelect';
-import { CertFilesPanel } from '@/components/lk/CertFilesPanel';
+
 import { CertChatPanel } from '@/components/lk/CertChatPanel';
 import { CertItemsPanel } from '@/components/lk/CertItemsPanel';
 
