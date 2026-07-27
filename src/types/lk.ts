@@ -1,10 +1,11 @@
-export type Role = 'manager' | 'client';
+export type Role = 'manager' | 'client' | 'cert_center';
 
 export interface LKUser {
   id: number;
   name: string;
   role: Role;
   clientId: number | null;
+  certCenterId: number | null;
 }
 
 export interface Client {
@@ -83,4 +84,79 @@ export interface ManagerStats {
   clients_total: number;
   shipments_active: number;
   messages_unread: number;
+}
+
+// ============ Certification centers & requests ============
+
+export interface CertCenter {
+  id: number;
+  name: string;
+  contact_person: string;
+  phone: string;
+  email: string;
+  requests_count: number;
+  created_at: string;
+}
+
+export type CertRequestStatus = 'open' | 'in_progress' | 'closed';
+
+export const CERT_STATUS_LABELS: Record<CertRequestStatus, string> = {
+  open: 'Открыто',
+  in_progress: 'В работе',
+  closed: 'Закрыто',
+};
+
+export const CERT_STATUS_COLORS: Record<CertRequestStatus, string> = {
+  open: 'bg-blue-100 text-blue-800',
+  in_progress: 'bg-yellow-100 text-yellow-800',
+  closed: 'bg-green-100 text-green-800',
+};
+
+export interface CertRequest {
+  id: number;
+  number: string;
+  company: string;
+  cert_center_id: number;
+  cert_center_name: string;
+  status: CertRequestStatus;
+  created_at: string;
+  updated_at: string;
+  has_unread_messages: boolean;
+  has_unread_changes: boolean;
+}
+
+export interface CertRequestFields {
+  company: string;
+  product: string;
+  tn_ved: string;
+  tech_description: string;
+  tr_ts: string;
+  cert_form: string;
+  cert_scheme: string;
+  cost: string;
+  comment: string;
+}
+
+export interface CertFile {
+  id: number;
+  file_type: 'file' | 'link';
+  url: string;
+  filename?: string;
+  created_at: string;
+}
+
+export interface CertRequestDetails extends CertRequestFields {
+  status: CertRequestStatus;
+  files: CertFile[];
+}
+
+export interface CertMessage {
+  id: number;
+  cert_request_id: number;
+  user_id: number;
+  sender_name: string;
+  role: Role;
+  text: string;
+  is_read: boolean;
+  created_at: string;
 }
