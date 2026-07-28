@@ -735,7 +735,13 @@ if ($method === 'PUT' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset
 }
 
 // GET /api/cert-requests/:id/items — список товарных позиций заявки
-if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'items') {
+if (
+    $method === 'GET'
+    && $seg[0] === 'cert-requests'
+    && isset($seg[1])
+    && ($seg[2] ?? '') === 'items'
+    && !isset($seg[3])   // ← добавить эту проверку
+) {
     $me = auth();
     $rid = (int)$seg[1];
     cert_request_guard($me, $rid);
