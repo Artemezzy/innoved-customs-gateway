@@ -88,95 +88,85 @@ const content = {
     ]
   },
   en: {
-    title: 'Privacy Policy',
+    title: 'Personal Data Processing Policy',
     sections: [
       {
         title: '1. General Provisions',
         content: [
-          '1.1. This policy regarding the processing of personal data (hereinafter — the Policy) has been prepared in accordance with Federal Law No. 152-FZ dated 27.07.2006 "On Personal Data" and other applicable legislation of the Russian Federation in the field of personal data protection.',
-          '1.2. The Policy defines the general procedure for processing personal data of users of the INNOVED website (hereinafter — the Website) and general approaches to ensuring their confidentiality.',
-          '1.3. By using the Website and submitting personal data, the User confirms that they have read this Policy and agree to the terms of personal data processing described herein.'
+          '1.1. This policy regarding the processing and security of personal data (hereinafter — the Policy) has been prepared in accordance with Federal Law No. 152-FZ of 27.07.2006 "On Personal Data" (hereinafter — the Personal Data Law) and other applicable legislation of the Russian Federation in the field of personal data protection.',
+          '1.2. The Policy defines the general procedure for processing personal data by Limited Liability Company "INNOVED" (hereinafter — the Company, the Operator) and the general approaches to ensuring their confidentiality.',
+          '1.3. In fulfillment of the requirements of Part 2, Article 18.1 of the Personal Data Law, this Policy is published for free access on the Internet on the Operator\'s website.',
+          '1.4. The Policy applies to relations in the field of personal data processing that have arisen for the Operator both before and after the approval of this Policy.',
+          '1.5. The processing of personal data at the Company is based on the following principles:\n• lawfulness of the purposes and methods of processing personal data;\n• conformity of the purposes of processing personal data with the purposes predetermined and declared by the Company when collecting personal data;\n• accuracy of personal data, their relevance and sufficiency for the purposes of processing, and inadmissibility of processing personal data that are excessive in relation to the purposes of their collection;\n• lawfulness and improvement of organizational and technical measures to ensure the security of personal data.'
         ]
       },
       {
-        title: '2. Terms and Operator Status',
+        title: '2. Basic Concepts Used in the Policy',
         content: [
-          '2.1. Personal data refers to any information relating to a directly or indirectly identified or identifiable natural person (personal data subject).',
-          '2.2. The personal data operator under this Policy is INNOVED (individual entrepreneur / organization; details and legal address are specified in founding documents and contractual relations).',
-          '2.3. This Policy does not impose additional obligations on the Operator beyond the requirements of the legislation of the Russian Federation and is of an informational nature.'
+          '2.1. Personal data means any information relating to a directly or indirectly identified or identifiable natural person (personal data subject).',
+          '2.2. The personal data operator under this Policy is the Company.',
+          `2.3. Processing of personal data means any action (operation) or set of actions (operations) performed with personal data, whether using automation tools or without their use.`,
+          '2.3. This Policy does not impose additional obligations on the Operator beyond the requirements of the current legislation of the Russian Federation and is informational in nature.'
         ]
       },
       {
-        title: '3. Composition and Sources of Personal Data',
+        title: '3. Scope and Categories of Processed Personal Data, Categories of Personal Data Subjects',
         content: [
-          '3.1. The Operator processes the following categories of data that the User provides independently when contacting through the Website forms or other means of communication:',
-          '• surname, first name, patronymic (if available);\n• contact details (phone, email address, messenger username, e.g. Telegram);\n• cargo information necessary for customs clearance services;\n• other data that the User may provide on their own initiative when contacting.',
-          '3.2. Anonymized data about Website visits (cookies, technical information about the browser and device) may also be automatically collected for analytics and Website improvement, if such technologies are enabled.'
+          '3.1. The content and scope of processed personal data must correspond to the purposes of processing declared by the Operator, provided for in Section 4 of this Policy. Processed personal data must not be excessive in relation to the declared purposes of their processing.',
+          '3.2. The Operator may process personal data of the following categories of personal data subjects:',
+          '3.2.1. Candidates for employment with the Operator — for the purposes of fulfilling labor legislation within the framework of labor and other relations directly related thereto:\n• last name, first name, patronymic;\n• gender;\n• citizenship;\n• date and place of birth;\n• contact details;\n• information on education, work experience, qualifications;\n• other personal data provided by candidates independently in resumes and cover letters.',
+          '3.2.2. Employees and former employees of the Operator — for the purposes of fulfilling labor legislation within the framework of labor and other relations directly related thereto, and for implementing access control:\n• last name, first name, patronymic;\n• gender;\n• citizenship;\n• date and place of birth;\n• image (photograph);\n• passport data;\n• registration address at place of residence;\n• actual residential address;\n• contact details;\n• individual taxpayer number;\n• insurance number of an individual personal account (SNILS);\n• information on education, qualifications, professional training and advanced training;\n• marital status, presence of children, family relationships;\n• information on employment activity, including incentives, awards and/or disciplinary sanctions;\n• marriage registration data;\n• military registration information;\n• disability information;\n• information on alimony withholding;\n• information on income from previous place of employment;\n• other personal data provided by employees in accordance with the requirements of labor legislation.',
+          '3.2.3. Family members of the Operator\'s employees — for the purposes of fulfilling labor legislation within the framework of labor and other relations directly related thereto:\n• last name, first name, patronymic;\n• degree of kinship;\n• year of birth;\n• other personal data provided by employees in accordance with the requirements of labor legislation.',
+          '3.2.4. The Operator\'s counterparties (natural persons) — for the purposes of carrying out business activities in accordance with the charter of LLC "INNOVED":\n• last name, first name, patronymic;\n• date and place of birth;\n• passport data;\n• registration address at place of residence;\n• contact details;\n• position held;\n• individual taxpayer number;\n• bank account number;\n• other personal data provided by clients and counterparties (natural persons) necessary for concluding and performing contracts.',
+          '3.2.5. Representatives (employees) of the Operator\'s counterparties (legal entities) — for the purposes of carrying out their activities in accordance with the charter of LLC "INNOVED":\n• last name, first name, patronymic;\n• passport data;\n• contact details;\n• position held;\n• other personal data provided by representatives (employees) of clients and counterparties necessary for concluding and performing contracts;',
+          '3.2.6. Users of the Operator\'s website:\n• surname, first name, and patronymic (if available);\n• contact details (phone, email address, messenger username preferred for communication with the User);\n• cargo information necessary for the provision of customs clearance services;\n• information collected through analytics/metrics programs;\n• other data that the User provides to the Operator on their own initiative when contacting.',
+          '3.3. Anonymized data about visits to the Website (cookie files, technical information about the browser and device) may also be automatically collected for analytics and improvement of the Website\'s operation, if such technologies are enabled.',
+          '3.4. The Operator does not process special categories of personal data relating to racial or ethnic origin, political views, religious or philosophical beliefs, state of health, or intimate life, except in cases provided for by the legislation of the Russian Federation.'
         ]
       },
       {
         title: '4. Purposes of Personal Data Processing',
         content: [
-          'Personal data is processed by the Operator to the extent necessary to achieve the following purposes:',
-          '• provision of customs clearance services;\n• interaction with the User (processing requests, informing about service status, sending necessary service information);\n• record keeping and internal reporting required by law;\n• improving the quality of services and Website operation, analyzing inquiries and optimizing business processes.'
+          '4.1. Personal data is processed by the Operator to the extent necessary to achieve the following purposes:\n• carrying out business activities in accordance with the charter of LLC "INNOVED", including the provision of customs clearance services for cargo, and the conclusion and performance of contracts with counterparties;\n• fulfillment of labor legislation within the framework of labor and other relations directly related thereto, including: assisting employees with employment, education and career advancement, attracting and selecting candidates for employment with the Operator, ensuring the personal safety of employees, monitoring the quantity and quality of work performed, ensuring the safekeeping of property, maintaining personnel and accounting records, completing and submitting required reporting forms to authorized bodies, organizing individual (personalized) registration of employees in the mandatory pension insurance and mandatory social insurance systems;\n• interaction with Users (processing requests, informing about the status of services, sending necessary information);\n• maintaining records and internal reporting required by law;\n• improving the quality of services and the operation of the Website, analyzing inquiries and optimizing business processes;\n• maintaining records of clients and potential clients in the Bitrix system (CRM system), and interacting with personal data subjects during the conclusion, performance and support of transactions;\n• maintaining records of concluded contracts/services rendered, and analyzing business processes;\n• collecting statistical information on website traffic via Yandex Metrica, analyzing user activity, optimizing the Website\'s operation, analyzing advertising effectiveness, evaluating traffic sources, and optimizing website promotion.',
+          '4.2. The processing of employees\' personal data may be carried out exclusively for the purposes of ensuring compliance with applicable laws and other regulatory legal acts.'
         ]
       },
       {
-        title: '5. Legal Basis for Processing',
+        title: '5. Legal Grounds for Processing',
         content: [
-          '5.1. The grounds for processing personal data are:',
-          '• consent of the personal data subject, expressed, among other things, by submitting a form on the Website or contacting through the specified means of communication;\n• conclusion and performance of a contract with the personal data subject or their representative;\n• fulfillment of the Operator\'s obligations under the legislation of the Russian Federation.',
-          '5.2. In cases directly provided by law, personal data processing may be carried out without separate consent of the subject, strictly within the requirements of the legislation.'
+          '5.1. The legal grounds for processing personal data are a body of regulatory legal acts, in pursuance of and in accordance with which the Operator processes personal data, including:\n• the Constitution of the Russian Federation;\n• the Civil Code of the Russian Federation;\n• the Labor Code of the Russian Federation;\n• the Tax Code of the Russian Federation;\n• Federal Law No. 14-FZ of 08.02.1998 "On Limited Liability Companies";\n• Federal Law No. 402-FZ of 06.12.2011 "On Accounting";\n• Federal Law No. 167-FZ of 15.12.2001 "On Mandatory Pension Insurance in the Russian Federation";\n• other regulatory legal acts governing relations connected with the Operator\'s activities.',
+          '5.2. The legal grounds for processing personal data also include:\n• the consent of the personal data subject, expressed, among other things, by submitting a form on the Website or contacting through the specified means of communication;\n• contracts concluded by the Operator with personal data subjects;\n• the charter of LLC "INNOVED".',
+          '5.2. In cases directly provided for by law, personal data may be processed without the separate consent of the subject, strictly within the limits provided for by the current legislation of the Russian Federation.'
         ]
       },
       {
-        title: '6. Conditions and Methods of Processing',
+        title: '6. Procedure and Conditions for Processing Personal Data',
         content: [
-          '6.1. Personal data processing is carried out with and without the use of automation in accordance with the principles and rules established by 152-FZ.',
-          '6.2. Access to personal data is granted only to those persons who need it to perform their official duties and provide services to the User.',
-          '6.3. In certain cases, the Operator may entrust the processing of personal data to third parties on the basis of a contract, provided that such persons comply with the requirements of confidentiality and security of personal data.'
+          '6.1. Personal data processing is carried out with and without the use of automation tools, as well as through mixed processing, in accordance with the principles and rules established by the current legislation of the Russian Federation.',
+          '6.2. Access to the processing of personal data is granted to Operator employees whose job duties include the processing of personal data.',
+          '6.3. In certain cases, the Operator may entrust the processing of personal data to third parties on the basis of a contract, provided that such persons comply with the requirements of confidentiality and security of personal data.',
+          '6.4. The Operator takes the necessary legal, organizational and technical measures to protect personal data from unlawful or accidental access, destruction, modification, blocking, distribution and other unauthorized actions, including:\n• identifying threats to the security of personal data during their processing;\n• adopting local regulatory acts and other documents governing relations in the field of personal data processing and protection;\n• appointing persons responsible for ensuring the security of personal data in the Operator\'s structural divisions and information systems;\n• creating the necessary conditions for working with personal data;\n• organizing accounting of documents containing personal data;\n• organizing work with information systems in which personal data are processed;\n• storing personal data under conditions that ensure their safekeeping and preclude unlawful access to them;\n• organizing training for Operator employees who process personal data.',
+          '6.5. The Operator stores personal data in a form that allows the identification of the personal data subject for no longer than required by each purpose of personal data processing, unless the storage period for personal data is established by federal law or a contract.',
+          '6.6. Personal data on paper media are stored by LLC "INNOVED" for the storage periods established for documents by the legislation on archival matters in the Russian Federation (Federal Law No. 125-FZ of 22.10.2004 "On Archival Matters in the Russian Federation", the List of Standard Administrative Archival Documents Generated in the Course of the Activities of State Bodies, Local Self-Government Bodies and Organizations, Indicating Their Storage Periods (approved by Order of Rosarkhiv No. 236 of 20.12.2019)).',
+          '6.7. The storage period for personal data processed in personal data information systems corresponds to the storage period for personal data on paper media.',
+          '6.8. The Operator terminates the processing of personal data in the following cases:\n• a fact of their unlawful processing has been identified. The processing shall be terminated within three business days from the date the fact of unlawful processing is identified;\n• the purpose of their processing has been achieved;\n• the term has expired or the personal data subject\'s consent to the processing of the specified data has been withdrawn, when, under the Personal Data Law, the processing of this data is permitted only with consent.',
+          '6.9. Upon achieving the purposes of personal data processing, as well as in the event that the personal data subject withdraws consent to their processing, the Operator terminates the processing of this data, unless:\n• otherwise provided by a contract to which the personal data subject is a party or beneficiary;\n• the Operator is entitled to carry out processing without the consent of the personal data subject on grounds provided for by the Personal Data Law or other federal laws;\n• otherwise provided by another agreement between the Operator and the personal data subject.',
+          '6.10. When a personal data subject applies to the Operator with a request to terminate the processing of personal data, the processing of personal data shall be terminated within a period not exceeding 10 business days from the date the Operator receives the corresponding request, except in cases provided for by the Personal Data Law. This period may be extended, but by no more than five business days. To do so, the Operator must send the personal data subject a reasoned notice indicating the reasons for the extension.',
+          '6.11. When collecting personal data, including via the Internet, the recording, systematization, accumulation, storage, clarification (updating, modification) and retrieval of personal data of citizens of the Russian Federation using databases located outside the Russian Federation are not permitted, except in cases specified in the Personal Data Law.'
         ]
       },
       {
-        title: '7. Data Storage and Destruction',
+        title: '7. Updating, Correction, Deletion, Destruction of Personal Data, and Responses to Subject Access Requests',
         content: [
-          '7.1. Personal data is stored until the purposes of processing are achieved or for the period provided by the legislation of the Russian Federation and/or the contract with the User.',
-          '7.2. Upon achieving the purposes of processing or when such data is no longer needed, it shall be destroyed or anonymized in accordance with the Operator\'s internal policies and legislation.'
-        ]
-      },
-      {
-        title: '8. Security Measures',
-        content: [
-          '8.1. The Operator applies organizational and technical measures provided by law to protect personal data from unauthorized or accidental access, destruction, modification, blocking, copying, distribution, and other unlawful actions.',
-          '8.2. The specific list of protective tools and technologies used is not disclosed for security purposes and may be changed by the Operator as technical solutions and legislative requirements evolve.'
-        ]
-      },
-      {
-        title: '9. Rights of Personal Data Subjects',
-        content: [
-          '9.1. The personal data subject has the right to receive information concerning the processing of their personal data, to request its clarification, blocking, or destruction in cases provided by law.',
-          '9.2. The User has the right to withdraw previously given consent to the processing of personal data by sending a corresponding request to the Operator. The Operator may continue processing data if there are other legal grounds provided by law.'
-        ]
-      },
-      {
-        title: '10. Limitation of Liability',
-        content: [
-          '10.1. The Operator strives to comply with the requirements of the legislation of the Russian Federation regarding personal data, but cannot guarantee absolute security of information when transmitting data through open communication channels on the Internet and is not liable for the actions of third parties who gained access to data through no fault of the Operator.',
-          '10.2. The Operator is not responsible for information provided by the User about third parties, as well as for the consequences of the User providing inaccurate or incomplete data.',
-          '10.3. This Policy is not a contract with the User and does not establish additional obligations for the Operator beyond those directly provided by the legislation of the Russian Federation.'
-        ]
-      },
-      {
-        title: '11. Contacts for Personal Data Inquiries',
-        content: [
-          'For questions related to the processing of personal data, as well as for exercising the rights of the personal data subject, the User may contact the Operator, including via Telegram: @innovedbroker.'
-        ]
-      },
-      {
-        title: '12. Policy Changes',
-        content: [
-          '12.1. The Operator has the right to unilaterally make changes to this Policy without prior notice to the User, unless otherwise required by law.',
-          '12.2. The current version of the Policy is always posted on the Website; continued use of the Website after changes are made means the User agrees to the new version of the Policy.'
+          '7.1. Confirmation of the fact of personal data processing by the Operator, the legal grounds and purposes of personal data processing, as well as other information specified in Part 7, Article 14 of the Personal Data Law, are provided by the Operator to the personal data subject or their representative within 10 business days from the moment of contact or receipt of a request from the personal data subject or their representative. This period may be extended, but by no more than five business days. To do so, the Operator must send the personal data subject a reasoned notice indicating the reasons for extending the period for providing the requested information.\nThe information provided does not include personal data relating to other personal data subjects, except in cases where there are legal grounds for disclosing such personal data.\nThe request must contain:\n• the number of the main identity document of the personal data subject or their representative, information on the date of issue of the specified document and the authority that issued it;\n• information confirming the personal data subject\'s participation in relations with the Operator (contract number, date of conclusion of the contract, a conventional verbal designation and/or other information), or information otherwise confirming the fact of personal data processing by the Operator;\n• the signature of the personal data subject or their representative.\nThe request may be sent in the form of an electronic document and signed with an electronic signature in accordance with the legislation of the Russian Federation.\nThe Operator provides the information specified in Part 7, Article 14 of the Personal Data Law to the personal data subject or their representative in the form in which the corresponding inquiry or request was sent, unless otherwise indicated in the inquiry or request.\nIf the inquiry (request) of the personal data subject does not, in accordance with the requirements of the Personal Data Law, reflect all necessary information, or the subject does not have access rights, the provision of information may be refused in the manner established by Part 8, Article 14 of the Personal Data Law.\nThe right of the personal data subject to access their personal data may be restricted in accordance with federal laws, including where the personal data subject\'s access to their personal data violates the rights and legitimate interests of third parties.',
+          '7.2. If inaccurate personal data is identified upon the request of the personal data subject or their representative, or at their request, or at the request of Roskomnadzor, the Operator blocks the personal data relating to that personal data subject from the moment of such request or receipt of the said request for the period of verification, unless blocking the personal data violates the rights and legitimate interests of the personal data subject or third parties. If the fact of inaccuracy of the personal data is confirmed, the Operator, on the basis of information provided by the personal data subject or their representative or by Roskomnadzor, or other necessary documents, updates the personal data within seven business days from the date such information is provided and lifts the blocking of the personal data.',
+          '7.3. If unlawful processing of personal data is identified upon the request (inquiry) of the personal data subject or their representative, or of Roskomnadzor, the Operator blocks the unlawfully processed personal data relating to that personal data subject from the moment of such request or receipt of the request.',
+          '7.4. If the Operator, Roskomnadzor or any other interested party identifies a fact of unlawful or accidental transfer (provision, dissemination) of personal data (access to personal data) that has resulted in a violation of the rights of personal data subjects, the Operator:\n• within 24 hours — notifies Roskomnadzor of the incident that occurred, the presumed causes that led to the violation of the rights of personal data subjects, the presumed harm caused to the rights of personal data subjects, and the measures taken to eliminate the consequences of the incident, and also provides information about the person authorized by the Operator to interact with Roskomnadzor on matters related to the incident;\n• within 72 hours — notifies Roskomnadzor of the results of the internal investigation of the identified incident and provides information about the persons whose actions caused it (if any).',
+          '7.5. Procedure for the destruction of personal data by the Operator.',
+          '7.5.1. Conditions and terms for the destruction of personal data by the Operator:\n• achievement of the purpose of personal data processing or loss of the need to achieve that purpose — within 30 days;\n• reaching the maximum storage periods for documents containing personal data — within 30 days;\n• provision by the personal data subject (their representative) of confirmation that the personal data was obtained unlawfully or is not necessary for the declared purpose of processing — within seven business days;\n• withdrawal by the personal data subject of consent to the processing of their personal data, if their retention for the purpose of processing is no longer required — within 30 days.',
+          '7.5.2. Upon achieving the purpose of personal data processing, as well as in the event that the personal data subject withdraws consent to their processing, the personal data shall be destroyed, unless:\n• otherwise provided by a contract to which the personal data subject is a party, beneficiary or guarantor;\n• the operator is entitled to carry out processing without the consent of the personal data subject on grounds provided for by the Personal Data Law or other federal laws;\n• otherwise provided by another agreement between the Operator and the personal data subject.',
+          '7.5.3. The destruction of personal data is carried out by a person appointed by order of the General Director of LLC "INNOVED".',
+          '7.5.4. The methods of destroying personal data are established in the Operator\'s local regulatory acts.'
         ]
       }
     ]
