@@ -236,9 +236,9 @@ export default function CaseZapchasteyPage() {
               </Button>
 
               <Button variant="outline" asChild>
-                <a href="tel:+79331881009">
+                <a href="tel:+73952785093">
                   <Phone className="w-4 h-4 mr-2" />
-                  +7 933 188-10-09
+                  +7 395 278-50-93
                 </a>
               </Button>
             </div>

@@ -106,11 +106,11 @@ export function Header({ language, onLanguageChange }: HeaderProps) {
               onClick={() => analytics.contactClick('email')}>
               <Mail className="w-4 h-4" />
             </a>
-            <a href="tel:89331881009"
+            <a href="tel:83952785093"
               className="flex items-center text-primary-foreground hover:text-primary-glow transition-colors duration-300 text-xs xl:text-sm font-medium whitespace-nowrap"
               onClick={() => analytics.contactClick('phone')}>
               <Phone className="w-4 h-4 mr-1.5 shrink-0" />
-              8 933 188 10 09
+              8 395 278 50 93
             </a>
             <a
               href="/files/innoved_commercial.pdf"
@@ -147,7 +147,7 @@ export function Header({ language, onLanguageChange }: HeaderProps) {
               className="text-primary-foreground p-2" onClick={() => analytics.contactClick('max-bot' as any)}>
               <img src={maxIcon} alt="MAX" className="w-5 h-5 opacity-90" />
             </a>
-            <a href="tel:89331881009" className="text-primary-foreground p-2" onClick={() => analytics.contactClick('phone')}>
+            <a href="tel:83952785093" className="text-primary-foreground p-2" onClick={() => analytics.contactClick('phone')}>
               <Phone className="w-4 h-4" />
             </a>
             <LanguageToggle currentLanguage={language} onLanguageChange={onLanguageChange} />

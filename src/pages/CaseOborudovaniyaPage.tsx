@@ -248,9 +248,9 @@ export default function CaseOborudovaniyaPage() {
                 </a>
               </Button>
               <Button asChild variant="outline" className="w-full sm:col-span-2">
-                <a href="tel:+79331881009">
+                <a href="tel:+73952785093">
                   <Phone className="w-4 h-4 mr-2" />
-                  8 933 188 10 09
+                  8 395 278 50 93
                 </a>
               </Button>
             </div>

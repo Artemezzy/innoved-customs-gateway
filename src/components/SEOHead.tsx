@@ -277,7 +277,7 @@ export function SEOHead({
       ],
       "contactPoint": {
         "@type": "ContactPoint",
-        "telephone": "+7-933-188-10-09",
+        "telephone": "+7-395-278-50-93",
         "email": "info@innovedbroker.ru",
         "contactType": "customer service",
         "availableLanguage": ["Russian", "English"]

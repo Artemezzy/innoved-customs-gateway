@@ -51,7 +51,7 @@ export default function ServiceDetailPage() {
           "name": language === 'ru' ? 'ИННОВЭД' : 'INNOVED',
           "url": "https://www.innovedbroker.ru",
           "logo": "https://www.innovedbroker.ru/logo.png",
-          "telephone": "+7-933-188-10-09",
+          "telephone": "+7-395-278-50-93",
           "email": "info@innovedbroker.ru",
           "address": {
             "@type": "PostalAddress",
@@ -67,7 +67,7 @@ export default function ServiceDetailPage() {
         "availableChannel": {
           "@type": "ServiceChannel",
           "serviceUrl": "https://www.innovedbroker.ru/contact",
-          "servicePhone": "+7-933-188-10-09",
+          "servicePhone": "+7-395-278-50-93",
           "availableLanguage": ["Russian", "English"]
         }
       };

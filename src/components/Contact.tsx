@@ -128,8 +128,8 @@ export function Contact({ language }: ContactProps) {
                 <Phone className="w-5 h-5 text-accent" />
                 <div>
                   <p className="text-sm text-muted-foreground">{text.companyInfo.phone}</p>
-                  <a href="tel:89331881009" className="text-lg font-semibold text-foreground hover:text-accent transition-colors">
-                    8 933 188 10 09
+                  <a href="tel:83952785093" className="text-lg font-semibold text-foreground hover:text-accent transition-colors">
+                    8 395 278 50 93
                   </a>
                 </div>
               </div>
