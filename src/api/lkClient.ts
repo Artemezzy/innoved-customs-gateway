@@ -116,13 +116,17 @@ export const lkApi = {
       ? mock.mockManagerMessages()
       : request<any[]>('GET', '/managers/messages'),
 
-  clients: (q?: string) =>
-    USE_MOCK
-      ? mock.mockClients(q)
-      : request<import('@/types/lk').Client[]>(
-          'GET',
-          `/clients${q ? `?q=${encodeURIComponent(q)}` : ''}`
-        ),
+  clients: (q?: string, status?: 'active' | 'archived') => {
+    if (USE_MOCK) return mock.mockClients(q);
+    const qs = new URLSearchParams();
+    if (q) qs.set('q', q);
+    if (status === 'archived') qs.set('status', 'archived');
+    const query = qs.toString();
+    return request<import('@/types/lk').Client[]>(
+      'GET',
+      `/clients${query ? `?${query}` : ''}`
+    );
+  },
 
   createClient: (data: Partial<import('@/types/lk').Client>) =>
     USE_MOCK
@@ -223,14 +227,25 @@ export const lkApi = {
       new_password: string;
     }>('POST', `/clients/${clientId}/reset-password`),
 
+  // НОВОЕ: удаление клиента (soft-delete) и восстановление
+  deleteClient: (clientId: number) =>
+    request<{ ok: boolean }>('DELETE', `/clients/${clientId}`),
+
+  restoreClient: (clientId: number) =>
+    request<{ ok: boolean }>('POST', `/clients/${clientId}/restore`),
+
   // ============ Certification centers ============
-  certCenters: (q?: string) =>
-    USE_MOCK
-      ? mock.mockCertCenters(q)
-      : request<import('@/types/lk').CertCenter[]>(
-          'GET',
-          `/cert-centers${q ? `?q=${encodeURIComponent(q)}` : ''}`
-        ),
+  certCenters: (q?: string, status?: 'active' | 'archived') => {
+    if (USE_MOCK) return mock.mockCertCenters(q);
+    const qs = new URLSearchParams();
+    if (q) qs.set('q', q);
+    if (status === 'archived') qs.set('status', 'archived');
+    const query = qs.toString();
+    return request<import('@/types/lk').CertCenter[]>(
+      'GET',
+      `/cert-centers${query ? `?${query}` : ''}`
+    );
+  },
 
   createCertCenter: (data: Partial<import('@/types/lk').CertCenter>) =>
     USE_MOCK
@@ -249,6 +264,12 @@ export const lkApi = {
       new_password: string;
     }>('POST', `/cert-centers/${id}/reset-password`),
 
+  deleteCertCenter: (id: number) =>
+    request<{ ok: boolean }>('DELETE', `/cert-centers/${id}`),
+
+  restoreCertCenter: (id: number) =>
+    request<{ ok: boolean }>('POST', `/cert-centers/${id}/restore`),
+  
   // ============ Certification requests ============
   certRequests: (params: { status?: string; cert_center_id?: number } = {}) => {
     if (USE_MOCK) return mock.mockCertRequests(params);

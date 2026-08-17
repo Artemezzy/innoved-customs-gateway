@@ -16,6 +16,7 @@ export interface Client {
   phone: string;
   email: string;
   shipment_count: number;
+  is_active: number;
   created_at: string;
 }
 
@@ -95,6 +96,7 @@ export interface CertCenter {
   phone: string;
   email: string;
   requests_count: number;
+  is_active: number;
   created_at: string;
 }
 

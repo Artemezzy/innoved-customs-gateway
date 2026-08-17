@@ -174,15 +174,16 @@ if ($method === 'GET' && $seg[0] === 'managers' && ($seg[1] ?? '') === 'stats') 
 if ($method === 'GET' && $seg[0] === 'clients' && !isset($seg[1])) {
     auth(true);
     $q = '%'.($_GET['q'] ?? '').'%';
+    $activeFlag = (($_GET['status'] ?? '') === 'archived') ? 0 : 1;
     $st = db()->prepare(
         'SELECT c.*, COUNT(s.id) AS shipment_count
          FROM lk_clients c
          LEFT JOIN lk_shipments s ON s.client_id=c.id
-         WHERE c.is_active=1 AND (c.name LIKE ? OR c.inn LIKE ?)
+         WHERE c.is_active=? AND (c.name LIKE ? OR c.inn LIKE ?)
          GROUP BY c.id
          ORDER BY c.name'
     );
-    $st->execute([$q, $q]);
+    $st->execute([$activeFlag, $q, $q]);
     out($st->fetchAll());
 }
 
@@ -266,6 +267,36 @@ if (
         'name'         => $u['name'],
         'new_password' => $newPass,
     ]);
+}
+
+// DELETE /api/clients/:id  (soft-delete: деактивация клиента + его пользователя)
+if ($method === 'DELETE' && $seg[0] === 'clients' && isset($seg[1]) && !isset($seg[2])) {
+    auth(true); // только менеджер
+    $clientId = (int)$seg[1];
+
+    $st = db()->prepare('SELECT id FROM lk_clients WHERE id=? AND is_active=1');
+    $st->execute([$clientId]);
+    if (!$st->fetch()) err('Клиент не найден', 404);
+
+    db()->prepare('UPDATE lk_clients SET is_active=0, updated_at=NOW() WHERE id=?')->execute([$clientId]);
+    db()->prepare('UPDATE lk_users SET is_active=0, updated_at=NOW() WHERE client_id=? AND role="client"')->execute([$clientId]);
+
+    out(['ok' => true]);
+}
+
+// POST /api/clients/:id/restore  (восстановление из архива)
+if ($method === 'POST' && $seg[0] === 'clients' && isset($seg[1]) && ($seg[2] ?? '') === 'restore') {
+    auth(true);
+    $clientId = (int)$seg[1];
+
+    $st = db()->prepare('SELECT id FROM lk_clients WHERE id=? AND is_active=0');
+    $st->execute([$clientId]);
+    if (!$st->fetch()) err('Архивный клиент не найден', 404);
+
+    db()->prepare('UPDATE lk_clients SET is_active=1, updated_at=NOW() WHERE id=?')->execute([$clientId]);
+    db()->prepare('UPDATE lk_users SET is_active=1, updated_at=NOW() WHERE client_id=? AND role="client"')->execute([$clientId]);
+
+    out(['ok' => true]);
 }
 
 // GET /api/clients/:id
@@ -534,14 +565,15 @@ if ($method === 'GET' && $seg[0] === 'managers' && ($seg[1] ?? '') === 'messages
 if ($method === 'GET' && $seg[0] === 'cert-centers' && !isset($seg[1])) {
     auth(true);
     $q = '%'.($_GET['q'] ?? '').'%';
+    $activeFlag = (($_GET['status'] ?? '') === 'archived') ? 0 : 1;
     $st = db()->prepare(
         'SELECT cc.*, COUNT(r.id) AS requests_count
          FROM lk_cert_centers cc
          LEFT JOIN lk_cert_requests r ON r.cert_center_id=cc.id
-         WHERE cc.is_active=1 AND cc.name LIKE ?
+         WHERE cc.is_active=? AND cc.name LIKE ?
          GROUP BY cc.id ORDER BY cc.name'
     );
-    $st->execute([$q]);
+    $st->execute([$activeFlag, $q]);
     out($st->fetchAll());
 }
 
@@ -590,6 +622,36 @@ if ($method === 'POST' && $seg[0] === 'cert-centers' && isset($seg[1]) && ($seg[
     db()->prepare('UPDATE lk_users SET password_hash=?, updated_at=NOW() WHERE id=?')
        ->execute([password_hash($newPass, PASSWORD_BCRYPT), $u['id']]);
     out(['login' => $u['email'], 'new_password' => $newPass]);
+}
+
+// DELETE /api/cert-centers/:id  (soft-delete)
+if ($method === 'DELETE' && $seg[0] === 'cert-centers' && isset($seg[1]) && !isset($seg[2])) {
+    auth(true);
+    $ccId = (int)$seg[1];
+
+    $st = db()->prepare('SELECT id FROM lk_cert_centers WHERE id=? AND is_active=1');
+    $st->execute([$ccId]);
+    if (!$st->fetch()) err('Сертификационный центр не найден', 404);
+
+    db()->prepare('UPDATE lk_cert_centers SET is_active=0, updated_at=NOW() WHERE id=?')->execute([$ccId]);
+    db()->prepare('UPDATE lk_users SET is_active=0, updated_at=NOW() WHERE cert_center_id=? AND role="cert_center"')->execute([$ccId]);
+
+    out(['ok' => true]);
+}
+
+// POST /api/cert-centers/:id/restore
+if ($method === 'POST' && $seg[0] === 'cert-centers' && isset($seg[1]) && ($seg[2] ?? '') === 'restore') {
+    auth(true);
+    $ccId = (int)$seg[1];
+
+    $st = db()->prepare('SELECT id FROM lk_cert_centers WHERE id=? AND is_active=0');
+    $st->execute([$ccId]);
+    if (!$st->fetch()) err('Архивный центр не найден', 404);
+
+    db()->prepare('UPDATE lk_cert_centers SET is_active=1, updated_at=NOW() WHERE id=?')->execute([$ccId]);
+    db()->prepare('UPDATE lk_users SET is_active=1, updated_at=NOW() WHERE cert_center_id=? AND role="cert_center"')->execute([$ccId]);
+
+    out(['ok' => true]);
 }
 
 // ================= ЗАЯВКИ НА СЕРТИФИКАЦИЮ =================
@@ -717,7 +779,7 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset
     out([
         'request' => $r,
         'items' => $items,
-        'files'   => $files, // ← добавить
+        'files'   => $files, 
     ]);
 }
 
@@ -740,7 +802,7 @@ if (
     && $seg[0] === 'cert-requests'
     && isset($seg[1])
     && ($seg[2] ?? '') === 'items'
-    && !isset($seg[3])   // ← добавить эту проверку
+    && !isset($seg[3]) 
 ) {
     $me = auth();
     $rid = (int)$seg[1];
