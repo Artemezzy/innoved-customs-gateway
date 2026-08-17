@@ -278,7 +278,7 @@ if ($method === 'DELETE' && $seg[0] === 'clients' && isset($seg[1]) && !isset($s
     $st->execute([$clientId]);
     if (!$st->fetch()) err('Клиент не найден', 404);
 
-    db()->prepare('UPDATE lk_clients SET is_active=0, updated_at=NOW() WHERE id=?')->execute([$clientId]);
+    db()->prepare('UPDATE lk_clients SET is_active=0 WHERE id=?')->execute([$clientId]);
     db()->prepare('UPDATE lk_users SET is_active=0, updated_at=NOW() WHERE client_id=? AND role="client"')->execute([$clientId]);
 
     out(['ok' => true]);
@@ -293,7 +293,7 @@ if ($method === 'POST' && $seg[0] === 'clients' && isset($seg[1]) && ($seg[2] ??
     $st->execute([$clientId]);
     if (!$st->fetch()) err('Архивный клиент не найден', 404);
 
-    db()->prepare('UPDATE lk_clients SET is_active=1, updated_at=NOW() WHERE id=?')->execute([$clientId]);
+    db()->prepare('UPDATE lk_clients SET is_active=1 WHERE id=?')->execute([$clientId]);
     db()->prepare('UPDATE lk_users SET is_active=1, updated_at=NOW() WHERE client_id=? AND role="client"')->execute([$clientId]);
 
     out(['ok' => true]);
