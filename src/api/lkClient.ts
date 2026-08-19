@@ -479,4 +479,11 @@ export const lkApi = {
           `/cert-requests/${id}/messages`,
           { text }
         ),
+
+  getNotificationSettings: () =>
+  request<{ enabled: boolean }>('GET', '/me/notifications'),
+
+  updateNotificationSettings: (enabled: boolean) =>
+  request<{ ok: boolean }>('PUT', '/me/notifications', { enabled }),
+
 };

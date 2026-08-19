@@ -142,6 +142,39 @@ function cert_request_guard(array $me, int $rid): array {
     return $r;
 }
 
+/**
+ * Ставит/обновляет запись в очереди уведомлений с "тихим окном" 60 сек.
+ * Не отправляет письмо сразу — просто накапливает события.
+ */
+function queue_notification(int $requestId, string $recipientRole, string $eventLine): void {
+    $now = date('Y-m-d H:i:s');
+
+    $st = db()->prepare(
+        "SELECT id, event_summary, events_count
+         FROM lk_notification_queue
+         WHERE entity_type='cert_request' AND entity_id=? AND recipient_role=? AND status='pending'
+         LIMIT 1"
+    );
+    $st->execute([$requestId, $recipientRole]);
+    $existing = $st->fetch();
+
+    if ($existing) {
+        db()->prepare(
+            "UPDATE lk_notification_queue
+             SET event_summary = CONCAT(event_summary, '\n', ?),
+                 events_count = events_count + 1,
+                 last_event_at = ?
+             WHERE id = ?"
+        )->execute([$eventLine, $now, $existing['id']]);
+    } else {
+        db()->prepare(
+            "INSERT INTO lk_notification_queue
+                (entity_type, entity_id, recipient_role, event_summary, events_count, first_event_at, last_event_at, status)
+             VALUES ('cert_request', ?, ?, ?, 1, ?, ?, 'pending')"
+        )->execute([$requestId, $recipientRole, $eventLine, $now, $now]);
+    }
+}
+
 // POST /api/auth/login
 if ($method === 'POST' && $seg[0] === 'auth' && ($seg[1] ?? '') === 'login') {
     $b = body();
@@ -793,6 +826,12 @@ if ($method === 'PUT' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset
     $seenCol = $me['role'] === 'manager' ? 'manager_seen_at' : 'center_seen_at';
     db()->prepare("UPDATE lk_cert_requests SET status=?, updated_at=NOW(), updated_by_role=?, $seenCol=NOW() WHERE id=?")
        ->execute([$b['status'], $me['role'], $rid]);
+
+    // НОВОЕ: ставим уведомление в очередь для противоположной стороны
+    $statusLabels = ['open' => 'Открыта', 'in_progress' => 'В работе', 'closed' => 'Закрыта'];
+    $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
+    queue_notification($rid, $recipientRole, "Статус изменён на «{$statusLabels[$b['status']]}»");
+
     out(['ok' => true]);
 }
 
@@ -944,6 +983,9 @@ if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg
 
     db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
 
+    $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
+    queue_notification($rid, $recipientRole, "Добавлена новая позиция товара №{$nextPos}");
+
     out(['id' => $itemId, 'position_no' => $nextPos], 201);
 }
 
@@ -1037,6 +1079,11 @@ if (
             'UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?'
         )->execute([$me['role'], $rid]);
 
+        $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
+        queue_notification($rid, $recipientRole, !empty($_POST['url'])
+        ? "Добавлена ссылка на вложение"
+        : "Добавлен файл: {$file['name']}");
+
         out(['ok' => true], 201);
     }
 
@@ -1074,6 +1121,11 @@ if (
     db()->prepare(
         'UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?'
     )->execute([$me['role'], $rid]);
+
+    $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
+    queue_notification($rid, $recipientRole, !empty($_POST['url'])
+    ? "Добавлена ссылка на вложение"
+    : "Добавлен файл: {$file['name']}");
 
     out(['id' => (int)db()->lastInsertId()], 201);
 }
@@ -1235,7 +1287,32 @@ if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg
     db()->prepare('INSERT INTO lk_cert_messages(request_id,user_id,role,text,is_read,created_at) VALUES(?,?,?,?,0,NOW())')
        ->execute([$rid, $me['sub'], $me['role'], $text]);
     db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
+
+    // НОВОЕ
+    $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
+    $preview = mb_substr($text, 0, 80);
+    queue_notification($rid, $recipientRole, "Новое сообщение: «{$preview}»");
+
     out(['id' => (int)db()->lastInsertId()], 201);
+}
+
+// ================= НАСТРОЙКИ УВЕДОМЛЕНИЙ =================
+
+// GET /api/me/notifications
+if ($method === 'GET' && $seg[0] === 'me' && ($seg[1] ?? '') === 'notifications') {
+    $me = auth();
+    $st = db()->prepare('SELECT notifications_enabled FROM lk_users WHERE id=?');
+    $st->execute([$me['sub']]);
+    out(['enabled' => (bool)$st->fetchColumn()]);
+}
+
+// PUT /api/me/notifications
+if ($method === 'PUT' && $seg[0] === 'me' && ($seg[1] ?? '') === 'notifications') {
+    $me = auth();
+    $b = body();
+    $enabled = !empty($b['enabled']) ? 1 : 0;
+    db()->prepare('UPDATE lk_users SET notifications_enabled=? WHERE id=?')->execute([$enabled, $me['sub']]);
+    out(['ok' => true]);
 }
 
 // GET /api/managers/cert-stats  (для дашборда менеджера, опционально)
