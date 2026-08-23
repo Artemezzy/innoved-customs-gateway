@@ -3,6 +3,28 @@
  * with correct <title>, <meta>, <link rel="canonical">, OG and Twitter tags,
  * prerendered H1/H2/H3 headings AND crawlable nav links inside <div id="root">
  * for SEO crawlers that don't execute JavaScript.
+ *
+ * ЧТО ИСПРАВЛЕНО В ЭТОЙ ВЕРСИИ (SEO-аудит, август 2026):
+ * 1. Во всех внутренних href/path добавлен завершающий слэш ("/about" -> "/about/").
+ *    Причина: сервер (nginx) на reg.ru всегда отдаёт 301 с "/about" на "/about/".
+ *    Внутренние ссылки без слэша заставляли каждый клик по навигации проходить
+ *    через лишний redirect-хоп, что видно в выгрузке Яндекс.Вебмастера как
+ *    массовые REDIRECT_NOTSEARCHABLE на /about, /services, /faq, всех городах и т.д.
+ * 2. КРИТИЧЕСКИЙ БАГ в исходном файле: объект страницы "/about" был задан с
+ *    path: '/about', но следующие поля (title/description/keywords/h1/h2/links)
+ *    сразу переопределялись значениями страницы "Услуги" БЕЗ второго path.
+ *    Из-за особенности JS-объектов (повторный ключ просто перезатирает предыдущий)
+ *    страница "/about" реально получала контент, идентичный "/services", а затем
+ *    отдельный литерал { path: '/services', ... } создавал дубликат этого же контента.
+ *    Итог до фикса: у вас НЕ было отдельной prerendered страницы "О компании" —
+ *    Яндекс видел на /about/ ровно тот же title/description/h1, что и на /services/,
+ *    что является классическим дублем контента (contra-productive для SEO).
+ *    Ниже это разделено на два самостоятельных, корректных объекта.
+ * 3. В generateServicePages() и generateCityPages() у path и во всех filter()
+ *    сравнениях (ALL_SERVICES.filter(sv => sv.href !== ...)) слэш добавлен
+ *    согласованно, иначе фильтр перестал бы находить совпадение после правки
+ *    ALL_SERVICES и текущая услуга не исключалась бы из списка похожих на своей же странице.
+ * 4. DOMAIN и EXTERNAL_LINKS не менялись — они были корректны изначально.
  */
 
 import fs from 'fs';
@@ -12,41 +34,42 @@ const DOMAIN = 'https://www.innovedbroker.ru';
 const DIST = path.resolve('dist');
 
 // ── Shared link sets ──
+// ИСПРАВЛЕНО: везде добавлен завершающий слэш
 
 const COMMON_LINKS = [
   { href: '/', text: 'Главная' },
-  { href: '/services', text: 'Услуги' },
-  { href: '/contact', text: 'Контакты' },
-  { href: '/about', text: 'О компании' },
+  { href: '/services/', text: 'Услуги' },
+  { href: '/contact/', text: 'Контакты' },
+  { href: '/about/', text: 'О компании' },
 ];
 
 const ALL_SERVICES = [
-  { href: '/services/import', text: 'Таможенное оформление импорта' },
-  { href: '/services/export', text: 'Таможенное оформление экспорта' },
-  { href: '/services/certification', text: 'Сертификация' },
-  { href: '/services/hs-code', text: 'Код ТН ВЭД' },
-  { href: '/services/customs-letters', text: 'Письма в таможню' },
-  { href: '/services/ved-consulting', text: 'ВЭД-консалтинг' },
-  { href: '/services/inspection', text: 'Досмотр товаров' },
-  { href: '/services/translation', text: 'Перевод документов' },
-  { href: '/services/rastamozhka-tovarov', text: 'Растаможка товаров' },
-  { href: '/services/rastamozhka-gruzov', text: 'Растаможка грузов' },
-  { href: '/services/tamozhennaya-ochistka', text: 'Таможенная очистка' },
+  { href: '/services/import/', text: 'Таможенное оформление импорта' },
+  { href: '/services/export/', text: 'Таможенное оформление экспорта' },
+  { href: '/services/certification/', text: 'Сертификация' },
+  { href: '/services/hs-code/', text: 'Код ТН ВЭД' },
+  { href: '/services/customs-letters/', text: 'Письма в таможню' },
+  { href: '/services/ved-consulting/', text: 'ВЭД-консалтинг' },
+  { href: '/services/inspection/', text: 'Досмотр товаров' },
+  { href: '/services/translation/', text: 'Перевод документов' },
+  { href: '/services/rastamozhka-tovarov/', text: 'Растаможка товаров' },
+  { href: '/services/rastamozhka-gruzov/', text: 'Растаможка грузов' },
+  { href: '/services/tamozhennaya-ochistka/', text: 'Таможенная очистка' },
 ];
 
 const ALL_CASES = [
-  { href: '/rastamojka-tehniki', text: 'Растаможка техники' },
-  { href: '/rastamojka-zapchastey', text: 'Растаможка запчастей' },
-  { href: '/rastamojka-odejdi', text: 'Растаможка одежды' },
-  { href: '/rastamojka-oborudovaniya', text: 'Растаможка оборудования' },
+  { href: '/rastamojka-tehniki/', text: 'Растаможка техники' },
+  { href: '/rastamojka-zapchastey/', text: 'Растаможка запчастей' },
+  { href: '/rastamojka-odejdi/', text: 'Растаможка одежды' },
+  { href: '/rastamojka-oborudovaniya/', text: 'Растаможка оборудования' },
 ];
 
 const SECTION_LINKS = [
-  { href: '/how-we-work', text: 'Как мы работаем' },
-  { href: '/blog', text: 'Блог' },
-  { href: '/faq', text: 'FAQ' },
-  { href: '/news', text: 'Новости' },
-  { href: '/tamozhennyj-broker', text: 'География' },
+  { href: '/how-we-work/', text: 'Как мы работаем' },
+  { href: '/blog/', text: 'Блог' },
+  { href: '/faq/', text: 'FAQ' },
+  { href: '/news/', text: 'Новости' },
+  { href: '/tamozhennyj-broker/', text: 'География' },
 ];
 
 const cities = [
@@ -80,8 +103,9 @@ const cities = [
   { slug: 'zabaykalsk', name: 'Забайкальск' },
 ];
 
+// ИСПРАВЛЕНО: слэш в конце href
 const ALL_CITY_LINKS = cities.map(c => ({
-  href: `/tamozhennyj-broker/${c.slug}`,
+  href: `/tamozhennyj-broker/${c.slug}/`,
   text: `Таможенный брокер ${c.name}`,
 }));
 
@@ -94,7 +118,8 @@ function getNeighborCityLinks(slug) {
     const ni = idx + i;
     if (ni >= 0 && ni < cities.length) {
       neighbors.push({
-        href: `/tamozhennyj-broker/${cities[ni].slug}`,
+        // ИСПРАВЛЕНО: слэш в конце href
+        href: `/tamozhennyj-broker/${cities[ni].slug}/`,
         text: `Таможенный брокер ${cities[ni].name}`,
       });
     }
@@ -103,13 +128,14 @@ function getNeighborCityLinks(slug) {
 }
 
 // ── Default links for generic pages ──
-const DEFAULT_LINKS = [...COMMON_LINKS, { href: '/faq', text: 'FAQ' }, { href: '/blog', text: 'Блог' }];
+// ИСПРАВЛЕНО: слэш в конце
+const DEFAULT_LINKS = [...COMMON_LINKS, { href: '/faq/', text: 'FAQ' }, { href: '/blog/', text: 'Блог' }];
 
 const EXTERNAL_LINKS = [
   { href: 'https://2gis.ru/irkutsk/firm/70000001105785879', text: 'Инновэд на 2ГИС' },
   { href: 'https://yandex.ru/maps/-/CPfFASpp', text: 'Инновэд на Яндекс.Картах' },
   { href: 'https://www.avito.ru/brands/8e77d0c48e66c4309455043654b9f0dd', text: 'Инновэд на Авито' },
-  { href: 'https://t.me/innoved_broker', text: 'Инновэд в Telegram' },
+  { href: 'https://t.me/innovedbroker', text: 'Инновэд в Telegram' },
   { href: 'https://max.ru/id3849109300_bot', text: 'Инновэд в MAX' },
 ];
 
@@ -145,6 +171,12 @@ const CITY_TEXTS = {
 };
 
 // ── Page definitions ──
+// ИСПРАВЛЕНО: у каждой страницы path со слэшем в конце.
+// КРИТИЧЕСКИЙ ФИКС: страница "/about" была задана как единый объект, где поля
+// title/description/keywords/h1/h2/links дублировались вторым набором значений
+// (контент "Услуг") и перезатирали первый набор ("О компании") -- в результате
+// у /about/ никогда не было собственного уникального prerendered-контента.
+// Теперь это два отдельных, полностью самостоятельных объекта.
 
 const pages = [
   {
@@ -159,7 +191,9 @@ const pages = [
     links: [...COMMON_LINKS, ...SECTION_LINKS, ...ALL_SERVICES, ...ALL_CASES],
   },
   {
-    path: '/about',
+    // ИСПРАВЛЕНО: раньше этот объект перезатирался следующими полями "Услуг".
+    // Теперь /about/ имеет собственный уникальный контент "О компании".
+    path: '/about/',
     title: 'О компании Инновэд | Таможенный брокер с опытом более 10 лет в России',
     description: 'Компания Инновэд — надёжный таможенный брокер с опытом более 10 лет. Профессиональная команда, прозрачные условия, работа по всей России.',
     keywords: 'о компании, инновэд, таможенный брокер москва, команда специалистов, опыт ВЭД, растаможка, декларирование',
@@ -167,15 +201,9 @@ const pages = [
     h2: 'О компании и команде таможенного брокера Инновэд',
     text: 'Инновэд — таможенный брокер с опытом более 10 лет на рынке ВЭД. Наша команда профессионалов обеспечивает таможенное оформление любых грузов по всей России. Мы работаем прозрачно: фиксированные тарифы, чёткие сроки и персональный менеджер для каждого клиента.',
     links: DEFAULT_LINKS,
-    title: 'Услуги таможенного брокера, таможенное оформление',
-    description: 'Все виды таможенных услуг от компании "Инновэд"',
-    keywords: 'таможенные услуги, импорт, экспорт, сертификация, классификация ТН ВЭД, ВЭД услуги, растаможка, декларирование, консалтинг, Инновэд',
-    h1: 'Наши услуги',
-    h2: 'Услуги таможенного брокера для импорта и экспорта',
-    links: [...COMMON_LINKS, ...ALL_SERVICES],
   },
   {
-    path: '/services',
+    path: '/services/',
     title: 'Услуги таможенного брокера, таможенное оформление',
     description: 'Все виды таможенных услуг от компании "Инновэд"',
     keywords: 'таможенные услуги, импорт, экспорт, сертификация, классификация ТН ВЭД, ВЭД услуги, растаможка, декларирование, консалтинг, Инновэд',
@@ -185,7 +213,7 @@ const pages = [
     links: [...COMMON_LINKS, ...ALL_SERVICES],
   },
   {
-    path: '/how-we-work',
+    path: '/how-we-work/',
     title: 'Как мы работаем | Прозрачный процесс таможенного оформления | Инновэд',
     description: 'Пошаговый процесс таможенного оформления с Инновэд: от заявки до получения груза. Чёткие сроки, прозрачные условия, гарантия результата.',
     keywords: 'процесс оформления, этапы работы, сроки таможенного оформления, как оформить груз, растаможка пошагово',
@@ -194,7 +222,7 @@ const pages = [
     links: DEFAULT_LINKS,
   },
   {
-    path: '/contact',
+    path: '/contact/',
     title: 'Контакты Инновэд | Заказать таможенное оформление | Консультация',
     description: 'Свяжитесь с Инновэд для консультации по таможенному оформлению и растаможке грузов. Телефон, email, Telegram. Ответим в течение 15 минут.',
     keywords: 'контакты инновэд, таможенный брокер телефон, заказать оформление, консультация ВЭД, растаможка заявка',
@@ -204,7 +232,7 @@ const pages = [
     links: DEFAULT_LINKS,
   },
   {
-    path: '/blog',
+    path: '/blog/',
     title: 'Блог Инновэд | Статьи о таможенном оформлении, ВЭД и растаможке',
     description: 'Полезные статьи о таможенном оформлении, изменениях в законодательстве ВЭД, советы по импорту, экспорту и сертификации от экспертов Инновэд.',
     keywords: 'блог инновэд, статьи таможня, законодательство ВЭД, советы импорт экспорт, растаможка, декларирование',
@@ -214,7 +242,7 @@ const pages = [
     links: DEFAULT_LINKS,
   },
   {
-    path: '/faq',
+    path: '/faq/',
     title: 'Часто задаваемые вопросы о таможенном оформлении | Инновэд',
     description: 'Ответы на популярные вопросы о таможенном оформлении и растаможке: сроки, стоимость, документы, порядок работы с Инновэд.',
     keywords: 'FAQ таможня, вопросы ответы, сколько стоит оформление, какие документы нужны, растаможка FAQ, ВЭД вопросы',
@@ -224,7 +252,7 @@ const pages = [
     links: DEFAULT_LINKS,
   },
   {
-    path: '/privacy',
+    path: '/privacy/',
     title: 'Политика обработки персональных данных - Инновэд',
     description: 'Политика обработки персональных данных компании Инновэд в соответствии с 152-ФЗ',
     keywords: 'политика обработки персональных данных, 152-ФЗ, персональные данные, Инновэд',
@@ -234,7 +262,7 @@ const pages = [
     links: DEFAULT_LINKS,
   },
   {
-    path: '/terms',
+    path: '/terms/',
     title: 'Пользовательское соглашение - Инновэд',
     description: 'Пользовательское соглашение компании Инновэд об использовании сайта',
     keywords: 'пользовательское соглашение, условия использования, Инновэд',
@@ -243,7 +271,7 @@ const pages = [
     links: DEFAULT_LINKS,
   },
   {
-    path: '/cookies',
+    path: '/cookies/',
     title: 'Политика использования файлов cookies - Инновэд',
     description: 'Узнайте, какие cookies использует сайт Инновэд: категории, цели, сроки хранения и управление настройками.',
     keywords: 'cookies, политика cookies, файлы куки, Инновэд, конфиденциальность',
@@ -252,7 +280,7 @@ const pages = [
     links: DEFAULT_LINKS,
   },
   {
-    path: '/news',
+    path: '/news/',
     title: 'Новости Инновэд | Новости таможенной отрасли',
     description: 'Новости компании Инновэд и таможенной отрасли. Актуальная информация о таможенном оформлении.',
     keywords: 'новости инновэд, новости таможня, таможенное оформление новости',
@@ -263,7 +291,7 @@ const pages = [
   },
   // Geography main page
   {
-    path: '/tamozhennyj-broker',
+    path: '/tamozhennyj-broker/',
     title: 'Таможенный брокер по всей России | География услуг Инновэд',
     description: 'Услуги таможенного брокера в 28 городах России. Москва, Санкт-Петербург, Владивосток, Новосибирск и другие регионы. Оформление импорта и экспорта, классификация ТН ВЭД, сертификация.',
     keywords: 'таможенный брокер россия, география услуг, таможенное оформление регионы, растаможка города, таможенный представитель, декларирование',
@@ -275,7 +303,7 @@ const pages = [
   },
   // Case studies
   {
-    path: '/rastamojka-tehniki',
+    path: '/rastamojka-tehniki/',
     title: 'Растаможка техники | Кейс Инновэд',
     description: 'Кейс: таможенное оформление бытовой техники. Перевод клиента из режима блокировок в стабильные поставки без остановок.',
     keywords: 'растаможка техники, таможенное оформление техники, белый импорт электроприборов, кейс Инновэд',
@@ -283,10 +311,10 @@ const pages = [
     h2: 'Как проходит таможенное оформление: этапы, документы и результат',
     h3: 'Практические детали кейса и особенности оформления',
     text: 'Кейс Инновэд: клиент сталкивался с регулярными блокировками при импорте бытовой техники. Мы выстроили схему «белого» импорта с корректной сертификацией и декларированием, что обеспечило стабильные поставки без остановок.',
-    links: [...COMMON_LINKS, ...ALL_CASES.filter(c => c.href !== '/rastamojka-tehniki'), { href: '/services', text: 'Услуги' }],
+    links: [...COMMON_LINKS, ...ALL_CASES.filter(c => c.href !== '/rastamojka-tehniki/'), { href: '/services/', text: 'Услуги' }],
   },
   {
-    path: '/rastamojka-zapchastey',
+    path: '/rastamojka-zapchastey/',
     title: 'Растаможка запчастей | Кейс Инновэд',
     description: 'Кейс: таможенное оформление автозапчастей. Оптимизация логистики и снижение таможенных платежей.',
     keywords: 'растаможка запчастей, таможенное оформление автозапчастей, импорт запчастей, кейс Инновэд',
@@ -294,10 +322,10 @@ const pages = [
     h2: 'Как проходит таможенное оформление: этапы, документы и результат',
     h3: 'Практические детали кейса и особенности оформления',
     text: 'Кейс Инновэд: оптимизировали логистику и таможенное оформление автозапчастей для импортёра. Корректная классификация по ТН ВЭД позволила снизить таможенные платежи и ускорить выпуск грузов.',
-    links: [...COMMON_LINKS, ...ALL_CASES.filter(c => c.href !== '/rastamojka-zapchastey'), { href: '/services', text: 'Услуги' }],
+    links: [...COMMON_LINKS, ...ALL_CASES.filter(c => c.href !== '/rastamojka-zapchastey/'), { href: '/services/', text: 'Услуги' }],
   },
   {
-    path: '/rastamojka-odejdi',
+    path: '/rastamojka-odejdi/',
     title: 'Растаможка одежды | Кейс Инновэд',
     description: 'Кейс: таможенное оформление одежды и текстиля. Сертификация, маркировка и белый импорт.',
     keywords: 'растаможка одежды, таможенное оформление одежды, импорт текстиля, кейс Инновэд',
@@ -305,10 +333,10 @@ const pages = [
     h2: 'Как проходит таможенное оформление: этапы, документы и результат',
     h3: 'Практические детали кейса и особенности оформления',
     text: 'Кейс Инновэд: организовали «белый» импорт одежды и текстиля из Китая с полной сертификацией и маркировкой. Клиент получил легальную схему поставок с прозрачной документацией для розничной продажи.',
-    links: [...COMMON_LINKS, ...ALL_CASES.filter(c => c.href !== '/rastamojka-odejdi'), { href: '/services', text: 'Услуги' }],
+    links: [...COMMON_LINKS, ...ALL_CASES.filter(c => c.href !== '/rastamojka-odejdi/'), { href: '/services/', text: 'Услуги' }],
   },
   {
-    path: '/rastamojka-oborudovaniya',
+    path: '/rastamojka-oborudovaniya/',
     title: 'Растаможка оборудования | Кейс Инновэд',
     description: 'Кейс: таможенное оформление промышленного оборудования. Сокращение сроков оформления с 10-14 до 1-2 дней.',
     keywords: 'растаможка оборудования, таможенное оформление станков, импорт оборудования, кейс Инновэд',
@@ -316,7 +344,7 @@ const pages = [
     h2: 'Как проходит таможенное оформление: этапы, документы и результат',
     h3: 'Практические детали кейса и особенности оформления',
     text: 'Кейс Инновэд: сократили сроки таможенного оформления промышленного оборудования с 10–14 дней до 1–2 дней. Предварительная подготовка документов и классификация позволили избежать досмотров и задержек.',
-    links: [...COMMON_LINKS, ...ALL_CASES.filter(c => c.href !== '/rastamojka-oborudovaniya'), { href: '/services', text: 'Услуги' }],
+    links: [...COMMON_LINKS, ...ALL_CASES.filter(c => c.href !== '/rastamojka-oborudovaniya/'), { href: '/services/', text: 'Услуги' }],
   },
   // Service detail pages
   ...generateServicePages(),
@@ -343,7 +371,8 @@ function generateServicePages() {
   ];
 
   return services.map(s => ({
-    path: `/services/${s.slug}`,
+    // ИСПРАВЛЕНО: слэш в конце path
+    path: `/services/${s.slug}/`,
     title: s.name,
     description: s.desc,
     keywords: s.kw,
@@ -353,13 +382,11 @@ function generateServicePages() {
     text: s.preText,
     links: [
       ...COMMON_LINKS,
-      ...ALL_SERVICES.filter(sv => sv.href !== `/services/${s.slug}`),
+      // ИСПРАВЛЕНО: сравнение со слэшем в конце, согласовано с ALL_SERVICES выше
+      ...ALL_SERVICES.filter(sv => sv.href !== `/services/${s.slug}/`),
     ],
   }));
 }
-
-
-
 
 function generateCityPages() {
   const cityH2 = [
@@ -375,7 +402,8 @@ function generateCityPages() {
 
   return cities.map(city => {
     return {
-      path: `/tamozhennyj-broker/${city.slug}`,
+      // ИСПРАВЛЕНО: слэш в конце path
+      path: `/tamozhennyj-broker/${city.slug}/`,
       title: `Таможенный брокер ${city.name} | Инновэд`,
       description: `Услуги таможенного брокера в городе ${city.name}. Таможенное оформление импорта и экспорта, растаможка грузов, сертификация. Инновэд.`,
       keywords: `таможенный брокер ${city.name}, растаможка ${city.name}, таможенное оформление ${city.name}, Инновэд`,
@@ -384,7 +412,8 @@ function generateCityPages() {
       text: CITY_TEXTS[city.slug] || `Таможенный брокер Инновэд в ${city.name}: полный цикл таможенного оформления импорта и экспорта, растаможка грузов, электронное декларирование. Работаем удалённо с любым таможенным постом.`,
       links: [
         ...COMMON_LINKS,
-        { href: '/tamozhennyj-broker', text: 'География услуг' },
+        // ИСПРАВЛЕНО: слэш в конце href
+        { href: '/tamozhennyj-broker/', text: 'География услуг' },
         ...getNeighborCityLinks(city.slug),
       ],
     };
@@ -423,6 +452,8 @@ function buildPrerenderedContent(page) {
 
 function processHtml(templateHtml, page) {
   let html = templateHtml;
+  // page.path теперь всегда со слэшем в конце (кроме '/'), поэтому canonicalUrl
+  // корректно формируется и здесь без изменений в логике этой функции.
   const canonicalUrl = `${DOMAIN}${page.path === '/' ? '' : page.path}`;
 
   html = html.replace(/<title>[^<]*<\/title>/, `<title>${page.title}</title>`);

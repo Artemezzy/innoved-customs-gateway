@@ -213,7 +213,12 @@ export function SEOHead({
     document.documentElement.lang = language;
     
     // Update canonical URL
-    const canonicalUrl = `https://www.innovedbroker.ru${canonicalPath || (typeof window !== 'undefined' ? window.location.pathname : '/')}`;
+    const rawPath = canonicalPath || (typeof window !== 'undefined' ? window.location.pathname : '/');
+    const pathWithLeadingSlash = rawPath.startsWith('/') ? rawPath : `/${rawPath}`;
+    const normalizedPath = pathWithLeadingSlash === '/' || pathWithLeadingSlash.endsWith('/')
+      ? pathWithLeadingSlash
+      : `${pathWithLeadingSlash}/`;
+    const canonicalUrl = `https://www.innovedbroker.ru${normalizedPath}`;
     let canonicalLink = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
     if (!canonicalLink) {
       canonicalLink = document.createElement('link');
@@ -273,7 +278,11 @@ export function SEOHead({
       "url": "https://www.innovedbroker.ru",
       "logo": "https://www.innovedbroker.ru/logo.png",
       "sameAs": [
-        "https://t.me/innovedbroker"
+        "https://2gis.ru/irkutsk/firm/70000001105785879",
+        "https://yandex.ru/maps/-/CPfFASpp",
+        "https://www.avito.ru/brands/8e77d0c48e66c4309455043654b9f0dd",
+        "https://t.me/innovedbroker",
+        "https://max.ru/id3849109300_bot"
       ],
       "contactPoint": {
         "@type": "ContactPoint",

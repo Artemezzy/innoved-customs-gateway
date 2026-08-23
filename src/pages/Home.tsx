@@ -18,7 +18,14 @@ export default function Home() {
 
   return (
     <>
-      <SEOHead language={language} page="home" />
+      {/* ИСПРАВЛЕНО (SEO-аудит, август 2026): явный canonicalPath="/" вместо
+          полагания на fallback window.location.pathname в SEOHead.
+          window.location.pathname и раньше не включал query-параметры
+          (?aviclid=..., ?other_stat=...), поэтому canonical технически был
+          корректен и без этого явного указания. Но явная фиксация делает
+          поведение предсказуемым и независимым от будущих изменений логики
+          в SEOHead.tsx или от нестандартных схем роутинга. */}
+      <SEOHead language={language} page="home" canonicalPath="/" />
       <Hero language={language} />
       <BrokerServices language={language} />
       <InfoBlocks language={language} />
