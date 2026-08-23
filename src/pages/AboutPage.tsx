@@ -4,6 +4,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { useEffect } from 'react';
 import { analytics } from '@/utils/analytics';
 import { PageHero } from '@/components/PageHero';
+import { CertificatesAndTestimonials } from '@/components/CertificatesAndTestimonials';
 
 const galleryImages = [
   '/gallery/gallery-01.webp',
@@ -29,7 +30,7 @@ const content = {
       items: [
         { title: 'Профессионализм', text: 'Команда сертифицированных специалистов с глубоким знанием законодательства' },
         { title: 'Скорость', text: 'Оперативное оформление благодаря отлаженным процессам и современным технологиям' },
-        { title: 'Прозрачность', text: 'Честные цены без скрытых платежей, полная отчётность по каждой операции' },
+        { title: 'Прозрачность', text: 'Сестные цены без скрытых платежей, полная отчётность по каждой операции' },
         { title: 'Надёжность', text: 'Гарантия соблюдения всех требований законодательства и сроков оформления' }
       ]
     }
@@ -149,6 +150,9 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* Certificates + Testimonials — усиление E-E-A-T (Trust + Experience) на странице О компании */}
+      <CertificatesAndTestimonials language={language} />
     </>
   );
 }
