@@ -383,6 +383,21 @@ if (
     out(['user_id' => (int)$u['id'], 'login' => $u['email'], 'password' => $newPass]);
 }
 
+// DELETE /api/clients/:id  (soft-delete: деактивация клиента + его пользователя)
+if ($method === 'DELETE' && $seg[0] === 'clients' && isset($seg[1]) && !isset($seg[2])) {
+    auth(true); // только менеджер
+    $clientId = (int)$seg[1];
+
+    $st = db()->prepare('SELECT id FROM lk_clients WHERE id=? AND is_active=1');
+    $st->execute([$clientId]);
+    if (!$st->fetch()) err('Клиент не найден', 404);
+
+    db()->prepare('UPDATE lk_clients SET is_active=0 WHERE id=?')->execute([$clientId]);
+    db()->prepare('UPDATE lk_users SET is_active=0, updated_at=NOW() WHERE client_id=? AND role="client"')->execute([$clientId]);
+
+    out(['ok' => true]);
+}
+
 if ($method === 'GET' && $seg[0] === 'cert-requests' && !isset($seg[1])) {
     $me = auth();
     $sql = "SELECT r.*, cc.name AS cert_center_name, (SELECT i.company FROM lk_cert_request_items i WHERE i.request_id = r.id ORDER BY i.position_no ASC, i.id ASC LIMIT 1) AS company FROM lk_cert_requests r JOIN lk_cert_centers cc ON cc.id = r.cert_center_id WHERE 1=1";
