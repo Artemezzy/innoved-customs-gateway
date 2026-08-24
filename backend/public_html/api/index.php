@@ -633,6 +633,118 @@ if ($method === 'GET' && $seg[0] === 'managers' && ($seg[1] ?? '') === 'cert-sta
     out(['cert_centers_count' => (int) db()->query('SELECT COUNT(*) FROM lk_cert_centers WHERE is_active=1')->fetchColumn(), 'cert_requests_open' => (int) db()->query("SELECT COUNT(*) FROM lk_cert_requests WHERE status!='closed'")->fetchColumn()]);
 }
 
+// GET /api/shipments
+if ($method === 'GET' && $seg[0] === 'shipments' && !isset($seg[1])) {
+    $me = auth();
+    $sql = 'SELECT s.*, c.name AS client_name
+            FROM lk_shipments s
+            JOIN lk_clients c ON c.id=s.client_id
+            WHERE 1=1';
+    $p = [];
+    if ($me['role'] === 'client') { $sql .= ' AND s.client_id=?'; $p[] = $me['client_id']; }
+    if (!empty($_GET['status'])) { $sql .= ' AND s.status=?'; $p[] = $_GET['status']; }
+    if (!empty($_GET['client_id']) && $me['role'] === 'manager') { $sql .= ' AND s.client_id=?'; $p[] = (int)$_GET['client_id']; }
+    $sql .= ' ORDER BY s.updated_at DESC';
+    $st = db()->prepare($sql); $st->execute($p);
+    out($st->fetchAll());
+}
+
+// POST /api/shipments
+if ($method === 'POST' && $seg[0] === 'shipments' && !isset($seg[1])) {
+    $me = auth();           // авторизуем любого пользователя (менеджер или клиент)
+    $b  = body();
+
+    // Определяем client_id в зависимости от роли
+    if ($me['role'] === 'manager') {
+        // менеджер должен явно указать клиента
+        if (empty($b['client_id'])) {
+            err('client_id обязателен для менеджера');
+        }
+        $clientId = (int)$b['client_id'];
+    } elseif ($me['role'] === 'client') {
+        // клиент создаёт поставку только для себя
+        if (empty($me['client_id'])) {
+            err('У пользователя-клиента не задан client_id', 400);
+        }
+        $clientId = (int)$me['client_id'];
+    } else {
+        // на всякий случай блокируем любые другие роли
+        err('Недопустимая роль для создания поставки', 403);
+    }
+
+    $title = $b['title'] ?? 'Поставка';
+
+    $st = db()->prepare(
+        "INSERT INTO lk_shipments(client_id,title,status,created_at,updated_at)
+         VALUES(?,?,'new',NOW(),NOW())"
+    );
+    $st->execute([$clientId, $title]);
+
+    out(['id' => (int)db()->lastInsertId()], 201);
+}
+
+// GET /api/shipments/:id
+if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && !isset($seg[2])) {
+    $me = auth();
+    $id = (int)$seg[1];
+    $st = db()->prepare(
+        'SELECT s.*, c.name AS client_name
+         FROM lk_shipments s
+         JOIN lk_clients c ON c.id=s.client_id
+         WHERE s.id=?'
+    );
+    $st->execute([$id]); $s = $st->fetch(); if (!$s) err('Не найдено', 404);
+    if ($me['role'] === 'client' && $s['client_id'] != $me['client_id']) err('Нет доступа', 403);
+    out($s);
+}
+
+// PUT /api/shipments/:id
+if ($method === 'PUT' && $seg[0] === 'shipments' && isset($seg[1]) && !isset($seg[2])) {
+    auth(true);
+    $b = body();
+    $valid = ['new','documents_requested','documents_received','declaration_filed','customs_inspection','released','on_hold'];
+    if (!in_array($b['status'] ?? '', $valid)) err('Недопустимый статус');
+    db()->prepare('UPDATE lk_shipments SET status=?, updated_at=NOW() WHERE id=?')
+       ->execute([$b['status'], (int)$seg[1]]);
+    out(['ok' => true]);
+}
+
+// DELETE /api/shipments/:id
+if ($method === 'DELETE' && $seg[0] === 'shipments' && isset($seg[1]) && !isset($seg[2])) {
+    // Только менеджер может удалять поставки
+    auth(true);
+
+    $id = (int)$seg[1];
+
+    // Проверяем, что такая поставка существует
+    $st = db()->prepare('SELECT id FROM lk_shipments WHERE id=?');
+    $st->execute([$id]);
+    $shipment = $st->fetch();
+    if (!$shipment) {
+        err('Поставка не найдена', 404);
+    }
+
+    // Удаляем запись из lk_shipments
+    db()->prepare('DELETE FROM lk_shipments WHERE id=?')->execute([$id]);
+
+    out(['ok' => true]);
+}
+
+// GET /api/shipments/:id/documents
+if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'documents' && !isset($seg[3])) {
+    $me  = auth();
+    $sid = (int)$seg[1];
+    if ($me['role'] === 'client') {
+        $c = db()->prepare('SELECT client_id FROM lk_shipments WHERE id=?'); $c->execute([$sid]);
+        $s = $c->fetch(); if (!$s || $s['client_id'] != $me['client_id']) err('Нет доступа', 403);
+    }
+    $sql = 'SELECT * FROM lk_documents WHERE shipment_id=?';
+    if ($me['role'] === 'client') $sql .= ' AND visible_to_client=1';
+    $sql .= ' ORDER BY created_at DESC';
+    $st = db()->prepare($sql); $st->execute([$sid]);
+    out($st->fetchAll());
+}
+
 // POST /api/shipments/:id/documents
 if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'documents' && !isset($seg[3])) {
     $me  = auth();
