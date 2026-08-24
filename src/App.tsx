@@ -51,7 +51,7 @@ import LKCertCentersPage from "./pages/lk/LKCertCentersPage";
 import LKCertCenterDetailPage from "./pages/lk/LKCertCenterDetailPage";
 import LKCertRequestsPage from "./pages/lk/LKCertRequestsPage";
 import LKCertRequestDetailPage from "./pages/lk/LKCertRequestDetailPage";
-
+import LKNotificationsPage from "./pages/lk/LKNotificationsPage";
 
 const queryClient = new QueryClient();
 
@@ -106,10 +106,10 @@ const LKRoutes = () => (
       <Route path="cert-centers/:id" element={<LKCertCenterDetailPage />} />
       <Route path="cert-requests" element={<LKCertRequestsPage />} />
       <Route path="cert-requests/:id" element={<LKCertRequestDetailPage />} />
+      <Route path="notifications" element={<LKNotificationsPage />} />
     </Routes>
   </LKLayout>
 );
-
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

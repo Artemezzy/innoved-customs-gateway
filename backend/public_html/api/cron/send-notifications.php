@@ -2,7 +2,6 @@
 declare(strict_types=1);
 require_once __DIR__ . '/../config.php';
 
-// Защита от прямого вызова через браузер посторонним человеком
 $cronSecret = $_GET['secret'] ?? '';
 if (!hash_equals(CRON_SECRET, $cronSecret)) {
     http_response_code(403);
@@ -15,7 +14,6 @@ $pdo = new PDO(
     [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
 );
 
-// Берём все "остывшие" события — тишина 60 секунд
 $st = $pdo->prepare(
     "SELECT * FROM lk_notification_queue
      WHERE status='pending' AND last_event_at <= (NOW() - INTERVAL 60 SECOND)"
@@ -27,7 +25,6 @@ foreach ($queueItems as $item) {
     $rid = (int)$item['entity_id'];
     $recipientRole = $item['recipient_role'];
 
-    // Достаём заявку и определяем получателей
     $rq = $pdo->prepare('SELECT cert_center_id FROM lk_cert_requests WHERE id=?');
     $rq->execute([$rid]);
     $request = $rq->fetch();
@@ -38,12 +35,12 @@ foreach ($queueItems as $item) {
 
     if ($recipientRole === 'manager') {
         $usersSt = $pdo->prepare(
-            "SELECT email, name FROM lk_users WHERE role='manager' AND is_active=1 AND notifications_enabled=1"
+            "SELECT id, email, name FROM lk_users WHERE role='manager' AND is_active=1 AND notifications_enabled=1"
         );
         $usersSt->execute();
     } else {
         $usersSt = $pdo->prepare(
-            "SELECT email, name FROM lk_users
+            "SELECT id, email, name FROM lk_users
              WHERE role='cert_center' AND cert_center_id=? AND is_active=1 AND notifications_enabled=1"
         );
         $usersSt->execute([$request['cert_center_id']]);
@@ -51,7 +48,6 @@ foreach ($queueItems as $item) {
     $recipients = $usersSt->fetchAll();
 
     if (empty($recipients)) {
-        // Все отключили уведомления — просто закрываем очередь без отправки
         $pdo->prepare("UPDATE lk_notification_queue SET status='sent', sent_at=NOW() WHERE id=?")->execute([$item['id']]);
         continue;
     }
@@ -59,15 +55,30 @@ foreach ($queueItems as $item) {
     $eventsHtml = implode('<br>', array_map('htmlspecialchars', explode("\n", $item['event_summary'])));
     $subject = "Заявка №{$rid}: {$item['events_count']} " . ($item['events_count'] === 1 ? 'обновление' : 'обновлений');
     $link = "https://www.innovedbroker.ru/lk/cert-requests/{$rid}";
-
     $html = "<p>По заявке №{$rid} произошли изменения:</p>"
           . "<p>{$eventsHtml}</p>"
           . "<p><a href=\"{$link}\">Перейти в заявку</a></p>";
 
     $allSent = true;
+    $emailsSt = $pdo->prepare('SELECT email FROM lk_notification_emails WHERE user_id=? ORDER BY id ASC');
     foreach ($recipients as $recipient) {
-        $ok = send_via_resend($recipient['email'], $subject, $html);
-        if (!$ok) $allSent = false;
+        $emailsSt->execute([(int)$recipient['id']]);
+        $emails = array_map(
+            static fn(array $row) => mb_strtolower(trim((string)$row['email'])),
+            $emailsSt->fetchAll()
+        );
+        $emails = array_values(array_filter(array_unique($emails)));
+        if (!$emails) {
+            $fallbackEmail = mb_strtolower(trim((string)$recipient['email']));
+            if ($fallbackEmail !== '' && filter_var($fallbackEmail, FILTER_VALIDATE_EMAIL)) {
+                $emails = [$fallbackEmail];
+            }
+        }
+
+        foreach ($emails as $email) {
+            $ok = send_via_resend($email, $subject, $html);
+            if (!$ok) $allSent = false;
+        }
     }
 
     $pdo->prepare(
@@ -94,7 +105,7 @@ function send_via_resend(string $to, string $subject, string $html): bool {
         ],
         CURLOPT_POSTFIELDS => $payload,
     ]);
-    $response = curl_exec($ch);
+    curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
 

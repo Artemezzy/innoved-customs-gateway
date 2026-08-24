@@ -166,3 +166,8 @@ export interface CertMessage {
   is_read: boolean;
   created_at: string;
 }
+
+export interface NotificationSettings {
+  enabled: boolean;
+  emails: string[];
+}
