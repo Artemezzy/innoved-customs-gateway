@@ -281,6 +281,7 @@ function generate_cert_doc(array $request, array $items): string {
     return $zipPath;
 }
 
+// POST /api/auth/login
 if ($method === 'POST' && $seg[0] === 'auth' && ($seg[1] ?? '') === 'login') {
     $b = body();
     $st = db()->prepare('SELECT * FROM lk_users WHERE email=? AND is_active=1 LIMIT 1');
@@ -291,9 +292,100 @@ if ($method === 'POST' && $seg[0] === 'auth' && ($seg[1] ?? '') === 'login') {
     out(['token' => $token, 'role' => $u['role'], 'name' => $u['name']]);
 }
 
+// GET /api/managers/stats
+if ($method === 'GET' && $seg[0] === 'managers' && ($seg[1] ?? '') === 'stats') {
+    auth(true);
+    out([
+        'clients_count'    => (int) db()->query('SELECT COUNT(*) FROM lk_clients WHERE is_active=1')->fetchColumn(),
+        'shipments_active' => (int) db()->query("SELECT COUNT(*) FROM lk_shipments WHERE status NOT IN('released','on_hold')")->fetchColumn(),
+        'messages_unread'  => (int) db()->query("SELECT COUNT(*) FROM lk_messages WHERE is_read=0 AND role='client'")->fetchColumn(),
+    ]);
+}
+
+// GET /api/clients
+if ($method === 'GET' && $seg[0] === 'clients' && !isset($seg[1])) {
+    auth(true);
+    $q = '%'.($_GET['q'] ?? '').'%';
+    $activeFlag = (($_GET['status'] ?? '') === 'archived') ? 0 : 1;
+    $st = db()->prepare(
+        'SELECT c.*, COUNT(s.id) AS shipment_count
+         FROM lk_clients c
+         LEFT JOIN lk_shipments s ON s.client_id=c.id
+         WHERE c.is_active=? AND (c.name LIKE ? OR c.inn LIKE ?)
+         GROUP BY c.id
+         ORDER BY c.name'
+    );
+    $st->execute([$activeFlag, $q, $q]);
+    out($st->fetchAll());
+}
+
+// POST /api/clients
+if ($method === 'POST' && $seg[0] === 'clients' && !isset($seg[1])) {
+    auth(true);
+    $b = body();
+    foreach (['name','inn','email'] as $f) if (empty($b[$f])) err("Поле $f обязательно");
+    $ex = db()->prepare('SELECT id FROM lk_users WHERE email=?'); $ex->execute([$b['email']]);
+    if ($ex->fetch()) err('Email уже используется');
+
+    $pass = gen_pass();
+    $hash = password_hash($pass, PASSWORD_BCRYPT);
+    db()->beginTransaction();
+    try {
+        $st = db()->prepare(
+            'INSERT INTO lk_clients(name,inn,contact_person,phone,email,is_active,created_at)
+             VALUES(?,?,?,?,?,1,NOW())'
+        );
+        $st->execute([
+            $b['name'],
+            $b['inn'],
+            $b['contact_person'] ?? '',
+            $b['phone'] ?? '',
+            $b['email'],
+        ]);
+        $cid = db()->lastInsertId();
+
+        $st2 = db()->prepare(
+            'INSERT INTO lk_users(email,password_hash,name,role,client_id,is_active,created_at)
+             VALUES(?,?,?,?,?,1,NOW())'
+        );
+        $st2->execute([
+            $b['email'],
+            $hash,
+            $b['contact_person'] ?? $b['name'],
+            'client',
+            $cid,
+        ]);
+
+        db()->commit();
+    } catch (\Throwable $e) {
+        db()->rollBack(); err('Ошибка БД: '.$e->getMessage());
+    }
+    out(['client_id' => (int) $cid, 'login' => $b['email'], 'password' => $pass], 201);
+}
+
+// POST /api/clients/:id/reset-password
+if (
+    $method === 'POST'
+    && $seg[0] === 'clients'
+    && isset($seg[1])
+    && ($seg[2] ?? '') === 'reset-password'
+) {
+    auth(true);
+    $clientId = (int)$seg[1];
+    $st = db()->prepare('SELECT id, email, name FROM lk_users WHERE client_id=? AND role="client" AND is_active=1 LIMIT 1');
+    $st->execute([$clientId]);
+    $u = $st->fetch();
+    if (!$u) err('Для этого клиента не найден пользователь с ролью client', 404);
+    $newPass = gen_pass();
+    $hash = password_hash($newPass, PASSWORD_BCRYPT);
+    $upd = db()->prepare('UPDATE lk_users SET password_hash=?, updated_at=NOW() WHERE id=?');
+    $upd->execute([$hash, $u['id']]);
+    out(['user_id' => (int)$u['id'], 'login' => $u['email'], 'password' => $newPass]);
+}
+
 if ($method === 'GET' && $seg[0] === 'cert-requests' && !isset($seg[1])) {
     $me = auth();
-    $sql = "SELECT r.*, cc.name AS cert_center_name, (SELECT i.company FROM lk_cert_request_items i WHERE i.request_id = r.id ORDER BY i.position_no ASC, i.id ASC LIMIT 1) AS company FROM lk_cert_requests r JOIN lk_cert_centers cc ON cc.id = r.cert_center_id WHERE 1=1";
+    $sql = "SELECT r.*, cc.name AS cert_center_name, (SELECT i.company FROM lk_cert_request_items i WHERE i.request_id = r.id ORDER BY i.position_no ASC, i.id ASC LIMIT 1) AS company FROM lk_CERT_REQUESTS r JOIN lk_cert_centers cc ON cc.id = r.cert_center_id WHERE 1=1";
     $p = [];
     if ($me['role'] === 'cert_center') { $sql .= ' AND r.cert_center_id=?'; $p[] = $me['cert_center_id']; }
     elseif ($me['role'] !== 'manager') err('Недопустимая роль', 403);
@@ -522,14 +614,13 @@ if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg
 }
 
 if ($method === 'GET' && $seg[0] === 'me' && ($seg[1] ?? '') === 'notifications') {
-    $me = auth(); $st = db()->prepare('SELECT email, notifications_enabled FROM lk_users WHERE id=?'); $st->execute([$me['sub']]); $user = $st->fetch(); if (!$user) err('Пользователь не найден', 404);
-    out(['enabled' => (bool)$user['notifications_enabled'], 'emails' => get_notification_emails((int)$me['sub'], (string)$user['email'])]);
+    $me = auth(); $st = db()->prepare('SELECT email FROM lk_users WHERE id=?'); $st->execute([$me['sub']]); $user = $st->fetch(); if (!$user) err('Пользователь не найден', 404);
+    out(['emails' => get_notification_emails((int)$me['sub'], (string)$user['email'])]);
 }
 if ($method === 'PUT' && $seg[0] === 'me' && ($seg[1] ?? '') === 'notifications') {
-    $me = auth(); $b = body(); $enabled = !empty($b['enabled']) ? 1 : 0; $emails = normalize_email_list((array)($b['emails'] ?? []));
+    $me = auth(); $b = body(); $emails = normalize_email_list((array)($b['emails'] ?? []));
     db()->beginTransaction();
     try {
-        db()->prepare('UPDATE lk_users SET notifications_enabled=? WHERE id=?')->execute([$enabled, $me['sub']]);
         db()->prepare('DELETE FROM lk_notification_emails WHERE user_id=?')->execute([$me['sub']]);
         if ($emails) { $ins = db()->prepare('INSERT INTO lk_notification_emails(user_id,email,created_at) VALUES(?,?,NOW())'); foreach ($emails as $email) $ins->execute([$me['sub'], $email]); }
         db()->commit();
@@ -540,6 +631,187 @@ if ($method === 'PUT' && $seg[0] === 'me' && ($seg[1] ?? '') === 'notifications'
 if ($method === 'GET' && $seg[0] === 'managers' && ($seg[1] ?? '') === 'cert-stats') {
     auth(true);
     out(['cert_centers_count' => (int) db()->query('SELECT COUNT(*) FROM lk_cert_centers WHERE is_active=1')->fetchColumn(), 'cert_requests_open' => (int) db()->query("SELECT COUNT(*) FROM lk_cert_requests WHERE status!='closed'")->fetchColumn()]);
+}
+
+// POST /api/shipments/:id/documents
+if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'documents' && !isset($seg[3])) {
+    $me  = auth();
+    $sid = (int)$seg[1];
+    if ($me['role'] === 'client') {
+        $c = db()->prepare('SELECT client_id FROM lk_shipments WHERE id=?'); $c->execute([$sid]);
+        $s = $c->fetch(); if (!$s || $s['client_id'] != $me['client_id']) err('Нет доступа', 403);
+    }
+    if (empty($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) err('Файл не загружен');
+    $file = $_FILES['file'];
+    if ($file['size'] > MAX_FILE_SIZE) err('Файл слишком большой (макс. 20 МБ)');
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    if (!in_array($ext, ['pdf','doc','docx','xls','xlsx','jpg','jpeg','png'])) err('Недопустимый тип файла');
+    $dir = UPLOAD_PATH.'/'.$sid;
+    if (!is_dir($dir)) mkdir($dir, 0755, true);
+    $stored = uniqid('doc_').'.'.$ext;
+    if (!move_uploaded_file($file['tmp_name'], $dir.'/'.$stored)) err('Ошибка сохранения файла');
+    $vis  = $me['role'] === 'manager' ? (int)($_POST['visible_to_client'] ?? 0) : 1;
+    $edit = $me['role'] === 'manager' ? (int)($_POST['editable_by_client'] ?? 0) : 0;
+    $st = db()->prepare(
+        'INSERT INTO lk_documents(
+           shipment_id, filename_original, filename_stored, doc_type,
+           uploader_id, uploader_role, visible_to_client, editable_by_client, created_at
+         ) VALUES(?,?,?,?,?,?,?,?,NOW())'
+    );
+    $st->execute([
+        $sid,
+        $file['name'],
+        $stored,
+        $_POST['doc_type'] ?? 'other',
+        $me['sub'],
+        $me['role'],
+        $vis,
+        $edit,
+    ]);
+    out(['id' => (int)db()->lastInsertId()], 201);
+}
+
+// GET /api/shipments/:id/documents/:docId/download
+if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'documents' && isset($seg[3]) && ($seg[4] ?? '') === 'download') {
+    $me  = auth();
+    $sid = (int)$seg[1];
+    $did = (int)$seg[3];
+    $st  = db()->prepare('SELECT * FROM lk_documents WHERE id=? AND shipment_id=?');
+    $st->execute([$did, $sid]); $doc = $st->fetch(); if (!$doc) err('Не найдено', 404);
+    if ($me['role'] === 'client' && !$doc['visible_to_client']) err('Нет доступа', 403);
+    $path = UPLOAD_PATH.'/'.$sid.'/'.$doc['filename_stored'];
+    if (!file_exists($path)) err('Файл не найден', 404);
+    send_file_download($path, $doc['filename_original']);
+}
+
+// DELETE /api/shipments/:id/documents/:docId
+if ($method === 'DELETE' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'documents' && isset($seg[3])) {
+    auth(true);
+    $sid = (int)$seg[1];
+    $did = (int)$seg[3];
+    $st  = db()->prepare('SELECT * FROM lk_documents WHERE id=? AND shipment_id=?');
+    $st->execute([$did, $sid]); $doc = $st->fetch(); if (!$doc) err('Не найдено', 404);
+    $path = UPLOAD_PATH.'/'.$sid.'/'.$doc['filename_stored'];
+    if (file_exists($path)) unlink($path);
+    db()->prepare('DELETE FROM lk_documents WHERE id=?')->execute([$did]);
+    out(['ok' => true]);
+}
+
+// GET /api/shipments/:id/messages
+if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'messages') {
+    $me  = auth();
+    $sid = (int)$seg[1];
+    if ($me['role'] === 'client') {
+        $c = db()->prepare('SELECT client_id FROM lk_shipments WHERE id=?'); $c->execute([$sid]);
+        $s = $c->fetch(); if (!$s || $s['client_id'] != $me['client_id']) err('Нет доступа', 403);
+    }
+    $since = $_GET['since'] ?? '1970-01-01 00:00:00';
+    $st = db()->prepare(
+        'SELECT m*, u.name AS sender_name
+         FROM lk_messages m
+         JOIN lk_users u ON u.id=m.user_id
+         WHERE m.shipment_id=? AND m.created_at>?
+         ORDER BY m.created_at ASC'
+    );
+    $st->execute([$sid, $since]);
+    $other = $me['role'] === 'manager' ? 'client' : 'manager';
+    db()->prepare("UPDATE lk_messages SET is_read=1 WHERE shipment_id=? AND role=? AND is_read=0")
+       ->execute([$sid, $other]);
+    out($st->fetchAll());
+}
+
+// POST /api/shipments/:id/messages
+if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'messages') {
+    $me  = auth();
+    $sid = (int)$seg[1];
+    if ($me['role'] === 'client') {
+        $c = db()->prepare('SELECT client_id FROM lk_shipments WHERE id=?'); $c->execute([$sid]);
+        $s = $c->fetch(); if (!$s || $s['client_id'] != $me['client_id']) err('Нет доступа', 403);
+    }
+    $text = trim(body()['text'] ?? '');
+    if (!$text) err('Пустое сообщение');
+    $st = db()->prepare(
+        'INSERT INTO lk_messages(shipment_id,user_id,role,text,is_read,created_at)
+         VALUES(?,?,?,?,0,NOW())'
+    );
+    $st->execute([$sid, $me['sub'], $me['role'], $text]);
+    out(['id' => (int)db()->lastInsertId()], 201);
+}
+
+// GET /api/managers/messages
+if ($method === 'GET' && $seg[0] === 'managers' && ($seg[1] ?? '') === 'messages') {
+    auth(true);
+    $st = db()->query("
+        SELECT s.id AS shipment_id,
+               s.title,
+               c.name AS client_name,
+               m.text AS last_message,
+               m.created_at AS last_message_at,
+               (SELECT COUNT(*) FROM lk_messages
+                 WHERE shipment_id=s.id AND is_read=0 AND role='client') AS unread_count
+        FROM lk_shipments s
+        JOIN lk_clients c ON c.id=s.client_id
+        JOIN lk_messages m ON m.id=(SELECT MAX(id) FROM lk_messages WHERE shipment_id=s.id)
+        ORDER BY m.created_at DESC
+        LIMIT 50
+    ");
+    out($st->fetchAll());
+}
+
+// GET /api/cert-centers
+if ($method === 'GET' && $seg[0] === 'cert-centers' && !isset($seg[1])) {
+    auth(true);
+    $q = '%'.($_GET['q'] ?? '').'%';
+    $activeFlag = (($_GET['status'] ?? '') === 'archived') ? 0 : 1;
+    $st = db()->prepare(
+        'SELECT cc.*, COUNT(r.id) AS requests_count
+         FROM lk_cert_centers cc
+         LEFT JOIN lk_cert_requests r ON r.cert_center_id=cc.id
+         WHERE cc.is_active=? AND cc.name LIKE ?
+         GROUP BY cc.id ORDER BY cc.name'
+    );
+    $st->execute([$activeFlag, $q]);
+    out($st->fetchAll());
+}
+
+// POST /api/cert-centers
+if ($method === 'POST' && $seg[0] === 'cert-centers' && !isset($seg[1])) {
+    auth(true);
+    $b = body();
+    foreach (['name','email'] as $f) if (empty($b[$f])) err("Поле $f обязательно");
+    $ex = db()->prepare('SELECT id FROM lk_users WHERE email=?'); $ex->execute([$b['email']]);
+    if ($ex->fetch()) err('Email уже используется');
+    $pass = gen_pass();
+    $hash = password_hash($pass, PASSWORD_BCRYPT);
+    db()->beginTransaction();
+    try {
+        $st = db()->prepare(
+            'INSERT INTO lk_cert_centers(name,email,phone,is_active,created_at)
+             VALUES(?,?,?,?,NOW())'
+        );
+        $st->execute([
+            $b['name'],
+            $b['email'],
+            $b['phone'] ?? '',
+            1,
+        ]);
+        $ccId = (int)db()->lastInsertId();
+        $st2 = db()->prepare(
+            'INSERT INTO lk_users(email,password_hash,name,role,cert_center_id,is_active,created_at)
+             VALUES(?,?,?,?,?,1,NOW())'
+        );
+        $st2->execute([
+            $b['email'],
+            $hash,
+            $b['name'],
+            'cert_center',
+            $ccId,
+        ]);
+        db()->commit();
+    } catch (\Throwable $e) {
+        db()->rollBack(); err('Ошибка БД: '.$e->getMessage());
+    }
+    out(['cert_center_id' => $ccId, 'login' => $b['email'], 'password' => $pass], 201);
 }
 
 err('Маршрут не найден', 404);
