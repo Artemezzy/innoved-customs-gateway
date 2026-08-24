@@ -6,6 +6,7 @@ import Autoplay from 'embla-carousel-autoplay';
 import { useRef, useState } from 'react';
 import certBkBest from '@/assets/cert-bk-best.webp';
 import certGhv from '@/assets/cert-ghv.webp';
+import certSvidetelstvo from '@/assets/cert-svidetelstvo.webp';
 import victoriaPhoto from '@/assets/testimonial-victoria.webp';
 import svetlanaPhoto from '@/assets/testimonial-svetlana.webp';
 import bairPhoto from '@/assets/testimonial-bair.webp';
@@ -21,6 +22,12 @@ interface CertificatesAndTestimonialsProps {
 // на странице /about/ (усиление E-E-A-T: Trust через сертификаты,
 // Experience через отзывы с реальными фото и рейтингом), без дублирования
 // кода и без затягивания на About весь городского лендинг.
+const certificates = [
+  { src: certBkBest, alt: 'Сертификат качества компании БК-БЕСТ ТЕК', label: { ru: 'Сертификат качества компании БК-БЕСТ ТЕК', en: 'Quality certificate of BK-BEST TEK company' } },
+  { src: certGhv, alt: 'Сертификат качества компании GHV (Китай)', label: { ru: 'Сертификат качества компании GHV (Китай)', en: 'Quality certificate of GHV company (China)' } },
+  { src: certSvidetelstvo, alt: 'Свидетельство о включении в реестр таможенных представителей', label: { ru: 'Свидетельство о включении в реестр таможенных представителей', en: 'Certificate of inclusion in the register of customs representatives' } },
+];
+
 const testimonials = [
   { name: { ru: 'Александр М.', en: 'Alexander M.' }, company: { ru: 'ООО "ТСЛОГИСТИКА"', en: 'TSLOGISTIKA LLC' }, text: { ru: 'Работаем с ИННОВЭД с лета 2025 года. Всегда быстрое оформление документов и профессиональный подход.', en: 'Working with INNOVAD since summer 2025. Always quick processing and professional approach.' }, initials: 'АМ', rating: 5, photo: alexanderPhoto },
   { name: { ru: 'Виктория С.', en: 'Victoria S.' }, company: { ru: 'ИП Староспичихина В.', en: 'IE Starospichihina V.' }, text: { ru: 'Очень удобно работать дистанционно — всё решается оперативно через мессенджеры.', en: 'Very convenient to work remotely — everything resolved via messengers.' }, initials: 'ВС', rating: 5, photo: victoriaPhoto },
@@ -41,18 +48,14 @@ export function CertificatesAndTestimonials({ language }: CertificatesAndTestimo
               {language === 'ru' ? 'Сертификаты' : 'Certificates'}
             </h2>
             <div className="grid grid-cols-1 gap-4">
-              <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl border border-border bg-card">
-                <img src={certBkBest} alt="Сертификат качества компании БК-БЕСТ ТЕК" className="w-36 h-auto rounded-lg shadow-sm cursor-pointer transition-transform duration-300 hover:scale-110" loading="lazy" onClick={() => setZoomedCert(certBkBest)} />
-                <p className="text-foreground font-medium text-center sm:text-left text-sm">
-                  {language === 'ru' ? 'Сертификат качества компании БК-БЕСТ ТЕК' : 'Quality certificate of BK-BEST TEK company'}
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl border border-border bg-card">
-                <img src={certGhv} alt="Сертификат качества компании GHV (Китай)" className="w-36 h-auto rounded-lg shadow-sm cursor-pointer transition-transform duration-300 hover:scale-110" loading="lazy" onClick={() => setZoomedCert(certGhv)} />
-                <p className="text-foreground font-medium text-center sm:text-left text-sm">
-                  {language === 'ru' ? 'Сертификат качества компании GHV (Китай)' : 'Quality certificate of GHV company (China)'}
-                </p>
-              </div>
+              {certificates.map((cert, i) => (
+                <div key={i} className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl border border-border bg-card">
+                  <img src={cert.src} alt={cert.alt} className="w-36 h-auto rounded-lg shadow-sm cursor-pointer transition-transform duration-300 hover:scale-110" loading="lazy" onClick={() => setZoomedCert(cert.src)} />
+                  <p className="text-foreground font-medium text-center sm:text-left text-sm">
+                    {cert.label[language]}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
           <div className="lg:w-1/2">
