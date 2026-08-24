@@ -1,14 +1,14 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, Download } from 'lucide-react';
+import { ArrowLeft, Download, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CertRequestStatusSelect } from '@/components/lk/CertRequestStatusSelect';
-
 import { CertChatPanel } from '@/components/lk/CertChatPanel';
 import { CertItemsPanel } from '@/components/lk/CertItemsPanel';
 
@@ -17,6 +17,8 @@ export default function LKCertRequestDetailPage() {
   const requestId = Number(id);
   const navigate = useNavigate();
   const qc = useQueryClient();
+  const { user } = useAuth();
+  const isManager = user?.role === 'manager';
 
   const detail = useQuery({
     queryKey: ['lk', 'cert-request', requestId],
@@ -65,6 +67,21 @@ export default function LKCertRequestDetailPage() {
             <Download className="h-4 w-4 mr-1.5" />
             Скачать в Excel
           </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={async () => {
+              try {
+                const checkedIds = items.filter((i) => i.is_checked).map((i) => i.id);
+                await lkApi.generateCertRequestDoc(requestId, checkedIds);
+              } catch (err: any) {
+                toast.error(err?.message || 'Не удалось сформировать заявку');
+              }
+            }}
+          >
+            <FileText className="h-4 w-4 mr-1.5" />
+            Сформировать заявку
+          </Button>
           <span className="text-sm text-muted-foreground">Статус:</span>
           <CertRequestStatusSelect requestId={requestId} value={request.status} />
         </div>
@@ -72,7 +89,12 @@ export default function LKCertRequestDetailPage() {
 
       <Card className="p-5">
         <h2 className="font-semibold mb-4">Данные заявки</h2>
-        <CertItemsPanel requestId={requestId} items={items} />
+        <CertItemsPanel
+          requestId={requestId}
+          request={request}
+          items={items}
+          canEditHeader={isManager}
+        />
       </Card>
 
       <Card className="p-5">

@@ -30,13 +30,6 @@ async function request<T>(
     headers['Content-Type'] = 'application/json';
   }
 
-  console.log('REQUEST', {
-    method,
-    url: `${BASE_URL}${path}`,
-    body,
-    token,
-  });
-
   const res = await fetch(`${BASE_URL}${path}`, {
     method,
     headers,
@@ -48,7 +41,6 @@ async function request<T>(
   });
 
   if (res.status === 401) {
-    console.warn('REQUEST 401, triggering logout');
     triggerLogout();
     if (typeof window !== 'undefined') {
       window.location.href = '/lk/login';
@@ -66,23 +58,47 @@ async function request<T>(
   }
 
   const text = await res.text();
-
   if (!text) {
     return undefined as T;
   }
 
   try {
     return JSON.parse(text) as T;
-  } catch (e) {
-    console.error('Failed to parse JSON', { text, e });
+  } catch {
     throw new Error('Некорректный ответ сервера');
   }
 }
 
+async function downloadBlob(path: string, fallbackFilename: string) {
+  const token = getAuthToken();
+  const res = await fetch(`${BASE_URL}${path}`, {
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+  });
+  if (!res.ok) throw new Error(`Не удалось скачать (HTTP ${res.status})`);
+
+  const contentDisposition = res.headers.get('content-disposition') || '';
+  let serverFilename: string | undefined;
+  const utfMatch = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i);
+  const asciiMatch = contentDisposition.match(/filename="?([^"]+)"?/i);
+  if (utfMatch) {
+    try { serverFilename = decodeURIComponent(utfMatch[1]); } catch { serverFilename = utfMatch[1]; }
+  } else if (asciiMatch) {
+    serverFilename = asciiMatch[1];
+  }
+
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = serverFilename || fallbackFilename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
 export async function lkLogin(email: string, password: string) {
   if (USE_MOCK) return mock.mockLogin(email, password);
-
-  console.log('lkLogin called', { email });
 
   const res = await request<LoginResponseRaw>('POST', '/auth/login', {
     email,
@@ -96,8 +112,6 @@ export async function lkLogin(email: string, password: string) {
     clientId: res.client_id ?? null,
     certCenterId: res.cert_center_id ?? null,
   };
-
-  console.log('lkLogin result', { token: res.token, user });
 
   return { token: res.token, user };
 }
@@ -119,10 +133,7 @@ export const lkApi = {
     if (q) qs.set('q', q);
     if (status === 'archived') qs.set('status', 'archived');
     const query = qs.toString();
-    return request<import('@/types/lk').Client[]>(
-      'GET',
-      `/clients${query ? `?${query}` : ''}`
-    );
+    return request<import('@/types/lk').Client[]>('GET', `/clients${query ? `?${query}` : ''}`);
   },
 
   createClient: (data: Partial<import('@/types/lk').Client>) =>
@@ -144,10 +155,7 @@ export const lkApi = {
     if (params.status) qs.set('status', params.status);
     if (params.client_id) qs.set('client_id', String(params.client_id));
     const q = qs.toString();
-    return request<import('@/types/lk').Shipment[]>(
-      'GET',
-      `/shipments${q ? `?${q}` : ''}`
-    );
+    return request<import('@/types/lk').Shipment[]>('GET', `/shipments${q ? `?${q}` : ''}`);
   },
 
   createShipment: (data: { title: string; client_id?: number }) =>
@@ -155,8 +163,7 @@ export const lkApi = {
       ? mock.mockCreateShipment({ client_id: data.client_id ?? 0, title: data.title })
       : request<{ id: number }>('POST', '/shipments', data),
 
-  deleteShipment: (id: number) =>
-    request<{ ok: boolean }>('DELETE', `/shipments/${id}`),
+  deleteShipment: (id: number) => request<{ ok: boolean }>('DELETE', `/shipments/${id}`),
 
   shipment: (id: number) =>
     USE_MOCK
@@ -166,29 +173,17 @@ export const lkApi = {
   updateShipment: (id: number, data: Partial<import('@/types/lk').Shipment>) =>
     USE_MOCK
       ? mock.mockUpdateShipment(id, data)
-      : request<import('@/types/lk').Shipment>(
-          'PUT',
-          `/shipments/${id}`,
-          data
-        ),
+      : request<import('@/types/lk').Shipment>('PUT', `/shipments/${id}`, data),
 
   documents: (shipmentId: number) =>
     USE_MOCK
       ? mock.mockDocuments(shipmentId)
-      : request<import('@/types/lk').LKDocument[]>(
-          'GET',
-          `/shipments/${shipmentId}/documents`
-        ),
+      : request<import('@/types/lk').LKDocument[]>('GET', `/shipments/${shipmentId}/documents`),
 
   uploadDocument: (shipmentId: number, form: FormData) =>
     USE_MOCK
       ? mock.mockUploadDocument(shipmentId, form)
-      : request<import('@/types/lk').LKDocument>(
-          'POST',
-          `/shipments/${shipmentId}/documents`,
-          form,
-          true
-        ),
+      : request<import('@/types/lk').LKDocument>('POST', `/shipments/${shipmentId}/documents`, form, true),
 
   deleteDocument: (shipmentId: number, docId: number) =>
     USE_MOCK
@@ -198,36 +193,18 @@ export const lkApi = {
   messages: (shipmentId: number, since?: number) =>
     USE_MOCK
       ? mock.mockMessages(shipmentId, since)
-      : request<import('@/types/lk').Message[]>(
-          'GET',
-          `/shipments/${shipmentId}/messages${since ? `?since=${since}` : ''}`
-        ),
+      : request<import('@/types/lk').Message[]>('GET', `/shipments/${shipmentId}/messages${since ? `?since=${since}` : ''}`),
 
-  sendMessage: (
-    shipmentId: number,
-    text: string,
-    sender?: { role: import('@/types/lk').Role; name: string; user_id: number }
-  ) =>
+  sendMessage: (shipmentId: number, text: string, sender?: { role: import('@/types/lk').Role; name: string; user_id: number }) =>
     USE_MOCK
       ? mock.mockSendMessage(shipmentId, text, sender)
-      : request<import('@/types/lk').Message>('POST', `/shipments/${shipmentId}/messages`, {
-          text,
-        }),
+      : request<import('@/types/lk').Message>('POST', `/shipments/${shipmentId}/messages`, { text }),
 
   resetClientPassword: (clientId: number) =>
-    request<{
-      user_id: number;
-      client_id: number;
-      login: string;
-      name: string;
-      new_password: string;
-    }>('POST', `/clients/${clientId}/reset-password`),
+    request<{ user_id: number; client_id: number; login: string; name: string; new_password: string }>('POST', `/clients/${clientId}/reset-password`),
 
-  deleteClient: (clientId: number) =>
-    request<{ ok: boolean }>('DELETE', `/clients/${clientId}`),
-
-  restoreClient: (clientId: number) =>
-    request<{ ok: boolean }>('POST', `/clients/${clientId}/restore`),
+  deleteClient: (clientId: number) => request<{ ok: boolean }>('DELETE', `/clients/${clientId}`),
+  restoreClient: (clientId: number) => request<{ ok: boolean }>('POST', `/clients/${clientId}/restore`),
 
   certCenters: (q?: string, status?: 'active' | 'archived') => {
     if (USE_MOCK) return mock.mockCertCenters(q);
@@ -235,10 +212,7 @@ export const lkApi = {
     if (q) qs.set('q', q);
     if (status === 'archived') qs.set('status', 'archived');
     const query = qs.toString();
-    return request<import('@/types/lk').CertCenter[]>(
-      'GET',
-      `/cert-centers${query ? `?${query}` : ''}`
-    );
+    return request<import('@/types/lk').CertCenter[]>('GET', `/cert-centers${query ? `?${query}` : ''}`);
   },
 
   createCertCenter: (data: Partial<import('@/types/lk').CertCenter>) =>
@@ -250,123 +224,80 @@ export const lkApi = {
         }>('POST', '/cert-centers', data),
 
   resetCertCenterPassword: (id: number) =>
-    request<{
-      user_id: number;
-      cert_center_id: number;
-      login: string;
-      name: string;
-      new_password: string;
-    }>('POST', `/cert-centers/${id}/reset-password`),
+    request<{ user_id: number; cert_center_id: number; login: string; name: string; new_password: string }>('POST', `/cert-centers/${id}/reset-password`),
 
-  deleteCertCenter: (id: number) =>
-    request<{ ok: boolean }>('DELETE', `/cert-centers/${id}`),
+  deleteCertCenter: (id: number) => request<{ ok: boolean }>('DELETE', `/cert-centers/${id}`),
+  restoreCertCenter: (id: number) => request<{ ok: boolean }>('POST', `/cert-centers/${id}/restore`),
 
-  restoreCertCenter: (id: number) =>
-    request<{ ok: boolean }>('POST', `/cert-centers/${id}/restore`),
-  
   certRequests: (params: { status?: string; cert_center_id?: number } = {}) => {
     if (USE_MOCK) return mock.mockCertRequests(params);
     const qs = new URLSearchParams();
     if (params.status) qs.set('status', params.status);
     if (params.cert_center_id) qs.set('cert_center_id', String(params.cert_center_id));
     const q = qs.toString();
-    return request<import('@/types/lk').CertRequest[]>(
-      'GET',
-      `/cert-requests${q ? `?${q}` : ''}`
-    );
+    return request<import('@/types/lk').CertRequest[]>('GET', `/cert-requests${q ? `?${q}` : ''}`);
   },
 
   createCertRequest: (data: { company: string; cert_center_id: number }) =>
-    USE_MOCK
-      ? mock.mockCreateCertRequest(data)
-      : request<{ id: number }>('POST', '/cert-requests', data),
+    USE_MOCK ? mock.mockCreateCertRequest(data) : request<{ id: number }>('POST', '/cert-requests', data),
 
   certRequest: (id: number) =>
-    USE_MOCK
-      ? mock.mockCertRequest(id)
-      : request<import('@/types/lk').CertRequestDetails>('GET', `/cert-requests/${id}`),
+    USE_MOCK ? mock.mockCertRequest(id) : request<import('@/types/lk').CertRequestDetails>('GET', `/cert-requests/${id}`),
 
-  certRequestItems: (id: number) =>
-    request<import('@/types/lk').CertRequestItem[]>('GET', `/cert-requests/${id}/items`),
+  certRequestItems: (id: number) => request<import('@/types/lk').CertRequestItem[]>('GET', `/cert-requests/${id}/items`),
 
-  addCertRequestItem: (
-    id: number,
-    data?: Partial<import('@/types/lk').CertRequestItem>
-  ) =>
-    request<import('@/types/lk').CertRequestItem>(
-      'POST',
-      `/cert-requests/${id}/items`,
-      data ?? {}
-    ),
+  addCertRequestItem: (id: number, data?: Partial<import('@/types/lk').CertRequestItem>) =>
+    request<import('@/types/lk').CertRequestItem>('POST', `/cert-requests/${id}/items`, data ?? {}),
 
-  updateCertRequestItem: (
-    id: number,
-    itemId: number,
-    data: Partial<import('@/types/lk').CertRequestItem>
-  ) =>
-    request<import('@/types/lk').CertRequestItem>(
-      'PUT',
-      `/cert-requests/${id}/items/${itemId}`,
-      data
-    ),
+  updateCertRequestItem: (id: number, itemId: number, data: Partial<import('@/types/lk').CertRequestItem>) =>
+    request<import('@/types/lk').CertRequestItem>('PUT', `/cert-requests/${id}/items/${itemId}`, data),
 
   deleteCertRequestItem: (id: number, itemId: number) =>
     request<{ ok: boolean }>('DELETE', `/cert-requests/${id}/items/${itemId}`),
 
-  updateCertRequestStatus: (
+  updateCertRequestStatus: (id: number, status: import('@/types/lk').CertRequestStatus) =>
+    USE_MOCK ? mock.mockUpdateCertRequestStatus(id, status) : request<{ ok: boolean }>('PUT', `/cert-requests/${id}`, { status }),
+
+  updateCertRequestInfo: (
     id: number,
-    status: import('@/types/lk').CertRequestStatus
-  ) =>
-    USE_MOCK
-      ? mock.mockUpdateCertRequestStatus(id, status)
-      : request<{ ok: boolean }>('PUT', `/cert-requests/${id}`, { status }),
+    data: Partial<
+      Pick<
+        import('@/types/lk').CertRequest,
+        | 'applicant_org'
+        | 'applicant_address'
+        | 'applicant_head'
+        | 'applicant_position'
+        | 'applicant_email'
+        | 'manufacturer_org'
+        | 'manufacturer_address'
+        | 'manufacturer_country'
+      >
+    >
+  ) => request<{ ok: boolean }>('PUT', `/cert-requests/${id}`, data),
 
   deleteCertRequest: (id: number) =>
-    USE_MOCK
-      ? mock.mockDeleteCertRequest(id)
-      : request<{ ok: boolean }>('DELETE', `/cert-requests/${id}`),
+    USE_MOCK ? mock.mockDeleteCertRequest(id) : request<{ ok: boolean }>('DELETE', `/cert-requests/${id}`),
 
   certItemFiles: (requestId: number, itemId: number) =>
-    request<import('@/types/lk').CertFile[]>(
-      'GET',
-      `/cert-requests/${requestId}/items/${itemId}/files`
-    ),
+    request<import('@/types/lk').CertFile[]>('GET', `/cert-requests/${requestId}/items/${itemId}/files`),
 
   uploadCertFile: (requestId: number, itemId: number, form: FormData) =>
     USE_MOCK
       ? mock.mockUploadCertFile(requestId, form)
-      : request<import('@/types/lk').CertFile>(
-          'POST',
-          `/cert-requests/${requestId}/items/${itemId}/files`,
-          form,
-          true
-        ),
+      : request<import('@/types/lk').CertFile>('POST', `/cert-requests/${requestId}/items/${itemId}/files`, form, true),
 
   addCertFileUrl: (requestId: number, itemId: number, url: string) => {
     const fd = new FormData();
     fd.append('url', url);
     if (USE_MOCK) return mock.mockUploadCertFile(requestId, fd);
-    return request<import('@/types/lk').CertFile>(
-      'POST',
-      `/cert-requests/${requestId}/items/${itemId}/files`,
-      fd,
-      true
-    );
+    return request<import('@/types/lk').CertFile>('POST', `/cert-requests/${requestId}/items/${itemId}/files`, fd, true);
   },
 
-  downloadCertFile: async (
-    requestId: number,
-    itemId: number,
-    fileId: number,
-    filename?: string
-  ) => {
+  downloadCertFile: async (requestId: number, itemId: number, fileId: number, filename?: string) => {
     const token = getAuthToken();
-    const res = await fetch(
-      `${BASE_URL}/cert-requests/${requestId}/items/${itemId}/files/${fileId}/download`,
-      {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
-      }
-    );
+    const res = await fetch(`${BASE_URL}/cert-requests/${requestId}/items/${itemId}/files/${fileId}/download`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
     if (!res.ok) throw new Error(`Не удалось скачать (HTTP ${res.status})`);
 
     const contentType = res.headers.get('content-type') || '';
@@ -383,17 +314,11 @@ export const lkApi = {
 
     if (contentType.includes('application/json')) {
       const data = await res.json().catch(() => null as any);
-      const url: string | undefined =
-        data?.url || data?.download_url || data?.file_url || data?.href;
-      if (!url) {
-        console.error('Download JSON без url', data);
-        throw new Error('Сервер вернул JSON без ссылки на файл');
-      }
+      const url: string | undefined = data?.url || data?.download_url || data?.file_url || data?.href;
+      if (!url) throw new Error('Сервер вернул JSON без ссылки на файл');
 
       try {
-        const fileRes = await fetch(url, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        });
+        const fileRes = await fetch(url, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
         if (!fileRes.ok) throw new Error(`HTTP ${fileRes.status}`);
         const blob = await fileRes.blob();
         const objectUrl = URL.createObjectURL(blob);
@@ -405,7 +330,7 @@ export const lkApi = {
         a.remove();
         URL.revokeObjectURL(objectUrl);
         return;
-      } catch (e) {
+      } catch {
         window.open(url, '_blank', 'noopener,noreferrer');
         return;
       }
@@ -423,10 +348,7 @@ export const lkApi = {
   },
 
   deleteCertFile: (requestId: number, itemId: number, fileId: number) =>
-    request<{ ok: boolean }>(
-      'DELETE',
-      `/cert-requests/${requestId}/items/${itemId}/files/${fileId}`
-    ),
+    request<{ ok: boolean }>('DELETE', `/cert-requests/${requestId}/items/${itemId}/files/${fileId}`),
 
   exportCertRequest: async (requestId: number) => {
     const token = getAuthToken();
@@ -445,31 +367,23 @@ export const lkApi = {
     URL.revokeObjectURL(url);
   },
 
+  generateCertRequestDoc: async (requestId: number, itemIds: number[]) => {
+    if (!itemIds.length) throw new Error('Отметьте хотя бы один товар чек-боксом');
+    const qs = new URLSearchParams();
+    qs.set('item_ids', itemIds.join(','));
+    await downloadBlob(`/cert-requests/${requestId}/generate-doc?${qs.toString()}`, `zayavka-${requestId}.doc`);
+  },
+
   certMessages: (id: number, since?: number) =>
     USE_MOCK
       ? mock.mockCertMessages(id, since)
-      : request<import('@/types/lk').CertMessage[]>(
-          'GET',
-          `/cert-requests/${id}/messages${since ? `?since=${since}` : ''}`
-        ),
+      : request<import('@/types/lk').CertMessage[]>('GET', `/cert-requests/${id}/messages${since ? `?since=${since}` : ''}`),
 
-  sendCertMessage: (
-    id: number,
-    text: string,
-    sender?: { role: import('@/types/lk').Role; name: string; user_id: number }
-  ) =>
+  sendCertMessage: (id: number, text: string, sender?: { role: import('@/types/lk').Role; name: string; user_id: number }) =>
     USE_MOCK
       ? mock.mockSendCertMessage(id, text, sender)
-      : request<import('@/types/lk').CertMessage>(
-          'POST',
-          `/cert-requests/${id}/messages`,
-          { text }
-        ),
+      : request<import('@/types/lk').CertMessage>('POST', `/cert-requests/${id}/messages`, { text }),
 
-  getNotificationSettings: () =>
-    request<import('@/types/lk').NotificationSettings>('GET', '/me/notifications'),
-
-  updateNotificationSettings: (payload: { enabled: boolean; emails: string[] }) =>
-    request<{ ok: boolean }>('PUT', '/me/notifications', payload),
-
+  getNotificationSettings: () => request<import('@/types/lk').NotificationSettings>('GET', '/me/notifications'),
+  updateNotificationSettings: (payload: { enabled: boolean; emails: string[] }) => request<{ ok: boolean }>('PUT', '/me/notifications', payload),
 };
