@@ -25,7 +25,7 @@ interface CertificatesAndTestimonialsProps {
 const certificates = [
   { src: certBkBest, alt: 'Сертификат качества компании БК-БЕСТ ТЕК', label: { ru: 'Сертификат качества компании БК-БЕСТ ТЕК', en: 'Quality certificate of BK-BEST TEK company' } },
   { src: certGhv, alt: 'Сертификат качества компании GHV (Китай)', label: { ru: 'Сертификат качества компании GHV (Китай)', en: 'Quality certificate of GHV company (China)' } },
-  { src: certSvidetelstvo, alt: 'Свидетельство о включении в реестр таможенных представителей', label: { ru: 'Свидетельство о включении в реестр таможенных представителей', en: 'Certificate of inclusion in the register of customs representatives' } },
+  { src: certSvidetelstvo, alt: 'Свидетельство о государственной регистрации (ОГРН)', label: { ru: 'Свидетельство ОГРН', en: 'Certificate of State Registration (OGRN)' } },
 ];
 
 const testimonials = [
