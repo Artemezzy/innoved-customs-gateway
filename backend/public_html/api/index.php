@@ -41,15 +41,9 @@ function out(mixed $d, int $c = 200): never { http_response_code($c); echo json_
 function err(string $m, int $c = 400): never { out(['error' => $m], $c); }
 function body(): array { return (array) json_decode(file_get_contents('php://input'), true); }
 
-/**
- * Отдать файл как бинарный download-ответ с корректными заголовками.
- * Сбрасывает буферы вывода и заменяет ранее выставленный Content-Type: application/json.
- */
 function send_file_download(string $path, string $originalName): never {
-    // Полностью очищаем всё, что могло попасть в буфер (пробелы, BOM, отладка)
     while (ob_get_level() > 0) { ob_end_clean(); }
 
-    // Определяем MIME по содержимому файла, с фолбэком по расширению
     $mime = null;
     if (function_exists('finfo_open')) {
         $fi = finfo_open(FILEINFO_MIME_TYPE);
@@ -81,11 +75,9 @@ function send_file_download(string $path, string $originalName): never {
         $mime = $map[$ext] ?? 'application/octet-stream';
     }
 
-    // ASCII-фолбэк имени файла для старых клиентов
     $asciiName = preg_replace('/[^A-Za-z0-9._-]+/', '_', $originalName);
     if ($asciiName === '' || $asciiName === null) { $asciiName = 'file'; }
 
-    // Заменяем ранее выставленный Content-Type: application/json
     header('Content-Type: ' . $mime, true);
     header(
         'Content-Disposition: attachment; filename="' . $asciiName . '"; '
@@ -96,13 +88,11 @@ function send_file_download(string $path, string $originalName): never {
     header('X-Content-Type-Options: nosniff');
     header('Cache-Control: private, no-store');
     header('Pragma: no-cache');
-    // Позволяем фронту прочитать имя файла из Content-Disposition
     header('Access-Control-Expose-Headers: Content-Disposition, Content-Length, Content-Type');
 
     readfile($path);
     exit;
 }
-
 
 function b64u(string $s): string { return rtrim(strtr(base64_encode($s), '+/', '-_'), '='); }
 function jwt_make(array $p): string {
@@ -118,7 +108,7 @@ function jwt_parse(string $t): ?array {
     return ($d && ($d['exp'] ?? 0) > time()) ? $d : null;
 }
 function auth(bool $mgr = false): array {
-    preg_match('/Bearer\\s+(\\S+)/', $_SERVER['HTTP_AUTHORIZATION'] ?? '', $m);
+    preg_match('/Bearer\s+(\S+)/', $_SERVER['HTTP_AUTHORIZATION'] ?? '', $m);
     if (!isset($m[1])) err('Unauthorized', 401);
     $u = jwt_parse($m[1]); if (!$u) err('Token invalid or expired', 401);
     if ($mgr && $u['role'] !== 'manager') err('Forbidden', 403);
@@ -142,10 +132,38 @@ function cert_request_guard(array $me, int $rid): array {
     return $r;
 }
 
-/**
- * Ставит/обновляет запись в очереди уведомлений с "тихим окном" 60 сек.
- * Не отправляет письмо сразу — просто накапливает события.
- */
+function normalize_email_list(array $emails): array {
+    $normalized = [];
+    foreach ($emails as $email) {
+        $email = mb_strtolower(trim((string)$email));
+        if ($email === '') continue;
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            err('Некорректный email: ' . $email, 422);
+        }
+        $normalized[$email] = true;
+    }
+    return array_keys($normalized);
+}
+
+function get_notification_emails(int $userId, ?string $fallbackEmail = null): array {
+    $st = db()->prepare('SELECT email FROM lk_notification_emails WHERE user_id=? ORDER BY id ASC');
+    $st->execute([$userId]);
+    $emails = array_map(
+        static fn(array $row) => mb_strtolower(trim((string)$row['email'])),
+        $st->fetchAll()
+    );
+
+    $emails = array_values(array_filter(array_unique($emails)));
+    if (!$emails && $fallbackEmail) {
+        $fallbackEmail = mb_strtolower(trim($fallbackEmail));
+        if ($fallbackEmail !== '' && filter_var($fallbackEmail, FILTER_VALIDATE_EMAIL)) {
+            $emails = [$fallbackEmail];
+        }
+    }
+
+    return $emails;
+}
+
 function queue_notification(int $requestId, string $recipientRole, string $eventLine): void {
     $now = date('Y-m-d H:i:s');
 
@@ -175,7 +193,6 @@ function queue_notification(int $requestId, string $recipientRole, string $event
     }
 }
 
-// POST /api/auth/login
 if ($method === 'POST' && $seg[0] === 'auth' && ($seg[1] ?? '') === 'login') {
     $b = body();
     $st = db()->prepare('SELECT * FROM lk_users WHERE email=? AND is_active=1 LIMIT 1');
@@ -183,17 +200,16 @@ if ($method === 'POST' && $seg[0] === 'auth' && ($seg[1] ?? '') === 'login') {
     $u = $st->fetch();
     if (!$u || !password_verify($b['password'] ?? '', $u['password_hash'])) err('Неверный email или пароль', 401);
     $token = jwt_make([
-    'sub'            => $u['id'],
-    'role'           => $u['role'],
-    'client_id'      => $u['client_id'],
-    'cert_center_id' => $u['cert_center_id'] ?? null,
-    'name'           => $u['name'],
-    'exp'            => time() + 86400 * 7,
-        ]);
+        'sub'            => $u['id'],
+        'role'           => $u['role'],
+        'client_id'      => $u['client_id'],
+        'cert_center_id' => $u['cert_center_id'] ?? null,
+        'name'           => $u['name'],
+        'exp'            => time() + 86400 * 7,
+    ]);
     out(['token' => $token, 'role' => $u['role'], 'name' => $u['name']]);
 }
 
-// GET /api/managers/stats
 if ($method === 'GET' && $seg[0] === 'managers' && ($seg[1] ?? '') === 'stats') {
     auth(true);
     out([
@@ -203,7 +219,6 @@ if ($method === 'GET' && $seg[0] === 'managers' && ($seg[1] ?? '') === 'stats') 
     ]);
 }
 
-// GET /api/clients
 if ($method === 'GET' && $seg[0] === 'clients' && !isset($seg[1])) {
     auth(true);
     $q = '%'.($_GET['q'] ?? '').'%';
@@ -220,7 +235,6 @@ if ($method === 'GET' && $seg[0] === 'clients' && !isset($seg[1])) {
     out($st->fetchAll());
 }
 
-// POST /api/clients
 if ($method === 'POST' && $seg[0] === 'clients' && !isset($seg[1])) {
     auth(true);
     $b = body();
@@ -246,8 +260,8 @@ if ($method === 'POST' && $seg[0] === 'clients' && !isset($seg[1])) {
         $cid = db()->lastInsertId();
 
         $st2 = db()->prepare(
-            'INSERT INTO lk_users(email,password_hash,name,role,client_id,is_active,created_at)
-             VALUES(?,?,?,?,?,1,NOW())'
+            'INSERT INTO lk_users(email,password_hash,name,role,client_id,is_active,created_at,notifications_enabled)
+             VALUES(?,?,?,?,?,1,NOW(),1)'
         );
         $st2->execute([
             $b['email'],
@@ -266,19 +280,15 @@ if ($method === 'POST' && $seg[0] === 'clients' && !isset($seg[1])) {
     out(['client_id' => (int) $cid, 'login' => $b['email'], 'password' => $pass], 201);
 }
 
-// POST /api/clients/:id/reset-password
 if (
     $method === 'POST'
     && $seg[0] === 'clients'
     && isset($seg[1])
     && ($seg[2] ?? '') === 'reset-password'
 ) {
-    
-    auth(true); // только менеджер
+    auth(true);
 
     $clientId = (int)$seg[1];
-
-    // ищем пользователя-клиента по client_id
     $st = db()->prepare('SELECT id, email, name FROM lk_users WHERE client_id=? AND role="client" AND is_active=1 LIMIT 1');
     $st->execute([$clientId]);
     $u = $st->fetch();
@@ -302,9 +312,8 @@ if (
     ]);
 }
 
-// DELETE /api/clients/:id  (soft-delete: деактивация клиента + его пользователя)
 if ($method === 'DELETE' && $seg[0] === 'clients' && isset($seg[1]) && !isset($seg[2])) {
-    auth(true); // только менеджер
+    auth(true);
     $clientId = (int)$seg[1];
 
     $st = db()->prepare('SELECT id FROM lk_clients WHERE id=? AND is_active=1');
@@ -317,7 +326,6 @@ if ($method === 'DELETE' && $seg[0] === 'clients' && isset($seg[1]) && !isset($s
     out(['ok' => true]);
 }
 
-// POST /api/clients/:id/restore  (восстановление из архива)
 if ($method === 'POST' && $seg[0] === 'clients' && isset($seg[1]) && ($seg[2] ?? '') === 'restore') {
     auth(true);
     $clientId = (int)$seg[1];
@@ -332,7 +340,6 @@ if ($method === 'POST' && $seg[0] === 'clients' && isset($seg[1]) && ($seg[2] ??
     out(['ok' => true]);
 }
 
-// GET /api/clients/:id
 if ($method === 'GET' && $seg[0] === 'clients' && isset($seg[1]) && !isset($seg[2])) {
     auth(true);
     $st = db()->prepare(
@@ -346,7 +353,6 @@ if ($method === 'GET' && $seg[0] === 'clients' && isset($seg[1]) && !isset($seg[
     out($c);
 }
 
-// GET /api/shipments
 if ($method === 'GET' && $seg[0] === 'shipments' && !isset($seg[1])) {
     $me = auth();
     $sql = 'SELECT s.*, c.name AS client_name
@@ -362,26 +368,21 @@ if ($method === 'GET' && $seg[0] === 'shipments' && !isset($seg[1])) {
     out($st->fetchAll());
 }
 
-// POST /api/shipments
 if ($method === 'POST' && $seg[0] === 'shipments' && !isset($seg[1])) {
-    $me = auth();           // авторизуем любого пользователя (менеджер или клиент)
+    $me = auth();
     $b  = body();
 
-    // Определяем client_id в зависимости от роли
     if ($me['role'] === 'manager') {
-        // менеджер должен явно указать клиента
         if (empty($b['client_id'])) {
             err('client_id обязателен для менеджера');
         }
         $clientId = (int)$b['client_id'];
     } elseif ($me['role'] === 'client') {
-        // клиент создаёт поставку только для себя
         if (empty($me['client_id'])) {
             err('У пользователя-клиента не задан client_id', 400);
         }
         $clientId = (int)$me['client_id'];
     } else {
-        // на всякий случай блокируем любые другие роли
         err('Недопустимая роль для создания поставки', 403);
     }
 
@@ -396,7 +397,6 @@ if ($method === 'POST' && $seg[0] === 'shipments' && !isset($seg[1])) {
     out(['id' => (int)db()->lastInsertId()], 201);
 }
 
-// GET /api/shipments/:id
 if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && !isset($seg[2])) {
     $me = auth();
     $id = (int)$seg[1];
@@ -411,7 +411,6 @@ if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && !isset($se
     out($s);
 }
 
-// PUT /api/shipments/:id
 if ($method === 'PUT' && $seg[0] === 'shipments' && isset($seg[1]) && !isset($seg[2])) {
     auth(true);
     $b = body();
@@ -422,14 +421,11 @@ if ($method === 'PUT' && $seg[0] === 'shipments' && isset($seg[1]) && !isset($se
     out(['ok' => true]);
 }
 
-// DELETE /api/shipments/:id
 if ($method === 'DELETE' && $seg[0] === 'shipments' && isset($seg[1]) && !isset($seg[2])) {
-    // Только менеджер может удалять поставки
     auth(true);
 
     $id = (int)$seg[1];
 
-    // Проверяем, что такая поставка существует
     $st = db()->prepare('SELECT id FROM lk_shipments WHERE id=?');
     $st->execute([$id]);
     $shipment = $st->fetch();
@@ -437,13 +433,11 @@ if ($method === 'DELETE' && $seg[0] === 'shipments' && isset($seg[1]) && !isset(
         err('Поставка не найдена', 404);
     }
 
-    // Удаляем запись из lk_shipments
     db()->prepare('DELETE FROM lk_shipments WHERE id=?')->execute([$id]);
 
     out(['ok' => true]);
 }
 
-// GET /api/shipments/:id/documents
 if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'documents' && !isset($seg[3])) {
     $me  = auth();
     $sid = (int)$seg[1];
@@ -458,7 +452,6 @@ if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?
     out($st->fetchAll());
 }
 
-// POST /api/shipments/:id/documents
 if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'documents' && !isset($seg[3])) {
     $me  = auth();
     $sid = (int)$seg[1];
@@ -499,7 +492,6 @@ if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] 
     out(['id' => (int)db()->lastInsertId()], 201);
 }
 
-// GET /api/shipments/:id/documents/:docId/download
 if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'documents' && isset($seg[3]) && ($seg[4] ?? '') === 'download') {
     $me  = auth();
     $sid = (int)$seg[1];
@@ -512,10 +504,8 @@ if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?
     if (!file_exists($path)) err('Файл не найден', 404);
 
     send_file_download($path, $doc['filename_original']);
-
 }
 
-// DELETE /api/shipments/:id/documents/:docId
 if ($method === 'DELETE' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'documents' && isset($seg[3])) {
     auth(true);
     $sid = (int)$seg[1];
@@ -529,7 +519,6 @@ if ($method === 'DELETE' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2
     out(['ok' => true]);
 }
 
-// GET /api/shipments/:id/messages
 if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'messages') {
     $me  = auth();
     $sid = (int)$seg[1];
@@ -554,7 +543,6 @@ if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?
     out($st->fetchAll());
 }
 
-// POST /api/shipments/:id/messages
 if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'messages') {
     $me  = auth();
     $sid = (int)$seg[1];
@@ -572,7 +560,6 @@ if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] 
     out(['id' => (int)db()->lastInsertId()], 201);
 }
 
-// GET /api/managers/messages
 if ($method === 'GET' && $seg[0] === 'managers' && ($seg[1] ?? '') === 'messages') {
     auth(true);
     $st = db()->query("
@@ -592,9 +579,6 @@ if ($method === 'GET' && $seg[0] === 'managers' && ($seg[1] ?? '') === 'messages
     out($st->fetchAll());
 }
 
-// ================= СЕРТИФИКАЦИОННЫЕ ЦЕНТРЫ =================
-
-// GET /api/cert-centers  (только менеджер)
 if ($method === 'GET' && $seg[0] === 'cert-centers' && !isset($seg[1])) {
     auth(true);
     $q = '%'.($_GET['q'] ?? '').'%';
@@ -610,7 +594,6 @@ if ($method === 'GET' && $seg[0] === 'cert-centers' && !isset($seg[1])) {
     out($st->fetchAll());
 }
 
-// POST /api/cert-centers  (менеджер создаёт сертификационный центр)
 if ($method === 'POST' && $seg[0] === 'cert-centers' && !isset($seg[1])) {
     auth(true);
     $b = body();
@@ -630,10 +613,15 @@ if ($method === 'POST' && $seg[0] === 'cert-centers' && !isset($seg[1])) {
         $ccid = db()->lastInsertId();
 
         $st2 = db()->prepare(
-            'INSERT INTO lk_users(email,password_hash,name,role,cert_center_id,is_active,created_at)
-             VALUES(?,?,?,\'cert_center\',?,1,NOW())'
+            'INSERT INTO lk_users(email,password_hash,name,role,cert_center_id,is_active,created_at,notifications_enabled)
+             VALUES(?,?,?,\'cert_center\',?,1,NOW(),1)'
         );
         $st2->execute([$b['email'], $hash, $b['contact_person'] ?? $b['name'], $ccid]);
+
+        db()->prepare(
+            'INSERT INTO lk_notification_emails(user_id,email,created_at)
+             VALUES(?,?,NOW())'
+        )->execute([(int)db()->lastInsertId(), $b['email']]);
 
         db()->commit();
     } catch (\Throwable $e) {
@@ -643,7 +631,6 @@ if ($method === 'POST' && $seg[0] === 'cert-centers' && !isset($seg[1])) {
     out(['cert_center_id' => (int)$ccid, 'login' => $b['email'], 'password' => $pass], 201);
 }
 
-// POST /api/cert-centers/:id/reset-password
 if ($method === 'POST' && $seg[0] === 'cert-centers' && isset($seg[1]) && ($seg[2] ?? '') === 'reset-password') {
     auth(true);
     $ccId = (int)$seg[1];
@@ -657,7 +644,6 @@ if ($method === 'POST' && $seg[0] === 'cert-centers' && isset($seg[1]) && ($seg[
     out(['login' => $u['email'], 'new_password' => $newPass]);
 }
 
-// DELETE /api/cert-centers/:id  (soft-delete)
 if ($method === 'DELETE' && $seg[0] === 'cert-centers' && isset($seg[1]) && !isset($seg[2])) {
     auth(true);
     $ccId = (int)$seg[1];
@@ -672,7 +658,6 @@ if ($method === 'DELETE' && $seg[0] === 'cert-centers' && isset($seg[1]) && !iss
     out(['ok' => true]);
 }
 
-// POST /api/cert-centers/:id/restore
 if ($method === 'POST' && $seg[0] === 'cert-centers' && isset($seg[1]) && ($seg[2] ?? '') === 'restore') {
     auth(true);
     $ccId = (int)$seg[1];
@@ -687,9 +672,6 @@ if ($method === 'POST' && $seg[0] === 'cert-centers' && isset($seg[1]) && ($seg[
     out(['ok' => true]);
 }
 
-// ================= ЗАЯВКИ НА СЕРТИФИКАЦИЮ =================
-
-// GET /api/cert-requests  (менеджер видит все, центр — только свои)
 if ($method === 'GET' && $seg[0] === 'cert-requests' && !isset($seg[1])) {
     $me = auth();
     $sql = "SELECT r.*,
@@ -718,6 +700,11 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && !isset($seg[1])) {
         $p[] = $_GET['status'];
     }
 
+    if (!empty($_GET['cert_center_id']) && $me['role'] === 'manager') {
+        $sql .= ' AND r.cert_center_id=?';
+        $p[] = (int)$_GET['cert_center_id'];
+    }
+
     $sql .= ' ORDER BY r.created_at DESC';
 
     $st = db()->prepare($sql);
@@ -733,7 +720,6 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && !isset($seg[1])) {
     out($rows);
 }
 
-// POST /api/cert-requests  (только менеджер, привязывает к центру)
 if ($method === 'POST' && $seg[0] === 'cert-requests' && !isset($seg[1])) {
     $me = auth(true);
     $b = body();
@@ -792,7 +778,6 @@ if ($method === 'POST' && $seg[0] === 'cert-requests' && !isset($seg[1])) {
     out(['id' => $rid], 201);
 }
 
-// GET /api/cert-requests/:id  (детали заявки + позиции товаров)
 if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset($seg[2])) {
     $me = auth();
     $rid = (int)$seg[1];
@@ -812,11 +797,10 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset
     out([
         'request' => $r,
         'items' => $items,
-        'files'   => $files, 
+        'files' => $files,
     ]);
 }
 
-// PUT /api/cert-requests/:id  (смена статуса — менеджер и центр)
 if ($method === 'PUT' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset($seg[2])) {
     $me = auth();
     $rid = (int)$seg[1];
@@ -827,7 +811,6 @@ if ($method === 'PUT' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset
     db()->prepare("UPDATE lk_cert_requests SET status=?, updated_at=NOW(), updated_by_role=?, $seenCol=NOW() WHERE id=?")
        ->execute([$b['status'], $me['role'], $rid]);
 
-    // НОВОЕ: ставим уведомление в очередь для противоположной стороны
     $statusLabels = ['open' => 'Открыта', 'in_progress' => 'В работе', 'closed' => 'Закрыта'];
     $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
     queue_notification($rid, $recipientRole, "Статус изменён на «{$statusLabels[$b['status']]}»");
@@ -835,13 +818,12 @@ if ($method === 'PUT' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset
     out(['ok' => true]);
 }
 
-// GET /api/cert-requests/:id/items — список товарных позиций заявки
 if (
     $method === 'GET'
     && $seg[0] === 'cert-requests'
     && isset($seg[1])
     && ($seg[2] ?? '') === 'items'
-    && !isset($seg[3]) 
+    && !isset($seg[3])
 ) {
     $me = auth();
     $rid = (int)$seg[1];
@@ -851,7 +833,6 @@ if (
     out($st->fetchAll());
 }
 
-// GET /api/cert-requests/:id/export  — выгрузка заявки в Excel-совместимый CSV
 if (
     $method === 'GET'
     && $seg[0] === 'cert-requests'
@@ -861,10 +842,8 @@ if (
     $me  = auth();
     $rid = (int)$seg[1];
 
-    // Проверяем доступ к заявке (менеджер или привязанный сертификационный центр)
     $request = cert_request_guard($me, $rid);
 
-    // Готовим выборку по позициям товара
     $sti = db()->prepare(
         'SELECT i.position_no,
                 i.company,
@@ -886,10 +865,8 @@ if (
     $sti->execute([$rid]);
     $items = $sti->fetchAll();
 
-    // Заголовки для файла
     $filename = 'cert-request-' . $rid . '.csv';
 
-    // Заголовки HTTP для скачивания (Excel дружит с CSV + BOM)[web:227][web:228]
     header('Pragma: public');
     header('Expires: 0');
     header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
@@ -900,34 +877,29 @@ if (
     header('Content-Transfer-Encoding: binary');
 
     $out = fopen('php://output', 'w');
-
-    // UTF-8 BOM, чтобы Excel корректно прочитал русские буквы[web:228]
     fwrite($out, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
-    // Первая строка — шапка таблицы (названия столбцов)
-    // Можно менять формулировки, но структура должна соответствовать текущим полям
     fputcsv(
         $out,
         [
-            '№ позиции',          // position_no
-            'Компания',           // company
-            'Товар',              // product
-            'ТН ВЭД',             // tn_ved
-            'Техническое описание', // tech_description
-            'ТР ТС',              // tr_ts
-            'Форма сертификации', // cert_form
-            'Схема сертификации', // cert_scheme
-            'Стоимость',          // cost
-            'Комментарий',        // comment
-            'Сертификационный центр', // cert_center_name (одинаковый для всех строк)
-            '№ заявки',           // request.id
-            'Дата создания',      // request.created_at
-            'Статус',             // request.status
+            '№ позиции',
+            'Компания',
+            'Товар',
+            'ТН ВЭД',
+            'Техническое описание',
+            'ТР ТС',
+            'Форма сертификации',
+            'Схема сертификации',
+            'Стоимость',
+            'Комментарий',
+            'Сертификационный центр',
+            '№ заявки',
+            'Дата создания',
+            'Статус',
         ],
-        ';' // разделитель — точка с запятой, Excel его хорошо понимает[web:220]
+        ';'
     );
 
-    // Строки с данными по каждой товарной позиции
     foreach ($items as $row) {
         fputcsv(
             $out,
@@ -955,7 +927,6 @@ if (
     exit;
 }
 
-// POST /api/cert-requests/:id/items — добавить новую позицию товара (менеджер и центр)
 if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'items' && !isset($seg[3])) {
     $me = auth();
     $rid = (int)$seg[1];
@@ -989,7 +960,6 @@ if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg
     out(['id' => $itemId, 'position_no' => $nextPos], 201);
 }
 
-// PUT /api/cert-requests/:id/items/:itemId — редактировать одну позицию (обе стороны)
 if ($method === 'PUT' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'items' && isset($seg[3])) {
     $me = auth();
     $rid = (int)$seg[1];
@@ -1009,10 +979,13 @@ if ($method === 'PUT' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[
     db()->prepare('UPDATE lk_cert_request_items SET '.implode(',', $set).', updated_at=NOW() WHERE id=?')->execute($vals);
 
     db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
+
+    $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
+    queue_notification($rid, $recipientRole, 'Обновлены данные по товарной позиции');
+
     out(['ok' => true]);
 }
 
-// DELETE /api/cert-requests/:id/items/:itemId — удалить позицию (обе стороны, минимум 1 позиция должна остаться)
 if ($method === 'DELETE' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'items' && isset($seg[3])) {
     $me = auth();
     $rid = (int)$seg[1];
@@ -1024,10 +997,13 @@ if ($method === 'DELETE' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($s
 
     db()->prepare('DELETE FROM lk_cert_request_items WHERE id=? AND request_id=?')->execute([$iid, $rid]);
     db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
+
+    $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
+    queue_notification($rid, $recipientRole, 'Удалена товарная позиция');
+
     out(['ok' => true]);
 }
 
-// DELETE /api/cert-requests/:id  (только менеджер)
 if ($method === 'DELETE' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset($seg[2])) {
     auth(true);
     $rid = (int)$seg[1];
@@ -1037,7 +1013,6 @@ if ($method === 'DELETE' && $seg[0] === 'cert-requests' && isset($seg[1]) && !is
     out(['ok' => true]);
 }
 
-// POST /api/cert-requests/:id/items/:itemId/files  (файл или ссылка к позиции товара)
 if (
     $method === 'POST'
     && $seg[0] === 'cert-requests'
@@ -1050,10 +1025,8 @@ if (
     $rid = (int)$seg[1];
     $iid = (int)$seg[3];
 
-    // проверяем, что заявка существует и доступна
     cert_request_guard($me, $rid);
 
-    // проверяем, что позиция товара существует и принадлежит этой заявке
     $stItem = db()->prepare('SELECT id, request_id FROM lk_cert_request_items WHERE id=?');
     $stItem->execute([$iid]);
     $item = $stItem->fetch();
@@ -1061,7 +1034,6 @@ if (
         err('Позиция товара не найдена или не принадлежит заявке', 404);
     }
 
-    // ССЫЛКА
     if (!empty($_POST['url'])) {
         db()->prepare(
             'INSERT INTO lk_cert_request_files(
@@ -1080,14 +1052,11 @@ if (
         )->execute([$me['role'], $rid]);
 
         $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
-        queue_notification($rid, $recipientRole, !empty($_POST['url'])
-        ? "Добавлена ссылка на вложение"
-        : "Добавлен файл: {$file['name']}");
+        queue_notification($rid, $recipientRole, 'Добавлена ссылка на вложение');
 
         out(['ok' => true], 201);
     }
 
-    // ФАЙЛ
     if (empty($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) {
         err('Файл не загружен');
     }
@@ -1123,14 +1092,11 @@ if (
     )->execute([$me['role'], $rid]);
 
     $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
-    queue_notification($rid, $recipientRole, !empty($_POST['url'])
-    ? "Добавлена ссылка на вложение"
-    : "Добавлен файл: {$file['name']}");
+    queue_notification($rid, $recipientRole, "Добавлен файл: {$file['name']}");
 
     out(['id' => (int)db()->lastInsertId()], 201);
 }
 
-// GET /api/cert-requests/:id/items/:itemId/files/:fileId/download
 if (
     $method === 'GET'
     && $seg[0] === 'cert-requests'
@@ -1166,10 +1132,8 @@ if (
     if (!file_exists($path)) err('Файл не найден', 404);
 
     send_file_download($path, $f['filename_original']);
-
 }
 
-// DELETE /api/cert-requests/:id/items/:itemId/files/:fileId — удалить вложение
 if (
     $method === 'DELETE'
     && $seg[0] === 'cert-requests'
@@ -1185,10 +1149,8 @@ if (
     $iid = (int)$seg[3];
     $fid = (int)$seg[5];
 
-    // Проверяем доступ к заявке
     cert_request_guard($me, $rid);
 
-    // Проверяем, что позиция товара существует и принадлежит этой заявке
     $stItem = db()->prepare('SELECT id, request_id FROM lk_cert_request_items WHERE id=?');
     $stItem->execute([$iid]);
     $item = $stItem->fetch();
@@ -1196,7 +1158,6 @@ if (
         err('Позиция товара не найдена или не принадлежит заявке', 404);
     }
 
-    // Ищем файл/ссылку
     $stFile = db()->prepare(
         'SELECT * FROM lk_cert_request_files WHERE id=? AND request_id=? AND item_id=?'
     );
@@ -1206,7 +1167,6 @@ if (
         err('Вложение не найдено', 404);
     }
 
-    // Если это настоящий файл — удаляем с диска
     if ($file['file_type'] === 'file' && !empty($file['filename_stored'])) {
         $path = UPLOAD_PATH.'/cert/'.$rid.'/'.$file['filename_stored'];
         if (file_exists($path)) {
@@ -1214,20 +1174,20 @@ if (
         }
     }
 
-    // Удаляем запись из БД
     db()->prepare(
         'DELETE FROM lk_cert_request_files WHERE id=? AND request_id=? AND item_id=?'
     )->execute([$fid, $rid, $iid]);
 
-    // Обновляем метаданные заявки (чтобы has_unread корректно считался)
     db()->prepare(
         'UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?'
     )->execute([$me['role'], $rid]);
 
+    $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
+    queue_notification($rid, $recipientRole, 'Удалено вложение');
+
     out(['ok' => true]);
 }
 
-// GET /api/cert-requests/:id/items/:itemId/files
 if (
     $method === 'GET'
     && $seg[0] === 'cert-requests'
@@ -1257,9 +1217,6 @@ if (
     out($st->fetchAll());
 }
 
-// ================= ЧАТ ЗАЯВКИ =================
-
-// GET /api/cert-requests/:id/messages
 if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'messages') {
     $me = auth();
     $rid = (int)$seg[1];
@@ -1277,7 +1234,6 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[
     out($st->fetchAll());
 }
 
-// POST /api/cert-requests/:id/messages
 if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'messages') {
     $me = auth();
     $rid = (int)$seg[1];
@@ -1288,7 +1244,6 @@ if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg
        ->execute([$rid, $me['sub'], $me['role'], $text]);
     db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
 
-    // НОВОЕ
     $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
     $preview = mb_substr($text, 0, 80);
     queue_notification($rid, $recipientRole, "Новое сообщение: «{$preview}»");
@@ -1296,26 +1251,46 @@ if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg
     out(['id' => (int)db()->lastInsertId()], 201);
 }
 
-// ================= НАСТРОЙКИ УВЕДОМЛЕНИЙ =================
-
-// GET /api/me/notifications
 if ($method === 'GET' && $seg[0] === 'me' && ($seg[1] ?? '') === 'notifications') {
     $me = auth();
-    $st = db()->prepare('SELECT notifications_enabled FROM lk_users WHERE id=?');
+    $st = db()->prepare('SELECT email, notifications_enabled FROM lk_users WHERE id=?');
     $st->execute([$me['sub']]);
-    out(['enabled' => (bool)$st->fetchColumn()]);
+    $user = $st->fetch();
+    if (!$user) err('Пользователь не найден', 404);
+
+    out([
+        'enabled' => (bool)$user['notifications_enabled'],
+        'emails'  => get_notification_emails((int)$me['sub'], (string)$user['email']),
+    ]);
 }
 
-// PUT /api/me/notifications
 if ($method === 'PUT' && $seg[0] === 'me' && ($seg[1] ?? '') === 'notifications') {
     $me = auth();
     $b = body();
     $enabled = !empty($b['enabled']) ? 1 : 0;
-    db()->prepare('UPDATE lk_users SET notifications_enabled=? WHERE id=?')->execute([$enabled, $me['sub']]);
+    $emails = normalize_email_list((array)($b['emails'] ?? []));
+
+    db()->beginTransaction();
+    try {
+        db()->prepare('UPDATE lk_users SET notifications_enabled=? WHERE id=?')->execute([$enabled, $me['sub']]);
+        db()->prepare('DELETE FROM lk_notification_emails WHERE user_id=?')->execute([$me['sub']]);
+
+        if ($emails) {
+            $ins = db()->prepare('INSERT INTO lk_notification_emails(user_id,email,created_at) VALUES(?,?,NOW())');
+            foreach ($emails as $email) {
+                $ins->execute([$me['sub'], $email]);
+            }
+        }
+
+        db()->commit();
+    } catch (\Throwable $e) {
+        db()->rollBack();
+        err('Ошибка БД: ' . $e->getMessage());
+    }
+
     out(['ok' => true]);
 }
 
-// GET /api/managers/cert-stats  (для дашборда менеджера, опционально)
 if ($method === 'GET' && $seg[0] === 'managers' && ($seg[1] ?? '') === 'cert-stats') {
     auth(true);
     out([

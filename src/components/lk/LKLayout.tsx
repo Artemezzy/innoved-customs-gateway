@@ -9,14 +9,13 @@ import {
   ClipboardList,
   LogOut,
   Menu,
-
+  Bell,
   X,
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
-
 
 interface NavItem {
   to: string;
@@ -43,11 +42,14 @@ export function LKLayout({ children }: { children: ReactNode }) {
           { to: '/lk/messages', label: 'Сообщения', icon: MessageSquare },
           { to: '/lk/cert-centers', label: 'Сертификационные центры', icon: Award },
           { to: '/lk/cert-requests', label: 'Заявки на сертификацию', icon: ClipboardList },
+          { to: '/lk/notifications', label: 'Уведомления', icon: Bell },
         ]
       : user.role === 'cert_center'
-        ? [{ to: '/lk/cert-requests', label: 'Мои заявки', icon: ClipboardList }]
+        ? [
+            { to: '/lk/cert-requests', label: 'Мои заявки', icon: ClipboardList },
+            { to: '/lk/notifications', label: 'Уведомления', icon: Bell },
+          ]
         : [{ to: '/lk/shipments', label: 'Мои поставки', icon: Package }];
-
 
   const handleLogout = () => {
     logout();
@@ -63,7 +65,6 @@ export function LKLayout({ children }: { children: ReactNode }) {
         <div className="font-bold text-lg tracking-wide">Личный кабинет</div>
       </div>
       <nav className="flex-1 px-3 py-4 space-y-1">
-
         {navItems.map((item) => {
           const active =
             location.pathname === item.to ||
@@ -95,7 +96,6 @@ export function LKLayout({ children }: { children: ReactNode }) {
                 ? 'Сертификационный центр'
                 : 'Клиент'}
           </div>
-
         </div>
         <Button
           variant="secondary"
@@ -112,18 +112,15 @@ export function LKLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen flex bg-muted/30">
-      {/* Desktop sidebar */}
       <aside className="hidden md:block w-[240px] shrink-0">
         <div className="fixed top-0 left-0 h-screen w-[240px]">
           <SidebarContent />
         </div>
       </aside>
 
-      {/* Mobile top bar */}
       <div className="md:hidden fixed top-0 inset-x-0 z-40 h-14 border-b bg-background flex items-center justify-between px-4">
         <div className="font-semibold">Личный кабинет</div>
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
               <Menu className="h-5 w-5" />

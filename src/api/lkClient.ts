@@ -68,7 +68,6 @@ async function request<T>(
   const text = await res.text();
 
   if (!text) {
-    // пустой ответ — вернём undefined и не будем падать
     return undefined as T;
   }
 
@@ -79,8 +78,6 @@ async function request<T>(
     throw new Error('Некорректный ответ сервера');
   }
 }
-
-// ---------- Public API ----------
 
 export async function lkLogin(email: string, password: string) {
   if (USE_MOCK) return mock.mockLogin(email, password);
@@ -217,7 +214,6 @@ export const lkApi = {
           text,
         }),
 
-  // НОВОЕ: сброс пароля клиента
   resetClientPassword: (clientId: number) =>
     request<{
       user_id: number;
@@ -227,14 +223,12 @@ export const lkApi = {
       new_password: string;
     }>('POST', `/clients/${clientId}/reset-password`),
 
-  // НОВОЕ: удаление клиента (soft-delete) и восстановление
   deleteClient: (clientId: number) =>
     request<{ ok: boolean }>('DELETE', `/clients/${clientId}`),
 
   restoreClient: (clientId: number) =>
     request<{ ok: boolean }>('POST', `/clients/${clientId}/restore`),
 
-  // ============ Certification centers ============
   certCenters: (q?: string, status?: 'active' | 'archived') => {
     if (USE_MOCK) return mock.mockCertCenters(q);
     const qs = new URLSearchParams();
@@ -270,7 +264,6 @@ export const lkApi = {
   restoreCertCenter: (id: number) =>
     request<{ ok: boolean }>('POST', `/cert-centers/${id}/restore`),
   
-  // ============ Certification requests ============
   certRequests: (params: { status?: string; cert_center_id?: number } = {}) => {
     if (USE_MOCK) return mock.mockCertRequests(params);
     const qs = new URLSearchParams();
@@ -293,7 +286,6 @@ export const lkApi = {
       ? mock.mockCertRequest(id)
       : request<import('@/types/lk').CertRequestDetails>('GET', `/cert-requests/${id}`),
 
-  // товары внутри заявки
   certRequestItems: (id: number) =>
     request<import('@/types/lk').CertRequestItem[]>('GET', `/cert-requests/${id}/items`),
 
@@ -334,7 +326,6 @@ export const lkApi = {
       ? mock.mockDeleteCertRequest(id)
       : request<{ ok: boolean }>('DELETE', `/cert-requests/${id}`),
 
-  // файлы/ссылки для КОНКРЕТНОЙ позиции товара
   certItemFiles: (requestId: number, itemId: number) =>
     request<import('@/types/lk').CertFile[]>(
       'GET',
@@ -381,7 +372,6 @@ export const lkApi = {
     const contentType = res.headers.get('content-type') || '';
     const contentDisposition = res.headers.get('content-disposition') || '';
 
-    // Извлекаем имя файла из Content-Disposition, если пришло
     let serverFilename: string | undefined;
     const utfMatch = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i);
     const asciiMatch = contentDisposition.match(/filename="?([^"]+)"?/i);
@@ -391,7 +381,6 @@ export const lkApi = {
       serverFilename = asciiMatch[1];
     }
 
-    // Если сервер вернул JSON со ссылкой — качаем по ней (или открываем)
     if (contentType.includes('application/json')) {
       const data = await res.json().catch(() => null as any);
       const url: string | undefined =
@@ -401,7 +390,6 @@ export const lkApi = {
         throw new Error('Сервер вернул JSON без ссылки на файл');
       }
 
-      // Пробуем скачать содержимое по этой ссылке
       try {
         const fileRes = await fetch(url, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -418,7 +406,6 @@ export const lkApi = {
         URL.revokeObjectURL(objectUrl);
         return;
       } catch (e) {
-        // Фолбэк — просто открыть ссылку
         window.open(url, '_blank', 'noopener,noreferrer');
         return;
       }
@@ -435,12 +422,11 @@ export const lkApi = {
     URL.revokeObjectURL(url);
   },
 
-
   deleteCertFile: (requestId: number, itemId: number, fileId: number) =>
-  request<{ ok: boolean }>(
-    'DELETE',
-    `/cert-requests/${requestId}/items/${itemId}/files/${fileId}`
-  ),
+    request<{ ok: boolean }>(
+      'DELETE',
+      `/cert-requests/${requestId}/items/${itemId}/files/${fileId}`
+    ),
 
   exportCertRequest: async (requestId: number) => {
     const token = getAuthToken();
@@ -481,9 +467,9 @@ export const lkApi = {
         ),
 
   getNotificationSettings: () =>
-  request<{ enabled: boolean }>('GET', '/me/notifications'),
+    request<import('@/types/lk').NotificationSettings>('GET', '/me/notifications'),
 
-  updateNotificationSettings: (enabled: boolean) =>
-  request<{ ok: boolean }>('PUT', '/me/notifications', { enabled }),
+  updateNotificationSettings: (payload: { enabled: boolean; emails: string[] }) =>
+    request<{ ok: boolean }>('PUT', '/me/notifications', payload),
 
 };
