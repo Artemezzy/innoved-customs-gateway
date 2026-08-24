@@ -143,7 +143,23 @@ export const CERT_STATUS_ORDER: CertRequestStatus[] = [
   'closed',
 ];
 
-export interface CertRequest {
+// ============ Applicant / Manufacturer (часть заявки) ============
+
+export interface CertApplicant {
+  applicant_org: string;
+  applicant_address: string;
+  applicant_head: string;
+  applicant_position: string;
+  applicant_email: string;
+}
+
+export interface CertManufacturer {
+  manufacturer_org: string;
+  manufacturer_address: string;
+  manufacturer_country: string;
+}
+
+export interface CertRequest extends CertApplicant, CertManufacturer {
   id: number;
   number: string;
   company: string;
@@ -169,6 +185,14 @@ export interface CertRequestItem {
   cert_scheme: string;
   cost: string;
   comment: string;
+  trademark: string;
+  model_article: string;
+  contract_invoice: string;
+  quantity: string;
+  delivery_deadline: string;
+  samples_required: string;
+  samples_city: string;
+  is_checked: boolean;
 }
 
 export interface CertFile {
