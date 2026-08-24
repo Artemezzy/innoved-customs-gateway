@@ -806,12 +806,22 @@ if ($method === 'PUT' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset
     $rid = (int)$seg[1];
     cert_request_guard($me, $rid);
     $b = body();
-    if (!in_array($b['status'] ?? '', ['open','in_progress','closed'])) err('Недопустимый статус');
+    $validStatuses = ['open','estimation','documents_pending','layout_approved','payment','certificate_issued','rejected','closed'];
+    if (!in_array($b['status'] ?? '', $validStatuses, true)) err('Недопустимый статус');
     $seenCol = $me['role'] === 'manager' ? 'manager_seen_at' : 'center_seen_at';
     db()->prepare("UPDATE lk_cert_requests SET status=?, updated_at=NOW(), updated_by_role=?, $seenCol=NOW() WHERE id=?")
        ->execute([$b['status'], $me['role'], $rid]);
 
-    $statusLabels = ['open' => 'Открыта', 'in_progress' => 'В работе', 'closed' => 'Закрыта'];
+    $statusLabels = [
+        'open' => 'Открыто',
+        'estimation' => 'Просчёт',
+        'documents_pending' => 'Предоставление документов',
+        'layout_approved' => 'Макет согласован',
+        'payment' => 'Оплата',
+        'certificate_issued' => 'Сертификат выпущен',
+        'rejected' => 'Заявка отклонена',
+        'closed' => 'Закрыто',
+    ];
     $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
     queue_notification($rid, $recipientRole, "Статус изменён на «{$statusLabels[$b['status']]}»");
 

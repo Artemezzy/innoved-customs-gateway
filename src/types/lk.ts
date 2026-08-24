@@ -100,19 +100,48 @@ export interface CertCenter {
   created_at: string;
 }
 
-export type CertRequestStatus = 'open' | 'in_progress' | 'closed';
+export type CertRequestStatus =
+  | 'open'
+  | 'estimation'
+  | 'documents_pending'
+  | 'layout_approved'
+  | 'payment'
+  | 'certificate_issued'
+  | 'rejected'
+  | 'closed';
 
 export const CERT_STATUS_LABELS: Record<CertRequestStatus, string> = {
   open: 'Открыто',
-  in_progress: 'В работе',
+  estimation: 'Просчёт',
+  documents_pending: 'Предоставление документов',
+  layout_approved: 'Макет согласован',
+  payment: 'Оплата',
+  certificate_issued: 'Сертификат выпущен',
+  rejected: 'Заявка отклонена',
   closed: 'Закрыто',
 };
 
 export const CERT_STATUS_COLORS: Record<CertRequestStatus, string> = {
   open: 'bg-blue-100 text-blue-800',
-  in_progress: 'bg-yellow-100 text-yellow-800',
-  closed: 'bg-green-100 text-green-800',
+  estimation: 'bg-purple-100 text-purple-800',
+  documents_pending: 'bg-yellow-100 text-yellow-800',
+  layout_approved: 'bg-indigo-100 text-indigo-800',
+  payment: 'bg-orange-100 text-orange-800',
+  certificate_issued: 'bg-green-100 text-green-800',
+  rejected: 'bg-red-100 text-red-800',
+  closed: 'bg-gray-100 text-gray-700',
 };
+
+export const CERT_STATUS_ORDER: CertRequestStatus[] = [
+  'open',
+  'estimation',
+  'documents_pending',
+  'layout_approved',
+  'payment',
+  'certificate_issued',
+  'rejected',
+  'closed',
+];
 
 export interface CertRequest {
   id: number;
