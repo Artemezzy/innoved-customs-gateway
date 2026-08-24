@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
-import { CertRequestStatus, CERT_STATUS_LABELS } from '@/types/lk';
+import { CertRequestStatus, CERT_STATUS_LABELS, CERT_STATUS_ORDER } from '@/types/lk';
 import {
   Select,
   SelectContent,
@@ -34,11 +34,11 @@ export function CertRequestStatusSelect({ requestId, value, disabled }: Props) {
       onValueChange={(v) => mut.mutate(v as CertRequestStatus)}
       disabled={disabled || mut.isPending}
     >
-      <SelectTrigger className="w-48">
+      <SelectTrigger className="w-64">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>
-        {(Object.keys(CERT_STATUS_LABELS) as CertRequestStatus[]).map((s) => (
+        {CERT_STATUS_ORDER.map((s) => (
           <SelectItem key={s} value={s}>
             {CERT_STATUS_LABELS[s]}
           </SelectItem>
