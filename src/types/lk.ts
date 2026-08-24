@@ -87,8 +87,6 @@ export interface ManagerStats {
   messages_unread: number;
 }
 
-// ============ Certification centers & requests ============
-
 export interface CertCenter {
   id: number;
   name: string;
@@ -155,19 +153,35 @@ export interface CertRequest {
   has_unread_messages: boolean;
   has_unread_changes: boolean;
   has_unread: boolean;
+  applicant_org: string;
+  applicant_address: string;
+  applicant_head: string;
+  applicant_position: string;
+  applicant_email: string;
+  manufacturer_org: string;
+  manufacturer_address: string;
+  manufacturer_country: string;
 }
 
 export interface CertRequestItem {
   id: number;
   position_no: number;
+  is_checked: boolean;
   company: string;
   product: string;
-  tn_ved: string;
   tech_description: string;
+  model_article: string;
+  trademark: string;
+  tn_ved: string;
+  contract_invoice: string;
+  quantity: string;
   tr_ts: string;
   cert_form: string;
   cert_scheme: string;
   cost: string;
+  production_deadline: string;
+  samples_required: string;
+  samples_city: string;
   comment: string;
 }
 
