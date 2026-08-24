@@ -171,7 +171,6 @@ function doc_table_xml(string $title, array $rows): string {
     $xml .= '</w:tbl>';
     return $xml;
 }
-
 function generate_cert_doc(array $request, array $items): string {
     $date = date('d/m/y');
     $title = 'Заявка на сертификацию продукции № ' . cert_request_number((int)$request['id']) . ' от ' . $date;
@@ -212,6 +211,13 @@ function generate_cert_doc(array $request, array $items): string {
             ['Контракт, договор, инвойс', (string)$item['contract_invoice']],
             ['Количество', (string)$item['quantity']],
             ['Дополнительно: ТУ, ГОСТ', (string)$item['comment']],
+            ['ТР ТС', (string)$item['tr_ts']],
+            ['Форма сертификации', (string)$item['cert_form']],
+            ['Схема сертификации', (string)$item['cert_scheme']],
+            ['Стоимость', (string)$item['cost']],
+            ['Срок изготовления', (string)$item['production_deadline']],
+            ['Необходимость образцов', (string)$item['samples_required']],
+            ['В какой город доставлять образцы', (string)$item['samples_city']],
         ]);
     }
     $body .= '<w:p/>';
