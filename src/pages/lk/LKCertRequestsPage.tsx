@@ -36,7 +36,7 @@ import {
 import { CertStatusBadge } from '@/components/lk/CertStatusBadge';
 import { UnreadDots } from '@/components/lk/UnreadDots';
 import { CreateCertRequestModal } from '@/components/lk/CreateCertRequestModal';
-import { CertRequestStatus, CERT_STATUS_LABELS } from '@/types/lk';
+import { CERT_STATUS_LABELS, CERT_STATUS_ORDER } from '@/types/lk';
 
 export default function LKCertRequestsPage() {
   const { user } = useAuth();
@@ -100,7 +100,7 @@ export default function LKCertRequestsPage() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Все статусы</SelectItem>
-            {(Object.keys(CERT_STATUS_LABELS) as CertRequestStatus[]).map((s) => (
+            {CERT_STATUS_ORDER.map((s) => (
               <SelectItem key={s} value={s}>
                 {CERT_STATUS_LABELS[s]}
               </SelectItem>
