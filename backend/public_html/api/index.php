@@ -385,7 +385,7 @@ if (
 
 if ($method === 'GET' && $seg[0] === 'cert-requests' && !isset($seg[1])) {
     $me = auth();
-    $sql = "SELECT r.*, cc.name AS cert_center_name, (SELECT i.company FROM lk_cert_request_items i WHERE i.request_id = r.id ORDER BY i.position_no ASC, i.id ASC LIMIT 1) AS company FROM lk_CERT_REQUESTS r JOIN lk_cert_centers cc ON cc.id = r.cert_center_id WHERE 1=1";
+    $sql = "SELECT r.*, cc.name AS cert_center_name, (SELECT i.company FROM lk_cert_request_items i WHERE i.request_id = r.id ORDER BY i.position_no ASC, i.id ASC LIMIT 1) AS company FROM lk_cert_requests r JOIN lk_cert_centers cc ON cc.id = r.cert_center_id WHERE 1=1";
     $p = [];
     if ($me['role'] === 'cert_center') { $sql .= ' AND r.cert_center_id=?'; $p[] = $me['cert_center_id']; }
     elseif ($me['role'] !== 'manager') err('Недопустимая роль', 403);
