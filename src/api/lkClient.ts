@@ -195,10 +195,30 @@ export const lkApi = {
       ? mock.mockMessages(shipmentId, since)
       : request<import('@/types/lk').Message[]>('GET', `/shipments/${shipmentId}/messages${since ? `?since=${since}` : ''}`),
 
-  sendMessage: (shipmentId: number, text: string, sender?: { role: import('@/types/lk').Role; name: string; user_id: number }) =>
-    USE_MOCK
-      ? mock.mockSendMessage(shipmentId, text, sender)
-      : request<import('@/types/lk').Message>('POST', `/shipments/${shipmentId}/messages`, { text }),
+  sendMessage: (shipmentId: number, text: string, file?: File | null) => {
+    if (USE_MOCK) return mock.mockSendMessage(shipmentId, text, undefined);
+    const fd = new FormData();
+    fd.append('text', text);
+    if (file) fd.append('file', file);
+    return request<{ id: number }>('POST', `/shipments/${shipmentId}/messages`, fd, true);
+  },
+
+  downloadMessageFile: async (shipmentId: number, messageId: number, filename?: string) => {
+    const token = getAuthToken();
+    const res = await fetch(`${BASE_URL}/shipments/${shipmentId}/messages/${messageId}/download`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!res.ok) throw new Error(`Не удалось скачать (HTTP ${res.status})`);
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || `file-${messageId}`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  },
 
   resetClientPassword: (clientId: number) =>
     request<{ user_id: number; client_id: number; login: string; name: string; new_password: string }>('POST', `/clients/${clientId}/reset-password`),
@@ -379,10 +399,30 @@ export const lkApi = {
       ? mock.mockCertMessages(id, since)
       : request<import('@/types/lk').CertMessage[]>('GET', `/cert-requests/${id}/messages${since ? `?since=${since}` : ''}`),
 
-  sendCertMessage: (id: number, text: string, sender?: { role: import('@/types/lk').Role; name: string; user_id: number }) =>
-    USE_MOCK
-      ? mock.mockSendCertMessage(id, text, sender)
-      : request<import('@/types/lk').CertMessage>('POST', `/cert-requests/${id}/messages`, { text }),
+  sendCertMessage: (id: number, text: string, file?: File | null) => {
+    if (USE_MOCK) return mock.mockSendCertMessage(id, text, undefined);
+    const fd = new FormData();
+    fd.append('text', text);
+    if (file) fd.append('file', file);
+    return request<{ id: number }>('POST', `/cert-requests/${id}/messages`, fd, true);
+  },
+
+  downloadCertMessageFile: async (requestId: number, messageId: number, filename?: string) => {
+    const token = getAuthToken();
+    const res = await fetch(`${BASE_URL}/cert-requests/${requestId}/messages/${messageId}/download`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!res.ok) throw new Error(`Не удалось скачать (HTTP ${res.status})`);
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || `file-${messageId}`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  },
 
   getNotificationSettings: () => request<import('@/types/lk').NotificationSettings>('GET', '/me/notifications'),
   updateNotificationSettings: (payload: { enabled: boolean; emails: string[] }) => request<{ ok: boolean }>('PUT', '/me/notifications', payload),

@@ -79,6 +79,9 @@ export interface Message {
   text: string;
   is_read: boolean;
   created_at: string;
+  attachment_original?: string | null;
+  attachment_stored?: string | null;
+  attachment_size?: number | null;
 }
 
 export interface ManagerStats {
@@ -208,6 +211,9 @@ export interface CertMessage {
   text: string;
   is_read: boolean;
   created_at: string;
+  attachment_original?: string | null;
+  attachment_stored?: string | null;
+  attachment_size?: number | null;
 }
 
 export interface NotificationSettings {

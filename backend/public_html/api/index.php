@@ -142,6 +142,38 @@ function queue_notification(int $requestId, string $recipientRole, string $event
             ->execute([$requestId, $recipientRole, $eventLine, $now, $now]);
     }
 }
+
+const CHAT_ALLOWED_EXT = ['pdf','doc','docx','xls','xlsx','jpg','jpeg','png','txt','zip'];
+
+function handle_chat_attachment(): ?array {
+    if (empty($_FILES['file']) || $_FILES['file']['error'] === UPLOAD_ERR_NO_FILE) {
+        return null;
+    }
+    if ($_FILES['file']['error'] !== UPLOAD_ERR_OK) {
+        err('Ошибка загрузки файла', 400);
+    }
+    $file = $_FILES['file'];
+    if ($file['size'] > MAX_FILE_SIZE) err('Файл слишком большой (макс. 20 МБ)', 400);
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    if (!in_array($ext, CHAT_ALLOWED_EXT, true)) err('Недопустимый тип файла', 400);
+    return $file;
+}
+
+function store_chat_attachment(array $file, string $subdir): array {
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    $dir = UPLOAD_PATH . '/' . $subdir;
+    if (!is_dir($dir)) mkdir($dir, 0755, true);
+    $stored = uniqid('msg_') . '.' . $ext;
+    if (!move_uploaded_file($file['tmp_name'], $dir . '/' . $stored)) {
+        err('Ошибка сохранения файла', 500);
+    }
+    return [
+        'original' => $file['name'],
+        'stored'   => $stored,
+        'size'     => (int)$file['size'],
+    ];
+}
+
 function cert_request_number(int $id): string { return 'ИН-' . str_pad((string)$id, 6, '0', STR_PAD_LEFT); }
 function doc_escape(string $s): string {
     return htmlspecialchars($s, ENT_QUOTES | ENT_XML1, 'UTF-8');
@@ -615,17 +647,50 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[
     $st = db()->prepare('SELECT * FROM lk_cert_request_files WHERE request_id=? AND item_id=? ORDER BY created_at DESC'); $st->execute([$rid, $iid]); out($st->fetchAll());
 }
 
-if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'messages') {
+// ЗАМЕНИТЬ существующий блок GET/POST ".../cert-requests/:id/messages" на код ниже.
+
+if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'messages' && !isset($seg[3])) {
     $me = auth(); $rid = (int)$seg[1]; cert_request_guard($me, $rid); $since = $_GET['since'] ?? '1970-01-01 00:00:00';
     $st = db()->prepare('SELECT m.*, u.name AS sender_name FROM lk_cert_messages m JOIN lk_users u ON u.id=m.user_id WHERE m.request_id=? AND m.created_at>? ORDER BY m.created_at ASC');
     $st->execute([$rid, $since]); $other = $me['role'] === 'manager' ? 'cert_center' : 'manager'; db()->prepare('UPDATE lk_cert_messages SET is_read=1 WHERE request_id=? AND role=? AND is_read=0')->execute([$rid, $other]); out($st->fetchAll());
 }
 
-if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'messages') {
-    $me = auth(); $rid = (int)$seg[1]; cert_request_guard($me, $rid); $text = trim(body()['text'] ?? ''); if (!$text) err('Пустое сообщение');
-    db()->prepare('INSERT INTO lk_cert_messages(request_id,user_id,role,text,is_read,created_at) VALUES(?,?,?,?,0,NOW())')->execute([$rid, $me['sub'], $me['role'], $text]);
+// POST .../cert-requests/:id/messages  (multipart/form-data: text + опционально file)
+if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'messages' && !isset($seg[3])) {
+    $me = auth(); $rid = (int)$seg[1]; cert_request_guard($me, $rid);
+    $text = trim((string)($_POST['text'] ?? ''));
+    $attachedFile = handle_chat_attachment();
+    if (!$text && !$attachedFile) err('Пустое сообщение');
+
+    $attachment = $attachedFile ? store_chat_attachment($attachedFile, 'chat/cert-requests/' . $rid) : null;
+
+    db()->prepare('INSERT INTO lk_cert_messages(request_id,user_id,role,text,attachment_original,attachment_stored,attachment_size,is_read,created_at) VALUES(?,?,?,?,?,?,?,0,NOW())')
+        ->execute([
+            $rid,
+            $me['sub'],
+            $me['role'],
+            $text,
+            $attachment['original'] ?? null,
+            $attachment['stored'] ?? null,
+            $attachment['size'] ?? null,
+        ]);
     db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
-    $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager'; $preview = mb_substr($text, 0, 80); queue_notification($rid, $recipientRole, "Новое сообщение: «{$preview}»"); out(['id' => (int)db()->lastInsertId()], 201);
+    $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
+    $preview = $text !== '' ? mb_substr($text, 0, 80) : ('Файл: ' . ($attachment['original'] ?? ''));
+    queue_notification($rid, $recipientRole, "Новое сообщение: «{$preview}»");
+    out(['id' => (int)db()->lastInsertId()], 201);
+}
+
+// GET .../cert-requests/:id/messages/:msgId/download — скачивание вложения сообщения
+if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'messages' && isset($seg[3]) && ($seg[4] ?? '') === 'download') {
+    $me = auth(); $rid = (int)$seg[1]; cert_request_guard($me, $rid);
+    $mid = (int)$seg[3];
+    $st = db()->prepare('SELECT * FROM lk_cert_messages WHERE id=? AND request_id=?');
+    $st->execute([$mid, $rid]); $msg = $st->fetch();
+    if (!$msg || empty($msg['attachment_stored'])) err('Файл не найден', 404);
+    $path = UPLOAD_PATH . '/chat/cert-requests/' . $rid . '/' . $msg['attachment_stored'];
+    if (!file_exists($path)) err('Файл не найден', 404);
+    send_file_download($path, $msg['attachment_original']);
 }
 
 if ($method === 'GET' && $seg[0] === 'me' && ($seg[1] ?? '') === 'notifications') {
@@ -825,7 +890,7 @@ if ($method === 'DELETE' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2
 }
 
 // GET /api/shipments/:id/messages
-if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'messages') {
+if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'messages' && !isset($seg[3])) {
     $me  = auth();
     $sid = (int)$seg[1];
     if ($me['role'] === 'client') {
@@ -834,7 +899,7 @@ if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?
     }
     $since = $_GET['since'] ?? '1970-01-01 00:00:00';
     $st = db()->prepare(
-        'SELECT m*, u.name AS sender_name
+        'SELECT m.*, u.name AS sender_name
          FROM lk_messages m
          JOIN lk_users u ON u.id=m.user_id
          WHERE m.shipment_id=? AND m.created_at>?
@@ -847,22 +912,51 @@ if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?
     out($st->fetchAll());
 }
 
-// POST /api/shipments/:id/messages
-if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'messages') {
+// POST /api/shipments/:id/messages  (multipart/form-data: text + опционально file)
+if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'messages' && !isset($seg[3])) {
     $me  = auth();
     $sid = (int)$seg[1];
     if ($me['role'] === 'client') {
         $c = db()->prepare('SELECT client_id FROM lk_shipments WHERE id=?'); $c->execute([$sid]);
         $s = $c->fetch(); if (!$s || $s['client_id'] != $me['client_id']) err('Нет доступа', 403);
     }
-    $text = trim(body()['text'] ?? '');
-    if (!$text) err('Пустое сообщение');
+    $text = trim((string)($_POST['text'] ?? ''));
+    $attachedFile = handle_chat_attachment();
+    if (!$text && !$attachedFile) err('Пустое сообщение');
+
+    $attachment = $attachedFile ? store_chat_attachment($attachedFile, 'chat/shipments/' . $sid) : null;
+
     $st = db()->prepare(
-        'INSERT INTO lk_messages(shipment_id,user_id,role,text,is_read,created_at)
-         VALUES(?,?,?,?,0,NOW())'
+        'INSERT INTO lk_messages(shipment_id,user_id,role,text,attachment_original,attachment_stored,attachment_size,is_read,created_at)
+         VALUES(?,?,?,?,?,?,?,0,NOW())'
     );
-    $st->execute([$sid, $me['sub'], $me['role'], $text]);
+    $st->execute([
+        $sid,
+        $me['sub'],
+        $me['role'],
+        $text,
+        $attachment['original'] ?? null,
+        $attachment['stored'] ?? null,
+        $attachment['size'] ?? null,
+    ]);
     out(['id' => (int)db()->lastInsertId()], 201);
+}
+
+// GET /api/shipments/:id/messages/:msgId/download — скачивание вложения сообщения
+if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'messages' && isset($seg[3]) && ($seg[4] ?? '') === 'download') {
+    $me  = auth();
+    $sid = (int)$seg[1];
+    $mid = (int)$seg[3];
+    if ($me['role'] === 'client') {
+        $c = db()->prepare('SELECT client_id FROM lk_shipments WHERE id=?'); $c->execute([$sid]);
+        $s = $c->fetch(); if (!$s || $s['client_id'] != $me['client_id']) err('Нет доступа', 403);
+    }
+    $st = db()->prepare('SELECT * FROM lk_messages WHERE id=? AND shipment_id=?');
+    $st->execute([$mid, $sid]); $msg = $st->fetch();
+    if (!$msg || empty($msg['attachment_stored'])) err('Файл не найден', 404);
+    $path = UPLOAD_PATH . '/chat/shipments/' . $sid . '/' . $msg['attachment_stored'];
+    if (!file_exists($path)) err('Файл не найден', 404);
+    send_file_download($path, $msg['attachment_original']);
 }
 
 // GET /api/managers/messages
