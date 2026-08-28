@@ -1,230 +1,694 @@
-import { useEffect, useRef, useState } from 'react';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Send, Paperclip, X, FileText, Reply } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  ChevronDown,
+  ChevronRight,
+  Eye,
+  EyeOff,
+  FileText,
+  Loader2,
+  Paperclip,
+  Plus,
+  Save,
+  SquareCheckBig,
+  Trash2,
+} from 'lucide-react';
+import { CertFilesPanel } from '@/components/lk/CertFilesPanel';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
-import { useAuth } from '@/contexts/AuthContext';
+import { CertRequest, CertRequestItem } from '@/types/lk';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/lib/utils';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Card } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface Props {
-  shipmentId: number;
+  requestId: number;
+  request: CertRequest;
+  items: CertRequestItem[];
+  canEditHeader?: boolean;
 }
 
-const ALLOWED_EXT = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'jpg', 'jpeg', 'png', 'txt', 'zip'];
-const MAX_SIZE = 20 * 1024 * 1024;
+type RequestInfoKey =
+  | 'applicant_org'
+  | 'applicant_address'
+  | 'applicant_head'
+  | 'applicant_position'
+  | 'applicant_email'
+  | 'manufacturer_org'
+  | 'manufacturer_address'
+  | 'manufacturer_country';
 
-function validateFile(file: File): string | null {
-  const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
-  if (!ALLOWED_EXT.includes(ext)) return 'Недопустимый тип файла';
-  if (file.size > MAX_SIZE) return 'Файл слишком большой (макс. 20 МБ)';
-  return null;
+const PRODUCT_FIELDS: Array<{
+  key: keyof Omit<CertRequestItem, 'id' | 'position_no' | 'is_checked' | 'company'>;
+  label: string;
+  textarea?: boolean;
+  rows?: number;
+  tone: 'green' | 'yellow';
+}> = [
+  { key: 'product', label: 'Наименование продукции', tone: 'green' },
+  { key: 'tech_description', label: 'Техническое описание', textarea: true, rows: 4, tone: 'green' },
+  { key: 'model_article', label: 'Модель / артикул', tone: 'green' },
+  { key: 'trademark', label: 'Торговая марка', tone: 'green' },
+  { key: 'tn_ved', label: 'ТН ВЭД', tone: 'green' },
+  { key: 'contract_invoice', label: 'Контракт / Договор / Инвойс', tone: 'green' },
+  { key: 'quantity', label: 'Количество', tone: 'green' },
+  { key: 'tr_ts', label: 'ТР ТС', textarea: true, rows: 4, tone: 'yellow' },
+  { key: 'cert_form', label: 'Форма сертификации', tone: 'yellow' },
+  { key: 'cert_scheme', label: 'Схема сертификации', tone: 'yellow' },
+  { key: 'cost', label: 'Стоимость', tone: 'yellow' },
+  { key: 'production_deadline', label: 'Срок изготовления', tone: 'yellow' },
+  { key: 'samples_required', label: 'Необходимость образцов', tone: 'yellow' },
+  { key: 'samples_city', label: 'В какой город доставлять образцы', tone: 'yellow' },
+  { key: 'comment', label: 'Комментарий / Дополнительно', textarea: true, rows: 3, tone: 'yellow' },
+];
+
+const toneClass = (tone: 'green' | 'yellow') =>
+  tone === 'green'
+    ? 'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-900'
+    : 'bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-900';
+
+const HIDDEN_COLUMNS_STORAGE_KEY = 'lk_cert_items_hidden_columns';
+
+function loadHiddenColumns(): Set<string> {
+  if (typeof window === 'undefined') return new Set();
+  try {
+    const raw = window.localStorage.getItem(HIDDEN_COLUMNS_STORAGE_KEY);
+    if (!raw) return new Set();
+    const arr = JSON.parse(raw);
+    return new Set(Array.isArray(arr) ? arr : []);
+  } catch {
+    return new Set();
+  }
 }
 
-export function ChatPanel({ shipmentId }: Props) {
-  const { user } = useAuth();
+function saveHiddenColumns(cols: Set<string>) {
+  if (typeof window === 'undefined') return;
+  window.localStorage.setItem(HIDDEN_COLUMNS_STORAGE_KEY, JSON.stringify(Array.from(cols)));
+}
+
+export function CertItemsPanel({ requestId, request, items, canEditHeader = false }: Props) {
   const qc = useQueryClient();
-  const [text, setText] = useState('');
-  const [pendingFile, setPendingFile] = useState<File | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [replyTo, setReplyTo] = useState<any | null>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const messageRefs = useRef<Record<number, HTMLDivElement | null>>({});
-
-  const { data, isLoading } = useQuery({
-    queryKey: ['lk', 'messages', shipmentId],
-    queryFn: () => lkApi.messages(shipmentId),
-    refetchInterval: 8000,
+  const [requestValues, setRequestValues] = useState({
+    applicant_org: request.applicant_org || '',
+    applicant_address: request.applicant_address || '',
+    applicant_head: request.applicant_head || '',
+    applicant_position: request.applicant_position || '',
+    applicant_email: request.applicant_email || '',
+    manufacturer_org: request.manufacturer_org || '',
+    manufacturer_address: request.manufacturer_address || '',
+    manufacturer_country: request.manufacturer_country || '',
   });
 
-  const send = useMutation({
-    mutationFn: (payload: { text: string; file?: File | null; replyToId?: number | null }) =>
-      lkApi.sendMessage(shipmentId, payload.text, payload.file, payload.replyToId),
-    onSuccess: () => {
-      setText('');
-      setPendingFile(null);
-      setReplyTo(null);
-      qc.invalidateQueries({ queryKey: ['lk', 'messages', shipmentId] });
-    },
-    onError: (e: any) => toast.error(e.message || 'Не удалось отправить сообщение'),
-  });
+  const [hiddenColumns, setHiddenColumns] = useState<Set<string>>(() => loadHiddenColumns());
+  const [savingAll, setSavingAll] = useState(false);
+
+  const saveAllFns = useRef<Record<number, () => Promise<void>>>({});
+  const registerSaveAll = (itemId: number, fn: () => Promise<void>) => {
+    saveAllFns.current[itemId] = fn;
+  };
+  const unregisterSaveAll = (itemId: number) => {
+    delete saveAllFns.current[itemId];
+  };
+
+  const toggleColumn = (key: string) => {
+    setHiddenColumns((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      saveHiddenColumns(next);
+      return next;
+    });
+  };
+
+  const visibleFields = useMemo(
+    () => PRODUCT_FIELDS.filter((f) => !hiddenColumns.has(f.key as string)),
+    [hiddenColumns]
+  );
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [data?.length]);
+    setRequestValues({
+      applicant_org: request.applicant_org || '',
+      applicant_address: request.applicant_address || '',
+      applicant_head: request.applicant_head || '',
+      applicant_position: request.applicant_position || '',
+      applicant_email: request.applicant_email || '',
+      manufacturer_org: request.manufacturer_org || '',
+      manufacturer_address: request.manufacturer_address || '',
+      manufacturer_country: request.manufacturer_country || '',
+    });
+  }, [request]);
 
-  const pickFile = (file: File | undefined | null) => {
-    if (!file) return;
-    const error = validateFile(file);
-    if (error) {
-      toast.error(error);
+  const invalidate = () => {
+    qc.invalidateQueries({ queryKey: ['lk', 'cert-request', requestId] });
+    qc.invalidateQueries({ queryKey: ['lk', 'cert-requests'] });
+  };
+
+  const updateRequestInfo = useMutation({
+    mutationFn: (data: Partial<CertRequest>) => lkApi.updateCertRequestInfo(requestId, data),
+    onSuccess: () => {
+      toast.success('Данные заявки сохранены');
+      invalidate();
+    },
+    onError: (e: any) => toast.error(e?.message || 'Не удалось сохранить данные заявки'),
+  });
+
+  const addItem = useMutation({
+    mutationFn: () => lkApi.addCertRequestItem(requestId),
+    onSuccess: () => {
+      toast.success('Позиция добавлена');
+      invalidate();
+    },
+    onError: (e: any) => toast.error(e?.message || 'Не удалось добавить'),
+  });
+
+  const checkedItems = useMemo(() => items.filter((item) => item.is_checked), [items]);
+
+  const generateDoc = useMutation({
+    mutationFn: () => lkApi.generateCertRequestDoc(requestId, checkedItems.map((i) => i.id)),
+    onError: (e: any) => toast.error(e?.message || 'Не удалось сформировать заявку'),
+  });
+
+  const setRequestField = (key: RequestInfoKey, value: string) => {
+    setRequestValues((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const saveRequestField = (key: RequestInfoKey) => {
+    if (!canEditHeader) return;
+    if (requestValues[key] !== (request[key] || '')) {
+      updateRequestInfo.mutate({ [key]: requestValues[key] } as Partial<CertRequest>);
+    }
+  };
+
+  const saveRequestBlock = (keys: RequestInfoKey[]) => {
+    if (!canEditHeader) return;
+    const diff: Partial<CertRequest> = {};
+    keys.forEach((key) => {
+      if (requestValues[key] !== (request[key] || '')) {
+        (diff as any)[key] = requestValues[key];
+      }
+    });
+    if (Object.keys(diff).length === 0) {
+      toast.info('Нет изменений');
       return;
     }
-    setPendingFile(file);
+    updateRequestInfo.mutate(diff);
   };
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const t = text.trim();
-    if (!t && !pendingFile) return;
-    send.mutate({ text: t, file: pendingFile, replyToId: replyTo?.id ?? null });
-  };
-
-  const onDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    pickFile(e.dataTransfer.files?.[0]);
-  };
-
-  const scrollToMessage = (id: number) => {
-    const el = messageRefs.current[id];
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      el.classList.add('ring-2', 'ring-primary/60');
-      setTimeout(() => el.classList.remove('ring-2', 'ring-primary/60'), 1500);
+  const saveAllItems = async () => {
+    setSavingAll(true);
+    try {
+      const fns = Object.values(saveAllFns.current);
+      await Promise.all(fns.map((fn) => fn()));
+    } finally {
+      setSavingAll(false);
     }
   };
 
   return (
-    <div
-      className="flex flex-col h-[500px]"
-      onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-      onDragLeave={() => setIsDragging(false)}
-      onDrop={onDrop}
-    >
-      <div
-        className={cn(
-          'flex-1 overflow-y-auto p-4 space-y-3 rounded-md transition-colors',
-          isDragging && 'bg-primary/5 ring-2 ring-primary/40 ring-inset'
-        )}
-      >
-        {isLoading && (
-          <>
-            <Skeleton className="h-14 w-2/3" />
-            <Skeleton className="h-14 w-1/2 ml-auto" />
-          </>
-        )}
-        {!isLoading && data && data.length === 0 && (
-          <p className="text-sm text-muted-foreground text-center py-8">Сообщений пока нет</p>
-        )}
-        {data?.map((m: any) => {
-          const mine = m.role === user?.role;
-          return (
-            <div
-              key={m.id}
-              ref={(el) => { messageRefs.current[m.id] = el; }}
-              className={cn('flex flex-col max-w-[80%] rounded-lg transition-shadow', mine ? 'ml-auto items-end' : 'items-start')}
+    <div className="space-y-6">
+      <Card className="p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold">Заявитель</h3>
+          {canEditHeader && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => saveRequestBlock(['applicant_org', 'applicant_address', 'applicant_head', 'applicant_position', 'applicant_email'])}
+              disabled={updateRequestInfo.isPending}
             >
-              <span className="text-xs text-muted-foreground mb-1">
-                {m.sender_name} · {new Date(m.created_at).toLocaleString('ru-RU')}
-              </span>
-              <div
-                className={cn(
-                  'rounded-lg px-3 py-2 text-sm group relative',
-                  mine ? 'bg-primary text-primary-foreground' : 'bg-muted'
-                )}
+              <Save className="h-4 w-4 mr-1" />
+              Сохранить блок
+            </Button>
+          )}
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="space-y-1">
+            <Label>Название организации</Label>
+            <Input
+              value={requestValues.applicant_org}
+              onChange={(e) => setRequestField('applicant_org', e.target.value)}
+              onBlur={() => saveRequestField('applicant_org')}
+              disabled={!canEditHeader}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label>Юридический адрес</Label>
+            <Input
+              value={requestValues.applicant_address}
+              onChange={(e) => setRequestField('applicant_address', e.target.value)}
+              onBlur={() => saveRequestField('applicant_address')}
+              disabled={!canEditHeader}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label>Руководитель</Label>
+            <Input
+              value={requestValues.applicant_head}
+              onChange={(e) => setRequestField('applicant_head', e.target.value)}
+              onBlur={() => saveRequestField('applicant_head')}
+              disabled={!canEditHeader}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label>Должность</Label>
+            <Input
+              value={requestValues.applicant_position}
+              onChange={(e) => setRequestField('applicant_position', e.target.value)}
+              onBlur={() => saveRequestField('applicant_position')}
+              disabled={!canEditHeader}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label>Электронная почта</Label>
+            <Input
+              value={requestValues.applicant_email}
+              onChange={(e) => setRequestField('applicant_email', e.target.value)}
+              onBlur={() => saveRequestField('applicant_email')}
+              disabled={!canEditHeader}
+            />
+          </div>
+        </div>
+      </Card>
+
+      <Card className="p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold">Изготовитель</h3>
+          {canEditHeader && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => saveRequestBlock(['manufacturer_org', 'manufacturer_address', 'manufacturer_country'])}
+              disabled={updateRequestInfo.isPending}
+            >
+              <Save className="h-4 w-4 mr-1" />
+              Сохранить блок
+            </Button>
+          )}
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="space-y-1">
+            <Label>Название организации</Label>
+            <Input
+              value={requestValues.manufacturer_org}
+              onChange={(e) => setRequestField('manufacturer_org', e.target.value)}
+              onBlur={() => saveRequestField('manufacturer_org')}
+              disabled={!canEditHeader}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label>Адрес</Label>
+            <Input
+              value={requestValues.manufacturer_address}
+              onChange={(e) => setRequestField('manufacturer_address', e.target.value)}
+              onBlur={() => saveRequestField('manufacturer_address')}
+              disabled={!canEditHeader}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label>Страна</Label>
+            <Input
+              value={requestValues.manufacturer_country}
+              onChange={(e) => setRequestField('manufacturer_country', e.target.value)}
+              onBlur={() => saveRequestField('manufacturer_country')}
+              disabled={!canEditHeader}
+            />
+          </div>
+        </div>
+      </Card>
+
+      <div className="space-y-3">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <h3 className="font-semibold text-lg">Продукция</h3>
+          <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={saveAllItems}
+              disabled={savingAll}
+            >
+              {savingAll ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Save className="h-4 w-4 mr-1" />}
+              {savingAll ? 'Сохранение…' : 'Сохранить'}
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => generateDoc.mutate()}
+              disabled={checkedItems.length === 0 || generateDoc.isPending}
+            >
+              <FileText className="h-4 w-4 mr-1" />
+              {generateDoc.isPending ? 'Формирование…' : 'Сформировать заявку'}
+            </Button>
+            <Button size="sm" variant="outline" onClick={() => addItem.mutate()} disabled={addItem.isPending}>
+              <Plus className="h-4 w-4 mr-1" />
+              {addItem.isPending ? 'Добавление…' : 'Добавить товар'}
+            </Button>
+          </div>
+        </div>
+
+        <div className="hidden md:block overflow-x-auto border rounded-md">
+          <table className="w-full text-sm border-collapse">
+            <thead className="sticky top-0 z-10 bg-background shadow-sm">
+              <tr>
+                <th className="p-2 border-b text-center w-10">✓</th>
+                <th className="p-2 border-b text-center w-10">№</th>
+                {visibleFields.map((f) => (
+                  <th key={f.key as string} className="p-2 border-b text-left align-middle min-w-[180px]">
+                    <div className="flex items-center justify-between gap-2">
+                      <span>{f.label}</span>
+                      <button
+                        type="button"
+                        title="Скрыть столбец"
+                        onClick={() => toggleColumn(f.key as string)}
+                        className="text-muted-foreground hover:text-foreground shrink-0"
+                      >
+                        <EyeOff className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </th>
+                ))}
+                <th className="p-2 border-b text-center w-24">Действия</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) => (
+                <CertItemRow
+                  key={item.id}
+                  requestId={requestId}
+                  item={item}
+                  variant="row"
+                  canDelete={items.length > 1}
+                  onInvalidate={invalidate}
+                  visibleFields={visibleFields}
+                  registerSaveAll={registerSaveAll}
+                  unregisterSaveAll={unregisterSaveAll}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {hiddenColumns.size > 0 && (
+          <div className="hidden md:flex items-center gap-2 flex-wrap text-xs text-muted-foreground">
+            <span>Скрытые столбцы:</span>
+            {PRODUCT_FIELDS.filter((f) => hiddenColumns.has(f.key as string)).map((f) => (
+              <button
+                key={f.key as string}
+                type="button"
+                onClick={() => toggleColumn(f.key as string)}
+                className="flex items-center gap-1 px-2 py-1 rounded border hover:bg-muted"
               >
-                {m.reply_to_id && (
-                  <button
-                    type="button"
-                    onClick={() => scrollToMessage(m.reply_to_id)}
-                    className={cn(
-                      'block w-full text-left mb-1.5 pl-2 border-l-2 text-xs opacity-80 hover:opacity-100',
-                      mine ? 'border-primary-foreground/50' : 'border-foreground/30'
-                    )}
-                  >
-                    <span className="font-medium">{m.reply_sender_name || 'Сообщение'}</span>
-                    <br />
-                    <span className="line-clamp-1">
-                      {m.reply_text || m.reply_attachment_original || 'вложение'}
-                    </span>
-                  </button>
+                <Eye className="h-3 w-3" />
+                {f.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className="md:hidden space-y-3">
+          {items.map((item) => (
+            <CertItemRow
+              key={item.id}
+              requestId={requestId}
+              item={item}
+              variant="card"
+              canDelete={items.length > 1}
+              onInvalidate={invalidate}
+              visibleFields={visibleFields}
+              registerSaveAll={registerSaveAll}
+              unregisterSaveAll={unregisterSaveAll}
+            />
+          ))}
+        </div>
+
+        <p className="text-xs text-muted-foreground">
+          Для формирования общей заявки будут использованы только отмеченные чек-боксом товары.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+interface RowProps {
+  requestId: number;
+  item: CertRequestItem;
+  variant: 'row' | 'card';
+  canDelete: boolean;
+  onInvalidate: () => void;
+  visibleFields: typeof PRODUCT_FIELDS;
+  registerSaveAll: (itemId: number, fn: () => Promise<void>) => void;
+  unregisterSaveAll: (itemId: number) => void;
+}
+
+function CertItemRow({
+  requestId,
+  item,
+  variant,
+  canDelete,
+  onInvalidate,
+  visibleFields,
+  registerSaveAll,
+  unregisterSaveAll,
+}: RowProps) {
+  const [values, setValues] = useState(item);
+  const [filesOpen, setFilesOpen] = useState(false);
+
+  useEffect(() => {
+    setValues(item);
+  }, [item]);
+
+  const update = useMutation({
+    mutationFn: (data: Partial<CertRequestItem>) =>
+      lkApi.updateCertRequestItem(requestId, item.id, data),
+    onSuccess: () => onInvalidate(),
+    onError: (e: any) => toast.error(e?.message || 'Не удалось сохранить'),
+  });
+
+  const remove = useMutation({
+    mutationFn: () => lkApi.deleteCertRequestItem(requestId, item.id),
+    onSuccess: () => {
+      toast.success('Позиция удалена');
+      onInvalidate();
+    },
+    onError: (e: any) => toast.error(e?.message || 'Не удалось удалить'),
+  });
+
+  const generateSingleDoc = useMutation({
+    mutationFn: () => lkApi.generateCertRequestDoc(requestId, [item.id]),
+    onError: (e: any) => toast.error(e?.message || 'Не удалось сформировать заявку'),
+  });
+
+  const setField = (key: keyof CertRequestItem, v: string | boolean) =>
+    setValues((prev) => ({ ...prev, [key]: v }));
+
+  const saveIfChanged = (key: keyof CertRequestItem) => {
+    if ((values as any)[key] !== (item as any)[key]) {
+      update.mutate({ [key]: (values as any)[key] } as Partial<CertRequestItem>);
+    }
+  };
+
+  useEffect(() => {
+    registerSaveAll(item.id, async () => {
+      const diff: Partial<CertRequestItem> = {};
+      const keys: (keyof CertRequestItem)[] = ['is_checked', ...visibleFields.map((f) => f.key as keyof CertRequestItem)];
+      for (const key of keys) {
+        if ((values as any)[key] !== (item as any)[key]) {
+          (diff as any)[key] = (values as any)[key];
+        }
+      }
+      if (Object.keys(diff).length === 0) return;
+      await lkApi.updateCertRequestItem(requestId, item.id, diff);
+      onInvalidate();
+    });
+    return () => unregisterSaveAll(item.id);
+  }, [values, item, visibleFields, requestId, registerSaveAll, unregisterSaveAll, onInvalidate]);
+
+  const deleteBtn = canDelete ? (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button size="icon" variant="ghost" title="Удалить позицию">
+          <Trash2 className="h-4 w-4 text-destructive" />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Удалить позицию №{item.position_no}?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Данные позиции и её вложения будут удалены безвозвратно.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Отмена</AlertDialogCancel>
+          <AlertDialogAction onClick={() => remove.mutate()}>Удалить</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  ) : null;
+
+  const busy = update.isPending;
+
+  if (variant === 'row') {
+    return (
+      <>
+        <tr className="border-b align-top">
+          <td className="p-2 text-center">
+            <Checkbox
+              checked={!!values.is_checked}
+              onCheckedChange={(checked) => {
+                const next = !!checked;
+                setField('is_checked', next);
+                update.mutate({ is_checked: next });
+              }}
+            />
+          </td>
+          <td className="p-2 text-center">
+            {item.position_no}
+            {busy && <Loader2 className="h-3 w-3 animate-spin inline ml-1" />}
+          </td>
+          {visibleFields.map((f) => (
+            <td key={f.key as string} className="p-2">
+              {f.textarea ? (
+                <Textarea
+                  rows={f.rows || 3}
+                  value={(values as any)[f.key] || ''}
+                  onChange={(e) => setField(f.key as keyof CertRequestItem, e.target.value)}
+                  onBlur={() => saveIfChanged(f.key as keyof CertRequestItem)}
+                  className={`min-w-[240px] ${toneClass(f.tone)}`}
+                />
+              ) : (
+                <Input
+                  value={(values as any)[f.key] || ''}
+                  onChange={(e) => setField(f.key as keyof CertRequestItem, e.target.value)}
+                  onBlur={() => saveIfChanged(f.key as keyof CertRequestItem)}
+                  className={toneClass(f.tone)}
+                />
+              )}
+            </td>
+          ))}
+          <td className="p-2">
+            <div className="flex items-center justify-center gap-1">
+              <Button
+                size="icon"
+                variant="ghost"
+                title="Сформировать заявку по этой позиции"
+                onClick={() => generateSingleDoc.mutate()}
+                disabled={generateSingleDoc.isPending}
+              >
+                {generateSingleDoc.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <FileText className="h-4 w-4" />
                 )}
-                {m.text && <p className="whitespace-pre-wrap break-words">{m.text}</p>}
-                {m.attachment_original && (
-                  <button
-                    type="button"
-                    onClick={() => lkApi.downloadMessageFile(shipmentId, m.id, m.attachment_original)}
-                    className={cn(
-                      'flex items-center gap-2 mt-1 text-xs underline underline-offset-2',
-                      mine ? 'text-primary-foreground' : 'text-foreground'
-                    )}
-                  >
-                    <FileText className="h-3.5 w-3.5" />
-                    {m.attachment_original}
-                  </button>
-                )}
-                <button
-                  type="button"
-                  title="Ответить"
-                  onClick={() => setReplyTo(m)}
-                  className={cn(
-                    'absolute -top-2 opacity-0 group-hover:opacity-100 transition-opacity rounded-full bg-background border p-1 shadow-sm',
-                    mine ? '-left-2' : '-right-2'
-                  )}
-                >
-                  <Reply className="h-3 w-3" />
-                </button>
-              </div>
+              </Button>
+              {deleteBtn}
             </div>
-          );
-        })}
-        <div ref={bottomRef} />
+          </td>
+        </tr>
+        <tr className="border-b">
+          <td colSpan={2 + visibleFields.length + 1} className="p-2">
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={() => setFilesOpen((v) => !v)}
+              className="w-full justify-center"
+            >
+              {filesOpen ? <ChevronDown className="h-4 w-4 mr-1" /> : <ChevronRight className="h-4 w-4 mr-1" />}
+              <Paperclip className="h-4 w-4 mr-1" />
+              {filesOpen ? 'Скрыть вложения' : 'Показать вложения'} к позиции №{item.position_no}
+            </Button>
+            {filesOpen && (
+              <div className="mt-2">
+                <CertFilesPanel requestId={requestId} itemId={item.id} />
+              </div>
+            )}
+          </td>
+        </tr>
+      </>
+    );
+  }
+
+  return (
+    <Card className="p-4 space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Checkbox
+            checked={!!values.is_checked}
+            onCheckedChange={(checked) => {
+              const next = !!checked;
+              setField('is_checked', next);
+              update.mutate({ is_checked: next });
+            }}
+          />
+          <span className="font-medium">Позиция №{item.position_no}</span>
+          {busy && <Loader2 className="h-4 w-4 animate-spin" />}
+        </div>
+        <div className="flex items-center gap-1">
+          <Button
+            size="icon"
+            variant="ghost"
+            title="Сформировать заявку по этой позиции"
+            onClick={() => generateSingleDoc.mutate()}
+            disabled={generateSingleDoc.isPending}
+          >
+            {generateSingleDoc.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <FileText className="h-4 w-4" />
+            )}
+          </Button>
+          {deleteBtn}
+        </div>
       </div>
 
-      {replyTo && (
-        <div className="flex items-start gap-2 px-3 py-2 border-t bg-muted/50 text-sm">
-          <Reply className="h-4 w-4 shrink-0 mt-0.5" />
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium text-muted-foreground">{replyTo.sender_name}</p>
-            <p className="truncate">{replyTo.text || replyTo.attachment_original || 'вложение'}</p>
-          </div>
-          <button type="button" onClick={() => setReplyTo(null)} className="text-muted-foreground hover:text-foreground">
-            <X className="h-4 w-4" />
-          </button>
+      {visibleFields.map((f) => (
+        <div key={f.key as string} className="space-y-1">
+          <Label className="text-xs text-muted-foreground">{f.label}</Label>
+          {f.textarea ? (
+            <Textarea
+              rows={f.rows || 3}
+              value={(values as any)[f.key] || ''}
+              onChange={(e) => setField(f.key as keyof CertRequestItem, e.target.value)}
+              onBlur={() => saveIfChanged(f.key as keyof CertRequestItem)}
+              className={toneClass(f.tone)}
+            />
+          ) : (
+            <Input
+              value={(values as any)[f.key] || ''}
+              onChange={(e) => setField(f.key as keyof CertRequestItem, e.target.value)}
+              onBlur={() => saveIfChanged(f.key as keyof CertRequestItem)}
+              className={toneClass(f.tone)}
+            />
+          )}
+        </div>
+      ))}
+
+      <Button
+        size="sm"
+        variant="ghost"
+        onClick={() => setFilesOpen((v) => !v)}
+        className="w-full justify-start"
+      >
+        {filesOpen ? <ChevronDown className="h-4 w-4 mr-1" /> : <ChevronRight className="h-4 w-4 mr-1" />}
+        <Paperclip className="h-4 w-4 mr-1" />
+        Вложения к позиции №{item.position_no}
+      </Button>
+      {filesOpen && (
+        <div className="mt-2">
+          <CertFilesPanel requestId={requestId} itemId={item.id} />
         </div>
       )}
-
-      {pendingFile && (
-        <div className="flex items-center gap-2 px-3 py-2 border-t bg-muted/50 text-sm">
-          <FileText className="h-4 w-4 shrink-0" />
-          <span className="truncate flex-1">{pendingFile.name}</span>
-          <button type="button" onClick={() => setPendingFile(null)} className="text-muted-foreground hover:text-foreground">
-            <X className="h-4 w-4" />
-          </button>
-        </div>
-      )}
-
-      <form onSubmit={onSubmit} className="flex items-center gap-2 p-3 border-t">
-        <input
-          ref={fileInputRef}
-          type="file"
-          className="hidden"
-          accept={ALLOWED_EXT.map((e) => `.${e}`).join(',')}
-          onChange={(e) => pickFile(e.target.files?.[0])}
-        />
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={send.isPending}
-        >
-          <Paperclip className="h-4 w-4" />
-        </Button>
-        <Input
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Введите сообщение…"
-          disabled={send.isPending}
-        />
-        <Button type="submit" size="icon" disabled={send.isPending || (!text.trim() && !pendingFile)}>
-          <Send className="h-4 w-4" />
-        </Button>
-      </form>
-    </div>
+    </Card>
   );
 }
