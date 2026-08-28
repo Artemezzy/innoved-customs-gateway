@@ -1,0 +1,657 @@
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import {
+  ChevronDown,
+  ChevronRight,
+  Eye,
+  EyeOff,
+  FileText,
+  Loader2,
+  Paperclip,
+  Plus,
+  Save,
+  Trash2,
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { lkApi } from '@/api/lkClient';
+import { Shipment, ShipmentItem } from '@/types/lk';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Card } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { ShipmentFilesPanel } from '@/components/lk/ShipmentFilesPanel';
+import { GenerateCertRequestModal } from '@/components/lk/GenerateCertRequestModal';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+
+interface Props {
+  shipmentId: number;
+  shipment: Shipment;
+  items: ShipmentItem[];
+  isManager: boolean;
+}
+
+const PRODUCT_FIELDS: Array<{
+  key: keyof Omit<ShipmentItem, 'id' | 'shipment_id' | 'position_no'>;
+  label: string;
+  textarea?: boolean;
+  rows?: number;
+  tone: 'green' | 'yellow';
+}> = [
+  { key: 'product', label: 'Наименование продукции', tone: 'green' },
+  { key: 'tech_description', label: 'Техническое описание', textarea: true, rows: 4, tone: 'green' },
+  { key: 'model_article', label: 'Модель / артикул', tone: 'green' },
+  { key: 'trademark', label: 'Торговая марка', tone: 'green' },
+  { key: 'tn_ved', label: 'ТН ВЭД', tone: 'green' },
+  { key: 'contract_invoice', label: 'Контракт / Договор / Инвойс', tone: 'green' },
+  { key: 'quantity', label: 'Количество', tone: 'green' },
+  { key: 'price', label: 'Цена', tone: 'green' },
+  { key: 'tr_ts', label: 'ТР ТС', textarea: true, rows: 4, tone: 'yellow' },
+  { key: 'cert_form', label: 'Форма сертификации', tone: 'yellow' },
+  { key: 'cert_price', label: 'Цена сертификации', tone: 'yellow' },
+  { key: 'comment', label: 'Комментарий / Дополнительно', textarea: true, rows: 3, tone: 'yellow' },
+];
+
+const toneClass = (tone: 'green' | 'yellow') =>
+  tone === 'green'
+    ? 'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-900'
+    : 'bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-900';
+
+const HIDDEN_COLUMNS_STORAGE_KEY = 'lk_shipment_items_hidden_columns';
+
+function loadHiddenColumns(): Set<string> {
+  if (typeof window === 'undefined') return new Set();
+  try {
+    const raw = window.localStorage.getItem(HIDDEN_COLUMNS_STORAGE_KEY);
+    if (!raw) return new Set();
+    const arr = JSON.parse(raw);
+    return new Set(Array.isArray(arr) ? arr : []);
+  } catch {
+    return new Set();
+  }
+}
+
+function saveHiddenColumns(cols: Set<string>) {
+  if (typeof window === 'undefined') return;
+  window.localStorage.setItem(HIDDEN_COLUMNS_STORAGE_KEY, JSON.stringify(Array.from(cols)));
+}
+
+export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: Props) {
+  const qc = useQueryClient();
+  const [requestValues, setRequestValues] = useState({
+    applicant_org: shipment.applicant_org || '',
+    applicant_address: shipment.applicant_address || '',
+    applicant_head: shipment.applicant_head || '',
+    applicant_position: shipment.applicant_position || '',
+    applicant_email: shipment.applicant_email || '',
+    manufacturer_org: shipment.manufacturer_org || '',
+    manufacturer_address: shipment.manufacturer_address || '',
+    manufacturer_country: shipment.manufacturer_country || '',
+  });
+
+  const [hiddenColumns, setHiddenColumns] = useState<Set<string>>(() => loadHiddenColumns());
+  const [savingAll, setSavingAll] = useState(false);
+  const [checkedIds, setCheckedIds] = useState<Set<number>>(new Set());
+  const [generateModalOpen, setGenerateModalOpen] = useState(false);
+
+  const saveAllFns = useRef<Record<number, () => Promise<void>>>({});
+  const registerSaveAll = (itemId: number, fn: () => Promise<void>) => {
+    saveAllFns.current[itemId] = fn;
+  };
+  const unregisterSaveAll = (itemId: number) => {
+    delete saveAllFns.current[itemId];
+  };
+
+  const toggleColumn = (key: string) => {
+    setHiddenColumns((prev) => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key);
+      else next.add(key);
+      saveHiddenColumns(next);
+      return next;
+    });
+  };
+
+  const visibleFields = useMemo(
+    () => PRODUCT_FIELDS.filter((f) => !hiddenColumns.has(f.key as string)),
+    [hiddenColumns]
+  );
+
+  useEffect(() => {
+    setRequestValues({
+      applicant_org: shipment.applicant_org || '',
+      applicant_address: shipment.applicant_address || '',
+      applicant_head: shipment.applicant_head || '',
+      applicant_position: shipment.applicant_position || '',
+      applicant_email: shipment.applicant_email || '',
+      manufacturer_org: shipment.manufacturer_org || '',
+      manufacturer_address: shipment.manufacturer_address || '',
+      manufacturer_country: shipment.manufacturer_country || '',
+    });
+  }, [shipment]);
+
+  const invalidate = () => {
+    qc.invalidateQueries({ queryKey: ['lk', 'shipment', shipmentId] });
+    qc.invalidateQueries({ queryKey: ['lk', 'shipment-items', shipmentId] });
+    qc.invalidateQueries({ queryKey: ['lk', 'shipments'] });
+  };
+
+  const updateInfo = useMutation({
+    mutationFn: (data: Partial<Shipment>) => lkApi.updateShipmentInfo(shipmentId, data),
+    onSuccess: () => {
+      toast.success('Данные поставки сохранены');
+      invalidate();
+    },
+    onError: (e: any) => toast.error(e?.message || 'Не удалось сохранить данные'),
+  });
+
+  const addItem = useMutation({
+    mutationFn: () => lkApi.addShipmentItem(shipmentId),
+    onSuccess: () => {
+      toast.success('Позиция добавлена');
+      invalidate();
+    },
+    onError: (e: any) => toast.error(e?.message || 'Не удалось добавить'),
+  });
+
+  const setRequestField = (key: keyof typeof requestValues, value: string) => {
+    setRequestValues((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const saveRequestField = (key: keyof typeof requestValues) => {
+    if (!isManager) return;
+    if (requestValues[key] !== ((shipment as any)[key] || '')) {
+      updateInfo.mutate({ [key]: requestValues[key] } as Partial<Shipment>);
+    }
+  };
+
+  const saveRequestBlock = (keys: (keyof typeof requestValues)[]) => {
+    if (!isManager) return;
+    const diff: Partial<Shipment> = {};
+    keys.forEach((key) => {
+      if (requestValues[key] !== ((shipment as any)[key] || '')) {
+        (diff as any)[key] = requestValues[key];
+      }
+    });
+    if (Object.keys(diff).length === 0) {
+      toast.info('Нет изменений');
+      return;
+    }
+    updateInfo.mutate(diff);
+  };
+
+  const saveAllItems = async () => {
+    setSavingAll(true);
+    try {
+      const fns = Object.values(saveAllFns.current);
+      await Promise.all(fns.map((fn) => fn()));
+    } finally {
+      setSavingAll(false);
+    }
+  };
+
+  const toggleChecked = (itemId: number, checked: boolean) => {
+    setCheckedIds((prev) => {
+      const next = new Set(prev);
+      if (checked) next.add(itemId);
+      else next.delete(itemId);
+      return next;
+    });
+  };
+
+  const checkedItemIds = Array.from(checkedIds);
+
+  return (
+    <div className="space-y-6">
+      <Card className="p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold">Заявитель (импортёр)</h3>
+          {isManager && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => saveRequestBlock(['applicant_org', 'applicant_address', 'applicant_head', 'applicant_position', 'applicant_email'])}
+              disabled={updateInfo.isPending}
+            >
+              <Save className="h-4 w-4 mr-1" />
+              Сохранить блок
+            </Button>
+          )}
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="space-y-1">
+            <Label>Название организации</Label>
+            <Input
+              value={requestValues.applicant_org}
+              onChange={(e) => setRequestField('applicant_org', e.target.value)}
+              onBlur={() => saveRequestField('applicant_org')}
+              disabled={!isManager}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label>Юридический адрес</Label>
+            <Input
+              value={requestValues.applicant_address}
+              onChange={(e) => setRequestField('applicant_address', e.target.value)}
+              onBlur={() => saveRequestField('applicant_address')}
+              disabled={!isManager}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label>Руководитель</Label>
+            <Input
+              value={requestValues.applicant_head}
+              onChange={(e) => setRequestField('applicant_head', e.target.value)}
+              onBlur={() => saveRequestField('applicant_head')}
+              disabled={!isManager}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label>Должность</Label>
+            <Input
+              value={requestValues.applicant_position}
+              onChange={(e) => setRequestField('applicant_position', e.target.value)}
+              onBlur={() => saveRequestField('applicant_position')}
+              disabled={!isManager}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label>Электронная почта</Label>
+            <Input
+              value={requestValues.applicant_email}
+              onChange={(e) => setRequestField('applicant_email', e.target.value)}
+              onBlur={() => saveRequestField('applicant_email')}
+              disabled={!isManager}
+            />
+          </div>
+        </div>
+      </Card>
+
+      <Card className="p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold">Изготовитель</h3>
+          {isManager && (
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => saveRequestBlock(['manufacturer_org', 'manufacturer_address', 'manufacturer_country'])}
+              disabled={updateInfo.isPending}
+            >
+              <Save className="h-4 w-4 mr-1" />
+              Сохранить блок
+            </Button>
+          )}
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div className="space-y-1">
+            <Label>Название организации</Label>
+            <Input
+              value={requestValues.manufacturer_org}
+              onChange={(e) => setRequestField('manufacturer_org', e.target.value)}
+              onBlur={() => saveRequestField('manufacturer_org')}
+              disabled={!isManager}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label>Адрес</Label>
+            <Input
+              value={requestValues.manufacturer_address}
+              onChange={(e) => setRequestField('manufacturer_address', e.target.value)}
+              onBlur={() => saveRequestField('manufacturer_address')}
+              disabled={!isManager}
+            />
+          </div>
+          <div className="space-y-1">
+            <Label>Страна</Label>
+            <Input
+              value={requestValues.manufacturer_country}
+              onChange={(e) => setRequestField('manufacturer_country', e.target.value)}
+              onBlur={() => saveRequestField('manufacturer_country')}
+              disabled={!isManager}
+            />
+          </div>
+        </div>
+      </Card>
+
+      <div className="space-y-3">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <h3 className="font-semibold text-lg">Продукция</h3>
+          <div className="flex items-center gap-2">
+            {isManager && (
+              <Button size="sm" variant="outline" onClick={saveAllItems} disabled={savingAll}>
+                {savingAll ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Save className="h-4 w-4 mr-1" />}
+                {savingAll ? 'Сохранение…' : 'Сохранить'}
+              </Button>
+            )}
+            {isManager && (
+              <Button
+                size="sm"
+                onClick={() => setGenerateModalOpen(true)}
+                disabled={checkedItemIds.length === 0}
+              >
+                <FileText className="h-4 w-4 mr-1" />
+                Сформировать заявку на сертификацию
+              </Button>
+            )}
+            {isManager && (
+              <Button size="sm" variant="outline" onClick={() => addItem.mutate()} disabled={addItem.isPending}>
+                <Plus className="h-4 w-4 mr-1" />
+                {addItem.isPending ? 'Добавление…' : 'Добавить товар'}
+              </Button>
+            )}
+          </div>
+        </div>
+
+        <div className="hidden md:block border rounded-md overflow-auto max-h-[70vh]">
+          <table className="w-full text-sm border-collapse">
+            <thead className="sticky top-0 z-10 bg-background shadow-sm">
+              <tr>
+                <th className="p-2 border-b text-center w-10">✓</th>
+                <th className="p-2 border-b text-center w-10">№</th>
+                {visibleFields.map((f) => (
+                  <th key={f.key as string} className="p-2 border-b text-left align-middle min-w-[180px]">
+                    <div className="flex items-center justify-between gap-2">
+                      <span>{f.label}</span>
+                      <button
+                        type="button"
+                        title="Скрыть столбец"
+                        onClick={() => toggleColumn(f.key as string)}
+                        className="text-muted-foreground hover:text-foreground shrink-0"
+                      >
+                        <EyeOff className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </th>
+                ))}
+                {isManager && <th className="p-2 border-b text-center w-20">Действия</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item) => (
+                <ShipmentItemRow
+                  key={item.id}
+                  shipmentId={shipmentId}
+                  item={item}
+                  variant="row"
+                  canDelete={items.length > 1}
+                  isManager={isManager}
+                  checked={checkedIds.has(item.id)}
+                  onCheckedChange={(c) => toggleChecked(item.id, c)}
+                  onInvalidate={invalidate}
+                  visibleFields={visibleFields}
+                  registerSaveAll={registerSaveAll}
+                  unregisterSaveAll={unregisterSaveAll}
+                />
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {hiddenColumns.size > 0 && (
+          <div className="hidden md:flex items-center gap-2 flex-wrap text-xs text-muted-foreground">
+            <span>Скрытые столбцы:</span>
+            {PRODUCT_FIELDS.filter((f) => hiddenColumns.has(f.key as string)).map((f) => (
+              <button
+                key={f.key as string}
+                type="button"
+                onClick={() => toggleColumn(f.key as string)}
+                className="flex items-center gap-1 px-2 py-1 rounded border hover:bg-muted"
+              >
+                <Eye className="h-3 w-3" />
+                {f.label}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className="md:hidden space-y-3">
+          {items.map((item) => (
+            <ShipmentItemRow
+              key={item.id}
+              shipmentId={shipmentId}
+              item={item}
+              variant="card"
+              canDelete={items.length > 1}
+              isManager={isManager}
+              checked={checkedIds.has(item.id)}
+              onCheckedChange={(c) => toggleChecked(item.id, c)}
+              onInvalidate={invalidate}
+              visibleFields={visibleFields}
+              registerSaveAll={registerSaveAll}
+              unregisterSaveAll={unregisterSaveAll}
+            />
+          ))}
+        </div>
+
+        <p className="text-xs text-muted-foreground">
+          Для формирования заявки на сертификацию будут использованы только отмеченные чек-боксом товары.
+        </p>
+      </div>
+
+      {generateModalOpen && (
+        <GenerateCertRequestModal
+          shipmentId={shipmentId}
+          itemIds={checkedItemIds}
+          onClose={() => setGenerateModalOpen(false)}
+          onSuccess={() => {
+            setGenerateModalOpen(false);
+            setCheckedIds(new Set());
+            invalidate();
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
+interface RowProps {
+  shipmentId: number;
+  item: ShipmentItem;
+  variant: 'row' | 'card';
+  canDelete: boolean;
+  isManager: boolean;
+  checked: boolean;
+  onCheckedChange: (checked: boolean) => void;
+  onInvalidate: () => void;
+  visibleFields: typeof PRODUCT_FIELDS;
+  registerSaveAll: (itemId: number, fn: () => Promise<void>) => void;
+  unregisterSaveAll: (itemId: number) => void;
+}
+
+function ShipmentItemRow({
+  shipmentId,
+  item,
+  variant,
+  canDelete,
+  isManager,
+  checked,
+  onCheckedChange,
+  onInvalidate,
+  visibleFields,
+  registerSaveAll,
+  unregisterSaveAll,
+}: RowProps) {
+  const [values, setValues] = useState(item);
+  const [filesOpen, setFilesOpen] = useState(false);
+
+  useEffect(() => {
+    setValues(item);
+  }, [item]);
+
+  const update = useMutation({
+    mutationFn: (data: Partial<ShipmentItem>) => lkApi.updateShipmentItem(shipmentId, item.id, data),
+    onSuccess: () => onInvalidate(),
+    onError: (e: any) => toast.error(e?.message || 'Не удалось сохранить'),
+  });
+
+  const remove = useMutation({
+    mutationFn: () => lkApi.deleteShipmentItem(shipmentId, item.id),
+    onSuccess: () => {
+      toast.success('Позиция удалена');
+      onInvalidate();
+    },
+    onError: (e: any) => toast.error(e?.message || 'Не удалось удалить'),
+  });
+
+  const setField = (key: keyof ShipmentItem, v: string) => setValues((prev) => ({ ...prev, [key]: v }));
+
+  const saveIfChanged = (key: keyof ShipmentItem) => {
+    if ((values as any)[key] !== (item as any)[key]) {
+      update.mutate({ [key]: (values as any)[key] } as Partial<ShipmentItem>);
+    }
+  };
+
+  useEffect(() => {
+    registerSaveAll(item.id, async () => {
+      const diff: Partial<ShipmentItem> = {};
+      const keys: (keyof ShipmentItem)[] = visibleFields.map((f) => f.key as keyof ShipmentItem);
+      for (const key of keys) {
+        if ((values as any)[key] !== (item as any)[key]) {
+          (diff as any)[key] = (values as any)[key];
+        }
+      }
+      if (Object.keys(diff).length === 0) return;
+      await lkApi.updateShipmentItem(shipmentId, item.id, diff);
+      onInvalidate();
+    });
+    return () => unregisterSaveAll(item.id);
+  }, [values, item, visibleFields, shipmentId, registerSaveAll, unregisterSaveAll, onInvalidate]);
+
+  const deleteBtn = canDelete ? (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button size="icon" variant="ghost" title="Удалить позицию">
+          <Trash2 className="h-4 w-4 text-destructive" />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Удалить позицию №{item.position_no}?</AlertDialogTitle>
+          <AlertDialogDescription>Данные позиции и её вложения будут удалены безвозвратно.</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Отмена</AlertDialogCancel>
+          <AlertDialogAction onClick={() => remove.mutate()}>Удалить</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  ) : null;
+
+  const busy = update.isPending;
+
+  if (variant === 'row') {
+    return (
+      <>
+        <tr className="border-b align-top">
+          <td className="p-2 text-center">
+            <Checkbox checked={checked} onCheckedChange={(c) => onCheckedChange(!!c)} />
+          </td>
+          <td className="p-2 text-center">
+            {item.position_no}
+            {busy && <Loader2 className="h-3 w-3 animate-spin inline ml-1" />}
+          </td>
+          {visibleFields.map((f) => (
+            <td key={f.key as string} className="p-2">
+              {f.textarea ? (
+                <Textarea
+                  rows={f.rows || 3}
+                  value={(values as any)[f.key] || ''}
+                  onChange={(e) => setField(f.key as keyof ShipmentItem, e.target.value)}
+                  onBlur={() => saveIfChanged(f.key as keyof ShipmentItem)}
+                  disabled={!isManager}
+                  className={`min-w-[240px] ${toneClass(f.tone)}`}
+                />
+              ) : (
+                <Input
+                  value={(values as any)[f.key] || ''}
+                  onChange={(e) => setField(f.key as keyof ShipmentItem, e.target.value)}
+                  onBlur={() => saveIfChanged(f.key as keyof ShipmentItem)}
+                  disabled={!isManager}
+                  className={toneClass(f.tone)}
+                />
+              )}
+            </td>
+          ))}
+          {isManager && (
+            <td className="p-2">
+              <div className="flex items-center justify-center gap-1">{deleteBtn}</div>
+            </td>
+          )}
+        </tr>
+        <tr className="border-b">
+          <td colSpan={2 + visibleFields.length + (isManager ? 1 : 0)} className="p-2">
+            <Button size="sm" variant="ghost" onClick={() => setFilesOpen((v) => !v)} className="w-full justify-center">
+              {filesOpen ? <ChevronDown className="h-4 w-4 mr-1" /> : <ChevronRight className="h-4 w-4 mr-1" />}
+              <Paperclip className="h-4 w-4 mr-1" />
+              {filesOpen ? 'Скрыть вложения' : 'Показать вложения'} к позиции №{item.position_no}
+            </Button>
+            {filesOpen && (
+              <div className="mt-2">
+                <ShipmentFilesPanel shipmentId={shipmentId} itemId={item.id} />
+              </div>
+            )}
+          </td>
+        </tr>
+      </>
+    );
+  }
+
+  return (
+    <Card className="p-4 space-y-3">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Checkbox checked={checked} onCheckedChange={(c) => onCheckedChange(!!c)} />
+          <span className="font-medium">Позиция №{item.position_no}</span>
+          {busy && <Loader2 className="h-4 w-4 animate-spin" />}
+        </div>
+        {isManager && <div className="flex items-center gap-1">{deleteBtn}</div>}
+      </div>
+
+      {visibleFields.map((f) => (
+        <div key={f.key as string} className="space-y-1">
+          <Label className="text-xs text-muted-foreground">{f.label}</Label>
+          {f.textarea ? (
+            <Textarea
+              rows={f.rows || 3}
+              value={(values as any)[f.key] || ''}
+              onChange={(e) => setField(f.key as keyof ShipmentItem, e.target.value)}
+              onBlur={() => saveIfChanged(f.key as keyof ShipmentItem)}
+              disabled={!isManager}
+              className={toneClass(f.tone)}
+            />
+          ) : (
+            <Input
+              value={(values as any)[f.key] || ''}
+              onChange={(e) => setField(f.key as keyof ShipmentItem, e.target.value)}
+              onBlur={() => saveIfChanged(f.key as keyof ShipmentItem)}
+              disabled={!isManager}
+              className={toneClass(f.tone)}
+            />
+          )}
+        </div>
+      ))}
+
+      <Button size="sm" variant="ghost" onClick={() => setFilesOpen((v) => !v)} className="w-full justify-start">
+        {filesOpen ? <ChevronDown className="h-4 w-4 mr-1" /> : <ChevronRight className="h-4 w-4 mr-1" />}
+        <Paperclip className="h-4 w-4 mr-1" />
+        Вложения к позиции №{item.position_no}
+      </Button>
+      {filesOpen && (
+        <div className="mt-2">
+          <ShipmentFilesPanel shipmentId={shipmentId} itemId={item.id} />
+        </div>
+      )}
+    </Card>
+  );
+}

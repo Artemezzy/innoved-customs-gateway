@@ -18,6 +18,8 @@ import {
 import { StatusBadge } from '@/components/lk/StatusBadge';
 import { DocumentsPanel } from '@/components/lk/DocumentsPanel';
 import { ChatPanel } from '@/components/lk/ChatPanel';
+import { ShipmentItemsPanel } from '@/components/lk/ShipmentItemsPanel';
+import { LinkedCertRequestsPanel } from '@/components/lk/LinkedCertRequestsPanel';
 import { ShipmentStatus, STATUS_LABELS } from '@/types/lk';
 
 export default function LKShipmentDetailPage() {
@@ -32,6 +34,12 @@ export default function LKShipmentDetailPage() {
     queryFn: () => lkApi.shipment(shipmentId),
   });
 
+  const items = useQuery({
+    queryKey: ['lk', 'shipment-items', shipmentId],
+    queryFn: () => lkApi.shipmentItems(shipmentId),
+    enabled: !!shipment.data,
+  });
+
   const updateStatus = useMutation({
     mutationFn: (status: ShipmentStatus) => lkApi.updateShipment(shipmentId, { status }),
     onSuccess: () => {
@@ -42,73 +50,96 @@ export default function LKShipmentDetailPage() {
     onError: (e: any) => toast.error(e.message || 'Ошибка'),
   });
 
-  return (
-    <div className="space-y-4">
-      <Link to="/lk/shipments" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground">
-        <ArrowLeft className="h-4 w-4 mr-1" /> К списку поставок
-      </Link>
+  if (shipment.isLoading) {
+    return (
+      <div className="space-y-4">
+        <Skeleton className="h-8 w-64" />
+        <Skeleton className="h-40 w-full" />
+      </div>
+    );
+  }
 
-      {shipment.isLoading ? (
-        <Skeleton className="h-24 w-full" />
-      ) : shipment.data ? (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div className="lg:col-span-2 space-y-4">
-            <Card className="p-5">
-              <Tabs defaultValue="docs">
-                <TabsList>
-                  <TabsTrigger value="docs">Документы</TabsTrigger>
-                  <TabsTrigger value="chat">Чат</TabsTrigger>
-                </TabsList>
-                <TabsContent value="docs" className="mt-4">
-                  <DocumentsPanel shipmentId={shipmentId} />
-                </TabsContent>
-                <TabsContent value="chat" className="mt-4">
-                  <ChatPanel shipmentId={shipmentId} />
-                </TabsContent>
-              </Tabs>
-            </Card>
-          </div>
-          <div>
-            <Card className="p-5 sticky top-4">
-              <div className="text-xs text-muted-foreground">Поставка #{shipment.data.id}</div>
-              <h1 className="text-xl font-bold mt-1">{shipment.data.title}</h1>
-              <Separator className="my-3" />
-              <div className="space-y-3 text-sm">
-                <div>
-                  <div className="text-muted-foreground mb-1">Статус</div>
-                  {isManager ? (
-                    <Select
-                      value={shipment.data.status}
-                      onValueChange={(v) => updateStatus.mutate(v as ShipmentStatus)}
-                    >
-                      <SelectTrigger><SelectValue /></SelectTrigger>
-                      <SelectContent>
-                        {(Object.keys(STATUS_LABELS) as ShipmentStatus[]).map((s) => (
-                          <SelectItem key={s} value={s}>{STATUS_LABELS[s]}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <StatusBadge status={shipment.data.status} />
-                  )}
-                </div>
-                <div>
-                  <div className="text-muted-foreground">Клиент</div>
-                  <div>{shipment.data.client_name}</div>
-                </div>
-                <div>
-                  <div className="text-muted-foreground">Создана</div>
-                  <div>{new Date(shipment.data.created_at).toLocaleString('ru-RU')}</div>
-                </div>
-                <div>
-                  <div className="text-muted-foreground">Обновлена</div>
-                  <div>{new Date(shipment.data.updated_at).toLocaleString('ru-RU')}</div>
-                </div>
-              </div>
-            </Card>
-          </div>
+  if (!shipment.data) {
+    return <p className="text-muted-foreground">Поставка не найдена.</p>;
+  }
+
+  const s = shipment.data;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center gap-3">
+        <Link to="/lk/shipments" className="text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="h-5 w-5" />
+        </Link>
+        <div>
+          <h1 className="text-xl font-semibold">
+            {s.number} — {s.title}
+          </h1>
+          <p className="text-sm text-muted-foreground">{s.client_name}</p>
         </div>
-      ) : null}
+        <div className="ml-auto">
+          {isManager ? (
+            <Select value={s.status} onValueChange={(v) => updateStatus.mutate(v as ShipmentStatus)}>
+              <SelectTrigger className="w-[220px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {(Object.keys(STATUS_LABELS) as ShipmentStatus[]).map((st) => (
+                  <SelectItem key={st} value={st}>
+                    {STATUS_LABELS[st]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          ) : (
+            <StatusBadge status={s.status} />
+          )}
+        </div>
+      </div>
+
+      <Separator />
+
+      <Tabs defaultValue="items">
+        <TabsList>
+          <TabsTrigger value="items">Продукция</TabsTrigger>
+          <TabsTrigger value="cert-requests">Заявки на сертификацию</TabsTrigger>
+          <TabsTrigger value="documents">Документы</TabsTrigger>
+          <TabsTrigger value="chat">Чат</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="items" className="mt-4">
+          {items.isLoading ? (
+            <Skeleton className="h-64 w-full" />
+          ) : (
+            <ShipmentItemsPanel
+              shipmentId={shipmentId}
+              shipment={s}
+              items={items.data ?? []}
+              isManager={isManager}
+            />
+          )}
+        </TabsContent>
+
+        <TabsContent value="cert-requests" className="mt-4">
+          <LinkedCertRequestsPanel
+            shipmentId={shipmentId}
+            linkedRequests={s.linked_cert_requests ?? []}
+            isManager={isManager}
+          />
+        </TabsContent>
+
+        <TabsContent value="documents" className="mt-4">
+          <Card className="p-4">
+            <DocumentsPanel shipmentId={shipmentId} />
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="chat" className="mt-4">
+          <Card className="p-0 overflow-hidden">
+            <ChatPanel shipmentId={shipmentId} />
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

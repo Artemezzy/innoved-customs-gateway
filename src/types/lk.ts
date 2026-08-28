@@ -31,12 +31,68 @@ export type ShipmentStatus =
 
 export interface Shipment {
   id: number;
+  document_number: number;
+  number: string;
   client_id: number;
   client_name: string;
   title: string;
   status: ShipmentStatus;
   created_at: string;
   updated_at: string;
+  applicant_org: string;
+  applicant_address: string;
+  applicant_head: string;
+  applicant_position: string;
+  applicant_email: string;
+  manufacturer_org: string;
+  manufacturer_address: string;
+  manufacturer_country: string;
+  linked_cert_requests?: LinkedCertRequest[];
+  cert_requests_count?: number;
+}
+
+export interface ShipmentItem {
+  id: number;
+  shipment_id: number;
+  position_no: number;
+  product: string;
+  tech_description: string;
+  model_article: string;
+  trademark: string;
+  tn_ved: string;
+  contract_invoice: string;
+  quantity: string;
+  price: string;
+  tr_ts: string;
+  cert_form: string;
+  cert_price: string;
+  comment: string;
+}
+
+export interface ShipmentFile {
+  id: number;
+  file_type: 'file' | 'link';
+  url: string;
+  filename?: string;
+  filename_original?: string;
+  created_at: string;
+}
+
+export interface LinkedCertRequest {
+  id: number;
+  document_number: number;
+  number: string;
+  status: CertRequestStatus;
+  updated_at: string;
+  cert_center_name: string;
+}
+
+export interface ShipmentItemUsage {
+  source_shipment_item_id: number;
+  cert_request_id: number;
+  document_number: number;
+  cert_center_name: string;
+  status: CertRequestStatus;
 }
 
 export const STATUS_LABELS: Record<ShipmentStatus, string> = {
@@ -150,6 +206,7 @@ export const CERT_STATUS_ORDER: CertRequestStatus[] = [
 
 export interface CertRequest {
   id: number;
+  document_number: number;
   number: string;
   company: string;
   cert_center_id: number;

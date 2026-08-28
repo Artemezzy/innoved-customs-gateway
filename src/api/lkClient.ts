@@ -140,9 +140,9 @@ export const lkApi = {
     USE_MOCK
       ? mock.mockCreateClient(data)
       : request<{
-          client: import('@/types/lk').Client;
-          credentials: { email: string; password: string };
-        }>('POST', '/clients', data),
+        client: import('@/types/lk').Client;
+        credentials: { email: string; password: string };
+      }>('POST', '/clients', data),
 
   client: (id: number) =>
     USE_MOCK
@@ -157,6 +157,88 @@ export const lkApi = {
     const q = qs.toString();
     return request<import('@/types/lk').Shipment[]>('GET', `/shipments${q ? `?${q}` : ''}`);
   },
+
+  updateShipmentInfo: (
+    id: number,
+    data: Partial<
+      Pick<
+        import('@/types/lk').Shipment,
+        | 'applicant_org'
+        | 'applicant_address'
+        | 'applicant_head'
+        | 'applicant_position'
+        | 'applicant_email'
+        | 'manufacturer_org'
+        | 'manufacturer_address'
+        | 'manufacturer_country'
+      >
+    >
+  ) => request<{ ok: boolean }>('PUT', `/shipments/${id}/info`, data),
+
+  shipmentItems: (shipmentId: number) =>
+    request<import('@/types/lk').ShipmentItem[]>('GET', `/shipments/${shipmentId}/items`),
+
+  addShipmentItem: (shipmentId: number, data?: Partial<import('@/types/lk').ShipmentItem>) =>
+    request<{ id: number; position_no: number }>('POST', `/shipments/${shipmentId}/items`, data ?? {}),
+
+  updateShipmentItem: (shipmentId: number, itemId: number, data: Partial<import('@/types/lk').ShipmentItem>) =>
+    request<{ ok: boolean }>('PUT', `/shipments/${shipmentId}/items/${itemId}`, data),
+
+  deleteShipmentItem: (shipmentId: number, itemId: number) =>
+    request<{ ok: boolean }>('DELETE', `/shipments/${shipmentId}/items/${itemId}`),
+
+  shipmentItemFiles: (shipmentId: number, itemId: number) =>
+    request<import('@/types/lk').ShipmentFile[]>('GET', `/shipments/${shipmentId}/items/${itemId}/files`),
+
+  uploadShipmentItemFile: (shipmentId: number, itemId: number, form: FormData) =>
+    request<{ id: number }>('POST', `/shipments/${shipmentId}/items/${itemId}/files`, form, true),
+
+  addShipmentItemFileUrl: (shipmentId: number, itemId: number, url: string) => {
+    const fd = new FormData();
+    fd.append('url', url);
+    return request<{ ok: boolean }>('POST', `/shipments/${shipmentId}/items/${itemId}/files`, fd, true);
+  },
+
+  deleteShipmentItemFile: (shipmentId: number, itemId: number, fileId: number) =>
+    request<{ ok: boolean }>('DELETE', `/shipments/${shipmentId}/items/${itemId}/files/${fileId}`),
+
+  downloadShipmentItemFile: async (shipmentId: number, itemId: number, fileId: number, filename?: string) => {
+    const token = getAuthToken();
+    const res = await fetch(`${BASE_URL}/shipments/${shipmentId}/items/${itemId}/files/${fileId}/download`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!res.ok) throw new Error(`Не удалось скачать (HTTP ${res.status})`);
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || `file-${fileId}`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  },
+
+  checkShipmentItemsUsage: (shipmentId: number, itemIds: number[]) => {
+    const qs = new URLSearchParams();
+    qs.set('item_ids', itemIds.join(','));
+    return request<{ used: import('@/types/lk').ShipmentItemUsage[] }>(
+      'GET',
+      `/shipments/${shipmentId}/items/check-usage?${qs.toString()}`
+    );
+  },
+
+  generateCertRequestFromShipment: (shipmentId: number, certCenterId: number, itemIds: number[]) =>
+    request<{ id: number }>('POST', `/shipments/${shipmentId}/generate-cert-request`, {
+      cert_center_id: certCenterId,
+      item_ids: itemIds,
+    }),
+
+  syncShipmentFromCertRequest: (shipmentId: number, certRequestId: number) =>
+    request<{ ok: boolean; synced: number }>('POST', `/shipments/${shipmentId}/sync-from-cert-request`, {
+      cert_request_id: certRequestId,
+    }),
+
 
   createShipment: (data: { title: string; client_id?: number }) =>
     USE_MOCK
@@ -240,9 +322,9 @@ export const lkApi = {
     USE_MOCK
       ? mock.mockCreateCertCenter(data)
       : request<{
-          center: import('@/types/lk').CertCenter;
-          credentials: { email: string; password: string };
-        }>('POST', '/cert-centers', data),
+        center: import('@/types/lk').CertCenter;
+        credentials: { email: string; password: string };
+      }>('POST', '/cert-centers', data),
 
   resetCertCenterPassword: (id: number) =>
     request<{ user_id: number; cert_center_id: number; login: string; name: string; new_password: string }>('POST', `/cert-centers/${id}/reset-password`),
