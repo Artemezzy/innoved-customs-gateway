@@ -82,6 +82,10 @@ export interface Message {
   attachment_original?: string | null;
   attachment_stored?: string | null;
   attachment_size?: number | null;
+  reply_to_id?: number | null;
+  reply_text?: string | null;
+  reply_attachment_original?: string | null;
+  reply_sender_name?: string | null;
 }
 
 export interface ManagerStats {
@@ -214,6 +218,10 @@ export interface CertMessage {
   attachment_original?: string | null;
   attachment_stored?: string | null;
   attachment_size?: number | null;
+  reply_to_id?: number | null;
+  reply_text?: string | null;
+  reply_attachment_original?: string | null;
+  reply_sender_name?: string | null;
 }
 
 export interface NotificationSettings {

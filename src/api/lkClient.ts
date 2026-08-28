@@ -195,11 +195,12 @@ export const lkApi = {
       ? mock.mockMessages(shipmentId, since)
       : request<import('@/types/lk').Message[]>('GET', `/shipments/${shipmentId}/messages${since ? `?since=${since}` : ''}`),
 
-  sendMessage: (shipmentId: number, text: string, file?: File | null) => {
+  sendMessage: (shipmentId: number, text: string, file?: File | null, replyToId?: number | null) => {
     if (USE_MOCK) return mock.mockSendMessage(shipmentId, text, undefined);
     const fd = new FormData();
     fd.append('text', text);
     if (file) fd.append('file', file);
+    if (replyToId) fd.append('reply_to_id', String(replyToId));
     return request<{ id: number }>('POST', `/shipments/${shipmentId}/messages`, fd, true);
   },
 
@@ -399,13 +400,15 @@ export const lkApi = {
       ? mock.mockCertMessages(id, since)
       : request<import('@/types/lk').CertMessage[]>('GET', `/cert-requests/${id}/messages${since ? `?since=${since}` : ''}`),
 
-  sendCertMessage: (id: number, text: string, file?: File | null) => {
+  sendCertMessage: (id: number, text: string, file?: File | null, replyToId?: number | null) => {
     if (USE_MOCK) return mock.mockSendCertMessage(id, text, undefined);
     const fd = new FormData();
     fd.append('text', text);
     if (file) fd.append('file', file);
+    if (replyToId) fd.append('reply_to_id', String(replyToId));
     return request<{ id: number }>('POST', `/cert-requests/${id}/messages`, fd, true);
   },
+
 
   downloadCertMessageFile: async (requestId: number, messageId: number, filename?: string) => {
     const token = getAuthToken();

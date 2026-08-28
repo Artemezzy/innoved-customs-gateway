@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Send, Paperclip, X, FileText } from 'lucide-react';
+import { Send, Paperclip, X, FileText, Reply } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
 import { useAuth } from '@/contexts/AuthContext';
@@ -29,8 +29,10 @@ export function ChatPanel({ shipmentId }: Props) {
   const [text, setText] = useState('');
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [replyTo, setReplyTo] = useState<any | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const messageRefs = useRef<Record<number, HTMLDivElement | null>>({});
 
   const { data, isLoading } = useQuery({
     queryKey: ['lk', 'messages', shipmentId],
@@ -39,11 +41,12 @@ export function ChatPanel({ shipmentId }: Props) {
   });
 
   const send = useMutation({
-    mutationFn: (payload: { text: string; file?: File | null }) =>
-      lkApi.sendMessage(shipmentId, payload.text, payload.file),
+    mutationFn: (payload: { text: string; file?: File | null; replyToId?: number | null }) =>
+      lkApi.sendMessage(shipmentId, payload.text, payload.file, payload.replyToId),
     onSuccess: () => {
       setText('');
       setPendingFile(null);
+      setReplyTo(null);
       qc.invalidateQueries({ queryKey: ['lk', 'messages', shipmentId] });
     },
     onError: (e: any) => toast.error(e.message || 'Не удалось отправить сообщение'),
@@ -67,13 +70,22 @@ export function ChatPanel({ shipmentId }: Props) {
     e.preventDefault();
     const t = text.trim();
     if (!t && !pendingFile) return;
-    send.mutate({ text: t, file: pendingFile });
+    send.mutate({ text: t, file: pendingFile, replyToId: replyTo?.id ?? null });
   };
 
   const onDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
     pickFile(e.dataTransfer.files?.[0]);
+  };
+
+  const scrollToMessage = (id: number) => {
+    const el = messageRefs.current[id];
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      el.classList.add('ring-2', 'ring-primary/60');
+      setTimeout(() => el.classList.remove('ring-2', 'ring-primary/60'), 1500);
+    }
   };
 
   return (
@@ -101,16 +113,36 @@ export function ChatPanel({ shipmentId }: Props) {
         {data?.map((m: any) => {
           const mine = m.role === user?.role;
           return (
-            <div key={m.id} className={cn('flex flex-col max-w-[80%]', mine ? 'ml-auto items-end' : 'items-start')}>
+            <div
+              key={m.id}
+              ref={(el) => { messageRefs.current[m.id] = el; }}
+              className={cn('flex flex-col max-w-[80%] rounded-lg transition-shadow', mine ? 'ml-auto items-end' : 'items-start')}
+            >
               <span className="text-xs text-muted-foreground mb-1">
                 {m.sender_name} · {new Date(m.created_at).toLocaleString('ru-RU')}
               </span>
               <div
                 className={cn(
-                  'rounded-lg px-3 py-2 text-sm',
+                  'rounded-lg px-3 py-2 text-sm group relative',
                   mine ? 'bg-primary text-primary-foreground' : 'bg-muted'
                 )}
               >
+                {m.reply_to_id && (
+                  <button
+                    type="button"
+                    onClick={() => scrollToMessage(m.reply_to_id)}
+                    className={cn(
+                      'block w-full text-left mb-1.5 pl-2 border-l-2 text-xs opacity-80 hover:opacity-100',
+                      mine ? 'border-primary-foreground/50' : 'border-foreground/30'
+                    )}
+                  >
+                    <span className="font-medium">{m.reply_sender_name || 'Сообщение'}</span>
+                    <br />
+                    <span className="line-clamp-1">
+                      {m.reply_text || m.reply_attachment_original || 'вложение'}
+                    </span>
+                  </button>
+                )}
                 {m.text && <p className="whitespace-pre-wrap break-words">{m.text}</p>}
                 {m.attachment_original && (
                   <button
@@ -125,15 +157,36 @@ export function ChatPanel({ shipmentId }: Props) {
                     {m.attachment_original}
                   </button>
                 )}
+                <button
+                  type="button"
+                  title="Ответить"
+                  onClick={() => setReplyTo(m)}
+                  className={cn(
+                    'absolute -top-2 opacity-0 group-hover:opacity-100 transition-opacity rounded-full bg-background border p-1 shadow-sm',
+                    mine ? '-left-2' : '-right-2'
+                  )}
+                >
+                  <Reply className="h-3 w-3" />
+                </button>
               </div>
             </div>
           );
         })}
         <div ref={bottomRef} />
-        {isDragging && (
-          <div className="fixed inset-0 pointer-events-none" />
-        )}
       </div>
+
+      {replyTo && (
+        <div className="flex items-start gap-2 px-3 py-2 border-t bg-muted/50 text-sm">
+          <Reply className="h-4 w-4 shrink-0 mt-0.5" />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-muted-foreground">{replyTo.sender_name}</p>
+            <p className="truncate">{replyTo.text || replyTo.attachment_original || 'вложение'}</p>
+          </div>
+          <button type="button" onClick={() => setReplyTo(null)} className="text-muted-foreground hover:text-foreground">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
 
       {pendingFile && (
         <div className="flex items-center gap-2 px-3 py-2 border-t bg-muted/50 text-sm">

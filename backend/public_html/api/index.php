@@ -647,24 +647,44 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[
     $st = db()->prepare('SELECT * FROM lk_cert_request_files WHERE request_id=? AND item_id=? ORDER BY created_at DESC'); $st->execute([$rid, $iid]); out($st->fetchAll());
 }
 
-// ЗАМЕНИТЬ существующий блок GET/POST ".../cert-requests/:id/messages" на код ниже.
+// ЗАМЕНИТЬ существующие блоки GET/POST ".../cert-requests/:id/messages" на код ниже
 
 if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'messages' && !isset($seg[3])) {
     $me = auth(); $rid = (int)$seg[1]; cert_request_guard($me, $rid); $since = $_GET['since'] ?? '1970-01-01 00:00:00';
-    $st = db()->prepare('SELECT m.*, u.name AS sender_name FROM lk_cert_messages m JOIN lk_users u ON u.id=m.user_id WHERE m.request_id=? AND m.created_at>? ORDER BY m.created_at ASC');
-    $st->execute([$rid, $since]); $other = $me['role'] === 'manager' ? 'cert_center' : 'manager'; db()->prepare('UPDATE lk_cert_messages SET is_read=1 WHERE request_id=? AND role=? AND is_read=0')->execute([$rid, $other]); out($st->fetchAll());
+    $st = db()->prepare(
+        'SELECT m.*, u.name AS sender_name,
+                r.text AS reply_text, r.attachment_original AS reply_attachment_original,
+                ru.name AS reply_sender_name
+         FROM lk_cert_messages m
+         JOIN lk_users u ON u.id=m.user_id
+         LEFT JOIN lk_cert_messages r ON r.id=m.reply_to_id
+         LEFT JOIN lk_users ru ON ru.id=r.user_id
+         WHERE m.request_id=? AND m.created_at>?
+         ORDER BY m.created_at ASC'
+    );
+    $st->execute([$rid, $since]);
+    $other = $me['role'] === 'manager' ? 'cert_center' : 'manager';
+    db()->prepare('UPDATE lk_cert_messages SET is_read=1 WHERE request_id=? AND role=? AND is_read=0')->execute([$rid, $other]);
+    out($st->fetchAll());
 }
 
-// POST .../cert-requests/:id/messages  (multipart/form-data: text + опционально file)
+// POST .../cert-requests/:id/messages  (multipart/form-data: text + опционально file + опционально reply_to_id)
 if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'messages' && !isset($seg[3])) {
     $me = auth(); $rid = (int)$seg[1]; cert_request_guard($me, $rid);
     $text = trim((string)($_POST['text'] ?? ''));
     $attachedFile = handle_chat_attachment();
     if (!$text && !$attachedFile) err('Пустое сообщение');
 
+    $replyToId = !empty($_POST['reply_to_id']) ? (int)$_POST['reply_to_id'] : null;
+    if ($replyToId) {
+        $chk = db()->prepare('SELECT id FROM lk_cert_messages WHERE id=? AND request_id=?');
+        $chk->execute([$replyToId, $rid]);
+        if (!$chk->fetch()) $replyToId = null;
+    }
+
     $attachment = $attachedFile ? store_chat_attachment($attachedFile, 'chat/cert-requests/' . $rid) : null;
 
-    db()->prepare('INSERT INTO lk_cert_messages(request_id,user_id,role,text,attachment_original,attachment_stored,attachment_size,is_read,created_at) VALUES(?,?,?,?,?,?,?,0,NOW())')
+    db()->prepare('INSERT INTO lk_cert_messages(request_id,user_id,role,text,attachment_original,attachment_stored,attachment_size,reply_to_id,is_read,created_at) VALUES(?,?,?,?,?,?,?,?,0,NOW())')
         ->execute([
             $rid,
             $me['sub'],
@@ -673,6 +693,7 @@ if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg
             $attachment['original'] ?? null,
             $attachment['stored'] ?? null,
             $attachment['size'] ?? null,
+            $replyToId,
         ]);
     db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
     $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
@@ -899,9 +920,13 @@ if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?
     }
     $since = $_GET['since'] ?? '1970-01-01 00:00:00';
     $st = db()->prepare(
-        'SELECT m.*, u.name AS sender_name
+        'SELECT m.*, u.name AS sender_name,
+                r.text AS reply_text, r.attachment_original AS reply_attachment_original,
+                ru.name AS reply_sender_name
          FROM lk_messages m
          JOIN lk_users u ON u.id=m.user_id
+         LEFT JOIN lk_messages r ON r.id=m.reply_to_id
+         LEFT JOIN lk_users ru ON ru.id=r.user_id
          WHERE m.shipment_id=? AND m.created_at>?
          ORDER BY m.created_at ASC'
     );
@@ -912,7 +937,7 @@ if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?
     out($st->fetchAll());
 }
 
-// POST /api/shipments/:id/messages  (multipart/form-data: text + опционально file)
+// POST /api/shipments/:id/messages  (multipart/form-data: text + опционально file + опционально reply_to_id)
 if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'messages' && !isset($seg[3])) {
     $me  = auth();
     $sid = (int)$seg[1];
@@ -924,11 +949,18 @@ if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] 
     $attachedFile = handle_chat_attachment();
     if (!$text && !$attachedFile) err('Пустое сообщение');
 
+    $replyToId = !empty($_POST['reply_to_id']) ? (int)$_POST['reply_to_id'] : null;
+    if ($replyToId) {
+        $chk = db()->prepare('SELECT id FROM lk_messages WHERE id=? AND shipment_id=?');
+        $chk->execute([$replyToId, $sid]);
+        if (!$chk->fetch()) $replyToId = null;
+    }
+
     $attachment = $attachedFile ? store_chat_attachment($attachedFile, 'chat/shipments/' . $sid) : null;
 
     $st = db()->prepare(
-        'INSERT INTO lk_messages(shipment_id,user_id,role,text,attachment_original,attachment_stored,attachment_size,is_read,created_at)
-         VALUES(?,?,?,?,?,?,?,0,NOW())'
+        'INSERT INTO lk_messages(shipment_id,user_id,role,text,attachment_original,attachment_stored,attachment_size,reply_to_id,is_read,created_at)
+         VALUES(?,?,?,?,?,?,?,?,0,NOW())'
     );
     $st->execute([
         $sid,
@@ -938,6 +970,7 @@ if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] 
         $attachment['original'] ?? null,
         $attachment['stored'] ?? null,
         $attachment['size'] ?? null,
+        $replyToId,
     ]);
     out(['id' => (int)db()->lastInsertId()], 201);
 }
