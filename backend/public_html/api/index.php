@@ -714,18 +714,40 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[
     send_file_download($path, $msg['attachment_original']);
 }
 
+
+// ЗАМЕНИТЬ существующие блоки GET/PUT "/api/me/notifications" в index.php на код ниже
 if ($method === 'GET' && $seg[0] === 'me' && ($seg[1] ?? '') === 'notifications') {
-    $me = auth(); $st = db()->prepare('SELECT email FROM lk_users WHERE id=?'); $st->execute([$me['sub']]); $user = $st->fetch(); if (!$user) err('Пользователь не найден', 404);
-    out(['emails' => get_notification_emails((int)$me['sub'], (string)$user['email'])]);
+    $me = auth();
+    $st = db()->prepare('SELECT email, notifications_enabled FROM lk_users WHERE id=?');
+    $st->execute([$me['sub']]);
+    $user = $st->fetch();
+    if (!$user) err('Пользователь не найден', 404);
+    out([
+        'emails' => get_notification_emails((int)$me['sub'], (string)$user['email']),
+        'enabled' => (bool)$user['notifications_enabled'],
+    ]);
 }
+
 if ($method === 'PUT' && $seg[0] === 'me' && ($seg[1] ?? '') === 'notifications') {
-    $me = auth(); $b = body(); $emails = normalize_email_list((array)($b['emails'] ?? []));
+    $me = auth();
+    $b = body();
+    $emails = normalize_email_list((array)($b['emails'] ?? []));
+    $enabled = array_key_exists('enabled', $b) ? (int)!empty($b['enabled']) : null;
+
     db()->beginTransaction();
     try {
         db()->prepare('DELETE FROM lk_notification_emails WHERE user_id=?')->execute([$me['sub']]);
-        if ($emails) { $ins = db()->prepare('INSERT INTO lk_notification_emails(user_id,email,created_at) VALUES(?,?,NOW())'); foreach ($emails as $email) $ins->execute([$me['sub'], $email]); }
+        if ($emails) {
+            $ins = db()->prepare('INSERT INTO lk_notification_emails(user_id,email,created_at) VALUES(?,?,NOW())');
+            foreach ($emails as $email) $ins->execute([$me['sub'], $email]);
+        }
+        if ($enabled !== null) {
+            db()->prepare('UPDATE lk_users SET notifications_enabled=? WHERE id=?')->execute([$enabled, $me['sub']]);
+        }
         db()->commit();
-    } catch (\Throwable $e) { db()->rollBack(); err('Ошибка БД: ' . $e->getMessage()); }
+    } catch (\Throwable $e) {
+        db()->rollBack(); err('Ошибка БД: ' . $e->getMessage());
+    }
     out(['ok' => true]);
 }
 
