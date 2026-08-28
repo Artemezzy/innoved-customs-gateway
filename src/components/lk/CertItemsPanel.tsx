@@ -358,7 +358,10 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
           </div>
         </div>
 
-        <div className="hidden md:block overflow-x-auto border rounded-md">
+        {/* Десктоп: таблица со sticky-заголовком.
+            Горизонтальный И вертикальный скролл в одном контейнере —
+            это обязательно для надёжной работы sticky (см. пояснение ниже кода). */}
+        <div className="hidden md:block border rounded-md overflow-auto max-h-[70vh]">
           <table className="w-full text-sm border-collapse">
             <thead className="sticky top-0 z-10 bg-background shadow-sm">
               <tr>
@@ -417,6 +420,7 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
           </div>
         )}
 
+        {/* Мобильные карточки */}
         <div className="md:hidden space-y-3">
           {items.map((item) => (
             <CertItemRow
