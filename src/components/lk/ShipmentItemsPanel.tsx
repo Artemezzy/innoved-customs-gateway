@@ -37,12 +37,14 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
+
 interface Props {
   shipmentId: number;
   shipment: Shipment;
   items: ShipmentItem[];
   isManager: boolean;
 }
+
 
 const PRODUCT_FIELD_KEYS: Array<{
   key: keyof Omit<ShipmentItem, 'id' | 'shipment_id' | 'position_no'>;
@@ -65,12 +67,15 @@ const PRODUCT_FIELD_KEYS: Array<{
   { key: 'comment', labelKey: 'th_comment', textarea: true, rows: 3, tone: 'yellow' },
 ];
 
+
 const toneClass = (tone: 'green' | 'yellow') =>
   tone === 'green'
     ? 'bg-green-50 dark:bg-green-950/30 border-green-200 dark:border-green-900'
     : 'bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-900';
 
+
 const HIDDEN_COLUMNS_STORAGE_KEY = 'lk_shipment_items_hidden_columns';
+
 
 function loadHiddenColumns(): Set<string> {
   if (typeof window === 'undefined') return new Set();
@@ -84,10 +89,12 @@ function loadHiddenColumns(): Set<string> {
   }
 }
 
+
 function saveHiddenColumns(cols: Set<string>) {
   if (typeof window === 'undefined') return;
   window.localStorage.setItem(HIDDEN_COLUMNS_STORAGE_KEY, JSON.stringify(Array.from(cols)));
 }
+
 
 export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: Props) {
   const qc = useQueryClient();
@@ -103,10 +110,12 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
     manufacturer_country: shipment.manufacturer_country || '',
   });
 
+
   const [hiddenColumns, setHiddenColumns] = useState<Set<string>>(() => loadHiddenColumns());
   const [savingAll, setSavingAll] = useState(false);
   const [checkedIds, setCheckedIds] = useState<Set<number>>(new Set());
   const [generateModalOpen, setGenerateModalOpen] = useState(false);
+
 
   const saveAllFns = useRef<Record<number, () => Promise<void>>>({});
   const registerSaveAll = (itemId: number, fn: () => Promise<void>) => {
@@ -115,6 +124,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
   const unregisterSaveAll = (itemId: number) => {
     delete saveAllFns.current[itemId];
   };
+
 
   const toggleColumn = (key: string) => {
     setHiddenColumns((prev) => {
@@ -126,10 +136,12 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
     });
   };
 
+
   const visibleFields = useMemo(
     () => PRODUCT_FIELD_KEYS.filter((f) => !hiddenColumns.has(f.key as string)),
     [hiddenColumns]
   );
+
 
   useEffect(() => {
     setRequestValues({
@@ -144,11 +156,13 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
     });
   }, [shipment]);
 
+
   const invalidate = () => {
     qc.invalidateQueries({ queryKey: ['lk', 'shipment', shipmentId] });
     qc.invalidateQueries({ queryKey: ['lk', 'shipment-items', shipmentId] });
     qc.invalidateQueries({ queryKey: ['lk', 'shipments'] });
   };
+
 
   const updateInfo = useMutation({
     mutationFn: (data: Partial<Shipment>) => lkApi.updateShipmentInfo(shipmentId, data),
@@ -159,6 +173,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
     onError: (e: any) => toast.error(e?.message || 'Не удалось сохранить данные'),
   });
 
+
   const addItem = useMutation({
     mutationFn: () => lkApi.addShipmentItem(shipmentId),
     onSuccess: () => {
@@ -168,19 +183,20 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
     onError: (e: any) => toast.error(e?.message || 'Не удалось добавить'),
   });
 
+
   const setRequestField = (key: keyof typeof requestValues, value: string) => {
     setRequestValues((prev) => ({ ...prev, [key]: value }));
   };
 
+
   const saveRequestField = (key: keyof typeof requestValues) => {
-    if (!isManager) return;
     if (requestValues[key] !== ((shipment as any)[key] || '')) {
       updateInfo.mutate({ [key]: requestValues[key] } as Partial<Shipment>);
     }
   };
 
+
   const saveRequestBlock = (keys: (keyof typeof requestValues)[]) => {
-    if (!isManager) return;
     const diff: Partial<Shipment> = {};
     keys.forEach((key) => {
       if (requestValues[key] !== ((shipment as any)[key] || '')) {
@@ -194,6 +210,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
     updateInfo.mutate(diff);
   };
 
+
   const saveAllItems = async () => {
     setSavingAll(true);
     try {
@@ -204,6 +221,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
     }
   };
 
+
   const toggleChecked = (itemId: number, checked: boolean) => {
     setCheckedIds((prev) => {
       const next = new Set(prev);
@@ -213,24 +231,24 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
     });
   };
 
+
   const checkedItemIds = Array.from(checkedIds);
+
 
   return (
     <div className="space-y-6">
       <Card className="p-4 space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold">{lkT('section_applicant', language)}</h3>
-          {isManager && (
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => saveRequestBlock(['applicant_org', 'applicant_address', 'applicant_head', 'applicant_position', 'applicant_email'])}
-              disabled={updateInfo.isPending}
-            >
-              <Save className="h-4 w-4 mr-1" />
-              {lkT('btn_save_block', language)}
-            </Button>
-          )}
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => saveRequestBlock(['applicant_org', 'applicant_address', 'applicant_head', 'applicant_position', 'applicant_email'])}
+            disabled={updateInfo.isPending}
+          >
+            <Save className="h-4 w-4 mr-1" />
+            {lkT('btn_save_block', language)}
+          </Button>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
@@ -239,7 +257,6 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
               value={requestValues.applicant_org}
               onChange={(e) => setRequestField('applicant_org', e.target.value)}
               onBlur={() => saveRequestField('applicant_org')}
-              disabled={!isManager}
             />
           </div>
           <div className="space-y-1">
@@ -248,7 +265,6 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
               value={requestValues.applicant_address}
               onChange={(e) => setRequestField('applicant_address', e.target.value)}
               onBlur={() => saveRequestField('applicant_address')}
-              disabled={!isManager}
             />
           </div>
           <div className="space-y-1">
@@ -257,7 +273,6 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
               value={requestValues.applicant_head}
               onChange={(e) => setRequestField('applicant_head', e.target.value)}
               onBlur={() => saveRequestField('applicant_head')}
-              disabled={!isManager}
             />
           </div>
           <div className="space-y-1">
@@ -266,7 +281,6 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
               value={requestValues.applicant_position}
               onChange={(e) => setRequestField('applicant_position', e.target.value)}
               onBlur={() => saveRequestField('applicant_position')}
-              disabled={!isManager}
             />
           </div>
           <div className="space-y-1">
@@ -275,26 +289,24 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
               value={requestValues.applicant_email}
               onChange={(e) => setRequestField('applicant_email', e.target.value)}
               onBlur={() => saveRequestField('applicant_email')}
-              disabled={!isManager}
             />
           </div>
         </div>
       </Card>
 
+
       <Card className="p-4 space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold">{lkT('section_manufacturer', language)}</h3>
-          {isManager && (
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => saveRequestBlock(['manufacturer_org', 'manufacturer_address', 'manufacturer_country'])}
-              disabled={updateInfo.isPending}
-            >
-              <Save className="h-4 w-4 mr-1" />
-              {lkT('btn_save_block', language)}
-            </Button>
-          )}
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => saveRequestBlock(['manufacturer_org', 'manufacturer_address', 'manufacturer_country'])}
+            disabled={updateInfo.isPending}
+          >
+            <Save className="h-4 w-4 mr-1" />
+            {lkT('btn_save_block', language)}
+          </Button>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
@@ -303,7 +315,6 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
               value={requestValues.manufacturer_org}
               onChange={(e) => setRequestField('manufacturer_org', e.target.value)}
               onBlur={() => saveRequestField('manufacturer_org')}
-              disabled={!isManager}
             />
           </div>
           <div className="space-y-1">
@@ -312,7 +323,6 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
               value={requestValues.manufacturer_address}
               onChange={(e) => setRequestField('manufacturer_address', e.target.value)}
               onBlur={() => saveRequestField('manufacturer_address')}
-              disabled={!isManager}
             />
           </div>
           <div className="space-y-1">
@@ -321,22 +331,20 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
               value={requestValues.manufacturer_country}
               onChange={(e) => setRequestField('manufacturer_country', e.target.value)}
               onBlur={() => saveRequestField('manufacturer_country')}
-              disabled={!isManager}
             />
           </div>
         </div>
       </Card>
 
+
       <div className="space-y-3">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <h3 className="font-semibold text-lg">{lkT('section_products', language)}</h3>
           <div className="flex items-center gap-2">
-            {isManager && (
-              <Button size="sm" variant="outline" onClick={saveAllItems} disabled={savingAll}>
-                {savingAll ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Save className="h-4 w-4 mr-1" />}
-                {savingAll ? 'Сохранение…' : lkT('btn_save', language)}
-              </Button>
-            )}
+            <Button size="sm" variant="outline" onClick={saveAllItems} disabled={savingAll}>
+              {savingAll ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Save className="h-4 w-4 mr-1" />}
+              {savingAll ? 'Сохранение…' : lkT('btn_save', language)}
+            </Button>
             {isManager && (
               <Button
                 size="sm"
@@ -347,14 +355,13 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
                 {lkT('btn_generate_cert_request', language)}
               </Button>
             )}
-            {isManager && (
-              <Button size="sm" variant="outline" onClick={() => addItem.mutate()} disabled={addItem.isPending}>
-                <Plus className="h-4 w-4 mr-1" />
-                {addItem.isPending ? 'Добавление…' : lkT('btn_add_item', language)}
-              </Button>
-            )}
+            <Button size="sm" variant="outline" onClick={() => addItem.mutate()} disabled={addItem.isPending}>
+              <Plus className="h-4 w-4 mr-1" />
+              {addItem.isPending ? 'Добавление…' : lkT('btn_add_item', language)}
+            </Button>
           </div>
         </div>
+
 
         <div className="hidden md:block border rounded-md overflow-auto max-h-[70vh]">
           <table className="w-full text-sm border-collapse">
@@ -377,7 +384,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
                     </div>
                   </th>
                 ))}
-                {isManager && <th className="p-2 border-b text-center w-20">{lkT('th_actions', language)}</th>}
+                <th className="p-2 border-b text-center w-20">{lkT('th_actions', language)}</th>
               </tr>
             </thead>
             <tbody>
@@ -401,6 +408,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
           </table>
         </div>
 
+
         {hiddenColumns.size > 0 && (
           <div className="hidden md:flex items-center gap-2 flex-wrap text-xs text-muted-foreground">
             <span>{lkT('hidden_columns_label', language)}</span>
@@ -417,6 +425,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
             ))}
           </div>
         )}
+
 
         <div className="md:hidden space-y-3">
           {items.map((item) => (
@@ -437,8 +446,10 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
           ))}
         </div>
 
+
         <p className="text-xs text-muted-foreground">{lkT('footer_note_checked_items', language)}</p>
       </div>
+
 
       {generateModalOpen && (
         <GenerateCertRequestModal
@@ -456,6 +467,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
   );
 }
 
+
 interface RowProps {
   shipmentId: number;
   item: ShipmentItem;
@@ -469,6 +481,7 @@ interface RowProps {
   registerSaveAll: (itemId: number, fn: () => Promise<void>) => void;
   unregisterSaveAll: (itemId: number) => void;
 }
+
 
 function ShipmentItemRow({
   shipmentId,
@@ -487,15 +500,18 @@ function ShipmentItemRow({
   const [values, setValues] = useState(item);
   const [filesOpen, setFilesOpen] = useState(false);
 
+
   useEffect(() => {
     setValues(item);
   }, [item]);
+
 
   const update = useMutation({
     mutationFn: (data: Partial<ShipmentItem>) => lkApi.updateShipmentItem(shipmentId, item.id, data),
     onSuccess: () => onInvalidate(),
     onError: (e: any) => toast.error(e?.message || 'Не удалось сохранить'),
   });
+
 
   const remove = useMutation({
     mutationFn: () => lkApi.deleteShipmentItem(shipmentId, item.id),
@@ -506,18 +522,22 @@ function ShipmentItemRow({
     onError: (e: any) => toast.error(e?.message || 'Не удалось удалить'),
   });
 
+
   const generateSingleDoc = useMutation({
     mutationFn: () => lkApi.generateCertRequestDoc(shipmentId, [item.id]),
     onError: (e: any) => toast.error(e?.message || 'Не удалось сформировать заявку'),
   });
 
+
   const setField = (key: keyof ShipmentItem, v: string) => setValues((prev) => ({ ...prev, [key]: v }));
+
 
   const saveIfChanged = (key: keyof ShipmentItem) => {
     if ((values as any)[key] !== (item as any)[key]) {
       update.mutate({ [key]: (values as any)[key] } as Partial<ShipmentItem>);
     }
   };
+
 
   useEffect(() => {
     registerSaveAll(item.id, async () => {
@@ -534,6 +554,7 @@ function ShipmentItemRow({
     });
     return () => unregisterSaveAll(item.id);
   }, [values, item, visibleFields, shipmentId, registerSaveAll, unregisterSaveAll, onInvalidate]);
+
 
   const deleteBtn = canDelete ? (
     <AlertDialog>
@@ -555,7 +576,9 @@ function ShipmentItemRow({
     </AlertDialog>
   ) : null;
 
+
   const busy = update.isPending;
+
 
   if (variant === 'row') {
     return (
@@ -576,7 +599,6 @@ function ShipmentItemRow({
                   value={(values as any)[f.key] || ''}
                   onChange={(e) => setField(f.key as keyof ShipmentItem, e.target.value)}
                   onBlur={() => saveIfChanged(f.key as keyof ShipmentItem)}
-                  disabled={!isManager}
                   className={`min-w-[240px] ${toneClass(f.tone)}`}
                 />
               ) : (
@@ -584,15 +606,14 @@ function ShipmentItemRow({
                   value={(values as any)[f.key] || ''}
                   onChange={(e) => setField(f.key as keyof ShipmentItem, e.target.value)}
                   onBlur={() => saveIfChanged(f.key as keyof ShipmentItem)}
-                  disabled={!isManager}
                   className={toneClass(f.tone)}
                 />
               )}
             </td>
           ))}
-          {isManager && (
-            <td className="p-2">
-              <div className="flex items-center justify-center gap-1">
+          <td className="p-2">
+            <div className="flex items-center justify-center gap-1">
+              {isManager && (
                 <Button
                   size="icon"
                   variant="ghost"
@@ -606,13 +627,13 @@ function ShipmentItemRow({
                     <FileText className="h-4 w-4" />
                   )}
                 </Button>
-                {deleteBtn}
-              </div>
-            </td>
-          )}
+              )}
+              {deleteBtn}
+            </div>
+          </td>
         </tr>
         <tr className="border-b">
-          <td colSpan={2 + visibleFields.length + (isManager ? 1 : 0)} className="p-2">
+          <td colSpan={3 + visibleFields.length} className="p-2">
             <Button size="sm" variant="ghost" onClick={() => setFilesOpen((v) => !v)} className="w-full justify-center">
               {filesOpen ? <ChevronDown className="h-4 w-4 mr-1" /> : <ChevronRight className="h-4 w-4 mr-1" />}
               <Paperclip className="h-4 w-4 mr-1" />
@@ -630,6 +651,7 @@ function ShipmentItemRow({
     );
   }
 
+
   return (
     <Card className="p-4 space-y-3">
       <div className="flex items-center justify-between">
@@ -638,8 +660,9 @@ function ShipmentItemRow({
           <span className="font-medium">{lkT('position_label', language)}{item.position_no}</span>
           {busy && <Loader2 className="h-4 w-4 animate-spin" />}
         </div>
-        {isManager && <div className="flex items-center gap-1">{deleteBtn}</div>}
+        <div className="flex items-center gap-1">{deleteBtn}</div>
       </div>
+
 
       {visibleFields.map((f) => (
         <div key={f.key as string} className="space-y-1">
@@ -650,7 +673,6 @@ function ShipmentItemRow({
               value={(values as any)[f.key] || ''}
               onChange={(e) => setField(f.key as keyof ShipmentItem, e.target.value)}
               onBlur={() => saveIfChanged(f.key as keyof ShipmentItem)}
-              disabled={!isManager}
               className={toneClass(f.tone)}
             />
           ) : (
@@ -658,12 +680,12 @@ function ShipmentItemRow({
               value={(values as any)[f.key] || ''}
               onChange={(e) => setField(f.key as keyof ShipmentItem, e.target.value)}
               onBlur={() => saveIfChanged(f.key as keyof ShipmentItem)}
-              disabled={!isManager}
               className={toneClass(f.tone)}
             />
           )}
         </div>
       ))}
+
 
       <Button size="sm" variant="ghost" onClick={() => setFilesOpen((v) => !v)} className="w-full justify-start">
         {filesOpen ? <ChevronDown className="h-4 w-4 mr-1" /> : <ChevronRight className="h-4 w-4 mr-1" />}

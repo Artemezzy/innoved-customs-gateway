@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
 
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$path = preg_replace('#^/api#', '', trim($uri, '/'));
+$path = trim(preg_replace('#^/api#', '', $uri), '/');
 $seg = explode('/', $path);
 
 function db(): PDO {
@@ -899,9 +899,10 @@ if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?
     out($st->fetchAll());
 }
 
-// POST /api/shipments/:id/items — добавить позицию (только менеджер)
+// POST /api/shipments/:id/items — добавление позиции товара
 if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'items' && !isset($seg[3])) {
-    $me = auth(true); $sid = (int)$seg[1]; shipment_guard($me, $sid); $b = body();
+    $me = auth();
+    $sid = (int)$seg[1]; shipment_guard($me, $sid); $b = body();
     $st = db()->prepare('SELECT COALESCE(MAX(position_no),0)+1 FROM lk_shipment_items WHERE shipment_id=?');
     $st->execute([$sid]); $nextPos = (int)$st->fetchColumn();
     $allowed = ['product','tech_description','model_article','trademark','tn_ved','contract_invoice','quantity','price','tr_ts','cert_form','cert_price','comment'];
@@ -968,7 +969,8 @@ if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] 
 
 // PUT /api/shipments/:id/items/:itemId — обновить позицию
 if ($method === 'PUT' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'items' && isset($seg[3])) {
-    $me = auth(true); $sid = (int)$seg[1]; $iid = (int)$seg[3]; shipment_guard($me, $sid);
+    $me = auth(); // было: auth(true)
+    $sid = (int)$seg[1]; $iid = (int)$seg[3]; shipment_guard($me, $sid);
     $chk = db()->prepare('SELECT id FROM lk_shipment_items WHERE id=? AND shipment_id=?'); $chk->execute([$iid, $sid]);
     if (!$chk->fetch()) err('Позиция не найдена', 404);
     $b = body();
@@ -986,7 +988,8 @@ if ($method === 'PUT' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?
 
 // DELETE /api/shipments/:id/items/:itemId — удалить позицию (запрещено, если последняя)
 if ($method === 'DELETE' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'items' && isset($seg[3])) {
-    $me = auth(true); $sid = (int)$seg[1]; $iid = (int)$seg[3]; shipment_guard($me, $sid);
+    $me = auth(); // было: auth(true)
+    $sid = (int)$seg[1]; $iid = (int)$seg[3]; shipment_guard($me, $sid);
     $cnt = (int) db()->query("SELECT COUNT(*) FROM lk_shipment_items WHERE shipment_id=$sid")->fetchColumn();
     if ($cnt <= 1) err('В поставке должна остаться хотя бы одна позиция товара');
     db()->prepare('DELETE FROM lk_shipment_items WHERE id=? AND shipment_id=?')->execute([$iid, $sid]);
@@ -1189,7 +1192,7 @@ if ($method === 'PUT' && $seg[0] === 'shipments' && isset($seg[1]) && !isset($se
 
 // PUT /api/shipments/:id/info — обновление данных заявителя/изготовителя (только менеджер)
 if ($method === 'PUT' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'info') {
-    $me = auth(true);
+    $me = auth();
     $sid = (int)$seg[1];
     shipment_guard($me, $sid);
     $b = body();
