@@ -775,6 +775,23 @@ if ($method === 'GET' && $seg[0] === 'managers' && ($seg[1] ?? '') === 'cert-sta
     out(['cert_centers_count' => (int) db()->query('SELECT COUNT(*) FROM lk_cert_centers WHERE is_active=1')->fetchColumn(), 'cert_requests_open' => (int) db()->query("SELECT COUNT(*) FROM lk_cert_requests WHERE status!='closed'")->fetchColumn()]);
 }
 
+// GET /api/clients/:id
+if ($method === 'GET' && $seg[0] === 'clients' && isset($seg[1]) && !isset($seg[2])) {
+    auth(true);
+    $id = (int)$seg[1];
+    $st = db()->prepare(
+        'SELECT c.*, COUNT(s.id) AS shipment_count
+         FROM lk_clients c
+         LEFT JOIN lk_shipments s ON s.client_id=c.id
+         WHERE c.id=?
+         GROUP BY c.id'
+    );
+    $st->execute([$id]);
+    $client = $st->fetch();
+    if (!$client) err('Клиент не найден', 404);
+    out($client);
+}
+
 // GET /api/shipments
 if ($method === 'GET' && $seg[0] === 'shipments' && !isset($seg[1])) {
     $me = auth();
