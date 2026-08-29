@@ -104,47 +104,48 @@ export default function LKShipmentDetailPage() {
 
       <Separator />
 
-      <Tabs defaultValue="items">
-        <TabsList>
-          <TabsTrigger value="items">{lkT('tab_products', language)}</TabsTrigger>
-          <TabsTrigger value="cert-requests">{lkT('tab_cert_requests', language)}</TabsTrigger>
-          <TabsTrigger value="documents">{lkT('tab_documents', language)}</TabsTrigger>
-          <TabsTrigger value="chat">{lkT('tab_chat', language)}</TabsTrigger>
-        </TabsList>
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <Tabs defaultValue="items">
+            <TabsList>
+              <TabsTrigger value="items">{lkT('tab_products', language)}</TabsTrigger>
+              <TabsTrigger value="cert-requests">{lkT('tab_cert_requests', language)}</TabsTrigger>
+              <TabsTrigger value="documents">{lkT('tab_documents', language)}</TabsTrigger>
+            </TabsList>
 
-        <TabsContent value="items" className="mt-4">
-          {items.isLoading ? (
-            <Skeleton className="h-64 w-full" />
-          ) : (
-            <ShipmentItemsPanel
-              shipmentId={shipmentId}
-              shipment={s}
-              items={items.data ?? []}
-              isManager={isManager}
-            />
-          )}
-        </TabsContent>
+            <TabsContent value="items" className="mt-4">
+              {items.isLoading ? (
+                <Skeleton className="h-64 w-full" />
+              ) : (
+                <ShipmentItemsPanel
+                  shipmentId={shipmentId}
+                  shipment={s}
+                  items={items.data ?? []}
+                  isManager={isManager}
+                />
+              )}
+            </TabsContent>
 
-        <TabsContent value="cert-requests" className="mt-4">
-          <LinkedCertRequestsPanel
-            shipmentId={shipmentId}
-            linkedRequests={s.linked_cert_requests ?? []}
-            isManager={isManager}
-          />
-        </TabsContent>
+            <TabsContent value="cert-requests" className="mt-4">
+              <LinkedCertRequestsPanel
+                shipmentId={shipmentId}
+                linkedRequests={s.linked_cert_requests ?? []}
+                isManager={isManager}
+              />
+            </TabsContent>
 
-        <TabsContent value="documents" className="mt-4">
-          <Card className="p-4">
-            <DocumentsPanel shipmentId={shipmentId} />
-          </Card>
-        </TabsContent>
+            <TabsContent value="documents" className="mt-4">
+              <Card className="p-4">
+                <DocumentsPanel shipmentId={shipmentId} />
+              </Card>
+            </TabsContent>
+          </Tabs>
+        </div>
 
-        <TabsContent value="chat" className="mt-4">
-          <Card className="p-0 overflow-hidden">
-            <ChatPanel shipmentId={shipmentId} />
-          </Card>
-        </TabsContent>
-      </Tabs>
+        <Card className="p-0 overflow-hidden h-fit">
+          <ChatPanel shipmentId={shipmentId} />
+        </Card>
+      </div>
     </div>
   );
 }

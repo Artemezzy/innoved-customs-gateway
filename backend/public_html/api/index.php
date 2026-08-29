@@ -1,11 +1,5 @@
 <?php
-/**
- * INNOVED LK — Backend API
- * Файл: public_html/api/index.php
- * PHP 8.x + MySQL | reg.ru виртуальный хостинг
- */
 declare(strict_types=1);
-
 error_reporting(0);
 require_once __DIR__ . '/config.php';
 
@@ -16,15 +10,15 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
 
 $method = $_SERVER['REQUEST_METHOD'];
-$uri    = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$path   = preg_replace('#^/?api/?#', '', trim($uri, '/'));
-$seg    = explode('/', $path);
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$path = preg_replace('#^/api#', '', trim($uri, '/'));
+$seg = explode('/', $path);
 
 function db(): PDO {
     static $pdo = null;
     if (!$pdo) {
         $pdo = new PDO(
-            'mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8mb4',
+            'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4',
             DB_USER,
             DB_PASS,
             [
@@ -50,16 +44,16 @@ function send_file_download(string $path, string $originalName, ?string $content
     if (!$mime) {
         $ext = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
         $map = [
-            'pdf'  => 'application/pdf',
-            'png'  => 'image/png',
-            'jpg'  => 'image/jpeg', 'jpeg' => 'image/jpeg',
-            'gif'  => 'image/gif', 'webp' => 'image/webp', 'svg'  => 'image/svg+xml',
-            'zip'  => 'application/zip', 'rar'  => 'application/vnd.rar', '7z'   => 'application/x-7z-compressed',
-            'doc'  => 'application/msword',
+            'pdf' => 'application/pdf',
+            'png' => 'image/png',
+            'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg',
+            'gif' => 'image/gif', 'webp' => 'image/webp', 'svg' => 'image/svg+xml',
+            'zip' => 'application/zip', 'rar' => 'application/vnd.rar', '7z' => 'application/x-7z-compressed',
+            'doc' => 'application/msword',
             'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'xls'  => 'application/vnd.ms-excel', 'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'ppt'  => 'application/vnd.ms-powerpoint', 'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-            'txt'  => 'text/plain; charset=utf-8', 'csv'  => 'text/csv; charset=utf-8', 'json' => 'application/json; charset=utf-8', 'xml'  => 'application/xml; charset=utf-8',
+            'xls' => 'application/vnd.ms-excel', 'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'ppt' => 'application/vnd.ms-powerpoint', 'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'txt' => 'text/plain; charset=utf-8', 'csv' => 'text/csv; charset=utf-8', 'json' => 'application/json; charset=utf-8', 'xml' => 'application/xml; charset=utf-8',
         ];
         $mime = $map[$ext] ?? 'application/octet-stream';
     }
@@ -129,17 +123,22 @@ function get_notification_emails(int $userId, ?string $fallbackEmail = null): ar
     }
     return $emails;
 }
-function queue_notification(int $requestId, string $recipientRole, string $eventLine): void {
+
+/**
+ * ОБНОВЛЕНО: теперь принимает $entityType первым параметром.
+ * Поддерживает 'cert_request' (как раньше) и 'shipment' (новое).
+ */
+function queue_notification(string $entityType, int $entityId, string $recipientRole, string $eventLine): void {
     $now = date('Y-m-d H:i:s');
-    $st = db()->prepare("SELECT id, event_summary, events_count FROM lk_notification_queue WHERE entity_type='cert_request' AND entity_id=? AND recipient_role=? AND status='pending' LIMIT 1");
-    $st->execute([$requestId, $recipientRole]);
+    $st = db()->prepare("SELECT id, event_summary, events_count FROM lk_notification_queue WHERE entity_type=? AND entity_id=? AND recipient_role=? AND status='pending' LIMIT 1");
+    $st->execute([$entityType, $entityId, $recipientRole]);
     $existing = $st->fetch();
     if ($existing) {
         db()->prepare("UPDATE lk_notification_queue SET event_summary = CONCAT(event_summary, '\n', ?), events_count = events_count + 1, last_event_at = ? WHERE id = ?")
             ->execute([$eventLine, $now, $existing['id']]);
     } else {
-        db()->prepare("INSERT INTO lk_notification_queue (entity_type, entity_id, recipient_role, event_summary, events_count, first_event_at, last_event_at, status) VALUES ('cert_request', ?, ?, ?, 1, ?, ?, 'pending')")
-            ->execute([$requestId, $recipientRole, $eventLine, $now, $now]);
+        db()->prepare("INSERT INTO lk_notification_queue (entity_type, entity_id, recipient_role, event_summary, events_count, first_event_at, last_event_at, status) VALUES (?, ?, ?, ?, 1, ?, ?, 'pending')")
+            ->execute([$entityType, $entityId, $recipientRole, $eventLine, $now, $now]);
     }
 }
 
@@ -169,8 +168,8 @@ function store_chat_attachment(array $file, string $subdir): array {
     }
     return [
         'original' => $file['name'],
-        'stored'   => $stored,
-        'size'     => (int)$file['size'],
+        'stored' => $stored,
+        'size' => (int)$file['size'],
     ];
 }
 
@@ -198,15 +197,11 @@ function doc_escape(string $s): string {
     return htmlspecialchars($s, ENT_QUOTES | ENT_XML1, 'UTF-8');
 }
 function doc_row(string $label, string $value): string {
-    return '<w:tr>'
-        . '<w:tc><w:tcPr><w:tcW w:w="3500" w:type="dxa"/></w:tcPr><w:p><w:r><w:t>' . doc_escape($label) . '</w:t></w:r></w:p></w:tc>'
-        . '<w:tc><w:tcPr><w:tcW w:w="5500" w:type="dxa"/></w:tcPr><w:p><w:r><w:t xml:space="preserve">' . doc_escape($value) . '</w:t></w:r></w:p></w:tc>'
-        . '</w:tr>';
+    return '<w:tr><w:tc><w:tcPr><w:tcW w:w="3500" w:type="dxa"/></w:tcPr><w:p><w:r><w:t>' . doc_escape($label) . '</w:t></w:r></w:p></w:tc>'
+        . '<w:tc><w:tcPr><w:tcW w:w="5500" w:type="dxa"/></w:tcPr><w:p><w:r><w:t xml:space="preserve">' . doc_escape($value) . '</w:t></w:r></w:p></w:tc></w:tr>';
 }
 function doc_title_row(string $title): string {
-    return '<w:tr>'
-        . '<w:tc><w:tcPr><w:gridSpan w:val="2"/></w:tcPr><w:p><w:r><w:rPr><w:b/></w:rPr><w:t>' . doc_escape($title) . '</w:t></w:r></w:p></w:tc>'
-        . '</w:tr>';
+    return '<w:tr><w:tc><w:tcPr><w:gridSpan w:val="2"/></w:tcPr><w:p><w:r><w:rPr><w:b/></w:rPr><w:t>' . doc_escape($title) . '</w:t></w:r></w:p></w:tc></w:tr>';
 }
 function doc_table_xml(string $title, array $rows): string {
     $xml = '<w:tbl><w:tblPr><w:tblW w:w="0" w:type="auto"/><w:tblBorders>'
@@ -276,22 +271,23 @@ function generate_cert_doc(array $request, array $items): string {
     $body .= '<w:p><w:r><w:t>ВНИМАНИЕ: Точно указывайте в заявке серийный выпуск на срок (1-3 года для ГОСТ Р и 1-5 лет для ТР), или партию с точным количеством продукции!</w:t></w:r></w:p>';
 
     $documentXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-        . '<w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas"'
-        . ' xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"'
-        . ' xmlns:o="urn:schemas-microsoft-com:office:office"'
-        . ' xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"'
-        . ' xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"'
-        . ' xmlns:v="urn:schemas-microsoft-com:vml"'
-        . ' xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing"'
-        . ' xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"'
-        . ' xmlns:w10="urn:schemas-microsoft-com:office:word"'
-        . ' xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"'
-        . ' xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"'
-        . ' xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml"'
-        . ' xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup"'
-        . ' xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk"'
-        . ' xmlns:wne="http://schemas.microsoft.com/office/2006/wordml"'
-        . ' xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" mc:Ignorable="w14 w15 wp14">'
+        . '<w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" '
+        . 'xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" '
+        . 'xmlns:o="urn:schemas-microsoft-com:office:office" '
+        . 'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" '
+        . 'xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" '
+        . 'xmlns:v="urn:schemas-microsoft-com:vml" '
+        . 'xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" '
+        . 'xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" '
+        . 'xmlns:w10="urn:schemas-microsoft-com:office:word" '
+        . 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
+        . 'xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" '
+        . 'xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" '
+        . 'xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" '
+        . 'xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" '
+        . 'xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" '
+        . 'xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" '
+        . 'mc:Ignorable="w14 w15 wp14">'
         . '<w:body>' . $body
         . '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr>'
         . '</w:body></w:document>';
@@ -347,9 +343,9 @@ if ($method === 'POST' && $seg[0] === 'auth' && ($seg[1] ?? '') === 'login') {
 if ($method === 'GET' && $seg[0] === 'managers' && ($seg[1] ?? '') === 'stats') {
     auth(true);
     out([
-        'clients_count'    => (int) db()->query('SELECT COUNT(*) FROM lk_clients WHERE is_active=1')->fetchColumn(),
+        'clients_count' => (int) db()->query('SELECT COUNT(*) FROM lk_clients WHERE is_active=1')->fetchColumn(),
         'shipments_active' => (int) db()->query("SELECT COUNT(*) FROM lk_shipments WHERE status NOT IN('released','on_hold')")->fetchColumn(),
-        'messages_unread'  => (int) db()->query("SELECT COUNT(*) FROM lk_messages WHERE is_read=0 AND role='client'")->fetchColumn(),
+        'messages_unread' => (int) db()->query("SELECT COUNT(*) FROM lk_messages WHERE is_read=0 AND role='client'")->fetchColumn(),
     ]);
 }
 
@@ -406,7 +402,6 @@ if ($method === 'POST' && $seg[0] === 'clients' && !isset($seg[1])) {
             'client',
             $cid,
         ]);
-
         db()->commit();
     } catch (\Throwable $e) {
         db()->rollBack(); err('Ошибка БД: '.$e->getMessage());
@@ -432,15 +427,15 @@ if (
     $upd = db()->prepare('UPDATE lk_users SET password_hash=?, updated_at=NOW() WHERE id=?');
     $upd->execute([$hash, $u['id']]);
     out([
-    'user_id'      => (int)$u['id'],
-    'client_id'    => $clientId,
-    'login'        => $u['email'],
-    'name'         => $u['name'],
-    'new_password' => $newPass,
-]);
+        'user_id' => (int)$u['id'],
+        'client_id' => $clientId,
+        'login' => $u['email'],
+        'name' => $u['name'],
+        'new_password' => $newPass,
+    ]);
 }
 
-// DELETE /api/clients/:id  (soft-delete: деактивация клиента + его пользователя)
+// DELETE /api/clients/:id (soft-delete: деактивация клиента + его пользователя)
 if ($method === 'DELETE' && $seg[0] === 'clients' && isset($seg[1]) && !isset($seg[2])) {
     auth(true); // только менеджер
     $clientId = (int)$seg[1];
@@ -529,17 +524,16 @@ if ($method === 'PUT' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset
         $requestInfoVals[] = $me['role'];
         $requestInfoVals[] = $rid;
         db()->prepare('UPDATE lk_cert_requests SET ' . implode(',', $requestInfoSet) . ', updated_at=NOW(), updated_by_role=? WHERE id=?')->execute($requestInfoVals);
-        queue_notification($rid, 'cert_center', 'Обновлены данные заявителя/изготовителя');
+        queue_notification('cert_request', $rid, 'cert_center', 'Обновлены данные заявителя/изготовителя');
         out(['ok' => true]);
     }
-
     $validStatuses = ['open','estimation','documents_pending','layout_approved','payment','certificate_issued','rejected','closed'];
     if (!in_array($b['status'] ?? '', $validStatuses, true)) err('Недопустимый статус');
     $seenCol = $me['role'] === 'manager' ? 'manager_seen_at' : 'center_seen_at';
     db()->prepare("UPDATE lk_cert_requests SET status=?, updated_at=NOW(), updated_by_role=?, $seenCol=NOW() WHERE id=?")->execute([$b['status'], $me['role'], $rid]);
     $statusLabels = ['open' => 'Открыто','estimation' => 'Просчёт','documents_pending' => 'Предоставление документов','layout_approved' => 'Макет согласован','payment' => 'Оплата','certificate_issued' => 'Сертификат выпущен','rejected' => 'Заявка отклонена','closed' => 'Закрыто'];
     $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
-    queue_notification($rid, $recipientRole, "Статус изменён на «{$statusLabels[$b['status']]}»");
+    queue_notification('cert_request', $rid, $recipientRole, "Статус изменён на «{$statusLabels[$b['status']]}»");
     out(['ok' => true]);
 }
 
@@ -552,7 +546,7 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[
 }
 
 if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'export') {
-    $me  = auth(); $rid = (int)$seg[1]; $request = cert_request_guard($me, $rid);
+    $me = auth(); $rid = (int)$seg[1]; $request = cert_request_guard($me, $rid);
     $sti = db()->prepare('SELECT i.position_no, i.company, i.product, i.tn_ved, i.tech_description, i.model_article, i.trademark, i.contract_invoice, i.quantity, i.tr_ts, i.cert_form, i.cert_scheme, i.cost, i.production_deadline, i.samples_required, i.samples_city, i.comment, cc.name AS cert_center_name FROM lk_cert_request_items i JOIN lk_cert_requests r ON r.id = i.request_id JOIN lk_cert_centers cc ON cc.id = r.cert_center_id WHERE i.request_id = ? ORDER BY i.position_no ASC, i.id ASC');
     $sti->execute([$rid]); $items = $sti->fetchAll();
     header('Pragma: public'); header('Expires: 0'); header('Cache-Control: must-revalidate, post-check=0, pre-check=0'); header('Cache-Control: private', false); header('Content-Description: File Transfer'); header('Content-Type: text/csv; charset=UTF-8'); header('Content-Disposition: attachment; filename="cert-request-' . $rid . '.csv"'); header('Content-Transfer-Encoding: binary');
@@ -589,7 +583,7 @@ if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg
     $itemId = (int)db()->lastInsertId();
     db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
     $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
-    queue_notification($rid, $recipientRole, "Добавлена новая позиция товара №{$nextPos}");
+    queue_notification('cert_request', $rid, $recipientRole, "Добавлена новая позиция товара №{$nextPos}");
     out(['id' => $itemId, 'position_no' => $nextPos], 201);
 }
 
@@ -606,7 +600,7 @@ if ($method === 'PUT' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[
     db()->prepare('UPDATE lk_cert_request_items SET '.implode(',', $set).', updated_at=NOW() WHERE id=?')->execute($vals);
     db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
     $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
-    queue_notification($rid, $recipientRole, 'Обновлены данные по товарной позиции');
+    queue_notification('cert_request', $rid, $recipientRole, 'Обновлены данные по товарной позиции');
     out(['ok' => true]);
 }
 
@@ -617,7 +611,7 @@ if ($method === 'DELETE' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($s
     db()->prepare('DELETE FROM lk_cert_request_items WHERE id=? AND request_id=?')->execute([$iid, $rid]);
     db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
     $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
-    queue_notification($rid, $recipientRole, 'Удалена товарная позиция');
+    queue_notification('cert_request', $rid, $recipientRole, 'Удалена товарная позиция');
     out(['ok' => true]);
 }
 
@@ -626,13 +620,13 @@ if ($method === 'DELETE' && $seg[0] === 'cert-requests' && isset($seg[1]) && !is
 }
 
 if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'items' && isset($seg[3]) && ($seg[4] ?? '') === 'files') {
-    $me  = auth(); $rid = (int)$seg[1]; $iid = (int)$seg[3]; cert_request_guard($me, $rid);
+    $me = auth(); $rid = (int)$seg[1]; $iid = (int)$seg[3]; cert_request_guard($me, $rid);
     $stItem = db()->prepare('SELECT id, request_id FROM lk_cert_request_items WHERE id=?'); $stItem->execute([$iid]); $item = $stItem->fetch();
     if (!$item || (int)$item['request_id'] !== $rid) err('Позиция товара не найдена или не принадлежит заявке', 404);
     if (!empty($_POST['url'])) {
         db()->prepare('INSERT INTO lk_cert_request_files(request_id,item_id,file_type,url,uploader_id,uploader_role,created_at) VALUES(?,?,?,?,?,?,NOW())')->execute([$rid, $iid, 'link', $_POST['url'], $me['sub'], $me['role']]);
         db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
-        $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager'; queue_notification($rid, $recipientRole, 'Добавлена ссылка на вложение'); out(['ok' => true], 201);
+        $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager'; queue_notification('cert_request', $rid, $recipientRole, 'Добавлена ссылка на вложение'); out(['ok' => true], 201);
     }
     if (empty($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) err('Файл не загружен');
     $file = $_FILES['file']; if ($file['size'] > MAX_FILE_SIZE) err('Файл слишком большой (макс. 20 МБ)');
@@ -642,11 +636,11 @@ if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg
     if (!move_uploaded_file($file['tmp_name'], $dir.'/'.$stored)) err('Ошибка сохранения файла');
     db()->prepare('INSERT INTO lk_cert_request_files(request_id,item_id,file_type,filename_original,filename_stored,uploader_id,uploader_role,created_at) VALUES(?,?,?,?,?,?,?,NOW())')->execute([$rid, $iid, 'file', $file['name'], $stored, $me['sub'], $me['role']]);
     db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
-    $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager'; queue_notification($rid, $recipientRole, "Добавлен файл: {$file['name']}"); out(['id' => (int)db()->lastInsertId()], 201);
+    $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager'; queue_notification('cert_request', $rid, $recipientRole, "Добавлен файл: {$file['name']}"); out(['id' => (int)db()->lastInsertId()], 201);
 }
 
 if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'items' && isset($seg[3]) && ($seg[4] ?? '') === 'files' && isset($seg[5]) && ($seg[6] ?? '') === 'download') {
-    $me  = auth(); $rid = (int)$seg[1]; $iid = (int)$seg[3]; $fid = (int)$seg[5]; cert_request_guard($me, $rid);
+    $me = auth(); $rid = (int)$seg[1]; $iid = (int)$seg[3]; $fid = (int)$seg[5]; cert_request_guard($me, $rid);
     $stItem = db()->prepare('SELECT id, request_id FROM lk_cert_request_items WHERE id=?'); $stItem->execute([$iid]); $item = $stItem->fetch();
     if (!$item || (int)$item['request_id'] !== $rid) err('Позиция товара не найдена или не принадлежит заявке', 404);
     $st = db()->prepare('SELECT * FROM lk_cert_request_files WHERE id=? AND request_id=? AND item_id=?'); $st->execute([$fid, $rid, $iid]); $f = $st->fetch(); if (!$f || $f['file_type'] !== 'file') err('Не найдено', 404);
@@ -655,31 +649,29 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[
 }
 
 if ($method === 'DELETE' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'items' && isset($seg[3]) && ($seg[4] ?? '') === 'files' && isset($seg[5]) && !isset($seg[6])) {
-    $me  = auth(); $rid = (int)$seg[1]; $iid = (int)$seg[3]; $fid = (int)$seg[5]; cert_request_guard($me, $rid);
+    $me = auth(); $rid = (int)$seg[1]; $iid = (int)$seg[3]; $fid = (int)$seg[5]; cert_request_guard($me, $rid);
     $stItem = db()->prepare('SELECT id, request_id FROM lk_cert_request_items WHERE id=?'); $stItem->execute([$iid]); $item = $stItem->fetch();
     if (!$item || (int)$item['request_id'] !== $rid) err('Позиция товара не найдена или не принадлежит заявке', 404);
     $stFile = db()->prepare('SELECT * FROM lk_cert_request_files WHERE id=? AND request_id=? AND item_id=?'); $stFile->execute([$fid, $rid, $iid]); $file = $stFile->fetch(); if (!$file) err('Вложение не найдено', 404);
     if ($file['file_type'] === 'file' && !empty($file['filename_stored'])) { $path = UPLOAD_PATH.'/cert/'.$rid.'/'.$file['filename_stored']; if (file_exists($path)) @unlink($path); }
     db()->prepare('DELETE FROM lk_cert_request_files WHERE id=? AND request_id=? AND item_id=?')->execute([$fid, $rid, $iid]);
     db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
-    $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager'; queue_notification($rid, $recipientRole, 'Удалено вложение'); out(['ok' => true]);
+    $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager'; queue_notification('cert_request', $rid, $recipientRole, 'Удалено вложение'); out(['ok' => true]);
 }
 
 if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'items' && isset($seg[3]) && ($seg[4] ?? '') === 'files' && !isset($seg[5])) {
-    $me  = auth(); $rid = (int)$seg[1]; $iid = (int)$seg[3]; cert_request_guard($me, $rid);
+    $me = auth(); $rid = (int)$seg[1]; $iid = (int)$seg[3]; cert_request_guard($me, $rid);
     $stItem = db()->prepare('SELECT id, request_id FROM lk_cert_request_items WHERE id=?'); $stItem->execute([$iid]); $item = $stItem->fetch();
     if (!$item || (int)$item['request_id'] !== $rid) err('Позиция товара не найдена или не принадлежит заявке', 404);
     $st = db()->prepare('SELECT * FROM lk_cert_request_files WHERE request_id=? AND item_id=? ORDER BY created_at DESC'); $st->execute([$rid, $iid]); out($st->fetchAll());
 }
 
-// ЗАМЕНИТЬ существующие блоки GET/POST ".../cert-requests/:id/messages" на код ниже
-
 if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'messages' && !isset($seg[3])) {
     $me = auth(); $rid = (int)$seg[1]; cert_request_guard($me, $rid); $since = $_GET['since'] ?? '1970-01-01 00:00:00';
     $st = db()->prepare(
         'SELECT m.*, u.name AS sender_name,
-                r.text AS reply_text, r.attachment_original AS reply_attachment_original,
-                ru.name AS reply_sender_name
+         r.text AS reply_text, r.attachment_original AS reply_attachment_original,
+         ru.name AS reply_sender_name
          FROM lk_cert_messages m
          JOIN lk_users u ON u.id=m.user_id
          LEFT JOIN lk_cert_messages r ON r.id=m.reply_to_id
@@ -693,7 +685,7 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[
     out($st->fetchAll());
 }
 
-// POST .../cert-requests/:id/messages  (multipart/form-data: text + опционально file + опционально reply_to_id)
+// POST .../cert-requests/:id/messages (multipart/form-data: text + опционально file + опционально reply_to_id)
 if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'messages' && !isset($seg[3])) {
     $me = auth(); $rid = (int)$seg[1]; cert_request_guard($me, $rid);
     $text = trim((string)($_POST['text'] ?? ''));
@@ -723,7 +715,7 @@ if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg
     db()->prepare('UPDATE lk_cert_requests SET updated_at=NOW(), updated_by_role=? WHERE id=?')->execute([$me['role'], $rid]);
     $recipientRole = $me['role'] === 'manager' ? 'cert_center' : 'manager';
     $preview = $text !== '' ? mb_substr($text, 0, 80) : ('Файл: ' . ($attachment['original'] ?? ''));
-    queue_notification($rid, $recipientRole, "Новое сообщение: «{$preview}»");
+    queue_notification('cert_request', $rid, $recipientRole, "Новое сообщение: «{$preview}»");
     out(['id' => (int)db()->lastInsertId()], 201);
 }
 
@@ -739,8 +731,6 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[
     send_file_download($path, $msg['attachment_original']);
 }
 
-
-// ЗАМЕНИТЬ существующие блоки GET/PUT "/api/me/notifications" в index.php на код ниже
 if ($method === 'GET' && $seg[0] === 'me' && ($seg[1] ?? '') === 'notifications') {
     $me = auth();
     $st = db()->prepare('SELECT email, notifications_enabled FROM lk_users WHERE id=?');
@@ -786,7 +776,7 @@ if ($method === 'GET' && $seg[0] === 'clients' && isset($seg[1]) && !isset($seg[
     auth(true);
     $st = db()->prepare(
         'SELECT c.*,
-                (SELECT COUNT(*) FROM lk_shipments WHERE client_id=c.id) AS shipment_count
+         (SELECT COUNT(*) FROM lk_shipments WHERE client_id=c.id) AS shipment_count
          FROM lk_clients c
          WHERE c.id=? AND c.is_active=1'
     );
@@ -821,7 +811,7 @@ if ($method === 'GET' && $seg[0] === 'shipments' && !isset($seg[1])) {
 // POST /api/shipments
 if ($method === 'POST' && $seg[0] === 'shipments' && !isset($seg[1])) {
     $me = auth();
-    $b  = body();
+    $b = body();
 
     if ($me['role'] === 'manager') {
         if (empty($b['client_id'])) {
@@ -860,6 +850,12 @@ if ($method === 'POST' && $seg[0] === 'shipments' && !isset($seg[1])) {
         db()->commit();
     } catch (\Throwable $e) {
         db()->rollBack(); err('Ошибка БД: ' . $e->getMessage());
+    }
+
+    if ($me['role'] === 'client') {
+        queue_notification('shipment', $shipmentId, 'manager', "Клиент создал поставку «{$title}»");
+    } else {
+        queue_notification('shipment', $shipmentId, 'client', "Менеджер создал для вас поставку «{$title}»");
     }
 
     out(['id' => $shipmentId], 201);
@@ -915,6 +911,8 @@ if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] 
     db()->prepare($sql)->execute($vals);
     $itemId = (int)db()->lastInsertId();
     db()->prepare('UPDATE lk_shipments SET updated_at=NOW() WHERE id=?')->execute([$sid]);
+    $recipientRole = $me['role'] === 'manager' ? 'client' : 'manager';
+    queue_notification('shipment', $sid, $recipientRole, 'Добавлена позиция №' . $nextPos);
     out(['id' => $itemId, 'position_no' => $nextPos], 201);
 }
 
@@ -933,9 +931,6 @@ if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] 
     $linkCheck->execute([$sid, $requestId]);
     if (!$linkCheck->fetch()) err('Эта заявка не привязана к поставке', 404);
 
-    // Синхронизируются только: product, tech_description, model_article, trademark, tn_ved,
-    // contract_invoice, quantity, tr_ts, cert_form.
-    // price/cost, cert_price/comment НЕ синхронизируются — управляются отдельно в каждой сущности.
     $st = db()->prepare('SELECT * FROM lk_cert_request_items WHERE request_id=? AND source_shipment_item_id IS NOT NULL');
     $st->execute([$requestId]);
     $certItems = $st->fetchAll();
@@ -952,8 +947,8 @@ if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] 
 
             db()->prepare(
                 'UPDATE lk_shipment_items SET
-                    product=?, tech_description=?, model_article=?, trademark=?, tn_ved=?,
-                    contract_invoice=?, quantity=?, tr_ts=?, cert_form=?, updated_at=NOW()
+                 product=?, tech_description=?, model_article=?, trademark=?, tn_ved=?,
+                 contract_invoice=?, quantity=?, tr_ts=?, cert_form=?, updated_at=NOW()
                  WHERE id=?'
             )->execute([
                 $ci['product'], $ci['tech_description'], $ci['model_article'], $ci['trademark'], $ci['tn_ved'],
@@ -984,6 +979,8 @@ if ($method === 'PUT' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?
     $vals[] = $iid;
     db()->prepare('UPDATE lk_shipment_items SET ' . implode(',', $set) . ', updated_at=NOW() WHERE id=?')->execute($vals);
     db()->prepare('UPDATE lk_shipments SET updated_at=NOW() WHERE id=?')->execute([$sid]);
+    $recipientRole = $me['role'] === 'manager' ? 'client' : 'manager';
+    queue_notification('shipment', $sid, $recipientRole, 'Изменена позиция поставки');
     out(['ok' => true]);
 }
 
@@ -994,6 +991,8 @@ if ($method === 'DELETE' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2
     if ($cnt <= 1) err('В поставке должна остаться хотя бы одна позиция товара');
     db()->prepare('DELETE FROM lk_shipment_items WHERE id=? AND shipment_id=?')->execute([$iid, $sid]);
     db()->prepare('UPDATE lk_shipments SET updated_at=NOW() WHERE id=?')->execute([$sid]);
+    $recipientRole = $me['role'] === 'manager' ? 'client' : 'manager';
+    queue_notification('shipment', $sid, $recipientRole, 'Удалена позиция поставки');
     out(['ok' => true]);
 }
 
@@ -1007,6 +1006,8 @@ if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] 
         db()->prepare('INSERT INTO lk_shipment_item_files(shipment_id,item_id,file_type,url,uploader_id,uploader_role,created_at) VALUES(?,?,?,?,?,?,NOW())')
             ->execute([$sid, $iid, 'link', $_POST['url'], $me['sub'], $me['role']]);
         db()->prepare('UPDATE lk_shipments SET updated_at=NOW() WHERE id=?')->execute([$sid]);
+        $recipientRole = $me['role'] === 'manager' ? 'client' : 'manager';
+        queue_notification('shipment', $sid, $recipientRole, 'Добавлена ссылка на вложение позиции');
         out(['ok' => true], 201);
     }
 
@@ -1020,6 +1021,8 @@ if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] 
     db()->prepare('INSERT INTO lk_shipment_item_files(shipment_id,item_id,file_type,filename_original,filename_stored,uploader_id,uploader_role,created_at) VALUES(?,?,?,?,?,?,?,NOW())')
         ->execute([$sid, $iid, 'file', $file['name'], $stored, $me['sub'], $me['role']]);
     db()->prepare('UPDATE lk_shipments SET updated_at=NOW() WHERE id=?')->execute([$sid]);
+    $recipientRole = $me['role'] === 'manager' ? 'client' : 'manager';
+    queue_notification('shipment', $sid, $recipientRole, "Добавлен файл к позиции: {$file['name']}");
     out(['id' => (int)db()->lastInsertId()], 201);
 }
 
@@ -1054,7 +1057,7 @@ if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?
             JOIN lk_cert_requests r ON r.id = ci.request_id
             JOIN lk_cert_centers cc ON cc.id = r.cert_center_id
             WHERE ci.source_shipment_item_id IN ($placeholders)
-              AND r.status NOT IN ('closed','rejected')";
+            AND r.status NOT IN ('closed','rejected')";
     $st = db()->prepare($sql); $st->execute($itemIds);
     out(['used' => $st->fetchAll()]);
 }
@@ -1102,10 +1105,6 @@ if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] 
 
         $posNo = 1;
         foreach ($items as $item) {
-            // Переносятся только: product, tech_description, model_article, trademark, tn_ved,
-            // contract_invoice, quantity, tr_ts, cert_form.
-            // cost, cert_scheme, production_deadline, samples_required, samples_city, comment
-            // остаются пустыми — заполняются самостоятельно в заявке.
             $stItem = db()->prepare(
                 "INSERT INTO lk_cert_request_items(request_id,position_no,is_checked,company,product,tn_ved,tech_description,model_article,trademark,contract_invoice,quantity,tr_ts,cert_form,cert_scheme,cost,production_deadline,samples_required,samples_city,comment,source_shipment_item_id,created_at,updated_at)
                  VALUES (?, ?, 0, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', '', '', '', '', '', ?, NOW(), NOW())"
@@ -1160,17 +1159,31 @@ if ($method === 'DELETE' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2
     }
     db()->prepare('DELETE FROM lk_shipment_item_files WHERE id=? AND shipment_id=? AND item_id=?')->execute([$fid, $sid, $iid]);
     db()->prepare('UPDATE lk_shipments SET updated_at=NOW() WHERE id=?')->execute([$sid]);
+    $recipientRole = $me['role'] === 'manager' ? 'client' : 'manager';
+    queue_notification('shipment', $sid, $recipientRole, 'Удалён файл позиции поставки');
     out(['ok' => true]);
 }
 
 // PUT /api/shipments/:id
 if ($method === 'PUT' && $seg[0] === 'shipments' && isset($seg[1]) && !isset($seg[2])) {
-    auth(true);
+    $me = auth(true);
     $b = body();
+    $sid = (int)$seg[1];
     $valid = ['new','documents_requested','documents_received','declaration_filed','customs_inspection','released','on_hold'];
     if (!in_array($b['status'] ?? '', $valid)) err('Недопустимый статус');
     db()->prepare('UPDATE lk_shipments SET status=?, updated_at=NOW() WHERE id=?')
-       ->execute([$b['status'], (int)$seg[1]]);
+        ->execute([$b['status'], $sid]);
+    $statusLabels = [
+        'new' => 'Новая',
+        'documents_requested' => 'Запрос документов',
+        'documents_received' => 'Документы получены',
+        'declaration_filed' => 'Декларация подана',
+        'customs_inspection' => 'Таможенный контроль',
+        'released' => 'Выпущен',
+        'on_hold' => 'Задержан',
+    ];
+    $recipientRole = $me['role'] === 'manager' ? 'client' : 'manager';
+    queue_notification('shipment', $sid, $recipientRole, 'Статус поставки: ' . ($statusLabels[$b['status']] ?? $b['status']));
     out(['ok' => true]);
 }
 
@@ -1189,17 +1202,17 @@ if ($method === 'PUT' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?
     if (!$set) err('Нет данных для обновления');
     $vals[] = $sid;
     db()->prepare('UPDATE lk_shipments SET ' . implode(',', $set) . ', updated_at=NOW() WHERE id=?')->execute($vals);
+    $recipientRole = $me['role'] === 'manager' ? 'client' : 'manager';
+    queue_notification('shipment', $sid, $recipientRole, 'Обновлены реквизиты поставки');
     out(['ok' => true]);
 }
 
 // DELETE /api/shipments/:id
 if ($method === 'DELETE' && $seg[0] === 'shipments' && isset($seg[1]) && !isset($seg[2])) {
-    // Только менеджер может удалять поставки
     auth(true);
 
     $id = (int)$seg[1];
 
-    // Проверяем, что такая поставка существует
     $st = db()->prepare('SELECT id FROM lk_shipments WHERE id=?');
     $st->execute([$id]);
     $shipment = $st->fetch();
@@ -1207,7 +1220,6 @@ if ($method === 'DELETE' && $seg[0] === 'shipments' && isset($seg[1]) && !isset(
         err('Поставка не найдена', 404);
     }
 
-    // Удаляем запись из lk_shipments
     db()->prepare('DELETE FROM lk_shipments WHERE id=?')->execute([$id]);
 
     out(['ok' => true]);
@@ -1215,7 +1227,7 @@ if ($method === 'DELETE' && $seg[0] === 'shipments' && isset($seg[1]) && !isset(
 
 // GET /api/shipments/:id/documents
 if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'documents' && !isset($seg[3])) {
-    $me  = auth();
+    $me = auth();
     $sid = (int)$seg[1];
     if ($me['role'] === 'client') {
         $c = db()->prepare('SELECT client_id FROM lk_shipments WHERE id=?'); $c->execute([$sid]);
@@ -1230,7 +1242,7 @@ if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?
 
 // POST /api/shipments/:id/documents
 if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'documents' && !isset($seg[3])) {
-    $me  = auth();
+    $me = auth();
     $sid = (int)$seg[1];
     if ($me['role'] === 'client') {
         $c = db()->prepare('SELECT client_id FROM lk_shipments WHERE id=?'); $c->execute([$sid]);
@@ -1245,12 +1257,12 @@ if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] 
     if (!is_dir($dir)) mkdir($dir, 0755, true);
     $stored = uniqid('doc_').'.'.$ext;
     if (!move_uploaded_file($file['tmp_name'], $dir.'/'.$stored)) err('Ошибка сохранения файла');
-    $vis  = $me['role'] === 'manager' ? (int)($_POST['visible_to_client'] ?? 0) : 1;
+    $vis = $me['role'] === 'manager' ? (int)($_POST['visible_to_client'] ?? 0) : 1;
     $edit = $me['role'] === 'manager' ? (int)($_POST['editable_by_client'] ?? 0) : 0;
     $st = db()->prepare(
         'INSERT INTO lk_documents(
-           shipment_id, filename_original, filename_stored, doc_type,
-           uploader_id, uploader_role, visible_to_client, editable_by_client, created_at
+         shipment_id, filename_original, filename_stored, doc_type,
+         uploader_id, uploader_role, visible_to_client, editable_by_client, created_at
          ) VALUES(?,?,?,?,?,?,?,?,NOW())'
     );
     $st->execute([
@@ -1263,15 +1275,17 @@ if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] 
         $vis,
         $edit,
     ]);
+    $recipientRole = $me['role'] === 'manager' ? 'client' : 'manager';
+    queue_notification('shipment', $sid, $recipientRole, 'Загружен документ: ' . $file['name']);
     out(['id' => (int)db()->lastInsertId()], 201);
 }
 
 // GET /api/shipments/:id/documents/:docId/download
 if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'documents' && isset($seg[3]) && ($seg[4] ?? '') === 'download') {
-    $me  = auth();
+    $me = auth();
     $sid = (int)$seg[1];
     $did = (int)$seg[3];
-    $st  = db()->prepare('SELECT * FROM lk_documents WHERE id=? AND shipment_id=?');
+    $st = db()->prepare('SELECT * FROM lk_documents WHERE id=? AND shipment_id=?');
     $st->execute([$did, $sid]); $doc = $st->fetch(); if (!$doc) err('Не найдено', 404);
     if ($me['role'] === 'client' && !$doc['visible_to_client']) err('Нет доступа', 403);
     $path = UPLOAD_PATH.'/'.$sid.'/'.$doc['filename_stored'];
@@ -1284,7 +1298,7 @@ if ($method === 'DELETE' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2
     auth(true);
     $sid = (int)$seg[1];
     $did = (int)$seg[3];
-    $st  = db()->prepare('SELECT * FROM lk_documents WHERE id=? AND shipment_id=?');
+    $st = db()->prepare('SELECT * FROM lk_documents WHERE id=? AND shipment_id=?');
     $st->execute([$did, $sid]); $doc = $st->fetch(); if (!$doc) err('Не найдено', 404);
     $path = UPLOAD_PATH.'/'.$sid.'/'.$doc['filename_stored'];
     if (file_exists($path)) unlink($path);
@@ -1294,7 +1308,7 @@ if ($method === 'DELETE' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2
 
 // GET /api/shipments/:id/messages
 if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'messages' && !isset($seg[3])) {
-    $me  = auth();
+    $me = auth();
     $sid = (int)$seg[1];
     if ($me['role'] === 'client') {
         $c = db()->prepare('SELECT client_id FROM lk_shipments WHERE id=?'); $c->execute([$sid]);
@@ -1303,8 +1317,8 @@ if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?
     $since = $_GET['since'] ?? '1970-01-01 00:00:00';
     $st = db()->prepare(
         'SELECT m.*, u.name AS sender_name,
-                r.text AS reply_text, r.attachment_original AS reply_attachment_original,
-                ru.name AS reply_sender_name
+         r.text AS reply_text, r.attachment_original AS reply_attachment_original,
+         ru.name AS reply_sender_name
          FROM lk_messages m
          JOIN lk_users u ON u.id=m.user_id
          LEFT JOIN lk_messages r ON r.id=m.reply_to_id
@@ -1315,13 +1329,13 @@ if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?
     $st->execute([$sid, $since]);
     $other = $me['role'] === 'manager' ? 'client' : 'manager';
     db()->prepare("UPDATE lk_messages SET is_read=1 WHERE shipment_id=? AND role=? AND is_read=0")
-       ->execute([$sid, $other]);
+        ->execute([$sid, $other]);
     out($st->fetchAll());
 }
 
-// POST /api/shipments/:id/messages  (multipart/form-data: text + опционально file + опционально reply_to_id)
+// POST /api/shipments/:id/messages (multipart/form-data: text + опционально file + опционально reply_to_id)
 if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'messages' && !isset($seg[3])) {
-    $me  = auth();
+    $me = auth();
     $sid = (int)$seg[1];
     if ($me['role'] === 'client') {
         $c = db()->prepare('SELECT client_id FROM lk_shipments WHERE id=?'); $c->execute([$sid]);
@@ -1354,12 +1368,15 @@ if ($method === 'POST' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] 
         $attachment['size'] ?? null,
         $replyToId,
     ]);
+    $recipientRole = $me['role'] === 'manager' ? 'client' : 'manager';
+    $preview = $text !== '' ? mb_substr($text, 0, 80) : ('Файл: ' . ($attachment['original'] ?? ''));
+    queue_notification('shipment', $sid, $recipientRole, "Новое сообщение: «{$preview}»");
     out(['id' => (int)db()->lastInsertId()], 201);
 }
 
 // GET /api/shipments/:id/messages/:msgId/download — скачивание вложения сообщения
 if ($method === 'GET' && $seg[0] === 'shipments' && isset($seg[1]) && ($seg[2] ?? '') === 'messages' && isset($seg[3]) && ($seg[4] ?? '') === 'download') {
-    $me  = auth();
+    $me = auth();
     $sid = (int)$seg[1];
     $mid = (int)$seg[3];
     if ($me['role'] === 'client') {
@@ -1384,7 +1401,7 @@ if ($method === 'GET' && $seg[0] === 'managers' && ($seg[1] ?? '') === 'messages
                m.text AS last_message,
                m.created_at AS last_message_at,
                (SELECT COUNT(*) FROM lk_messages
-                 WHERE shipment_id=s.id AND is_read=0 AND role='client') AS unread_count
+                WHERE shipment_id=s.id AND is_read=0 AND role='client') AS unread_count
         FROM lk_shipments s
         JOIN lk_clients c ON c.id=s.client_id
         JOIN lk_messages m ON m.id=(SELECT MAX(id) FROM lk_messages WHERE shipment_id=s.id)

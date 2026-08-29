@@ -2,15 +2,10 @@
 declare(strict_types=1);
 require_once __DIR__ . '/../config.php';
 
-$cronSecret = $_GET['secret'] ?? '';
-if (!hash_equals(CRON_SECRET, $cronSecret)) {
-    http_response_code(403);
-    exit('Forbidden');
-}
-
 $pdo = new PDO(
-    'mysql:host='.DB_HOST.';dbname='.DB_NAME.';charset=utf8mb4',
-    DB_USER, DB_PASS,
+    'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME . ';charset=utf8mb4',
+    DB_USER,
+    DB_PASS,
     [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
 );
 
@@ -22,30 +17,66 @@ $st->execute();
 $queueItems = $st->fetchAll();
 
 foreach ($queueItems as $item) {
-    $rid = (int)$item['entity_id'];
+    $entityType = $item['entity_type'];
+    $entityId = (int)$item['entity_id'];
     $recipientRole = $item['recipient_role'];
 
-    $rq = $pdo->prepare('SELECT cert_center_id FROM lk_cert_requests WHERE id=?');
-    $rq->execute([$rid]);
-    $request = $rq->fetch();
-    if (!$request) {
+    $recipients = [];
+    $link = '';
+    $subjectPrefix = '';
+
+    if ($entityType === 'cert_request') {
+        $rq = $pdo->prepare('SELECT cert_center_id FROM lk_cert_requests WHERE id=?');
+        $rq->execute([$entityId]);
+        $request = $rq->fetch();
+        if (!$request) {
+            $pdo->prepare("UPDATE lk_notification_queue SET status='failed' WHERE id=?")->execute([$item['id']]);
+            continue;
+        }
+
+        if ($recipientRole === 'manager') {
+            $usersSt = $pdo->prepare(
+                "SELECT id, email, name FROM lk_users WHERE role='manager' AND is_active=1 AND notifications_enabled=1"
+            );
+            $usersSt->execute();
+        } else {
+            $usersSt = $pdo->prepare(
+                "SELECT id, email, name FROM lk_users
+                 WHERE role='cert_center' AND cert_center_id=? AND is_active=1 AND notifications_enabled=1"
+            );
+            $usersSt->execute([$request['cert_center_id']]);
+        }
+        $recipients = $usersSt->fetchAll();
+        $link = "https://www.innovedbroker.ru/lk/cert-requests/{$entityId}";
+        $subjectPrefix = "Заявка №{$entityId}";
+    } elseif ($entityType === 'shipment') {
+        $rq = $pdo->prepare('SELECT client_id FROM lk_shipments WHERE id=?');
+        $rq->execute([$entityId]);
+        $shipment = $rq->fetch();
+        if (!$shipment) {
+            $pdo->prepare("UPDATE lk_notification_queue SET status='failed' WHERE id=?")->execute([$item['id']]);
+            continue;
+        }
+
+        if ($recipientRole === 'manager') {
+            $usersSt = $pdo->prepare(
+                "SELECT id, email, name FROM lk_users WHERE role='manager' AND is_active=1 AND notifications_enabled=1"
+            );
+            $usersSt->execute();
+        } else {
+            $usersSt = $pdo->prepare(
+                "SELECT id, email, name FROM lk_users
+                 WHERE role='client' AND client_id=? AND is_active=1 AND notifications_enabled=1"
+            );
+            $usersSt->execute([$shipment['client_id']]);
+        }
+        $recipients = $usersSt->fetchAll();
+        $link = "https://www.innovedbroker.ru/lk/shipments/{$entityId}";
+        $subjectPrefix = "Поставка №{$entityId}";
+    } else {
         $pdo->prepare("UPDATE lk_notification_queue SET status='failed' WHERE id=?")->execute([$item['id']]);
         continue;
     }
-
-    if ($recipientRole === 'manager') {
-        $usersSt = $pdo->prepare(
-            "SELECT id, email, name FROM lk_users WHERE role='manager' AND is_active=1 AND notifications_enabled=1"
-        );
-        $usersSt->execute();
-    } else {
-        $usersSt = $pdo->prepare(
-            "SELECT id, email, name FROM lk_users
-             WHERE role='cert_center' AND cert_center_id=? AND is_active=1 AND notifications_enabled=1"
-        );
-        $usersSt->execute([$request['cert_center_id']]);
-    }
-    $recipients = $usersSt->fetchAll();
 
     if (empty($recipients)) {
         $pdo->prepare("UPDATE lk_notification_queue SET status='sent', sent_at=NOW() WHERE id=?")->execute([$item['id']]);
@@ -53,14 +84,16 @@ foreach ($queueItems as $item) {
     }
 
     $eventsHtml = implode('<br>', array_map('htmlspecialchars', explode("\n", $item['event_summary'])));
-    $subject = "Заявка №{$rid}: {$item['events_count']} " . ($item['events_count'] === 1 ? 'обновление' : 'обновлений');
-    $link = "https://www.innovedbroker.ru/lk/cert-requests/{$rid}";
-    $html = "<p>По заявке №{$rid} произошли изменения:</p>"
-          . "<p>{$eventsHtml}</p>"
-          . "<p><a href=\"{$link}\">Перейти в заявку</a></p>";
+    $subject = "{$subjectPrefix}: {$item['events_count']} " . ($item['events_count'] === 1 ? 'обновление' : 'обновлений');
+    $html = "<div style=\"font-family:sans-serif;font-size:14px;color:#222;\">"
+        . "<p>{$subjectPrefix} — произошли изменения:</p>"
+        . "<div style=\"background:#f5f5f5;border-radius:6px;padding:12px;margin:12px 0;\">{$eventsHtml}</div>"
+        . "<p><a href=\"{$link}\" style=\"color:#1a56db;\">Перейти в личный кабинет</a></p>"
+        . "</div>";
 
     $allSent = true;
     $emailsSt = $pdo->prepare('SELECT email FROM lk_notification_emails WHERE user_id=? ORDER BY id ASC');
+
     foreach ($recipients as $recipient) {
         $emailsSt->execute([(int)$recipient['id']]);
         $emails = array_map(
@@ -68,6 +101,7 @@ foreach ($queueItems as $item) {
             $emailsSt->fetchAll()
         );
         $emails = array_values(array_filter(array_unique($emails)));
+
         if (!$emails) {
             $fallbackEmail = mb_strtolower(trim((string)$recipient['email']));
             if ($fallbackEmail !== '' && filter_var($fallbackEmail, FILTER_VALIDATE_EMAIL)) {
@@ -86,30 +120,29 @@ foreach ($queueItems as $item) {
     )->execute([$allSent ? 'sent' : 'failed', $item['id']]);
 }
 
-function send_via_resend(string $to, string $subject, string $html): bool {
+function send_via_resend(string $to, string $subject, string $html): bool
+{
     $payload = json_encode([
-        'from' => 'INNOVED LK <noreply@updates.innovedbroker.ru>',
-        'to' => $to,
+        'from' => 'INNOVED LK <notifications@innovedbroker.ru>',
+        'to' => [$to],
         'subject' => $subject,
         'html' => $html,
-    ]);
+    ], JSON_UNESCAPED_UNICODE);
 
     $ch = curl_init('https://api.resend.com/emails');
     curl_setopt_array($ch, [
-        CURLOPT_POST => true,
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT => 10,
+        CURLOPT_POST => true,
         CURLOPT_HTTPHEADER => [
             'Authorization: Bearer ' . RESEND_API_KEY,
             'Content-Type: application/json',
         ],
         CURLOPT_POSTFIELDS => $payload,
+        CURLOPT_TIMEOUT => 10,
     ]);
-    curl_exec($ch);
+    $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
 
-    return $httpCode >= 200 && $httpCode < 300;
+    return $response !== false && $httpCode >= 200 && $httpCode < 300;
 }
-
-echo "Processed: " . count($queueItems) . " queue items\n";

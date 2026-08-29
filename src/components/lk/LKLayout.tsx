@@ -37,24 +37,27 @@ export function LKLayout({ children }: { children: ReactNode }) {
     return <Navigate to="/lk/login" replace />;
   }
 
-  const navItems: NavItem[] = user.role === 'manager'
-    ? [
-        { to: '/lk/dashboard', label: lkT('nav_dashboard', language), icon: LayoutDashboard },
-        { to: '/lk/clients', label: lkT('nav_clients', language), icon: Users },
-        { to: '/lk/shipments', label: lkT('nav_shipments', language), icon: Package },
-        { to: '/lk/messages', label: lkT('nav_messages', language), icon: MessageSquare },
-        { to: '/lk/cert-centers', label: lkT('nav_cert_centers', language), icon: Award },
-        { to: '/lk/cert-requests', label: lkT('nav_cert_requests', language), icon: ClipboardList },
-        { to: '/lk/notifications', label: lkT('nav_notifications', language), icon: Bell },
-      ]
-    : user.role === 'cert_center'
-    ? [
-        { to: '/lk/cert-requests', label: lkT('nav_cert_requests', language), icon: ClipboardList },
-        { to: '/lk/notifications', label: lkT('nav_notifications', language), icon: Bell },
-      ]
-    : [
-        { to: '/lk/shipments', label: lkT('nav_shipments', language), icon: Package },
-      ];
+  const navItems: NavItem[] =
+    user?.role === 'manager'
+      ? [
+          { to: '/lk/dashboard', label: lkT('nav_dashboard', language), icon: LayoutDashboard },
+          { to: '/lk/clients', label: lkT('nav_clients', language), icon: Users },
+          { to: '/lk/shipments', label: lkT('nav_shipments', language), icon: Package },
+          { to: '/lk/messages', label: lkT('nav_messages', language), icon: MessageSquare },
+          { to: '/lk/cert-centers', label: lkT('nav_cert_centers', language), icon: Award },
+          { to: '/lk/cert-requests', label: lkT('nav_cert_requests', language), icon: ClipboardList },
+          { to: '/lk/notifications', label: lkT('nav_notifications', language), icon: Bell },
+        ]
+      : user?.role === 'cert_center'
+      ? [
+          { to: '/lk/cert-requests', label: lkT('nav_cert_requests', language), icon: ClipboardList },
+          { to: '/lk/notifications', label: lkT('nav_notifications', language), icon: Bell },
+        ]
+      : [
+          { to: '/lk/shipments', label: lkT('nav_shipments', language), icon: Package },
+          { to: '/lk/messages', label: lkT('nav_messages', language), icon: MessageSquare },
+          { to: '/lk/notifications', label: lkT('nav_notifications', language), icon: Bell },
+        ];
 
   const handleLogout = () => {
     logout();
@@ -68,7 +71,9 @@ export function LKLayout({ children }: { children: ReactNode }) {
       </div>
       <nav className="flex-1 px-3 py-4 space-y-1">
         {navItems.map((item) => {
-          const active = location.pathname === item.to || (item.to !== '/lk/dashboard' && location.pathname.startsWith(item.to));
+          const active =
+            location.pathname === item.to ||
+            (item.to !== '/lk/dashboard' && location.pathname.startsWith(item.to));
           const Icon = item.icon;
           return (
             <Link
@@ -91,11 +96,11 @@ export function LKLayout({ children }: { children: ReactNode }) {
           <LKLanguageSwitcher />
         </div>
         <div className="mb-3">
-          <div className="text-sm font-medium truncate">{user.name}</div>
+          <div className="text-sm font-medium truncate">{user?.name}</div>
           <div className="text-xs text-white/60">
-            {user.role === 'manager'
+            {user?.role === 'manager'
               ? lkT('role_manager', language)
-              : user.role === 'cert_center'
+              : user?.role === 'cert_center'
               ? lkT('role_cert_center', language)
               : lkT('role_client', language)}
           </div>
@@ -111,10 +116,9 @@ export function LKLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen flex bg-muted/30">
       <aside className="hidden md:block w-[240px] shrink-0">
-        <div className="fixed top-0 left-0 h-screen w-[240px]">
-          {SidebarContent}
-        </div>
+        <div className="fixed top-0 left-0 h-screen w-[240px]">{SidebarContent}</div>
       </aside>
+
       <div className="md:hidden fixed top-0 inset-x-0 z-40 h-14 border-b bg-background flex items-center justify-between px-4">
         <div className="font-semibold">INNOVED LK</div>
         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
@@ -128,6 +132,7 @@ export function LKLayout({ children }: { children: ReactNode }) {
           </SheetContent>
         </Sheet>
       </div>
+
       <main className="flex-1 min-w-0 pt-14 md:pt-0">
         <div className="p-4 md:p-6 max-w-[1400px] mx-auto">{children}</div>
       </main>
