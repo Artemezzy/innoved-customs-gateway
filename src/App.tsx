@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { LanguageProvider } from "./contexts/LanguageContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { LKLanguageProvider } from "./contexts/LKLanguageContext";
 import { Layout } from "./components/Layout";
 import { LKLayout } from "./components/lk/LKLayout";
 import Home from "./pages/Home";
@@ -53,7 +54,9 @@ import LKCertRequestsPage from "./pages/lk/LKCertRequestsPage";
 import LKCertRequestDetailPage from "./pages/lk/LKCertRequestDetailPage";
 import LKNotificationsPage from "./pages/lk/LKNotificationsPage";
 
+
 const queryClient = new QueryClient();
+
 
 const PublicRoutes = () => (
   <Layout>
@@ -93,23 +96,27 @@ const PublicRoutes = () => (
   </Layout>
 );
 
+
 const LKRoutes = () => (
-  <LKLayout>
-    <Routes>
-      <Route path="dashboard" element={<LKDashboardPage />} />
-      <Route path="clients" element={<LKClientsPage />} />
-      <Route path="clients/:id" element={<LKClientDetailPage />} />
-      <Route path="shipments" element={<LKShipmentsPage />} />
-      <Route path="shipments/:id" element={<LKShipmentDetailPage />} />
-      <Route path="messages" element={<LKMessagesPage />} />
-      <Route path="cert-centers" element={<LKCertCentersPage />} />
-      <Route path="cert-centers/:id" element={<LKCertCenterDetailPage />} />
-      <Route path="cert-requests" element={<LKCertRequestsPage />} />
-      <Route path="cert-requests/:id" element={<LKCertRequestDetailPage />} />
-      <Route path="notifications" element={<LKNotificationsPage />} />
-    </Routes>
-  </LKLayout>
+  <LKLanguageProvider>
+    <LKLayout>
+      <Routes>
+        <Route path="dashboard" element={<LKDashboardPage />} />
+        <Route path="clients" element={<LKClientsPage />} />
+        <Route path="clients/:id" element={<LKClientDetailPage />} />
+        <Route path="shipments" element={<LKShipmentsPage />} />
+        <Route path="shipments/:id" element={<LKShipmentDetailPage />} />
+        <Route path="messages" element={<LKMessagesPage />} />
+        <Route path="cert-centers" element={<LKCertCentersPage />} />
+        <Route path="cert-centers/:id" element={<LKCertCenterDetailPage />} />
+        <Route path="cert-requests" element={<LKCertRequestsPage />} />
+        <Route path="cert-requests/:id" element={<LKCertRequestDetailPage />} />
+        <Route path="notifications" element={<LKNotificationsPage />} />
+      </Routes>
+    </LKLayout>
+  </LKLanguageProvider>
 );
+
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -130,5 +137,6 @@ const App = () => (
     </TooltipProvider>
   </QueryClientProvider>
 );
+
 
 export default App;
