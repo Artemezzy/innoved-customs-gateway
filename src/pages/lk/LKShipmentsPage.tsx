@@ -5,6 +5,8 @@ import { Plus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLKLanguage } from '@/contexts/LKLanguageContext';
+import { lkT } from '@/lib/lkTranslations';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -39,11 +41,12 @@ import { ShipmentStatus, STATUS_LABELS } from '@/types/lk';
 
 export default function LKShipmentsPage() {
   const { user } = useAuth();
+  const { language } = useLKLanguage();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const isManager = user?.role === 'manager';
-  const [status, setStatus] = useState<string>('');
-  const [clientId, setClientId] = useState<string>('');
+  const [status, setStatus] = useState('');
+  const [clientId, setClientId] = useState('');
   const [open, setOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
@@ -83,81 +86,94 @@ export default function LKShipmentsPage() {
     },
   });
 
+  const statusLabel = (s: ShipmentStatus) => lkT(`status_${s}` as any, language);
+
   return (
     <div className="space-y-4">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        <h1 className="text-2xl font-bold">{isManager ? 'Поставки' : 'Мои поставки'}</h1>
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <h1 className="text-xl font-semibold">
+          {isManager ? lkT('page_shipments_title', language) : lkT('page_my_shipments_title', language)}
+        </h1>
         <Button onClick={() => setOpen(true)}>
-          <Plus className="h-4 w-4 mr-1.5" /> Новая поставка
+          <Plus className="h-4 w-4 mr-1.5" />
+          {lkT('btn_new_shipment', language)}
         </Button>
-
       </div>
 
       {isManager && (
-        <div className="flex flex-col md:flex-row gap-3">
-          <Select value={status || 'all'} onValueChange={(v) => setStatus(v === 'all' ? '' : v)}>
-            <SelectTrigger className="md:w-64"><SelectValue placeholder="Все статусы" /></SelectTrigger>
+        <div className="flex flex-wrap gap-2">
+          <Select value={status} onValueChange={(v) => setStatus(v === 'all' ? '' : v)}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder={lkT('label_all_statuses', language)} />
+            </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Все статусы</SelectItem>
+              <SelectItem value="all">{lkT('label_all_statuses', language)}</SelectItem>
               {(Object.keys(STATUS_LABELS) as ShipmentStatus[]).map((s) => (
-                <SelectItem key={s} value={s}>{STATUS_LABELS[s]}</SelectItem>
+                <SelectItem key={s} value={s}>
+                  {statusLabel(s)}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
-          <Select value={clientId || 'all'} onValueChange={(v) => setClientId(v === 'all' ? '' : v)}>
-            <SelectTrigger className="md:w-64"><SelectValue placeholder="Все клиенты" /></SelectTrigger>
+          <Select value={clientId} onValueChange={(v) => setClientId(v === 'all' ? '' : v)}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue placeholder={lkT('label_all_clients', language)} />
+            </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Все клиенты</SelectItem>
+              <SelectItem value="all">{lkT('label_all_clients', language)}</SelectItem>
               {clients.data?.map((c) => (
-                <SelectItem key={c.id} value={String(c.id)}>{c.name}</SelectItem>
+                <SelectItem key={c.id} value={String(c.id)}>
+                  {c.name}
+                </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
       )}
 
-      <Card className="p-0">
-        {shipments.isLoading ? (
-          <div className="p-5"><Skeleton className="h-40 w-full" /></div>
-        ) : (
+      {shipments.isLoading ? (
+        <Skeleton className="h-64 w-full" />
+      ) : (
+        <Card>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>№</TableHead>
-                <TableHead>Название</TableHead>
-                {isManager && <TableHead>Клиент</TableHead>}
-                <TableHead>Статус</TableHead>
-                <TableHead>Обновлена</TableHead>
-                {isManager && <TableHead className="w-12"></TableHead>}
+                <TableHead>{lkT('th_number', language)}</TableHead>
+                <TableHead>{lkT('th_title', language)}</TableHead>
+                {isManager && <TableHead>{lkT('th_client', language)}</TableHead>}
+                <TableHead>{lkT('th_status', language)}</TableHead>
+                <TableHead>{lkT('th_updated', language)}</TableHead>
+                {isManager && <TableHead />}
               </TableRow>
             </TableHeader>
             <TableBody>
               {shipments.data?.map((s) => (
                 <TableRow
                   key={s.id}
-                  className="cursor-pointer hover:bg-muted/50"
+                  className="cursor-pointer"
                   onClick={() => navigate(`/lk/shipments/${s.id}`)}
                 >
                   <TableCell>
-                    <span className="text-primary">#{s.id}</span>
+                    <span className="text-primary hover:underline">{s.number ?? `#${s.id}`}</span>
                   </TableCell>
-                  <TableCell className="font-medium">{s.title}</TableCell>
+                  <TableCell>{s.title}</TableCell>
                   {isManager && <TableCell>{s.client_name}</TableCell>}
-                  <TableCell><StatusBadge status={s.status} /></TableCell>
+                  <TableCell>
+                    <StatusBadge status={s.status} />
+                  </TableCell>
                   <TableCell>{new Date(s.updated_at).toLocaleDateString('ru-RU')}</TableCell>
                   {isManager && (
                     <TableCell>
                       <Button
-                        variant="ghost"
                         size="icon"
-                        className="text-muted-foreground hover:text-destructive"
+                        variant="ghost"
                         onClick={(e) => {
                           e.stopPropagation();
                           setDeleteId(s.id);
                         }}
                         aria-label="Удалить поставку"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </TableCell>
                   )}
@@ -166,27 +182,25 @@ export default function LKShipmentsPage() {
               {shipments.data?.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={isManager ? 6 : 4} className="text-center text-muted-foreground py-8">
-                    Поставок нет
+                    {lkT('empty_no_shipments', language)}
                   </TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
-        )}
-      </Card>
+        </Card>
+      )}
 
       <CreateShipmentModal open={open} onOpenChange={setOpen} />
 
       <AlertDialog open={deleteId !== null} onOpenChange={(o) => !o && setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Удалить поставку?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Действие необратимо. Все документы и сообщения поставки будут удалены.
-            </AlertDialogDescription>
+            <AlertDialogTitle>{lkT('dialog_delete_shipment_title', language)}</AlertDialogTitle>
+            <AlertDialogDescription>{lkT('dialog_delete_shipment_desc', language)}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleteMutation.isPending}>Отмена</AlertDialogCancel>
+            <AlertDialogCancel>{lkT('btn_cancel', language)}</AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault();
@@ -195,7 +209,7 @@ export default function LKShipmentsPage() {
               disabled={deleteMutation.isPending}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {deleteMutation.isPending ? 'Удаление...' : 'Удалить'}
+              {deleteMutation.isPending ? 'Удаление...' : lkT('btn_delete', language)}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

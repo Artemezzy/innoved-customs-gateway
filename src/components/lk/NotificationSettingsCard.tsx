@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { BellRing, MailPlus, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
+import { useLKLanguage } from '@/contexts/LKLanguageContext';
+import { lkT } from '@/lib/lkTranslations';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -19,6 +21,7 @@ function isValidEmail(value: string) {
 
 export function NotificationSettingsCard() {
   const qc = useQueryClient();
+  const { language } = useLKLanguage();
   const settings = useQuery({
     queryKey: ['lk', 'notification-settings'],
     queryFn: () => lkApi.getNotificationSettings(),
@@ -30,7 +33,7 @@ export function NotificationSettingsCard() {
     mutationFn: (payload: { enabled: boolean; emails: string[] }) =>
       lkApi.updateNotificationSettings(payload),
     onSuccess: () => {
-      toast.success('Настройки уведомлений сохранены');
+      toast.success(lkT('toast_settings_saved', language));
       qc.invalidateQueries({ queryKey: ['lk', 'notification-settings'] });
     },
     onError: (e: any) => toast.error(e?.message || 'Не удалось сохранить настройки уведомлений'),
@@ -53,49 +56,32 @@ export function NotificationSettingsCard() {
   };
 
   return (
-    <Card className="p-5 space-y-4">
-      <div className="flex items-start gap-3">
-        <div className="rounded-full bg-primary/10 p-2 text-primary">
-          <BellRing className="h-4 w-4" />
-        </div>
-        <div className="space-y-1">
-          <h2 className="font-semibold">Email-уведомления</h2>
-          <p className="text-sm text-muted-foreground">
-            Укажите список адресов, на которые отправлять уведомления по изменениям в заявках.
-          </p>
-        </div>
+    <Card className="p-5 space-y-5">
+      <div className="flex items-center gap-2">
+        <BellRing className="h-5 w-5" />
+        <h2 className="font-semibold">{lkT('section_notifications_title', language)}</h2>
       </div>
+      <p className="text-sm text-muted-foreground">{lkT('section_notifications_desc', language)}</p>
 
-      <div className="flex items-center justify-between gap-3 rounded-lg border p-3">
+      <div className="flex items-center justify-between rounded-md border p-3">
         <div>
-          <Label htmlFor="notifications-enabled">Отправка уведомлений</Label>
-          <p className="text-sm text-muted-foreground">
-            Если выключить, письма на все адреса из списка отправляться не будут.
-          </p>
+          <Label className="font-medium">{lkT('label_send_notifications', language)}</Label>
+          <p className="text-xs text-muted-foreground mt-0.5">{lkT('label_notifications_hint', language)}</p>
         </div>
-        <Switch
-          id="notifications-enabled"
-          checked={enabled}
-          disabled={settings.isLoading || update.isPending}
-          onCheckedChange={(checked) => save({ enabled: checked })}
-        />
+        <Switch checked={enabled} onCheckedChange={(checked) => save({ enabled: checked })} />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="notification-email">Дополнительный email</Label>
-        <div className="flex flex-col gap-2 md:flex-row">
+        <Label>{lkT('label_additional_email', language)}</Label>
+        <div className="flex items-center gap-2">
           <Input
-            id="notification-email"
-            type="email"
-            placeholder="name@company.ru"
             value={newEmail}
             onChange={(e) => setNewEmail(e.target.value)}
+            placeholder={lkT('placeholder_email', language)}
             disabled={settings.isLoading || update.isPending}
           />
           <Button
-            type="button"
-            variant="outline"
-            disabled={!canAddEmail || update.isPending}
+            size="sm"
             onClick={() => {
               if (!canAddEmail) {
                 if (normalizedNewEmail && !isValidEmail(normalizedNewEmail)) {
@@ -106,35 +92,30 @@ export function NotificationSettingsCard() {
               save({ emails: [...emails, normalizedNewEmail] });
               setNewEmail('');
             }}
+            disabled={!canAddEmail || update.isPending}
           >
-            <MailPlus className="h-4 w-4 mr-1.5" />
-            Добавить
+            <MailPlus className="h-4 w-4 mr-1" />
+            {lkT('btn_add', language)}
           </Button>
         </div>
-      </div>
 
-      <div className="space-y-2">
         {settings.isLoading ? (
-          <p className="text-sm text-muted-foreground">Загрузка настроек…</p>
+          <p className="text-sm text-muted-foreground">{lkT('label_loading', language)}</p>
         ) : emails.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Дополнительные адреса пока не добавлены.</p>
+          <p className="text-sm text-muted-foreground">{lkT('empty_no_additional_emails', language)}</p>
         ) : (
-          <div className="space-y-2">
+          <div className="space-y-1">
             {emails.map((email) => (
-              <div
-                key={email}
-                className="flex items-center justify-between gap-3 rounded-lg border px-3 py-2"
-              >
-                <span className="text-sm">{email}</span>
+              <div key={email} className="flex items-center justify-between rounded-md border px-3 py-2 text-sm">
+                <span>{email}</span>
                 <Button
-                  type="button"
-                  variant="ghost"
                   size="icon"
-                  disabled={update.isPending}
+                  variant="ghost"
                   onClick={() => save({ emails: emails.filter((item) => item !== email) })}
                   aria-label={`Удалить ${email}`}
+                  className="text-destructive hover:text-destructive hover:bg-destructive/10"
                 >
-                  <Trash2 className="h-4 w-4 text-destructive" />
+                  <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
             ))}

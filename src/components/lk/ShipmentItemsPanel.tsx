@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
+import { useLKLanguage } from '@/contexts/LKLanguageContext';
+import { lkT, LKDictKey } from '@/lib/lkTranslations';
 import { Shipment, ShipmentItem } from '@/types/lk';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -42,25 +44,25 @@ interface Props {
   isManager: boolean;
 }
 
-const PRODUCT_FIELDS: Array<{
+const PRODUCT_FIELD_KEYS: Array<{
   key: keyof Omit<ShipmentItem, 'id' | 'shipment_id' | 'position_no'>;
-  label: string;
+  labelKey: LKDictKey;
   textarea?: boolean;
   rows?: number;
   tone: 'green' | 'yellow';
 }> = [
-  { key: 'product', label: 'Наименование продукции', tone: 'green' },
-  { key: 'tech_description', label: 'Техническое описание', textarea: true, rows: 4, tone: 'green' },
-  { key: 'model_article', label: 'Модель / артикул', tone: 'green' },
-  { key: 'trademark', label: 'Торговая марка', tone: 'green' },
-  { key: 'tn_ved', label: 'ТН ВЭД', tone: 'green' },
-  { key: 'contract_invoice', label: 'Контракт / Договор / Инвойс', tone: 'green' },
-  { key: 'quantity', label: 'Количество', tone: 'green' },
-  { key: 'price', label: 'Цена', tone: 'green' },
-  { key: 'tr_ts', label: 'ТР ТС', textarea: true, rows: 4, tone: 'yellow' },
-  { key: 'cert_form', label: 'Форма сертификации', tone: 'yellow' },
-  { key: 'cert_price', label: 'Цена сертификации', tone: 'yellow' },
-  { key: 'comment', label: 'Комментарий / Дополнительно', textarea: true, rows: 3, tone: 'yellow' },
+  { key: 'product', labelKey: 'th_product', tone: 'green' },
+  { key: 'tech_description', labelKey: 'th_tech_description', textarea: true, rows: 4, tone: 'green' },
+  { key: 'model_article', labelKey: 'th_model_article', tone: 'green' },
+  { key: 'trademark', labelKey: 'th_trademark', tone: 'green' },
+  { key: 'tn_ved', labelKey: 'th_tn_ved', tone: 'green' },
+  { key: 'contract_invoice', labelKey: 'th_contract_invoice', tone: 'green' },
+  { key: 'quantity', labelKey: 'th_quantity', tone: 'green' },
+  { key: 'price', labelKey: 'th_price', tone: 'green' },
+  { key: 'tr_ts', labelKey: 'th_tr_ts', textarea: true, rows: 4, tone: 'yellow' },
+  { key: 'cert_form', labelKey: 'th_cert_form', tone: 'yellow' },
+  { key: 'cert_price', labelKey: 'th_cert_price', tone: 'yellow' },
+  { key: 'comment', labelKey: 'th_comment', textarea: true, rows: 3, tone: 'yellow' },
 ];
 
 const toneClass = (tone: 'green' | 'yellow') =>
@@ -89,6 +91,7 @@ function saveHiddenColumns(cols: Set<string>) {
 
 export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: Props) {
   const qc = useQueryClient();
+  const { language } = useLKLanguage();
   const [requestValues, setRequestValues] = useState({
     applicant_org: shipment.applicant_org || '',
     applicant_address: shipment.applicant_address || '',
@@ -124,7 +127,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
   };
 
   const visibleFields = useMemo(
-    () => PRODUCT_FIELDS.filter((f) => !hiddenColumns.has(f.key as string)),
+    () => PRODUCT_FIELD_KEYS.filter((f) => !hiddenColumns.has(f.key as string)),
     [hiddenColumns]
   );
 
@@ -216,7 +219,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
     <div className="space-y-6">
       <Card className="p-4 space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold">Заявитель (импортёр)</h3>
+          <h3 className="font-semibold">{lkT('section_applicant', language)}</h3>
           {isManager && (
             <Button
               size="sm"
@@ -225,13 +228,13 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
               disabled={updateInfo.isPending}
             >
               <Save className="h-4 w-4 mr-1" />
-              Сохранить блок
+              {lkT('btn_save_block', language)}
             </Button>
           )}
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
-            <Label>Название организации</Label>
+            <Label>{lkT('field_org_name', language)}</Label>
             <Input
               value={requestValues.applicant_org}
               onChange={(e) => setRequestField('applicant_org', e.target.value)}
@@ -240,7 +243,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
             />
           </div>
           <div className="space-y-1">
-            <Label>Юридический адрес</Label>
+            <Label>{lkT('field_legal_address', language)}</Label>
             <Input
               value={requestValues.applicant_address}
               onChange={(e) => setRequestField('applicant_address', e.target.value)}
@@ -249,7 +252,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
             />
           </div>
           <div className="space-y-1">
-            <Label>Руководитель</Label>
+            <Label>{lkT('field_head', language)}</Label>
             <Input
               value={requestValues.applicant_head}
               onChange={(e) => setRequestField('applicant_head', e.target.value)}
@@ -258,7 +261,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
             />
           </div>
           <div className="space-y-1">
-            <Label>Должность</Label>
+            <Label>{lkT('field_position', language)}</Label>
             <Input
               value={requestValues.applicant_position}
               onChange={(e) => setRequestField('applicant_position', e.target.value)}
@@ -267,7 +270,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
             />
           </div>
           <div className="space-y-1">
-            <Label>Электронная почта</Label>
+            <Label>{lkT('field_email', language)}</Label>
             <Input
               value={requestValues.applicant_email}
               onChange={(e) => setRequestField('applicant_email', e.target.value)}
@@ -280,7 +283,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
 
       <Card className="p-4 space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold">Изготовитель</h3>
+          <h3 className="font-semibold">{lkT('section_manufacturer', language)}</h3>
           {isManager && (
             <Button
               size="sm"
@@ -289,13 +292,13 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
               disabled={updateInfo.isPending}
             >
               <Save className="h-4 w-4 mr-1" />
-              Сохранить блок
+              {lkT('btn_save_block', language)}
             </Button>
           )}
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
-            <Label>Название организации</Label>
+            <Label>{lkT('field_org_name', language)}</Label>
             <Input
               value={requestValues.manufacturer_org}
               onChange={(e) => setRequestField('manufacturer_org', e.target.value)}
@@ -304,7 +307,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
             />
           </div>
           <div className="space-y-1">
-            <Label>Адрес</Label>
+            <Label>{lkT('field_address', language)}</Label>
             <Input
               value={requestValues.manufacturer_address}
               onChange={(e) => setRequestField('manufacturer_address', e.target.value)}
@@ -313,7 +316,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
             />
           </div>
           <div className="space-y-1">
-            <Label>Страна</Label>
+            <Label>{lkT('field_country', language)}</Label>
             <Input
               value={requestValues.manufacturer_country}
               onChange={(e) => setRequestField('manufacturer_country', e.target.value)}
@@ -326,12 +329,12 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
 
       <div className="space-y-3">
         <div className="flex items-center justify-between flex-wrap gap-2">
-          <h3 className="font-semibold text-lg">Продукция</h3>
+          <h3 className="font-semibold text-lg">{lkT('section_products', language)}</h3>
           <div className="flex items-center gap-2">
             {isManager && (
               <Button size="sm" variant="outline" onClick={saveAllItems} disabled={savingAll}>
                 {savingAll ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Save className="h-4 w-4 mr-1" />}
-                {savingAll ? 'Сохранение…' : 'Сохранить'}
+                {savingAll ? 'Сохранение…' : lkT('btn_save', language)}
               </Button>
             )}
             {isManager && (
@@ -341,13 +344,13 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
                 disabled={checkedItemIds.length === 0}
               >
                 <FileText className="h-4 w-4 mr-1" />
-                Сформировать заявку на сертификацию
+                {lkT('btn_generate_cert_request', language)}
               </Button>
             )}
             {isManager && (
               <Button size="sm" variant="outline" onClick={() => addItem.mutate()} disabled={addItem.isPending}>
                 <Plus className="h-4 w-4 mr-1" />
-                {addItem.isPending ? 'Добавление…' : 'Добавить товар'}
+                {addItem.isPending ? 'Добавление…' : lkT('btn_add_item', language)}
               </Button>
             )}
           </div>
@@ -357,15 +360,15 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
           <table className="w-full text-sm border-collapse">
             <thead className="sticky top-0 z-10 bg-background shadow-sm">
               <tr>
-                <th className="p-2 border-b text-center w-10">✓</th>
-                <th className="p-2 border-b text-center w-10">№</th>
+                <th className="p-2 border-b text-center w-10">{lkT('th_check', language)}</th>
+                <th className="p-2 border-b text-center w-10">{lkT('th_number', language)}</th>
                 {visibleFields.map((f) => (
                   <th key={f.key as string} className="p-2 border-b text-left align-middle min-w-[180px]">
                     <div className="flex items-center justify-between gap-2">
-                      <span>{f.label}</span>
+                      <span>{lkT(f.labelKey, language)}</span>
                       <button
                         type="button"
-                        title="Скрыть столбец"
+                        title={lkT('btn_hide_column', language)}
                         onClick={() => toggleColumn(f.key as string)}
                         className="text-muted-foreground hover:text-foreground shrink-0"
                       >
@@ -374,7 +377,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
                     </div>
                   </th>
                 ))}
-                {isManager && <th className="p-2 border-b text-center w-20">Действия</th>}
+                {isManager && <th className="p-2 border-b text-center w-20">{lkT('th_actions', language)}</th>}
               </tr>
             </thead>
             <tbody>
@@ -400,8 +403,8 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
 
         {hiddenColumns.size > 0 && (
           <div className="hidden md:flex items-center gap-2 flex-wrap text-xs text-muted-foreground">
-            <span>Скрытые столбцы:</span>
-            {PRODUCT_FIELDS.filter((f) => hiddenColumns.has(f.key as string)).map((f) => (
+            <span>{lkT('hidden_columns_label', language)}</span>
+            {PRODUCT_FIELD_KEYS.filter((f) => hiddenColumns.has(f.key as string)).map((f) => (
               <button
                 key={f.key as string}
                 type="button"
@@ -409,7 +412,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
                 className="flex items-center gap-1 px-2 py-1 rounded border hover:bg-muted"
               >
                 <Eye className="h-3 w-3" />
-                {f.label}
+                {lkT(f.labelKey, language)}
               </button>
             ))}
           </div>
@@ -434,9 +437,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
           ))}
         </div>
 
-        <p className="text-xs text-muted-foreground">
-          Для формирования заявки на сертификацию будут использованы только отмеченные чек-боксом товары.
-        </p>
+        <p className="text-xs text-muted-foreground">{lkT('footer_note_checked_items', language)}</p>
       </div>
 
       {generateModalOpen && (
@@ -464,7 +465,7 @@ interface RowProps {
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
   onInvalidate: () => void;
-  visibleFields: typeof PRODUCT_FIELDS;
+  visibleFields: typeof PRODUCT_FIELD_KEYS;
   registerSaveAll: (itemId: number, fn: () => Promise<void>) => void;
   unregisterSaveAll: (itemId: number) => void;
 }
@@ -482,6 +483,7 @@ function ShipmentItemRow({
   registerSaveAll,
   unregisterSaveAll,
 }: RowProps) {
+  const { language } = useLKLanguage();
   const [values, setValues] = useState(item);
   const [filesOpen, setFilesOpen] = useState(false);
 
@@ -502,6 +504,11 @@ function ShipmentItemRow({
       onInvalidate();
     },
     onError: (e: any) => toast.error(e?.message || 'Не удалось удалить'),
+  });
+
+  const generateSingleDoc = useMutation({
+    mutationFn: () => lkApi.generateCertRequestDoc(shipmentId, [item.id]),
+    onError: (e: any) => toast.error(e?.message || 'Не удалось сформировать заявку'),
   });
 
   const setField = (key: keyof ShipmentItem, v: string) => setValues((prev) => ({ ...prev, [key]: v }));
@@ -531,18 +538,18 @@ function ShipmentItemRow({
   const deleteBtn = canDelete ? (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button size="icon" variant="ghost" title="Удалить позицию">
+        <Button size="icon" variant="ghost" title={lkT('btn_delete', language)}>
           <Trash2 className="h-4 w-4 text-destructive" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Удалить позицию №{item.position_no}?</AlertDialogTitle>
-          <AlertDialogDescription>Данные позиции и её вложения будут удалены безвозвратно.</AlertDialogDescription>
+          <AlertDialogTitle>{lkT('dialog_delete_position_title', language)}{item.position_no}?</AlertDialogTitle>
+          <AlertDialogDescription>{lkT('dialog_delete_position_desc', language)}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Отмена</AlertDialogCancel>
-          <AlertDialogAction onClick={() => remove.mutate()}>Удалить</AlertDialogAction>
+          <AlertDialogCancel>{lkT('btn_cancel', language)}</AlertDialogCancel>
+          <AlertDialogAction onClick={() => remove.mutate()}>{lkT('btn_delete', language)}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -585,7 +592,22 @@ function ShipmentItemRow({
           ))}
           {isManager && (
             <td className="p-2">
-              <div className="flex items-center justify-center gap-1">{deleteBtn}</div>
+              <div className="flex items-center justify-center gap-1">
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  title={lkT('btn_generate_single', language)}
+                  onClick={() => generateSingleDoc.mutate()}
+                  disabled={generateSingleDoc.isPending}
+                >
+                  {generateSingleDoc.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <FileText className="h-4 w-4" />
+                  )}
+                </Button>
+                {deleteBtn}
+              </div>
             </td>
           )}
         </tr>
@@ -594,7 +616,8 @@ function ShipmentItemRow({
             <Button size="sm" variant="ghost" onClick={() => setFilesOpen((v) => !v)} className="w-full justify-center">
               {filesOpen ? <ChevronDown className="h-4 w-4 mr-1" /> : <ChevronRight className="h-4 w-4 mr-1" />}
               <Paperclip className="h-4 w-4 mr-1" />
-              {filesOpen ? 'Скрыть вложения' : 'Показать вложения'} к позиции №{item.position_no}
+              {filesOpen ? lkT('btn_hide_attachments', language) : lkT('btn_show_attachments', language)}{' '}
+              {lkT('label_attachments_for_position', language)}{item.position_no}
             </Button>
             {filesOpen && (
               <div className="mt-2">
@@ -612,7 +635,7 @@ function ShipmentItemRow({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Checkbox checked={checked} onCheckedChange={(c) => onCheckedChange(!!c)} />
-          <span className="font-medium">Позиция №{item.position_no}</span>
+          <span className="font-medium">{lkT('position_label', language)}{item.position_no}</span>
           {busy && <Loader2 className="h-4 w-4 animate-spin" />}
         </div>
         {isManager && <div className="flex items-center gap-1">{deleteBtn}</div>}
@@ -620,7 +643,7 @@ function ShipmentItemRow({
 
       {visibleFields.map((f) => (
         <div key={f.key as string} className="space-y-1">
-          <Label className="text-xs text-muted-foreground">{f.label}</Label>
+          <Label className="text-xs text-muted-foreground">{lkT(f.labelKey, language)}</Label>
           {f.textarea ? (
             <Textarea
               rows={f.rows || 3}
@@ -645,7 +668,7 @@ function ShipmentItemRow({
       <Button size="sm" variant="ghost" onClick={() => setFilesOpen((v) => !v)} className="w-full justify-start">
         {filesOpen ? <ChevronDown className="h-4 w-4 mr-1" /> : <ChevronRight className="h-4 w-4 mr-1" />}
         <Paperclip className="h-4 w-4 mr-1" />
-        Вложения к позиции №{item.position_no}
+        {lkT('label_attachments_for_position', language)}{item.position_no}
       </Button>
       {filesOpen && (
         <div className="mt-2">

@@ -5,6 +5,8 @@ import { Plus, Trash2, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLKLanguage } from '@/contexts/LKLanguageContext';
+import { lkT, LKDictKey } from '@/lib/lkTranslations';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -36,15 +38,27 @@ import {
 import { CertStatusBadge } from '@/components/lk/CertStatusBadge';
 import { UnreadDots } from '@/components/lk/UnreadDots';
 import { CreateCertRequestModal } from '@/components/lk/CreateCertRequestModal';
-import { CERT_STATUS_LABELS, CERT_STATUS_ORDER } from '@/types/lk';
+import { CertRequestStatus, CERT_STATUS_ORDER } from '@/types/lk';
+
+const CERT_STATUS_KEY_MAP: Record<CertRequestStatus, LKDictKey> = {
+  open: 'cert_status_open',
+  estimation: 'cert_status_estimation',
+  documents_pending: 'cert_status_documents_pending',
+  layout_approved: 'cert_status_layout_approved',
+  payment: 'cert_status_payment',
+  certificate_issued: 'cert_status_certificate_issued',
+  rejected: 'cert_status_rejected',
+  closed: 'cert_status_closed',
+};
 
 export default function LKCertRequestsPage() {
   const { user } = useAuth();
+  const { language } = useLKLanguage();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const isManager = user?.role === 'manager';
-  const [status, setStatus] = useState<string>('');
-  const [centerId, setCenterId] = useState<string>('');
+  const [status, setStatus] = useState('');
+  const [centerId, setCenterId] = useState('');
   const [open, setOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
 
@@ -80,39 +94,39 @@ export default function LKCertRequestsPage() {
     },
   });
 
+  const statusLabel = (s: CertRequestStatus) => lkT(CERT_STATUS_KEY_MAP[s], language);
+
   return (
     <div className="space-y-4">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        <h1 className="text-2xl font-bold">
-          {isManager ? 'Заявки на сертификацию' : 'Мои заявки'}
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <h1 className="text-xl font-semibold">
+          {isManager ? lkT('page_cert_requests_title', language) : lkT('page_my_requests_title', language)}
         </h1>
         {isManager && (
           <Button onClick={() => setOpen(true)}>
-            <Plus className="h-4 w-4 mr-1.5" /> Новая заявка
+            <Plus className="h-4 w-4 mr-1.5" />
+            {lkT('btn_new_request', language)}
           </Button>
         )}
       </div>
 
-      <div className="flex flex-col md:flex-row gap-3">
-        <Select value={status || 'all'} onValueChange={(v) => setStatus(v === 'all' ? '' : v)}>
-          <SelectTrigger className="md:w-64">
-            <SelectValue placeholder="Все статусы" />
+      <div className="flex flex-wrap gap-2">
+        <Select value={status} onValueChange={(v) => setStatus(v === 'all' ? '' : v)}>
+          <SelectTrigger className="w-[220px]">
+            <SelectValue placeholder={lkT('label_all_statuses', language)} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">Все статусы</SelectItem>
+            <SelectItem value="all">{lkT('label_all_statuses', language)}</SelectItem>
             {CERT_STATUS_ORDER.map((s) => (
               <SelectItem key={s} value={s}>
-                {CERT_STATUS_LABELS[s]}
+                {statusLabel(s)}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
         {isManager && (
-          <Select
-            value={centerId || 'all'}
-            onValueChange={(v) => setCenterId(v === 'all' ? '' : v)}
-          >
-            <SelectTrigger className="md:w-64">
+          <Select value={centerId} onValueChange={(v) => setCenterId(v === 'all' ? '' : v)}>
+            <SelectTrigger className="w-[220px]">
               <SelectValue placeholder="Все центры" />
             </SelectTrigger>
             <SelectContent>
@@ -127,58 +141,41 @@ export default function LKCertRequestsPage() {
         )}
       </div>
 
-      <Card className="p-0">
-        {requests.isLoading ? (
-          <div className="p-5"><Skeleton className="h-40 w-full" /></div>
-        ) : (
+      {requests.isLoading ? (
+        <Skeleton className="h-64 w-full" />
+      ) : (
+        <Card>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>№</TableHead>
-                <TableHead>Компания</TableHead>
-                <TableHead>Дата создания</TableHead>
-                <TableHead>Сертцентр</TableHead>
-                <TableHead>Статус</TableHead>
-                <TableHead className="w-16"></TableHead>
-                <TableHead className="w-12"></TableHead>
-                {isManager && <TableHead className="w-12"></TableHead>}
+                <TableHead>{lkT('th_number', language)}</TableHead>
+                <TableHead>{lkT('th_company', language)}</TableHead>
+                <TableHead>{lkT('th_created_date', language)}</TableHead>
+                <TableHead>{lkT('th_cert_center', language)}</TableHead>
+                <TableHead>{lkT('label_status', language)}</TableHead>
+                <TableHead />
+                {isManager && <TableHead />}
               </TableRow>
             </TableHeader>
             <TableBody>
               {requests.data?.map((r) => (
-                <TableRow
-                  key={r.id}
-                  className="cursor-pointer hover:bg-muted/50"
-                  onClick={() => navigate(`/lk/cert-requests/${r.id}`)}
-                >
+                <TableRow key={r.id} className="cursor-pointer" onClick={() => navigate(`/lk/cert-requests/${r.id}`)}>
                   <TableCell>
-                    <span className="inline-flex items-center gap-2">
-                      <span className="text-primary">{r.number}</span>
-                      {r.has_unread && (
-                        <span
-                          className="inline-flex h-2 w-2 rounded-full bg-red-500"
-                          title="Есть непросмотренные изменения"
-                          aria-label="Есть непросмотренные изменения"
-                        />
-                      )}
+                    <span className="text-primary hover:underline flex items-center gap-1">
+                      {r.number}
+                      {r.has_unread && <UnreadDots />}
                     </span>
                   </TableCell>
-                  <TableCell className="font-medium">{r.company}</TableCell>
+                  <TableCell>{r.company}</TableCell>
                   <TableCell>{new Date(r.created_at).toLocaleDateString('ru-RU')}</TableCell>
                   <TableCell>{r.cert_center_name}</TableCell>
-                  <TableCell><CertStatusBadge status={r.status} /></TableCell>
                   <TableCell>
-                    <UnreadDots
-                      hasUnreadMessages={r.has_unread_messages}
-                      hasUnreadChanges={r.has_unread_changes}
-                    />
+                    <CertStatusBadge status={r.status} />
                   </TableCell>
                   <TableCell>
                     <Button
-                      variant="ghost"
                       size="icon"
-                      title="Скачать в Excel"
-                      aria-label="Скачать в Excel"
+                      variant="ghost"
                       onClick={async (e) => {
                         e.stopPropagation();
                         try {
@@ -194,16 +191,15 @@ export default function LKCertRequestsPage() {
                   {isManager && (
                     <TableCell>
                       <Button
-                        variant="ghost"
                         size="icon"
-                        className="text-muted-foreground hover:text-destructive"
+                        variant="ghost"
                         onClick={(e) => {
                           e.stopPropagation();
                           setDeleteId(r.id);
                         }}
                         aria-label="Удалить заявку"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </TableCell>
                   )}
@@ -211,31 +207,26 @@ export default function LKCertRequestsPage() {
               ))}
               {requests.data?.length === 0 && (
                 <TableRow>
-                  <TableCell
-                    colSpan={isManager ? 8 : 7}
-                    className="text-center text-muted-foreground py-8"
-                  >
-                    Заявок нет
+                  <TableCell colSpan={isManager ? 7 : 6} className="text-center text-muted-foreground py-8">
+                    {lkT('empty_no_requests', language)}
                   </TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
-        )}
-      </Card>
+        </Card>
+      )}
 
       <CreateCertRequestModal open={open} onOpenChange={setOpen} />
 
       <AlertDialog open={deleteId !== null} onOpenChange={(o) => !o && setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Удалить заявку?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Действие необратимо. Все файлы и сообщения заявки будут удалены.
-            </AlertDialogDescription>
+            <AlertDialogTitle>{lkT('dialog_delete_request_title', language)}</AlertDialogTitle>
+            <AlertDialogDescription>{lkT('dialog_delete_request_desc', language)}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={deleteMut.isPending}>Отмена</AlertDialogCancel>
+            <AlertDialogCancel>{lkT('btn_cancel', language)}</AlertDialogCancel>
             <AlertDialogAction
               onClick={(e) => {
                 e.preventDefault();
@@ -244,7 +235,7 @@ export default function LKCertRequestsPage() {
               disabled={deleteMut.isPending}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              {deleteMut.isPending ? 'Удаление...' : 'Удалить'}
+              {deleteMut.isPending ? 'Удаление...' : lkT('btn_delete', language)}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

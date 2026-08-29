@@ -4,7 +4,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { RefreshCw, ExternalLink, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
-import { LinkedCertRequest, CERT_STATUS_LABELS } from '@/types/lk';
+import { useLKLanguage } from '@/contexts/LKLanguageContext';
+import { lkT, LKDictKey } from '@/lib/lkTranslations';
+import { LinkedCertRequest, CertRequestStatus } from '@/types/lk';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import {
@@ -21,8 +23,20 @@ interface Props {
   isManager: boolean;
 }
 
+const CERT_STATUS_KEY_MAP: Record<CertRequestStatus, LKDictKey> = {
+  open: 'cert_status_open',
+  estimation: 'cert_status_estimation',
+  documents_pending: 'cert_status_documents_pending',
+  layout_approved: 'cert_status_layout_approved',
+  payment: 'cert_status_payment',
+  certificate_issued: 'cert_status_certificate_issued',
+  rejected: 'cert_status_rejected',
+  closed: 'cert_status_closed',
+};
+
 export function LinkedCertRequestsPanel({ shipmentId, linkedRequests, isManager }: Props) {
   const qc = useQueryClient();
+  const { language } = useLKLanguage();
   const [syncModalOpen, setSyncModalOpen] = useState(false);
   const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null);
 
@@ -38,24 +52,24 @@ export function LinkedCertRequestsPanel({ shipmentId, linkedRequests, isManager 
     onError: (e: any) => toast.error(e?.message || 'Не удалось синхронизировать'),
   });
 
+  const statusLabel = (s: CertRequestStatus) => lkT(CERT_STATUS_KEY_MAP[s], language);
+
   if (linkedRequests.length === 0 && !isManager) return null;
 
   return (
     <Card className="p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="font-semibold">Связанные заявки на сертификацию</h3>
+        <h3 className="font-semibold">{lkT('section_linked_requests', language)}</h3>
         {isManager && linkedRequests.length > 0 && (
           <Button size="sm" variant="outline" onClick={() => setSyncModalOpen(true)}>
             <RefreshCw className="h-4 w-4 mr-1" />
-            Синхронизировать
+            {lkT('btn_sync', language)}
           </Button>
         )}
       </div>
 
       {linkedRequests.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          По этой поставке пока не сформировано ни одной заявки на сертификацию.
-        </p>
+        <p className="text-sm text-muted-foreground">{lkT('empty_no_linked_requests', language)}</p>
       ) : (
         <div className="space-y-2">
           {linkedRequests.map((r) => (
@@ -63,12 +77,12 @@ export function LinkedCertRequestsPanel({ shipmentId, linkedRequests, isManager 
               <div>
                 <span className="font-medium">{r.number}</span>
                 <span className="text-muted-foreground"> · {r.cert_center_name}</span>
-                <span className="text-muted-foreground"> · {CERT_STATUS_LABELS[r.status]}</span>
-                <span className="text-muted-foreground"> · обновлено {new Date(r.updated_at).toLocaleString('ru-RU')}</span>
+                <span className="text-muted-foreground"> · {statusLabel(r.status)}</span>
+                <span className="text-muted-foreground"> · {lkT('label_updated', language)} {new Date(r.updated_at).toLocaleString('ru-RU')}</span>
               </div>
               {isManager && (
                 <Link to={`/lk/cert-requests/${r.id}`} className="text-primary hover:underline flex items-center gap-1">
-                  Открыть <ExternalLink className="h-3.5 w-3.5" />
+                  {lkT('btn_open', language)} <ExternalLink className="h-3.5 w-3.5" />
                 </Link>
               )}
             </div>
@@ -80,7 +94,7 @@ export function LinkedCertRequestsPanel({ shipmentId, linkedRequests, isManager 
         <Dialog open onOpenChange={(o) => !o && setSyncModalOpen(false)}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Выберите заявку для синхронизации</DialogTitle>
+              <DialogTitle>{lkT('dialog_select_request_for_sync', language)}</DialogTitle>
             </DialogHeader>
             <div className="space-y-2">
               {linkedRequests.map((r) => (
@@ -94,21 +108,21 @@ export function LinkedCertRequestsPanel({ shipmentId, linkedRequests, isManager 
                 >
                   <div className="font-medium">{r.number} · {r.cert_center_name}</div>
                   <div className="text-muted-foreground text-xs">
-                    Статус: {CERT_STATUS_LABELS[r.status]} · обновлено {new Date(r.updated_at).toLocaleString('ru-RU')}
+                    {lkT('label_status', language)}: {statusLabel(r.status)} · {lkT('label_updated', language)} {new Date(r.updated_at).toLocaleString('ru-RU')}
                   </div>
                 </button>
               ))}
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setSyncModalOpen(false)}>
-                Отмена
+                {lkT('btn_cancel', language)}
               </Button>
               <Button
                 onClick={() => selectedRequestId && sync.mutate(selectedRequestId)}
                 disabled={!selectedRequestId || sync.isPending}
               >
                 {sync.isPending ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <RefreshCw className="h-4 w-4 mr-1" />}
-                {sync.isPending ? 'Синхронизация…' : 'Синхронизировать'}
+                {sync.isPending ? 'Синхронизация…' : lkT('btn_sync_confirm', language)}
               </Button>
             </DialogFooter>
           </DialogContent>

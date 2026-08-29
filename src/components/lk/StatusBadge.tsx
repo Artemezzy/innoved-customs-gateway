@@ -1,4 +1,6 @@
-import { ShipmentStatus, STATUS_COLORS, STATUS_LABELS } from '@/types/lk';
+import { ShipmentStatus, STATUS_COLORS } from '@/types/lk';
+import { useLKLanguage } from '@/contexts/LKLanguageContext';
+import { lkT } from '@/lib/lkTranslations';
 import { cn } from '@/lib/utils';
 
 interface Props {
@@ -7,6 +9,7 @@ interface Props {
 }
 
 export function StatusBadge({ status, className }: Props) {
+  const { language } = useLKLanguage();
   return (
     <span
       className={cn(
@@ -15,7 +18,7 @@ export function StatusBadge({ status, className }: Props) {
         className
       )}
     >
-      {STATUS_LABELS[status]}
+      {lkT(`status_${status}` as any, language)}
     </span>
   );
 }

@@ -4,6 +4,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, Search, Trash2, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
+import { useLKLanguage } from '@/contexts/LKLanguageContext';
+import { lkT } from '@/lib/lkTranslations';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
@@ -33,6 +35,7 @@ import type { Client } from '@/types/lk';
 export default function LKClientsPage() {
   const navigate = useNavigate();
   const qc = useQueryClient();
+  const { language } = useLKLanguage();
   const [q, setQ] = useState('');
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<'active' | 'archived'>('active');
@@ -46,7 +49,7 @@ export default function LKClientsPage() {
   const deleteMutation = useMutation({
     mutationFn: (id: number) => lkApi.deleteClient(id),
     onSuccess: () => {
-      toast.success('Клиент перемещён в архив');
+      toast.success(lkT('toast_client_archived', language));
       qc.invalidateQueries({ queryKey: ['lk', 'clients'] });
       setToDelete(null);
     },
@@ -56,7 +59,7 @@ export default function LKClientsPage() {
   const restoreMutation = useMutation({
     mutationFn: (id: number) => lkApi.restoreClient(id),
     onSuccess: () => {
-      toast.success('Клиент восстановлен');
+      toast.success(lkT('toast_client_restored', language));
       qc.invalidateQueries({ queryKey: ['lk', 'clients'] });
     },
     onError: (e: any) => toast.error(e?.message || 'Не удалось восстановить клиента'),
@@ -64,48 +67,44 @@ export default function LKClientsPage() {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        <h1 className="text-2xl font-bold">Клиенты</h1>
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <h1 className="text-xl font-semibold">{lkT('page_clients_title', language)}</h1>
         <Button onClick={() => setOpen(true)}>
           <Plus className="h-4 w-4 mr-1.5" />
-          Добавить клиента
+          {lkT('btn_add_client', language)}
         </Button>
       </div>
 
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        <Tabs value={tab} onValueChange={(v) => setTab(v as 'active' | 'archived')}>
-          <TabsList>
-            <TabsTrigger value="active">Активные</TabsTrigger>
-            <TabsTrigger value="archived">Архив</TabsTrigger>
-          </TabsList>
-        </Tabs>
+      <Tabs value={tab} onValueChange={(v) => setTab(v as 'active' | 'archived')}>
+        <TabsList>
+          <TabsTrigger value="active">{lkT('tab_active', language)}</TabsTrigger>
+          <TabsTrigger value="archived">{lkT('tab_archive', language)}</TabsTrigger>
+        </TabsList>
+      </Tabs>
 
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Поиск по названию, ИНН, email"
-            className="pl-9"
-          />
-        </div>
+      <div className="relative max-w-sm">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder={lkT('placeholder_search_clients', language)}
+          className="pl-9"
+        />
       </div>
 
-      <Card className="p-0">
-        {isLoading ? (
-          <div className="p-5">
-            <Skeleton className="h-40 w-full" />
-          </div>
-        ) : (
+      {isLoading ? (
+        <Skeleton className="h-64 w-full" />
+      ) : (
+        <Card>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Название</TableHead>
-                <TableHead>ИНН</TableHead>
-                <TableHead>Контактное лицо</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead className="text-right">Поставки</TableHead>
-                <TableHead className="text-right">Действия</TableHead>
+                <TableHead>{lkT('th_title', language)}</TableHead>
+                <TableHead>{lkT('th_inn', language)}</TableHead>
+                <TableHead>{lkT('th_contact_person', language)}</TableHead>
+                <TableHead>{lkT('th_email', language)}</TableHead>
+                <TableHead>{lkT('th_shipments', language)}</TableHead>
+                <TableHead>{lkT('th_actions', language)}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -115,18 +114,18 @@ export default function LKClientsPage() {
                   className={tab === 'active' ? 'cursor-pointer' : ''}
                   onClick={() => tab === 'active' && navigate(`/lk/clients/${c.id}`)}
                 >
-                  <TableCell className={tab === 'active' ? 'font-medium' : 'font-medium text-muted-foreground'}>
-                    {c.name}
+                  <TableCell>
+                    <span className="text-primary hover:underline">{c.name}</span>
                   </TableCell>
                   <TableCell>{c.inn}</TableCell>
                   <TableCell>{c.contact_person}</TableCell>
                   <TableCell>{c.email}</TableCell>
-                  <TableCell className="text-right">{c.shipment_count}</TableCell>
-                  <TableCell className="text-right">
+                  <TableCell>{c.shipment_count}</TableCell>
+                  <TableCell>
                     {tab === 'active' ? (
                       <Button
-                        variant="ghost"
                         size="icon"
+                        variant="ghost"
                         onClick={(e) => {
                           e.stopPropagation();
                           setToDelete(c);
@@ -136,8 +135,8 @@ export default function LKClientsPage() {
                       </Button>
                     ) : (
                       <Button
-                        variant="ghost"
                         size="icon"
+                        variant="ghost"
                         onClick={(e) => {
                           e.stopPropagation();
                           restoreMutation.mutate(c.id);
@@ -152,34 +151,32 @@ export default function LKClientsPage() {
               {data?.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center text-muted-foreground py-8">
-                    {tab === 'active' ? 'Клиенты не найдены' : 'Архив пуст'}
+                    {tab === 'active' ? lkT('empty_no_clients_active', language) : lkT('empty_archive_empty', language)}
                   </TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
-        )}
-      </Card>
+        </Card>
+      )}
 
       <CreateClientModal open={open} onOpenChange={setOpen} />
 
       <AlertDialog open={!!toDelete} onOpenChange={(v) => !v && setToDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Удалить клиента?</AlertDialogTitle>
+            <AlertDialogTitle>{lkT('dialog_delete_client_title', language)}</AlertDialogTitle>
             <AlertDialogDescription>
-              «{toDelete?.name}» будет перемещён в архив. Доступ к личному кабинету
-              будет заблокирован, но все данные (поставки, документы, сообщения)
-              сохранятся. Восстановить клиента можно из вкладки «Архив».
+              «{toDelete?.name}» {lkT('dialog_delete_client_desc_part1', language)}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Отмена</AlertDialogCancel>
+            <AlertDialogCancel>{lkT('btn_cancel', language)}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => toDelete && deleteMutation.mutate(toDelete.id)}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Удалить
+              {lkT('btn_delete', language)}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

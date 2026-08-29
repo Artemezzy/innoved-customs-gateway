@@ -431,7 +431,13 @@ if (
     $hash = password_hash($newPass, PASSWORD_BCRYPT);
     $upd = db()->prepare('UPDATE lk_users SET password_hash=?, updated_at=NOW() WHERE id=?');
     $upd->execute([$hash, $u['id']]);
-    out(['user_id' => (int)$u['id'], 'login' => $u['email'], 'password' => $newPass]);
+    out([
+    'user_id'      => (int)$u['id'],
+    'client_id'    => $clientId,
+    'login'        => $u['email'],
+    'name'         => $u['name'],
+    'new_password' => $newPass,
+]);
 }
 
 // DELETE /api/clients/:id  (soft-delete: деактивация клиента + его пользователя)
@@ -778,18 +784,15 @@ if ($method === 'GET' && $seg[0] === 'managers' && ($seg[1] ?? '') === 'cert-sta
 // GET /api/clients/:id
 if ($method === 'GET' && $seg[0] === 'clients' && isset($seg[1]) && !isset($seg[2])) {
     auth(true);
-    $id = (int)$seg[1];
     $st = db()->prepare(
-        'SELECT c.*, COUNT(s.id) AS shipment_count
+        'SELECT c.*,
+                (SELECT COUNT(*) FROM lk_shipments WHERE client_id=c.id) AS shipment_count
          FROM lk_clients c
-         LEFT JOIN lk_shipments s ON s.client_id=c.id
-         WHERE c.id=?
-         GROUP BY c.id'
+         WHERE c.id=? AND c.is_active=1'
     );
-    $st->execute([$id]);
-    $client = $st->fetch();
-    if (!$client) err('Клиент не найден', 404);
-    out($client);
+    $st->execute([(int)$seg[1]]);
+    $c = $st->fetch(); if (!$c) err('Клиент не найден', 404);
+    out($c);
 }
 
 // GET /api/shipments

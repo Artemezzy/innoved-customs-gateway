@@ -4,6 +4,8 @@ import { Send, Paperclip, X, FileText, Reply } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLKLanguage } from '@/contexts/LKLanguageContext';
+import { lkT } from '@/lib/lkTranslations';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -16,15 +18,9 @@ interface Props {
 const ALLOWED_EXT = ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'jpg', 'jpeg', 'png', 'txt', 'zip'];
 const MAX_SIZE = 20 * 1024 * 1024;
 
-function validateFile(file: File): string | null {
-  const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
-  if (!ALLOWED_EXT.includes(ext)) return 'Недопустимый тип файла';
-  if (file.size > MAX_SIZE) return 'Файл слишком большой (макс. 20 МБ)';
-  return null;
-}
-
 export function ChatPanel({ shipmentId }: Props) {
   const { user } = useAuth();
+  const { language } = useLKLanguage();
   const qc = useQueryClient();
   const [text, setText] = useState('');
   const [pendingFile, setPendingFile] = useState<File | null>(null);
@@ -33,6 +29,13 @@ export function ChatPanel({ shipmentId }: Props) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messageRefs = useRef<Record<number, HTMLDivElement | null>>({});
+
+  const validateFile = (file: File): string | null => {
+    const ext = file.name.split('.').pop()?.toLowerCase() ?? '';
+    if (!ALLOWED_EXT.includes(ext)) return lkT('label_invalid_file_type', language);
+    if (file.size > MAX_SIZE) return lkT('label_file_too_large', language);
+    return null;
+  };
 
   const { data, isLoading } = useQuery({
     queryKey: ['lk', 'messages', shipmentId],
@@ -108,7 +111,7 @@ export function ChatPanel({ shipmentId }: Props) {
           </>
         )}
         {!isLoading && data && data.length === 0 && (
-          <p className="text-sm text-muted-foreground text-center py-8">Сообщений пока нет</p>
+          <p className="text-sm text-muted-foreground text-center py-8">{lkT('label_no_messages', language)}</p>
         )}
         {data?.map((m: any) => {
           const mine = m.role === user?.role;
@@ -159,7 +162,7 @@ export function ChatPanel({ shipmentId }: Props) {
                 )}
                 <button
                   type="button"
-                  title="Ответить"
+                  title={lkT('btn_reply', language)}
                   onClick={() => setReplyTo(m)}
                   className={cn(
                     'absolute -top-2 opacity-0 group-hover:opacity-100 transition-opacity rounded-full bg-background border p-1 shadow-sm',
@@ -218,7 +221,7 @@ export function ChatPanel({ shipmentId }: Props) {
         <Input
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Введите сообщение…"
+          placeholder={lkT('placeholder_message_input', language)}
           disabled={send.isPending}
         />
         <Button type="submit" size="icon" disabled={send.isPending || (!text.trim() && !pendingFile)}>

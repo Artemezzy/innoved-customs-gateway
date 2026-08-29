@@ -1,11 +1,14 @@
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { lkApi } from '@/api/lkClient';
+import { useLKLanguage } from '@/contexts/LKLanguageContext';
+import { lkT } from '@/lib/lkTranslations';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 
 export default function LKMessagesPage() {
+  const { language } = useLKLanguage();
   const { data, isLoading } = useQuery({
     queryKey: ['lk', 'manager-messages'],
     queryFn: () => lkApi.managerMessages(),
@@ -14,44 +17,34 @@ export default function LKMessagesPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-bold">Сообщения</h1>
+      <h1 className="text-xl font-semibold">{lkT('page_messages_title', language)}</h1>
 
-      {isLoading && (
-        <>
-          <Skeleton className="h-20 w-full" />
-          <Skeleton className="h-20 w-full" />
-        </>
-      )}
-
-      {!isLoading && data && data.length === 0 && (
-        <Card className="p-8 text-center text-muted-foreground">Нет сообщений</Card>
-      )}
-
-      <div className="space-y-2">
-        {data?.map((row: any) => (
-          <Link key={row.shipment_id} to={`/lk/shipments/${row.shipment_id}`}>
-            <Card className="p-4 hover:bg-muted/40 transition-colors">
-              <div className="flex items-center justify-between gap-3">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">{row.client_name}</span>
-                    <span className="text-xs text-muted-foreground">
-                      · Поставка #{row.shipment_id} — {row.shipment_title}
-                    </span>
-                  </div>
-                  <div className="text-sm text-muted-foreground truncate mt-1">{row.preview}</div>
+      {isLoading ? (
+        <Skeleton className="h-64 w-full" />
+      ) : data && data.length > 0 ? (
+        <div className="space-y-2">
+          {data.map((m: any) => (
+            <Link key={m.shipment_id} to={`/lk/shipments/${m.shipment_id}`}>
+              <Card className="p-4 flex items-center justify-between hover:shadow-md transition-shadow">
+                <div>
+                  <p className="font-medium">
+                    {m.title} <span className="text-muted-foreground">· {m.client_name}</span>
+                  </p>
+                  <p className="text-sm text-muted-foreground truncate max-w-md">{m.last_message}</p>
                 </div>
-                <div className="flex flex-col items-end gap-1 shrink-0">
+                <div className="flex items-center gap-2">
+                  {m.unread_count > 0 && <Badge>{m.unread_count}</Badge>}
                   <span className="text-xs text-muted-foreground">
-                    {new Date(row.last_at).toLocaleString('ru-RU')}
+                    {new Date(m.last_message_at).toLocaleString('ru-RU')}
                   </span>
-                  {row.unread > 0 && <Badge>{row.unread}</Badge>}
                 </div>
-              </div>
-            </Card>
-          </Link>
-        ))}
-      </div>
+              </Card>
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <p className="text-muted-foreground">{lkT('empty_no_messages_list', language)}</p>
+      )}
     </div>
   );
 }

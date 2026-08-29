@@ -4,6 +4,8 @@ import { ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLKLanguage } from '@/contexts/LKLanguageContext';
+import { lkT } from '@/lib/lkTranslations';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
@@ -26,6 +28,7 @@ export default function LKShipmentDetailPage() {
   const { id } = useParams();
   const shipmentId = Number(id);
   const { user } = useAuth();
+  const { language } = useLKLanguage();
   const isManager = user?.role === 'manager';
   const qc = useQueryClient();
 
@@ -49,6 +52,8 @@ export default function LKShipmentDetailPage() {
     },
     onError: (e: any) => toast.error(e.message || 'Ошибка'),
   });
+
+  const statusLabel = (s: ShipmentStatus) => lkT(`status_${s}` as any, language);
 
   if (shipment.isLoading) {
     return (
@@ -86,7 +91,7 @@ export default function LKShipmentDetailPage() {
               <SelectContent>
                 {(Object.keys(STATUS_LABELS) as ShipmentStatus[]).map((st) => (
                   <SelectItem key={st} value={st}>
-                    {STATUS_LABELS[st]}
+                    {statusLabel(st)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -101,10 +106,10 @@ export default function LKShipmentDetailPage() {
 
       <Tabs defaultValue="items">
         <TabsList>
-          <TabsTrigger value="items">Продукция</TabsTrigger>
-          <TabsTrigger value="cert-requests">Заявки на сертификацию</TabsTrigger>
-          <TabsTrigger value="documents">Документы</TabsTrigger>
-          <TabsTrigger value="chat">Чат</TabsTrigger>
+          <TabsTrigger value="items">{lkT('tab_products', language)}</TabsTrigger>
+          <TabsTrigger value="cert-requests">{lkT('tab_cert_requests', language)}</TabsTrigger>
+          <TabsTrigger value="documents">{lkT('tab_documents', language)}</TabsTrigger>
+          <TabsTrigger value="chat">{lkT('tab_chat', language)}</TabsTrigger>
         </TabsList>
 
         <TabsContent value="items" className="mt-4">

@@ -3,6 +3,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { AlertTriangle, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
+import { useLKLanguage } from '@/contexts/LKLanguageContext';
+import { lkT } from '@/lib/lkTranslations';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -32,6 +34,7 @@ function formatDocNumber(n: number) {
 }
 
 export function GenerateCertRequestModal({ shipmentId, itemIds, onClose, onSuccess }: Props) {
+  const { language } = useLKLanguage();
   const [certCenterId, setCertCenterId] = useState<string>('');
   const [confirmedDespiteUsage, setConfirmedDespiteUsage] = useState(false);
 
@@ -68,15 +71,15 @@ export function GenerateCertRequestModal({ shipmentId, itemIds, onClose, onSucce
     <Dialog open onOpenChange={(o) => !o && onClose()}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Сформировать заявку на сертификацию</DialogTitle>
+          <DialogTitle>{lkT('modal_generate_cert_request_title', language)}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-4">
           <div className="space-y-1">
-            <Label>Сертификационный центр</Label>
+            <Label>{lkT('label_cert_center', language)}</Label>
             <Select value={certCenterId} onValueChange={setCertCenterId}>
               <SelectTrigger>
-                <SelectValue placeholder="Выберите центр" />
+                <SelectValue placeholder={lkT('placeholder_select_center', language)} />
               </SelectTrigger>
               <SelectContent>
                 {centers.data?.map((c) => (
@@ -88,12 +91,12 @@ export function GenerateCertRequestModal({ shipmentId, itemIds, onClose, onSucce
             </Select>
           </div>
 
-          <p className="text-sm text-muted-foreground">Выбрано товаров: {itemIds.length}</p>
+          <p className="text-sm text-muted-foreground">{lkT('label_selected_count', language)} {itemIds.length}</p>
 
           {usage.isLoading && (
             <p className="text-sm text-muted-foreground flex items-center gap-2">
               <Loader2 className="h-4 w-4 animate-spin" />
-              Проверка использования позиций…
+              {lkT('checking_usage', language)}
             </p>
           )}
 
@@ -103,14 +106,14 @@ export function GenerateCertRequestModal({ shipmentId, itemIds, onClose, onSucce
                 <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
                 <span>
                   {usedItems.length === 1
-                    ? 'Одна из выбранных позиций уже участвует в другой активной заявке:'
-                    : `${usedItems.length} из выбранных позиций уже участвуют в других активных заявках:`}
+                    ? lkT('usage_warning_single', language)
+                    : `${usedItems.length} ${lkT('usage_warning_multi', language)}`}
                 </span>
               </div>
               <ul className="text-sm space-y-1 pl-6 list-disc">
                 {usedItems.map((u, idx) => (
                   <li key={idx}>
-                    {u.cert_center_name} (заявка №{formatDocNumber(u.document_number)})
+                    {u.cert_center_name} (№{formatDocNumber(u.document_number)})
                   </li>
                 ))}
               </ul>
@@ -120,7 +123,7 @@ export function GenerateCertRequestModal({ shipmentId, itemIds, onClose, onSucce
                   checked={confirmedDespiteUsage}
                   onChange={(e) => setConfirmedDespiteUsage(e.target.checked)}
                 />
-                Всё равно отправить эти позиции в новую заявку
+                {lkT('checkbox_confirm_anyway', language)}
               </label>
             </div>
           )}
@@ -128,10 +131,10 @@ export function GenerateCertRequestModal({ shipmentId, itemIds, onClose, onSucce
 
         <DialogFooter>
           <Button variant="outline" onClick={onClose}>
-            Отмена
+            {lkT('btn_cancel', language)}
           </Button>
           <Button onClick={() => generate.mutate()} disabled={!canSubmit || generate.isPending}>
-            {generate.isPending ? 'Формирование…' : 'Сформировать'}
+            {generate.isPending ? 'Формирование…' : lkT('btn_generate_request', language)}
           </Button>
         </DialogFooter>
       </DialogContent>

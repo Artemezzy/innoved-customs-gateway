@@ -4,6 +4,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { ArrowLeft, KeyRound, Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
+import { useLKLanguage } from '@/contexts/LKLanguageContext';
+import { lkT, LKDictKey } from '@/lib/lkTranslations';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -25,11 +27,24 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { CertStatusBadge } from '@/components/lk/CertStatusBadge';
+import { CertRequestStatus } from '@/types/lk';
+
+const CERT_STATUS_KEY_MAP: Record<CertRequestStatus, LKDictKey> = {
+  open: 'cert_status_open',
+  estimation: 'cert_status_estimation',
+  documents_pending: 'cert_status_documents_pending',
+  layout_approved: 'cert_status_layout_approved',
+  payment: 'cert_status_payment',
+  certificate_issued: 'cert_status_certificate_issued',
+  rejected: 'cert_status_rejected',
+  closed: 'cert_status_closed',
+};
 
 export default function LKCertCenterDetailPage() {
   const { id } = useParams<{ id: string }>();
   const centerId = Number(id);
   const navigate = useNavigate();
+  const { language } = useLKLanguage();
   const [creds, setCreds] = useState<{ login: string; password: string } | null>(null);
   const [copied, setCopied] = useState<'login' | 'password' | null>(null);
 
@@ -49,7 +64,7 @@ export default function LKCertCenterDetailPage() {
     mutationFn: () => lkApi.resetCertCenterPassword(centerId),
     onSuccess: (r) => {
       setCreds({ login: r.login, password: r.new_password });
-      toast.success('Пароль сброшен');
+      toast.success(lkT('toast_password_reset', language));
     },
     onError: (e: any) => toast.error(e?.message || 'Не удалось сбросить пароль'),
   });
@@ -60,109 +75,108 @@ export default function LKCertCenterDetailPage() {
     setTimeout(() => setCopied(null), 1500);
   };
 
-  if (centers.isLoading) return <Skeleton className="h-40 w-full" />;
-  if (!center) {
+  if (centers.isLoading) {
     return (
-      <div className="space-y-3">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/lk/cert-centers')}>
-          <ArrowLeft className="h-4 w-4 mr-1.5" /> К списку
-        </Button>
-        <p>Центр не найден.</p>
+      <div className="space-y-4">
+        <Skeleton className="h-8 w-64" />
+        <Skeleton className="h-40 w-full" />
       </div>
     );
   }
 
+  if (!center) {
+    return <p className="text-muted-foreground">Центр не найден.</p>;
+  }
+
   return (
     <div className="space-y-6">
-      <Button variant="ghost" size="sm" onClick={() => navigate('/lk/cert-centers')}>
-        <ArrowLeft className="h-4 w-4 mr-1.5" /> К списку
-      </Button>
-
-      <Card className="p-5">
-        <div className="flex items-start justify-between gap-4 flex-wrap">
-          <div>
-            <h1 className="text-xl font-bold">{center.name}</h1>
-            <div className="text-sm text-muted-foreground mt-1 space-y-0.5">
-              <div>Контактное лицо: {center.contact_person}</div>
-              <div>Телефон: {center.phone}</div>
-              <div>Email: {center.email}</div>
-              <div>Заявок: {center.requests_count}</div>
-            </div>
-          </div>
-          <Button variant="outline" onClick={() => reset.mutate()} disabled={reset.isPending}>
+      <div className="flex items-center gap-3">
+        <Link to="/lk/cert-centers" className="text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="h-5 w-5" />
+        </Link>
+        <h1 className="text-xl font-semibold">{center.name}</h1>
+        <div className="ml-auto">
+          <Button variant="outline" size="sm" onClick={() => reset.mutate()} disabled={reset.isPending}>
             <KeyRound className="h-4 w-4 mr-1.5" />
-            {reset.isPending ? 'Сброс…' : 'Сбросить пароль'}
+            {reset.isPending ? '...' : lkT('btn_reset_password', language)}
           </Button>
+        </div>
+      </div>
+
+      <Card className="p-5 grid gap-3 sm:grid-cols-2 text-sm">
+        <div>
+          <span className="text-muted-foreground">{lkT('th_contact_person', language)}: </span>
+          {center.contact_person}
+        </div>
+        <div>
+          <span className="text-muted-foreground">{lkT('th_phone', language)}: </span>
+          {center.phone}
+        </div>
+        <div>
+          <span className="text-muted-foreground">{lkT('th_email', language)}: </span>
+          {center.email}
         </div>
       </Card>
 
-      <Card className="p-0">
-        <div className="p-5 pb-2 font-semibold">Заявки центра</div>
-        {requests.isLoading ? (
-          <div className="p-5"><Skeleton className="h-20 w-full" /></div>
-        ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>№</TableHead>
-                <TableHead>Компания</TableHead>
-                <TableHead>Создана</TableHead>
-                <TableHead>Статус</TableHead>
+      <Card>
+        <div className="p-4 font-semibold">{lkT('page_cert_requests_title', language)}</div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>{lkT('th_number', language)}</TableHead>
+              <TableHead>{lkT('th_company', language)}</TableHead>
+              <TableHead>{lkT('th_created_date', language)}</TableHead>
+              <TableHead>{lkT('label_status', language)}</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {requests.data?.map((r) => (
+              <TableRow key={r.id} className="cursor-pointer" onClick={() => navigate(`/lk/cert-requests/${r.id}`)}>
+                <TableCell>{r.number}</TableCell>
+                <TableCell>{r.company}</TableCell>
+                <TableCell>{new Date(r.created_at).toLocaleDateString('ru-RU')}</TableCell>
+                <TableCell>
+                  <CertStatusBadge status={r.status} />
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody>
-              {requests.data?.map((r) => (
-                <TableRow
-                  key={r.id}
-                  className="cursor-pointer hover:bg-muted/50"
-                  onClick={() => navigate(`/lk/cert-requests/${r.id}`)}
-                >
-                  <TableCell><span className="text-primary">{r.number}</span></TableCell>
-                  <TableCell className="font-medium">{r.company}</TableCell>
-                  <TableCell>{new Date(r.created_at).toLocaleDateString('ru-RU')}</TableCell>
-                  <TableCell><CertStatusBadge status={r.status} /></TableCell>
-                </TableRow>
-              ))}
-              {requests.data?.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
-                    Заявок нет
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        )}
+            ))}
+          </TableBody>
+        </Table>
       </Card>
 
-      <Dialog open={!!creds} onOpenChange={(v) => !v && setCreds(null)}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Новый пароль</DialogTitle>
-          </DialogHeader>
-          {creds && (
-            <div className="space-y-3 py-2">
-              <p className="text-sm text-muted-foreground">
-                Передайте эти данные центру. После закрытия окна пароль не будет показан повторно.
-              </p>
-              {(['login', 'password'] as const).map((k) => (
-                <div key={k}>
-                  <Label>{k === 'login' ? 'Логин' : 'Пароль'}</Label>
-                  <div className="flex gap-2">
-                    <Input readOnly value={creds[k]} />
-                    <Button variant="outline" size="icon" onClick={() => copy(creds[k], k)}>
-                      {copied === k ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                    </Button>
-                  </div>
+      {creds && (
+        <Dialog open onOpenChange={(o) => !o && setCreds(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{lkT('label_access_credentials', language)}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3">
+              <div>
+                <div className="text-xs text-muted-foreground mb-1">{lkT('label_login', language)}</div>
+                <div className="flex items-center gap-2">
+                  <Input readOnly value={creds.login} />
+                  <Button size="icon" variant="outline" onClick={() => copy(creds.login, 'login')}>
+                    {copied === 'login' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  </Button>
                 </div>
-              ))}
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground mb-1">{lkT('label_password', language)}</div>
+                <div className="flex items-center gap-2">
+                  <Input readOnly value={creds.password} />
+                  <Button size="icon" variant="outline" onClick={() => copy(creds.password, 'password')}>
+                    {copied === 'password' ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  </Button>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">{lkT('label_new_password_copy_hint', language)}</p>
             </div>
-          )}
-          <DialogFooter>
-            <Button onClick={() => setCreds(null)}>Готово</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <DialogFooter>
+              <Button onClick={() => setCreds(null)}>{lkT('btn_close', language)}</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

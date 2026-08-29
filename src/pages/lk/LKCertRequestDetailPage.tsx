@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { ArrowLeft, Download, FileText } from 'lucide-react';
+import { ArrowLeft, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLKLanguage } from '@/contexts/LKLanguageContext';
+import { lkT } from '@/lib/lkTranslations';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -18,6 +20,7 @@ export default function LKCertRequestDetailPage() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const { user } = useAuth();
+  const { language } = useLKLanguage();
   const isManager = user?.role === 'manager';
 
   const detail = useQuery({
@@ -32,27 +35,33 @@ export default function LKCertRequestDetailPage() {
     }
   }, [detail.isSuccess, qc]);
 
-  if (detail.isLoading) return <Skeleton className="h-96 w-full" />;
-  if (detail.isError || !detail.data) {
+  if (detail.isLoading) {
     return (
-      <div className="space-y-3">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/lk/cert-requests')}>
-          <ArrowLeft className="h-4 w-4 mr-1.5" /> К списку
-        </Button>
-        <p>Заявка не найдена.</p>
+      <div className="space-y-4">
+        <Skeleton className="h-8 w-64" />
+        <Skeleton className="h-40 w-full" />
       </div>
     );
+  }
+
+  if (!detail.data) {
+    return <p className="text-muted-foreground">Заявка не найдена.</p>;
   }
 
   const { request, items } = detail.data;
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <Button variant="ghost" size="sm" onClick={() => navigate('/lk/cert-requests')}>
-          <ArrowLeft className="h-4 w-4 mr-1.5" /> К списку
-        </Button>
-        <div className="flex items-center gap-3 flex-wrap">
+      <div className="flex items-center gap-3">
+        <button onClick={() => navigate('/lk/cert-requests')} className="text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="h-5 w-5" />
+        </button>
+        <div>
+          <h1 className="text-xl font-semibold">
+            {request.number} — {request.cert_center_name}
+          </h1>
+        </div>
+        <div className="ml-auto flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"
@@ -64,43 +73,26 @@ export default function LKCertRequestDetailPage() {
               }
             }}
           >
-            <Download className="h-4 w-4 mr-1.5" />
-            Скачать в Excel
+            <Download className="h-4 w-4 mr-1" />
+            {lkT('btn_download', language)}
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={async () => {
-              try {
-                const checkedIds = items.filter((i) => i.is_checked).map((i) => i.id);
-                await lkApi.generateCertRequestDoc(requestId, checkedIds);
-              } catch (err: any) {
-                toast.error(err?.message || 'Не удалось сформировать заявку');
-              }
-            }}
-          >
-            <FileText className="h-4 w-4 mr-1.5" />
-            Сформировать заявку
-          </Button>
-          <span className="text-sm text-muted-foreground">Статус:</span>
-          <CertRequestStatusSelect requestId={requestId} value={request.status} />
+          <CertRequestStatusSelect requestId={requestId} value={request.status} disabled={!isManager} />
         </div>
       </div>
 
-      <Card className="p-5">
-        <h2 className="font-semibold mb-4">Данные заявки</h2>
-        <CertItemsPanel
-          requestId={requestId}
-          request={request}
-          items={items}
-          canEditHeader={isManager}
-        />
-      </Card>
-
-      <Card className="p-5">
-        <h2 className="font-semibold mb-4">Чат</h2>
-        <CertChatPanel requestId={requestId} />
-      </Card>
+      <div className="grid gap-6 lg:grid-cols-3">
+        <div className="lg:col-span-2">
+          <CertItemsPanel
+            requestId={requestId}
+            request={request}
+            items={items}
+            canEditHeader={isManager}
+          />
+        </div>
+        <Card className="p-0 overflow-hidden h-fit">
+          <CertChatPanel requestId={requestId} />
+        </Card>
+      </div>
     </div>
   );
 }

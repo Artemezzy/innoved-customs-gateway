@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { FileText, Link as LinkIcon, Download, Upload, Plus, Loader2, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
+import { useLKLanguage } from '@/contexts/LKLanguageContext';
+import { lkT } from '@/lib/lkTranslations';
 import { ShipmentFile } from '@/types/lk';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +17,7 @@ interface Props {
 
 export function ShipmentFilesPanel({ shipmentId, itemId }: Props) {
   const qc = useQueryClient();
+  const { language } = useLKLanguage();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [url, setUrl] = useState('');
 
@@ -82,10 +85,10 @@ export function ShipmentFilesPanel({ shipmentId, itemId }: Props) {
   return (
     <div className="space-y-3">
       {filesQ.isLoading && (
-        <p className="text-sm text-muted-foreground">Загрузка вложений…</p>
+        <p className="text-sm text-muted-foreground">{lkT('label_loading', language)}</p>
       )}
       {!filesQ.isLoading && files.length === 0 && (
-        <p className="text-sm text-muted-foreground">Вложений пока нет</p>
+        <p className="text-sm text-muted-foreground">{lkT('empty_no_attachments', language)}</p>
       )}
       {files.map((f) => {
         const isExternalLink = f.file_type === 'link' && !!f.url && /^https?:\/\//i.test(f.url);
@@ -111,8 +114,8 @@ export function ShipmentFilesPanel({ shipmentId, itemId }: Props) {
                 size="icon"
                 variant="ghost"
                 onClick={(e) => download(e, f)}
-                title="Скачать"
-                aria-label="Скачать файл"
+                title={lkT('btn_download', language)}
+                aria-label={lkT('btn_download', language)}
               >
                 <Download className="h-4 w-4" />
               </Button>
@@ -122,8 +125,8 @@ export function ShipmentFilesPanel({ shipmentId, itemId }: Props) {
               variant="ghost"
               onClick={(e) => handleDelete(e, f)}
               disabled={deleteFile.isPending}
-              title="Удалить вложение"
-              aria-label="Удалить вложение"
+              title={lkT('btn_delete', language)}
+              aria-label={lkT('btn_delete', language)}
               className="text-destructive hover:text-destructive hover:bg-destructive/10"
             >
               <Trash2 className="h-4 w-4" />
@@ -133,7 +136,7 @@ export function ShipmentFilesPanel({ shipmentId, itemId }: Props) {
       })}
 
       <div className="flex items-center gap-2">
-        <Label className="sr-only">Загрузить файл</Label>
+        <Label className="sr-only">{lkT('btn_choose_file', language)}</Label>
         <input
           ref={fileInputRef}
           type="file"
@@ -151,7 +154,7 @@ export function ShipmentFilesPanel({ shipmentId, itemId }: Props) {
           disabled={uploadFile.isPending}
         >
           {uploadFile.isPending ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Upload className="h-4 w-4 mr-1" />}
-          {uploadFile.isPending ? 'Загрузка…' : 'Выбрать файл'}
+          {uploadFile.isPending ? lkT('label_uploading', language) : lkT('btn_choose_file', language)}
         </Button>
       </div>
 
@@ -159,7 +162,7 @@ export function ShipmentFilesPanel({ shipmentId, itemId }: Props) {
         <Input
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          placeholder="https://…"
+          placeholder={lkT('placeholder_url', language)}
         />
         <Button
           size="sm"
@@ -167,7 +170,7 @@ export function ShipmentFilesPanel({ shipmentId, itemId }: Props) {
           disabled={!url.trim() || addUrl.isPending}
         >
           <Plus className="h-4 w-4 mr-1" />
-          Добавить ссылку
+          {lkT('btn_add_link', language)}
         </Button>
       </div>
     </div>

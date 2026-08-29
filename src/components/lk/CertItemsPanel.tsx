@@ -10,12 +10,13 @@ import {
   Paperclip,
   Plus,
   Save,
-  SquareCheckBig,
   Trash2,
 } from 'lucide-react';
 import { CertFilesPanel } from '@/components/lk/CertFilesPanel';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
+import { useLKLanguage } from '@/contexts/LKLanguageContext';
+import { lkT, LKDictKey } from '@/lib/lkTranslations';
 import { CertRequest, CertRequestItem } from '@/types/lk';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -52,28 +53,28 @@ type RequestInfoKey =
   | 'manufacturer_address'
   | 'manufacturer_country';
 
-const PRODUCT_FIELDS: Array<{
+const PRODUCT_FIELD_KEYS: Array<{
   key: keyof Omit<CertRequestItem, 'id' | 'position_no' | 'is_checked' | 'company'>;
-  label: string;
+  labelKey: LKDictKey;
   textarea?: boolean;
   rows?: number;
   tone: 'green' | 'yellow';
 }> = [
-  { key: 'product', label: 'Наименование продукции', tone: 'green' },
-  { key: 'tech_description', label: 'Техническое описание', textarea: true, rows: 4, tone: 'green' },
-  { key: 'model_article', label: 'Модель / артикул', tone: 'green' },
-  { key: 'trademark', label: 'Торговая марка', tone: 'green' },
-  { key: 'tn_ved', label: 'ТН ВЭД', tone: 'green' },
-  { key: 'contract_invoice', label: 'Контракт / Договор / Инвойс', tone: 'green' },
-  { key: 'quantity', label: 'Количество', tone: 'green' },
-  { key: 'tr_ts', label: 'ТР ТС', textarea: true, rows: 4, tone: 'yellow' },
-  { key: 'cert_form', label: 'Форма сертификации', tone: 'yellow' },
-  { key: 'cert_scheme', label: 'Схема сертификации', tone: 'yellow' },
-  { key: 'cost', label: 'Стоимость', tone: 'yellow' },
-  { key: 'production_deadline', label: 'Срок изготовления', tone: 'yellow' },
-  { key: 'samples_required', label: 'Необходимость образцов', tone: 'yellow' },
-  { key: 'samples_city', label: 'В какой город доставлять образцы', tone: 'yellow' },
-  { key: 'comment', label: 'Комментарий / Дополнительно', textarea: true, rows: 3, tone: 'yellow' },
+  { key: 'product', labelKey: 'th_product', tone: 'green' },
+  { key: 'tech_description', labelKey: 'th_tech_description', textarea: true, rows: 4, tone: 'green' },
+  { key: 'model_article', labelKey: 'th_model_article', tone: 'green' },
+  { key: 'trademark', labelKey: 'th_trademark', tone: 'green' },
+  { key: 'tn_ved', labelKey: 'th_tn_ved', tone: 'green' },
+  { key: 'contract_invoice', labelKey: 'th_contract_invoice', tone: 'green' },
+  { key: 'quantity', labelKey: 'th_quantity', tone: 'green' },
+  { key: 'tr_ts', labelKey: 'th_tr_ts', textarea: true, rows: 4, tone: 'yellow' },
+  { key: 'cert_form', labelKey: 'th_cert_form', tone: 'yellow' },
+  { key: 'cert_scheme', labelKey: 'th_cert_scheme', tone: 'yellow' },
+  { key: 'cost', labelKey: 'th_cost', tone: 'yellow' },
+  { key: 'production_deadline', labelKey: 'th_production_deadline', tone: 'yellow' },
+  { key: 'samples_required', labelKey: 'th_samples_required', tone: 'yellow' },
+  { key: 'samples_city', labelKey: 'th_samples_city', tone: 'yellow' },
+  { key: 'comment', labelKey: 'th_comment', textarea: true, rows: 3, tone: 'yellow' },
 ];
 
 const toneClass = (tone: 'green' | 'yellow') =>
@@ -102,6 +103,7 @@ function saveHiddenColumns(cols: Set<string>) {
 
 export function CertItemsPanel({ requestId, request, items, canEditHeader = false }: Props) {
   const qc = useQueryClient();
+  const { language } = useLKLanguage();
   const [requestValues, setRequestValues] = useState({
     applicant_org: request.applicant_org || '',
     applicant_address: request.applicant_address || '',
@@ -135,7 +137,7 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
   };
 
   const visibleFields = useMemo(
-    () => PRODUCT_FIELDS.filter((f) => !hiddenColumns.has(f.key as string)),
+    () => PRODUCT_FIELD_KEYS.filter((f) => !hiddenColumns.has(f.key as string)),
     [hiddenColumns]
   );
 
@@ -222,7 +224,7 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
     <div className="space-y-6">
       <Card className="p-4 space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold">Заявитель</h3>
+          <h3 className="font-semibold">{lkT('section_applicant', language)}</h3>
           {canEditHeader && (
             <Button
               size="sm"
@@ -231,13 +233,13 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
               disabled={updateRequestInfo.isPending}
             >
               <Save className="h-4 w-4 mr-1" />
-              Сохранить блок
+              {lkT('btn_save_block', language)}
             </Button>
           )}
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
-            <Label>Название организации</Label>
+            <Label>{lkT('field_org_name', language)}</Label>
             <Input
               value={requestValues.applicant_org}
               onChange={(e) => setRequestField('applicant_org', e.target.value)}
@@ -246,7 +248,7 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
             />
           </div>
           <div className="space-y-1">
-            <Label>Юридический адрес</Label>
+            <Label>{lkT('field_legal_address', language)}</Label>
             <Input
               value={requestValues.applicant_address}
               onChange={(e) => setRequestField('applicant_address', e.target.value)}
@@ -255,7 +257,7 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
             />
           </div>
           <div className="space-y-1">
-            <Label>Руководитель</Label>
+            <Label>{lkT('field_head', language)}</Label>
             <Input
               value={requestValues.applicant_head}
               onChange={(e) => setRequestField('applicant_head', e.target.value)}
@@ -264,7 +266,7 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
             />
           </div>
           <div className="space-y-1">
-            <Label>Должность</Label>
+            <Label>{lkT('field_position', language)}</Label>
             <Input
               value={requestValues.applicant_position}
               onChange={(e) => setRequestField('applicant_position', e.target.value)}
@@ -273,7 +275,7 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
             />
           </div>
           <div className="space-y-1">
-            <Label>Электронная почта</Label>
+            <Label>{lkT('field_email', language)}</Label>
             <Input
               value={requestValues.applicant_email}
               onChange={(e) => setRequestField('applicant_email', e.target.value)}
@@ -286,7 +288,7 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
 
       <Card className="p-4 space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold">Изготовитель</h3>
+          <h3 className="font-semibold">{lkT('section_manufacturer', language)}</h3>
           {canEditHeader && (
             <Button
               size="sm"
@@ -295,13 +297,13 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
               disabled={updateRequestInfo.isPending}
             >
               <Save className="h-4 w-4 mr-1" />
-              Сохранить блок
+              {lkT('btn_save_block', language)}
             </Button>
           )}
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
-            <Label>Название организации</Label>
+            <Label>{lkT('field_org_name', language)}</Label>
             <Input
               value={requestValues.manufacturer_org}
               onChange={(e) => setRequestField('manufacturer_org', e.target.value)}
@@ -310,7 +312,7 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
             />
           </div>
           <div className="space-y-1">
-            <Label>Адрес</Label>
+            <Label>{lkT('field_address', language)}</Label>
             <Input
               value={requestValues.manufacturer_address}
               onChange={(e) => setRequestField('manufacturer_address', e.target.value)}
@@ -319,7 +321,7 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
             />
           </div>
           <div className="space-y-1">
-            <Label>Страна</Label>
+            <Label>{lkT('field_country', language)}</Label>
             <Input
               value={requestValues.manufacturer_country}
               onChange={(e) => setRequestField('manufacturer_country', e.target.value)}
@@ -332,16 +334,11 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
 
       <div className="space-y-3">
         <div className="flex items-center justify-between flex-wrap gap-2">
-          <h3 className="font-semibold text-lg">Продукция</h3>
+          <h3 className="font-semibold text-lg">{lkT('section_products', language)}</h3>
           <div className="flex items-center gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={saveAllItems}
-              disabled={savingAll}
-            >
+            <Button size="sm" variant="outline" onClick={saveAllItems} disabled={savingAll}>
               {savingAll ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Save className="h-4 w-4 mr-1" />}
-              {savingAll ? 'Сохранение…' : 'Сохранить'}
+              {savingAll ? 'Сохранение…' : lkT('btn_save', language)}
             </Button>
             <Button
               size="sm"
@@ -349,31 +346,28 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
               disabled={checkedItems.length === 0 || generateDoc.isPending}
             >
               <FileText className="h-4 w-4 mr-1" />
-              {generateDoc.isPending ? 'Формирование…' : 'Сформировать заявку'}
+              {generateDoc.isPending ? 'Формирование…' : lkT('btn_generate_request', language)}
             </Button>
             <Button size="sm" variant="outline" onClick={() => addItem.mutate()} disabled={addItem.isPending}>
               <Plus className="h-4 w-4 mr-1" />
-              {addItem.isPending ? 'Добавление…' : 'Добавить товар'}
+              {addItem.isPending ? 'Добавление…' : lkT('btn_add_item', language)}
             </Button>
           </div>
         </div>
 
-        {/* Десктоп: таблица со sticky-заголовком.
-            Горизонтальный И вертикальный скролл в одном контейнере —
-            это обязательно для надёжной работы sticky (см. пояснение ниже кода). */}
         <div className="hidden md:block border rounded-md overflow-auto max-h-[70vh]">
           <table className="w-full text-sm border-collapse">
             <thead className="sticky top-0 z-10 bg-background shadow-sm">
               <tr>
-                <th className="p-2 border-b text-center w-10">✓</th>
-                <th className="p-2 border-b text-center w-10">№</th>
+                <th className="p-2 border-b text-center w-10">{lkT('th_check', language)}</th>
+                <th className="p-2 border-b text-center w-10">{lkT('th_number', language)}</th>
                 {visibleFields.map((f) => (
                   <th key={f.key as string} className="p-2 border-b text-left align-middle min-w-[180px]">
                     <div className="flex items-center justify-between gap-2">
-                      <span>{f.label}</span>
+                      <span>{lkT(f.labelKey, language)}</span>
                       <button
                         type="button"
-                        title="Скрыть столбец"
+                        title={lkT('btn_hide_column', language)}
                         onClick={() => toggleColumn(f.key as string)}
                         className="text-muted-foreground hover:text-foreground shrink-0"
                       >
@@ -382,7 +376,7 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
                     </div>
                   </th>
                 ))}
-                <th className="p-2 border-b text-center w-24">Действия</th>
+                <th className="p-2 border-b text-center w-24">{lkT('th_actions', language)}</th>
               </tr>
             </thead>
             <tbody>
@@ -405,8 +399,8 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
 
         {hiddenColumns.size > 0 && (
           <div className="hidden md:flex items-center gap-2 flex-wrap text-xs text-muted-foreground">
-            <span>Скрытые столбцы:</span>
-            {PRODUCT_FIELDS.filter((f) => hiddenColumns.has(f.key as string)).map((f) => (
+            <span>{lkT('hidden_columns_label', language)}</span>
+            {PRODUCT_FIELD_KEYS.filter((f) => hiddenColumns.has(f.key as string)).map((f) => (
               <button
                 key={f.key as string}
                 type="button"
@@ -414,13 +408,12 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
                 className="flex items-center gap-1 px-2 py-1 rounded border hover:bg-muted"
               >
                 <Eye className="h-3 w-3" />
-                {f.label}
+                {lkT(f.labelKey, language)}
               </button>
             ))}
           </div>
         )}
 
-        {/* Мобильные карточки */}
         <div className="md:hidden space-y-3">
           {items.map((item) => (
             <CertItemRow
@@ -437,9 +430,7 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
           ))}
         </div>
 
-        <p className="text-xs text-muted-foreground">
-          Для формирования общей заявки будут использованы только отмеченные чек-боксом товары.
-        </p>
+        <p className="text-xs text-muted-foreground">{lkT('footer_note_checked_items', language)}</p>
       </div>
     </div>
   );
@@ -451,7 +442,7 @@ interface RowProps {
   variant: 'row' | 'card';
   canDelete: boolean;
   onInvalidate: () => void;
-  visibleFields: typeof PRODUCT_FIELDS;
+  visibleFields: typeof PRODUCT_FIELD_KEYS;
   registerSaveAll: (itemId: number, fn: () => Promise<void>) => void;
   unregisterSaveAll: (itemId: number) => void;
 }
@@ -466,6 +457,7 @@ function CertItemRow({
   registerSaveAll,
   unregisterSaveAll,
 }: RowProps) {
+  const { language } = useLKLanguage();
   const [values, setValues] = useState(item);
   const [filesOpen, setFilesOpen] = useState(false);
 
@@ -522,20 +514,18 @@ function CertItemRow({
   const deleteBtn = canDelete ? (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button size="icon" variant="ghost" title="Удалить позицию">
+        <Button size="icon" variant="ghost" title={lkT('btn_delete', language)}>
           <Trash2 className="h-4 w-4 text-destructive" />
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Удалить позицию №{item.position_no}?</AlertDialogTitle>
-          <AlertDialogDescription>
-            Данные позиции и её вложения будут удалены безвозвратно.
-          </AlertDialogDescription>
+          <AlertDialogTitle>{lkT('dialog_delete_position_title', language)}{item.position_no}?</AlertDialogTitle>
+          <AlertDialogDescription>{lkT('dialog_delete_position_desc', language)}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Отмена</AlertDialogCancel>
-          <AlertDialogAction onClick={() => remove.mutate()}>Удалить</AlertDialogAction>
+          <AlertDialogCancel>{lkT('btn_cancel', language)}</AlertDialogCancel>
+          <AlertDialogAction onClick={() => remove.mutate()}>{lkT('btn_delete', language)}</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
@@ -586,7 +576,7 @@ function CertItemRow({
               <Button
                 size="icon"
                 variant="ghost"
-                title="Сформировать заявку по этой позиции"
+                title={lkT('btn_generate_single', language)}
                 onClick={() => generateSingleDoc.mutate()}
                 disabled={generateSingleDoc.isPending}
               >
@@ -610,7 +600,8 @@ function CertItemRow({
             >
               {filesOpen ? <ChevronDown className="h-4 w-4 mr-1" /> : <ChevronRight className="h-4 w-4 mr-1" />}
               <Paperclip className="h-4 w-4 mr-1" />
-              {filesOpen ? 'Скрыть вложения' : 'Показать вложения'} к позиции №{item.position_no}
+              {filesOpen ? lkT('btn_hide_attachments', language) : lkT('btn_show_attachments', language)}{' '}
+              {lkT('label_attachments_for_position', language)}{item.position_no}
             </Button>
             {filesOpen && (
               <div className="mt-2">
@@ -635,14 +626,14 @@ function CertItemRow({
               update.mutate({ is_checked: next });
             }}
           />
-          <span className="font-medium">Позиция №{item.position_no}</span>
+          <span className="font-medium">{lkT('position_label', language)}{item.position_no}</span>
           {busy && <Loader2 className="h-4 w-4 animate-spin" />}
         </div>
         <div className="flex items-center gap-1">
           <Button
             size="icon"
             variant="ghost"
-            title="Сформировать заявку по этой позиции"
+            title={lkT('btn_generate_single', language)}
             onClick={() => generateSingleDoc.mutate()}
             disabled={generateSingleDoc.isPending}
           >
@@ -658,7 +649,7 @@ function CertItemRow({
 
       {visibleFields.map((f) => (
         <div key={f.key as string} className="space-y-1">
-          <Label className="text-xs text-muted-foreground">{f.label}</Label>
+          <Label className="text-xs text-muted-foreground">{lkT(f.labelKey, language)}</Label>
           {f.textarea ? (
             <Textarea
               rows={f.rows || 3}
@@ -686,7 +677,7 @@ function CertItemRow({
       >
         {filesOpen ? <ChevronDown className="h-4 w-4 mr-1" /> : <ChevronRight className="h-4 w-4 mr-1" />}
         <Paperclip className="h-4 w-4 mr-1" />
-        Вложения к позиции №{item.position_no}
+        {lkT('label_attachments_for_position', language)}{item.position_no}
       </Button>
       {filesOpen && (
         <div className="mt-2">

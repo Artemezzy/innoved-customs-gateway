@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { FileText, Link as LinkIcon, Download, Upload, Plus, Loader2, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
+import { useLKLanguage } from '@/contexts/LKLanguageContext';
+import { lkT } from '@/lib/lkTranslations';
 import { CertFile } from '@/types/lk';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +17,7 @@ interface Props {
 
 export function CertFilesPanel({ requestId, itemId }: Props) {
   const qc = useQueryClient();
+  const { language } = useLKLanguage();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [url, setUrl] = useState('');
 
@@ -77,126 +80,99 @@ export function CertFilesPanel({ requestId, itemId }: Props) {
     }
   };
 
-
   const files = filesQ.data ?? [];
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        {filesQ.isLoading && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" /> Загрузка вложений…
-          </div>
-        )}
-        {!filesQ.isLoading && files.length === 0 && (
-          <div className="text-sm text-muted-foreground">Вложений пока нет</div>
-        )}
-        {files.map((f) => {
-          const isExternalLink =
-            f.file_type === 'link' &&
-            !!f.url &&
-            /^https?:\/\//i.test(f.url);
-          const displayName =
-            f.file_type === 'file'
-              ? f.filename || `Файл №${f.id}`
-              : isExternalLink
-                ? f.url!
-                : f.filename || f.url || `Вложение №${f.id}`;
+    <div className="space-y-3">
+      {filesQ.isLoading && (
+        <p className="text-sm text-muted-foreground">{lkT('label_loading', language)}</p>
+      )}
+      {!filesQ.isLoading && files.length === 0 && (
+        <p className="text-sm text-muted-foreground">{lkT('empty_no_attachments', language)}</p>
+      )}
+      {files.map((f) => {
+        const isExternalLink =
+          f.file_type === 'link' &&
+          !!f.url &&
+          /^https?:\/\//i.test(f.url);
+        const displayName =
+          f.file_type === 'file'
+            ? f.filename || `Файл №${f.id}`
+            : isExternalLink
+              ? f.url!
+              : f.filename || f.url || `Вложение №${f.id}`;
 
-          return (
-            <div
-              key={f.id}
-              className="flex items-center gap-3 rounded-md border p-2 bg-background"
+        return (
+          <div key={f.id} className="flex items-center gap-2 rounded-md border p-2 text-sm">
+            {isExternalLink ? <LinkIcon className="h-4 w-4 shrink-0" /> : <FileText className="h-4 w-4 shrink-0" />}
+            {isExternalLink ? (
+              <a href={f.url} target="_blank" rel="noopener noreferrer" className="flex-1 truncate underline">
+                {displayName}
+              </a>
+            ) : (
+              <span className="flex-1 truncate">{displayName}</span>
+            )}
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={(e) => download(e, f)}
+              title={lkT('btn_download', language)}
+              aria-label={lkT('btn_download', language)}
             >
-              {isExternalLink ? (
-                <LinkIcon className="h-4 w-4 text-primary shrink-0" />
-              ) : (
-                <FileText className="h-4 w-4 text-primary shrink-0" />
-              )}
-              <div className="flex-1 min-w-0">
-                {isExternalLink ? (
-                  <a
-                    href={f.url!}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="truncate text-sm text-primary hover:underline block"
-                  >
-                    {displayName}
-                  </a>
-                ) : (
-                  <div className="truncate text-sm font-medium">{displayName}</div>
-                )}
-              </div>
-              <Button
-                size="sm"
-                variant="default"
-                onClick={(e) => download(e, f)}
-                title="Скачать"
-                aria-label="Скачать файл"
-              >
-                <Download className="h-4 w-4 mr-1.5" />
-                Скачать
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={(e) => handleDelete(e, f)}
-                disabled={deleteFile.isPending}
-                title="Удалить вложение"
-                aria-label="Удалить вложение"
-                className="text-destructive hover:text-destructive hover:bg-destructive/10"
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
-          );
-        })}
+              <Download className="h-4 w-4" />
+            </Button>
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={(e) => handleDelete(e, f)}
+              disabled={deleteFile.isPending}
+              title={lkT('btn_delete', language)}
+              aria-label={lkT('btn_delete', language)}
+              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        );
+      })}
+
+      <div className="flex items-center gap-2">
+        <Label className="sr-only">{lkT('btn_choose_file', language)}</Label>
+        <input
+          ref={fileInputRef}
+          type="file"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) uploadFile.mutate(f);
+            e.target.value = '';
+          }}
+        />
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploadFile.isPending}
+        >
+          {uploadFile.isPending ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Upload className="h-4 w-4 mr-1" />}
+          {uploadFile.isPending ? lkT('label_uploading', language) : lkT('btn_choose_file', language)}
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2 border-t">
-        <div>
-          <Label>Загрузить файл</Label>
-          <div className="flex gap-2 mt-1">
-            <input
-              ref={fileInputRef}
-              type="file"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) uploadFile.mutate(f);
-                e.target.value = '';
-              }}
-            />
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploadFile.isPending}
-            >
-              <Upload className="h-4 w-4 mr-1.5" />
-              {uploadFile.isPending ? 'Загрузка…' : 'Выбрать файл'}
-            </Button>
-          </div>
-        </div>
-        <div>
-          <Label htmlFor={`cert-url-${itemId}`}>Добавить ссылку</Label>
-          <div className="flex gap-2 mt-1">
-            <Input
-              id={`cert-url-${itemId}`}
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://…"
-            />
-            <Button
-              type="button"
-              onClick={() => url.trim() && addUrl.mutate(url.trim())}
-              disabled={!url.trim() || addUrl.isPending}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+      <div className="flex items-center gap-2">
+        <Input
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder={lkT('placeholder_url', language)}
+        />
+        <Button
+          size="sm"
+          onClick={() => url.trim() && addUrl.mutate(url.trim())}
+          disabled={!url.trim() || addUrl.isPending}
+        >
+          <Plus className="h-4 w-4 mr-1" />
+          {lkT('btn_add_link', language)}
+        </Button>
       </div>
     </div>
   );
