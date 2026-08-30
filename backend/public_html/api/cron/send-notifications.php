@@ -123,7 +123,7 @@ foreach ($queueItems as $item) {
 function send_via_resend(string $to, string $subject, string $html): bool
 {
     $payload = json_encode([
-        'from' => 'INNOVED LK <notifications@innovedbroker.ru>',
+        'from' => 'INNOVED LK <noreply@updates.innovedbroker.ru>',
         'to' => [$to],
         'subject' => $subject,
         'html' => $html,
