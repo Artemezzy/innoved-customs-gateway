@@ -74,7 +74,7 @@ export function ShipmentFilesPanel({ shipmentId, itemId }: Props) {
     e.preventDefault();
     e.stopPropagation();
     try {
-      await lkApi.downloadShipmentItemFile(shipmentId, itemId, f.id, f.filename);
+      await lkApi.downloadShipmentItemFile(shipmentId, itemId, f.id, f.filename_original || f.filename);
     } catch (err: any) {
       toast.error(err?.message || 'Не удалось скачать');
     }
@@ -94,10 +94,10 @@ export function ShipmentFilesPanel({ shipmentId, itemId }: Props) {
         const isExternalLink = f.file_type === 'link' && !!f.url && /^https?:\/\//i.test(f.url);
         const displayName =
           f.file_type === 'file'
-            ? f.filename || `Файл №${f.id}`
+            ? f.filename_original || f.filename || `Файл №${f.id}`
             : isExternalLink
               ? f.url!
-              : f.filename || f.url || `Вложение №${f.id}`;
+              : f.filename_original || f.filename || f.url || `Вложение №${f.id}`;
 
         return (
           <div key={f.id} className="flex items-center gap-2 rounded-md border p-2 text-sm">
