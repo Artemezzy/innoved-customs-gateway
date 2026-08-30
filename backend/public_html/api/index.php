@@ -217,115 +217,103 @@ function doc_table_xml(string $title, array $rows): string {
     $xml .= '</w:tbl>';
     return $xml;
 }
-function generate_cert_doc(array $request, array $items): string {
-    $date = date('d/m/y');
-    $title = 'Заявка на сертификацию продукции № ' . document_number_label($request['document_number'] ?? null) . ' от ' . $date;
-    $body = '';
-    $body .= '<w:p><w:r><w:rPr><w:b/><w:sz w:val="28"/></w:rPr><w:t>' . doc_escape($title) . '</w:t></w:r></w:p>';
-    $body .= '<w:p><w:r><w:t>Заполняется клиентом:</w:t></w:r></w:p>';
-    $body .= doc_table_xml('Заявитель', [
-        ['Название организации', (string)$request['applicant_org']],
-        ['Юридический адрес', (string)$request['applicant_address']],
-        ['Телефон', ''],
-        ['Факс', ''],
-        ['ИНН', ''],
-        ['КПП', ''],
-        ['ОГРН и кем выдан', ''],
-        ['ОКПО', ''],
-        ['Руководитель', trim((string)$request['applicant_position'] . ' ' . (string)$request['applicant_head'])],
-        ['Электронная почта', (string)$request['applicant_email']],
-    ]);
-    $body .= '<w:p/>';
-    $body .= doc_table_xml('Изготовитель', [
-        ['Название организации', (string)$request['manufacturer_org']],
-        ['Адрес', (string)$request['manufacturer_address']],
-        ['Страна', (string)$request['manufacturer_country']],
-        ['Телефон', ''],
-        ['Факс', ''],
-        ['Филиалы завода', ''],
-        ['Дополнительно', ''],
-    ]);
-    foreach ($items as $idx => $item) {
-        $body .= '<w:p/>';
-        $body .= doc_table_xml('Продукция' . (count($items) > 1 ? ' — товар ' . ($idx + 1) : ''), [
-            ['Наименование продукции', (string)$item['product']],
-            ['Техническое описание', (string)$item['tech_description']],
-            ['Модель, артикул', (string)$item['model_article']],
-            ['Торговая марка', (string)$item['trademark']],
-            ['ОКП', ''],
-            ['ТН ВЭД', (string)$item['tn_ved']],
-            ['Контракт, договор, инвойс', (string)$item['contract_invoice']],
-            ['Количество', (string)$item['quantity']],
-            ['Дополнительно: ТУ, ГОСТ', (string)$item['comment']],
-            ['ТР ТС', (string)$item['tr_ts']],
-            ['Форма сертификации', (string)$item['cert_form']],
-            ['Схема сертификации', (string)$item['cert_scheme']],
-            ['Стоимость', (string)$item['cost']],
-            ['Срок изготовления', (string)$item['production_deadline']],
-            ['Необходимость образцов', (string)$item['samples_required']],
-            ['В какой город доставлять образцы', (string)$item['samples_city']],
-        ]);
+
+/**
+ * Создаёт один DOCX по Word-шаблону для одной товарной позиции.
+ *
+ * Шаблон:
+ *   backend/public_html/api/templates/cert-request-template.docx
+ *
+ * Важно: DOCX — ZIP-архив. Мы копируем его целиком и заменяем
+ * маркеры только в word/document.xml, поэтому форматирование,
+ * таблицы, колонтитулы, стили и изображения шаблона сохраняются.
+ */
+function generate_cert_doc(array $request, array $item): string {
+    $templatePath = __DIR__ . '/templates/cert-request-template.docx';
+
+    if (!is_file($templatePath) || !is_readable($templatePath)) {
+        err('Не найден или недоступен шаблон заявки: ' . $templatePath, 500);
     }
-    $body .= '<w:p/>';
-    $body .= '<w:p><w:r><w:t>* - заполняются обязательно</w:t></w:r></w:p>';
-    $body .= '<w:p><w:r><w:t>ВНИМАНИЕ: Точно указывайте в заявке серийный выпуск на срок (1-3 года для ГОСТ Р и 1-5 лет для ТР), или партию с точным количеством продукции!</w:t></w:r></w:p>';
 
-    $documentXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-        . '<w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" '
-        . 'xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" '
-        . 'xmlns:o="urn:schemas-microsoft-com:office:office" '
-        . 'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" '
-        . 'xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" '
-        . 'xmlns:v="urn:schemas-microsoft-com:vml" '
-        . 'xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" '
-        . 'xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" '
-        . 'xmlns:w10="urn:schemas-microsoft-com:office:word" '
-        . 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" '
-        . 'xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" '
-        . 'xmlns:w15="http://schemas.microsoft.com/office/word/2012/wordml" '
-        . 'xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" '
-        . 'xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" '
-        . 'xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" '
-        . 'xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" '
-        . 'mc:Ignorable="w14 w15 wp14">'
-        . '<w:body>' . $body
-        . '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr>'
-        . '</w:body></w:document>';
+    $number = document_number_label(
+        isset($request['document_number']) ? (int)$request['document_number'] : null
+    );
 
-    $contentTypes = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-        . '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
-        . '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
-        . '<Default Extension="xml" ContentType="application/xml"/>'
-        . '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'
-        . '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>'
-        . '<Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>'
-        . '</Types>';
-    $rels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-        . '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-        . '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>'
-        . '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>'
-        . '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>'
-        . '</Relationships>';
-    $docRels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"></Relationships>';
-    $core = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-        . '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
-        . '<dc:title>' . doc_escape($title) . '</dc:title><dc:creator>INNOVED LK</dc:creator></cp:coreProperties>';
-    $app = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-        . '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"><Application>INNOVED LK</Application></Properties>';
+    $variables = [
+        '{{request_number}}' => $number,
+        '{{request_date}}' => date('d.m.Y'),
 
-    $tmp = tempnam(sys_get_temp_dir(), 'cert_doc_');
-    $zipPath = $tmp . '.docx';
-    @unlink($tmp);
+        '{{applicant_org}}' => (string)($request['applicant_org'] ?? ''),
+        '{{applicant_address}}' => (string)($request['applicant_address'] ?? ''),
+        '{{applicant_position}}' => (string)($request['applicant_position'] ?? ''),
+        '{{applicant_head}}' => (string)($request['applicant_head'] ?? ''),
+        '{{applicant_email}}' => (string)($request['applicant_email'] ?? ''),
+
+        '{{manufacturer_org}}' => (string)($request['manufacturer_org'] ?? ''),
+        '{{manufacturer_address}}' => (string)($request['manufacturer_address'] ?? ''),
+        '{{manufacturer_country}}' => (string)($request['manufacturer_country'] ?? ''),
+
+        '{{product}}' => (string)($item['product'] ?? ''),
+        '{{model_article}}' => (string)($item['model_article'] ?? ''),
+        '{{trademark}}' => (string)($item['trademark'] ?? ''),
+        '{{tn_ved}}' => (string)($item['tn_ved'] ?? ''),
+        '{{contract_invoice}}' => (string)($item['contract_invoice'] ?? ''),
+        '{{quantity}}' => (string)($item['quantity'] ?? ''),
+    ];
+
+    $tmpBase = tempnam(sys_get_temp_dir(), 'cert_template_');
+    if ($tmpBase === false) {
+        err('Не удалось создать временный файл', 500);
+    }
+
+    $outputPath = $tmpBase . '.docx';
+    @unlink($tmpBase);
+
+    if (!copy($templatePath, $outputPath)) {
+        err('Не удалось скопировать шаблон заявки', 500);
+    }
+
     $zip = new ZipArchive();
-    if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) err('Не удалось создать файл заявки', 500);
-    $zip->addFromString('[Content_Types].xml', $contentTypes);
-    $zip->addFromString('_rels/.rels', $rels);
-    $zip->addFromString('word/document.xml', $documentXml);
-    $zip->addFromString('word/_rels/document.xml.rels', $docRels);
-    $zip->addFromString('docProps/core.xml', $core);
-    $zip->addFromString('docProps/app.xml', $app);
+    if ($zip->open($outputPath) !== true) {
+        @unlink($outputPath);
+        err('Не удалось открыть DOCX-шаблон', 500);
+    }
+
+    $xml = $zip->getFromName('word/document.xml');
+    if ($xml === false) {
+        $zip->close();
+        @unlink($outputPath);
+        err('В шаблоне отсутствует word/document.xml', 500);
+    }
+
+    /*
+     * Экранируем значения именно как XML-текст:
+     * амперсанды, угловые скобки и кавычки не должны ломать DOCX.
+     *
+     * МАРКЕРЫ в Word должны быть цельными строками, например:
+     * {{applicant_org}}
+     * Нельзя разбивать один маркер разными стилями/форматированием.
+     */
+    $replace = [];
+    foreach ($variables as $marker => $value) {
+        $replace[$marker] = htmlspecialchars(
+            trim($value),
+            ENT_QUOTES | ENT_XML1,
+            'UTF-8'
+        );
+    }
+
+    $xml = strtr($xml, $replace);
+
+    if ($zip->addFromString('word/document.xml', $xml) === false) {
+        $zip->close();
+        @unlink($outputPath);
+        err('Не удалось заполнить шаблон заявки', 500);
+    }
+
     $zip->close();
-    return $zipPath;
+
+    return $outputPath;
 }
 
 // POST /api/auth/login
@@ -558,18 +546,126 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[
     fclose($out); exit;
 }
 
-if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'generate-doc') {
-    $me = auth(); $rid = (int)$seg[1]; $request = cert_request_guard($me, $rid);
-    $itemIds = array_filter(array_map('intval', explode(',', (string)($_GET['item_ids'] ?? ''))));
-    if (!$itemIds) err('Не выбраны товары для формирования заявки', 422);
+// GET /api/cert-requests/:id/generate-doc?item_ids=1,2,3
+//
+// Одна отмеченная позиция  → один DOCX.
+// Несколько позиций        → ZIP с отдельным DOCX на каждую позицию.
+if (
+    $method === 'GET'
+    && $seg[0] === 'cert-requests'
+    && isset($seg[1])
+    && ($seg[2] ?? '') === 'generate-doc'
+) {
+    $me = auth();
+    $rid = (int)$seg[1];
+    $request = cert_request_guard($me, $rid);
+
+    $itemIds = array_values(array_unique(array_filter(
+        array_map(
+            'intval',
+            explode(',', (string)($_GET['item_ids'] ?? ''))
+        )
+    )));
+
+    if (!$itemIds) {
+        err('Не выбраны товары для формирования заявки', 422);
+    }
+
     $placeholders = implode(',', array_fill(0, count($itemIds), '?'));
     $params = array_merge([$rid], $itemIds);
-    $sql = "SELECT * FROM lk_cert_request_items WHERE request_id=? AND id IN ($placeholders) ORDER BY position_no ASC, id ASC";
-    $st = db()->prepare($sql); $st->execute($params); $items = $st->fetchAll();
-    if (!$items) err('Не найдены выбранные товары', 404);
-    $docxPath = generate_cert_doc($request, $items);
-    $downloadName = 'Zayavka-' . document_number_label($request['document_number'] ?? null) . '.docx';
-    send_file_download($docxPath, $downloadName, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+
+    $st = db()->prepare(
+        "SELECT *
+         FROM lk_cert_request_items
+         WHERE request_id=? AND id IN ($placeholders)
+         ORDER BY position_no ASC, id ASC"
+    );
+    $st->execute($params);
+    $items = $st->fetchAll();
+
+    if (count($items) !== count($itemIds)) {
+        err('Не найдены одна или несколько выбранных товарных позиций', 404);
+    }
+
+    $requestNumber = document_number_label(
+        isset($request['document_number']) ? (int)$request['document_number'] : null
+    );
+
+    // Одна позиция: сразу скачиваем один DOCX.
+    if (count($items) === 1) {
+        $item = $items[0];
+        $docxPath = generate_cert_doc($request, $item);
+
+        $filename = 'Заявка-' . $requestNumber
+            . '-позиция-' . (int)$item['position_no']
+            . '.docx';
+
+        send_file_download(
+            $docxPath,
+            $filename,
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        );
+    }
+
+    // Несколько позиций: создаём ZIP, один DOCX на каждую позицию.
+    $tmpBase = tempnam(sys_get_temp_dir(), 'cert_requests_zip_');
+    if ($tmpBase === false) {
+        err('Не удалось создать временный архив', 500);
+    }
+
+    $zipPath = $tmpBase . '.zip';
+    @unlink($tmpBase);
+
+    $zip = new ZipArchive();
+    if ($zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
+        @unlink($zipPath);
+        err('Не удалось создать ZIP-архив', 500);
+    }
+
+    $generatedPaths = [];
+
+    try {
+        foreach ($items as $item) {
+            $docxPath = generate_cert_doc($request, $item);
+            $generatedPaths[] = $docxPath;
+
+            $filenameInZip = 'Заявка-' . $requestNumber
+                . '-позиция-' . (int)$item['position_no']
+                . '.docx';
+
+            if (!$zip->addFile($docxPath, $filenameInZip)) {
+                throw new RuntimeException('Не удалось добавить документ в ZIP');
+            }
+        }
+
+        $zip->close();
+    } catch (Throwable $e) {
+        $zip->close();
+
+        foreach ($generatedPaths as $path) {
+            if (is_file($path)) {
+                @unlink($path);
+            }
+        }
+
+        if (is_file($zipPath)) {
+            @unlink($zipPath);
+        }
+
+        err('Не удалось сформировать документы: ' . $e->getMessage(), 500);
+    }
+
+    foreach ($generatedPaths as $path) {
+        if (is_file($path)) {
+            @unlink($path);
+        }
+    }
+
+    send_file_download(
+        $zipPath,
+        'Заявка-' . $requestNumber . '-позиции.zip',
+        'application/zip'
+    );
 }
 
 if ($method === 'POST' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[2] ?? '') === 'items' && !isset($seg[3])) {
