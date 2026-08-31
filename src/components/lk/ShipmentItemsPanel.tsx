@@ -216,17 +216,19 @@ const unregisterSaveAll = useCallback((itemId: number) => {
 
 
   const saveAllItems = async () => {
-    const fns = Object.values(saveAllFns.current);
+    const entries = Object.entries(saveAllFns.current);
 
-    if (fns.length === 0) {
-      toast.info('Нет изменений для сохранения');
+    if (entries.length === 0) {
+      toast.error(
+        'Не удалось получить изменённые позиции для сохранения. Обновите страницу и повторите попытку.'
+      );
       return;
     }
 
     setSavingAll(true);
 
     try {
-      await Promise.all(fns.map((fn) => fn()));
+      await Promise.all(entries.map(([, save]) => save()));
       toast.success('Изменения сохранены');
     } catch (e: any) {
       toast.error(e?.message || 'Не удалось сохранить изменения');
