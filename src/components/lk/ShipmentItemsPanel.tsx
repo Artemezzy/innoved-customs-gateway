@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   ChevronDown,
@@ -117,13 +117,18 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
   const [generateModalOpen, setGenerateModalOpen] = useState(false);
 
 
-  const saveAllFns = useRef<Record<number, () => Promise<void>>>({});
-  const registerSaveAll = (itemId: number, fn: () => Promise<void>) => {
+const saveAllFns = useRef<Record<number, () => Promise<void>>>({});
+
+const registerSaveAll = useCallback(
+  (itemId: number, fn: () => Promise<void>) => {
     saveAllFns.current[itemId] = fn;
-  };
-  const unregisterSaveAll = (itemId: number) => {
-    delete saveAllFns.current[itemId];
-  };
+  },
+  []
+);
+
+const unregisterSaveAll = useCallback((itemId: number) => {
+  delete saveAllFns.current[itemId];
+}, []);
 
 
   const toggleColumn = (key: string) => {
@@ -157,12 +162,11 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
   }, [shipment]);
 
 
-  const invalidate = () => {
+  const invalidate = useCallback(() => {
     qc.invalidateQueries({ queryKey: ['lk', 'shipment', shipmentId] });
     qc.invalidateQueries({ queryKey: ['lk', 'shipment-items', shipmentId] });
     qc.invalidateQueries({ queryKey: ['lk', 'shipments'] });
-  };
-
+  }, [qc, shipmentId]);
 
   const updateInfo = useMutation({
     mutationFn: (data: Partial<Shipment>) => lkApi.updateShipmentInfo(shipmentId, data),
@@ -212,10 +216,20 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
 
 
   const saveAllItems = async () => {
+    const fns = Object.values(saveAllFns.current);
+
+    if (fns.length === 0) {
+      toast.info('Нет изменений для сохранения');
+      return;
+    }
+
     setSavingAll(true);
+
     try {
-      const fns = Object.values(saveAllFns.current);
       await Promise.all(fns.map((fn) => fn()));
+      toast.success('Изменения сохранены');
+    } catch (e: any) {
+      toast.error(e?.message || 'Не удалось сохранить изменения');
     } finally {
       setSavingAll(false);
     }
