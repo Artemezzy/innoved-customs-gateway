@@ -135,41 +135,70 @@ export function ShipmentFilesPanel({ shipmentId, itemId }: Props) {
         );
       })}
 
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <Label className="sr-only">{lkT('btn_choose_file', language)}</Label>
+
         <input
           ref={fileInputRef}
           type="file"
           className="hidden"
           onChange={(e) => {
-            const f = e.target.files?.[0];
-            if (f) uploadFile.mutate(f);
+            const file = e.target.files?.[0];
+
+            if (file) {
+              uploadFile.mutate(file);
+            }
+
             e.target.value = '';
           }}
         />
+
         <Button
+          type="button"
           size="sm"
           variant="outline"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploadFile.isPending}
         >
-          {uploadFile.isPending ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Upload className="h-4 w-4 mr-1" />}
-          {uploadFile.isPending ? lkT('label_uploading', language) : lkT('btn_choose_file', language)}
-        </Button>
-      </div>
+          {uploadFile.isPending ? (
+            <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+          ) : (
+            <Upload className="mr-1 h-4 w-4" />
+          )}
 
-      <div className="flex items-center gap-2">
+          {uploadFile.isPending
+            ? lkT('label_uploading', language)
+            : lkT('btn_choose_file', language)}
+        </Button>
+
         <Input
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder={lkT('placeholder_url', language)}
+          className="w-full sm:w-[280px]"
         />
+
         <Button
+          type="button"
           size="sm"
-          onClick={() => url.trim() && addUrl.mutate(url.trim())}
+          variant="outline"
+          onClick={() => {
+            const value = url.trim();
+
+            if (!value) {
+              return;
+            }
+
+            addUrl.mutate(value);
+          }}
           disabled={!url.trim() || addUrl.isPending}
         >
-          <Plus className="h-4 w-4 mr-1" />
+          {addUrl.isPending ? (
+            <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+          ) : (
+            <Plus className="mr-1 h-4 w-4" />
+          )}
+
           {lkT('btn_add_link', language)}
         </Button>
       </div>
