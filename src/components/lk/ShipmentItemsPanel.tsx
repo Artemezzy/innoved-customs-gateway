@@ -248,8 +248,19 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
       toast.success(lkT('toast_organization_created', language));
 
       qc.invalidateQueries({
-        queryKey: ['lk', 'organization-profiles', created.client_id, created.profile_type],
+        queryKey: [
+          'lk',
+          'organization-profiles',
+          created.client_id,
+          created.profile_type,
+        ],
       });
+
+      if (created.profile_type === 'applicant') {
+        setApplicantProfileId(String(created.id));
+      } else {
+        setManufacturerProfileId(String(created.id));
+      }
 
       setPendingProfile(null);
     },
@@ -275,8 +286,19 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
       toast.success(lkT('toast_organization_updated', language));
 
       qc.invalidateQueries({
-        queryKey: ['lk', 'organization-profiles', updated.client_id, updated.profile_type],
+        queryKey: [
+          'lk',
+          'organization-profiles',
+          updated.client_id,
+          updated.profile_type,
+        ],
       });
+
+      if (updated.profile_type === 'applicant') {
+        setApplicantProfileId(String(updated.id));
+      } else {
+        setManufacturerProfileId(String(updated.id));
+      }
 
       setPendingProfile(null);
     },
@@ -297,14 +319,6 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
   const setRequestField = (key: keyof typeof requestValues, value: string) => {
     setRequestValues((prev) => ({ ...prev, [key]: value }));
   };
-
-
-  const saveRequestField = (key: keyof typeof requestValues) => {
-    if (requestValues[key] !== ((shipment as any)[key] || '')) {
-      updateInfo.mutate({ [key]: requestValues[key] } as Partial<Shipment>);
-    }
-  };
-
 
   const saveRequestBlock = (keys: (keyof typeof requestValues)[]) => {
     const diff: Partial<Shipment> = {};
@@ -521,7 +535,6 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
             <Input
               value={requestValues.applicant_org}
               onChange={(e) => setRequestField('applicant_org', e.target.value)}
-              onBlur={() => saveRequestField('applicant_org')}
             />
           </div>
 
@@ -530,7 +543,6 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
             <Input
               value={requestValues.applicant_address}
               onChange={(e) => setRequestField('applicant_address', e.target.value)}
-              onBlur={() => saveRequestField('applicant_address')}
             />
           </div>
 
@@ -539,7 +551,6 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
             <Input
               value={requestValues.applicant_head}
               onChange={(e) => setRequestField('applicant_head', e.target.value)}
-              onBlur={() => saveRequestField('applicant_head')}
             />
           </div>
 
@@ -548,7 +559,6 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
             <Input
               value={requestValues.applicant_position}
               onChange={(e) => setRequestField('applicant_position', e.target.value)}
-              onBlur={() => saveRequestField('applicant_position')}
             />
           </div>
 
@@ -557,7 +567,6 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
             <Input
               value={requestValues.applicant_email}
               onChange={(e) => setRequestField('applicant_email', e.target.value)}
-              onBlur={() => saveRequestField('applicant_email')}
             />
           </div>
         </div>
@@ -631,7 +640,6 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
             <Input
               value={requestValues.manufacturer_org}
               onChange={(e) => setRequestField('manufacturer_org', e.target.value)}
-              onBlur={() => saveRequestField('manufacturer_org')}
             />
           </div>
 
@@ -642,7 +650,6 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
               onChange={(e) =>
                 setRequestField('manufacturer_address', e.target.value)
               }
-              onBlur={() => saveRequestField('manufacturer_address')}
             />
           </div>
 
@@ -653,7 +660,6 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
               onChange={(e) =>
                 setRequestField('manufacturer_country', e.target.value)
               }
-              onBlur={() => saveRequestField('manufacturer_country')}
             />
           </div>
         </div>
@@ -825,10 +831,9 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
               {lkT('btn_create_duplicate', language)}
             </Button>
 
-            <AlertDialogAction
-              onClick={(event) => {
-                event.preventDefault();
-
+            <Button
+              type="button"
+              onClick={() => {
                 if (!pendingProfile) return;
 
                 updateProfile.mutate({
@@ -839,7 +844,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
               disabled={createProfile.isPending || updateProfile.isPending}
             >
               {lkT('btn_update_existing', language)}
-            </AlertDialogAction>
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
