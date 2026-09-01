@@ -50,7 +50,7 @@ export const lkDict = {
   // Языковой переключатель
   language_switcher: { ru: 'Язык', en: 'Language', zh: '语言' },
 
-    // === LKShipmentsPage ===
+  // === LKShipmentsPage ===
   page_shipments_title: { ru: 'Поставки', en: 'Shipments', zh: '货运' },
   page_my_shipments_title: { ru: 'Мои поставки', en: 'My shipments', zh: '我的货运' },
   btn_new_shipment: { ru: 'Новая поставка', en: 'New shipment', zh: '新建货运' },
@@ -226,6 +226,62 @@ export const lkDict = {
   toast_client_archived: { ru: 'Клиент перемещён в архив', en: 'Client moved to archive', zh: '客户已移至存档' },
   toast_client_restored: { ru: 'Клиент восстановлен', en: 'Client restored', zh: '客户已恢复' },
 
+  // Справочник организаций
+  label_saved_organization: {
+    ru: 'Сохранённая организация',
+    en: 'Saved organization',
+    zh: '已保存的组织',
+  },
+  placeholder_select_organization: {
+    ru: 'Выберите сохранённую организацию',
+    en: 'Select a saved organization',
+    zh: '选择已保存的组织',
+  },
+  empty_no_saved_organizations: {
+    ru: 'Сохранённых организаций пока нет',
+    en: 'No saved organizations yet',
+    zh: '暂无已保存的组织',
+  },
+  btn_save_as_organization: {
+    ru: 'Сохранить как организацию',
+    en: 'Save as organization',
+    zh: '保存为组织',
+  },
+  dialog_organization_exists_title: {
+    ru: 'Организация уже существует',
+    en: 'Organization already exists',
+    zh: '组织已存在',
+  },
+  dialog_organization_exists_desc: {
+    ru: 'Организация с таким названием уже есть в справочнике этого клиента. Выберите действие.',
+    en: 'An organization with this name already exists in this client’s directory. Choose an action.',
+    zh: '该客户的目录中已存在同名组织。请选择操作。',
+  },
+  btn_create_duplicate: {
+    ru: 'Создать дубликат',
+    en: 'Create duplicate',
+    zh: '创建副本',
+  },
+  btn_update_existing: {
+    ru: 'Обновить существующую',
+    en: 'Update existing',
+    zh: '更新现有组织',
+  },
+  toast_organization_created: {
+    ru: 'Организация сохранена',
+    en: 'Organization saved',
+    zh: '组织已保存',
+  },
+  toast_organization_updated: {
+    ru: 'Организация обновлена',
+    en: 'Organization updated',
+    zh: '组织已更新',
+  },
+  toast_select_organization: {
+    ru: 'Выберите организацию',
+    en: 'Select an organization',
+    zh: '请选择组织',
+  },
 
 } as const;
 

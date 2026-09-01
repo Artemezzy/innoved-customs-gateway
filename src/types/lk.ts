@@ -1,5 +1,27 @@
 export type Role = 'manager' | 'client' | 'cert_center';
 
+export type OrganizationProfileType = 'applicant' | 'manufacturer';
+
+export interface OrganizationProfile {
+  id: number;
+  client_id: number;
+  profile_type: OrganizationProfileType;
+  name: string;
+  address: string;
+  head: string;
+  position: string;
+  email: string;
+  country: string;
+  created_by_user_id: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface OrganizationProfileCheck {
+  exists: boolean;
+  profile: OrganizationProfile | null;
+}
+
 export interface LKUser {
   id: number;
   name: string;

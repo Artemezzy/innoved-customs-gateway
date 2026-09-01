@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import {
   ChevronDown,
   ChevronRight,
@@ -16,7 +16,12 @@ import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
 import { useLKLanguage } from '@/contexts/LKLanguageContext';
 import { lkT, LKDictKey } from '@/lib/lkTranslations';
-import { Shipment, ShipmentItem } from '@/types/lk';
+import {
+  OrganizationProfile,
+  OrganizationProfileType,
+  Shipment,
+  ShipmentItem,
+} from '@/types/lk';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -36,6 +41,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 
 interface Props {
@@ -53,19 +65,19 @@ const PRODUCT_FIELD_KEYS: Array<{
   rows?: number;
   tone: 'green' | 'yellow';
 }> = [
-  { key: 'product', labelKey: 'th_product', tone: 'green' },
-  { key: 'tech_description', labelKey: 'th_tech_description', textarea: true, rows: 4, tone: 'green' },
-  { key: 'model_article', labelKey: 'th_model_article', tone: 'green' },
-  { key: 'trademark', labelKey: 'th_trademark', tone: 'green' },
-  { key: 'tn_ved', labelKey: 'th_tn_ved', tone: 'green' },
-  { key: 'contract_invoice', labelKey: 'th_contract_invoice', tone: 'green' },
-  { key: 'quantity', labelKey: 'th_quantity', tone: 'green' },
-  { key: 'price', labelKey: 'th_price', tone: 'green' },
-  { key: 'tr_ts', labelKey: 'th_tr_ts', textarea: true, rows: 4, tone: 'yellow' },
-  { key: 'cert_form', labelKey: 'th_cert_form', tone: 'yellow' },
-  { key: 'cert_price', labelKey: 'th_cert_price', tone: 'yellow' },
-  { key: 'comment', labelKey: 'th_comment', textarea: true, rows: 3, tone: 'yellow' },
-];
+    { key: 'product', labelKey: 'th_product', tone: 'green' },
+    { key: 'tech_description', labelKey: 'th_tech_description', textarea: true, rows: 4, tone: 'green' },
+    { key: 'model_article', labelKey: 'th_model_article', tone: 'green' },
+    { key: 'trademark', labelKey: 'th_trademark', tone: 'green' },
+    { key: 'tn_ved', labelKey: 'th_tn_ved', tone: 'green' },
+    { key: 'contract_invoice', labelKey: 'th_contract_invoice', tone: 'green' },
+    { key: 'quantity', labelKey: 'th_quantity', tone: 'green' },
+    { key: 'price', labelKey: 'th_price', tone: 'green' },
+    { key: 'tr_ts', labelKey: 'th_tr_ts', textarea: true, rows: 4, tone: 'yellow' },
+    { key: 'cert_form', labelKey: 'th_cert_form', tone: 'yellow' },
+    { key: 'cert_price', labelKey: 'th_cert_price', tone: 'yellow' },
+    { key: 'comment', labelKey: 'th_comment', textarea: true, rows: 3, tone: 'yellow' },
+  ];
 
 
 const toneClass = (tone: 'green' | 'yellow') =>
@@ -99,6 +111,7 @@ function saveHiddenColumns(cols: Set<string>) {
 export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: Props) {
   const qc = useQueryClient();
   const { language } = useLKLanguage();
+
   const [requestValues, setRequestValues] = useState({
     applicant_org: shipment.applicant_org || '',
     applicant_address: shipment.applicant_address || '',
@@ -110,25 +123,68 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
     manufacturer_country: shipment.manufacturer_country || '',
   });
 
-
-  const [hiddenColumns, setHiddenColumns] = useState<Set<string>>(() => loadHiddenColumns());
+  const [hiddenColumns, setHiddenColumns] = useState<Set<string>>(
+    () => loadHiddenColumns()
+  );
   const [savingAll, setSavingAll] = useState(false);
   const [checkedIds, setCheckedIds] = useState<Set<number>>(new Set());
   const [generateModalOpen, setGenerateModalOpen] = useState(false);
 
+  // ─────────────────────────────────────────────────────────────
+  // Справочник сохранённых организаций — ВСТАВИТЬ ЭТОТ БЛОК
+  // ─────────────────────────────────────────────────────────────
+  const [applicantProfileId, setApplicantProfileId] = useState<string>('');
+  const [manufacturerProfileId, setManufacturerProfileId] = useState<string>('');
 
-const saveAllFns = useRef<Record<number, () => Promise<void>>>({});
+  const [pendingProfile, setPendingProfile] = useState<{
+    profileType: OrganizationProfileType;
+    profile: OrganizationProfile;
+    payload: {
+      name: string;
+      address: string;
+      head: string;
+      position: string;
+      email: string;
+      country: string;
+    };
+  } | null>(null);
 
-const registerSaveAll = useCallback(
-  (itemId: number, fn: () => Promise<void>) => {
-    saveAllFns.current[itemId] = fn;
-  },
-  []
-);
+  const applicantProfiles = useQuery({
+    queryKey: [
+      'lk',
+      'organization-profiles',
+      shipment.client_id,
+      'applicant',
+    ],
+    queryFn: () =>
+      lkApi.organizationProfiles(shipment.client_id, 'applicant'),
+    enabled: !!shipment.client_id,
+  });
 
-const unregisterSaveAll = useCallback((itemId: number) => {
-  delete saveAllFns.current[itemId];
-}, []);
+  const manufacturerProfiles = useQuery({
+    queryKey: [
+      'lk',
+      'organization-profiles',
+      shipment.client_id,
+      'manufacturer',
+    ],
+    queryFn: () =>
+      lkApi.organizationProfiles(shipment.client_id, 'manufacturer'),
+    enabled: !!shipment.client_id,
+  });
+
+  const saveAllFns = useRef<Record<number, () => Promise<void>>>({});
+
+  const registerSaveAll = useCallback(
+    (itemId: number, fn: () => Promise<void>) => {
+      saveAllFns.current[itemId] = fn;
+    },
+    []
+  );
+
+  const unregisterSaveAll = useCallback((itemId: number) => {
+    delete saveAllFns.current[itemId];
+  }, []);
 
 
   const toggleColumn = (key: string) => {
@@ -177,6 +233,56 @@ const unregisterSaveAll = useCallback((itemId: number) => {
     onError: (e: any) => toast.error(e?.message || 'Не удалось сохранить данные'),
   });
 
+  const createProfile = useMutation({
+    mutationFn: (data: {
+      client_id: number;
+      profile_type: OrganizationProfileType;
+      name: string;
+      address: string;
+      head?: string;
+      position?: string;
+      email?: string;
+      country?: string;
+    }) => lkApi.createOrganizationProfile(data),
+    onSuccess: (created) => {
+      toast.success(lkT('toast_organization_created', language));
+
+      qc.invalidateQueries({
+        queryKey: ['lk', 'organization-profiles', created.client_id, created.profile_type],
+      });
+
+      setPendingProfile(null);
+    },
+    onError: (e: any) => toast.error(e?.message || 'Не удалось сохранить организацию'),
+  });
+
+  const updateProfile = useMutation({
+    mutationFn: ({
+      id,
+      data,
+    }: {
+      id: number;
+      data: {
+        name: string;
+        address: string;
+        head?: string;
+        position?: string;
+        email?: string;
+        country?: string;
+      };
+    }) => lkApi.updateOrganizationProfile(id, data),
+    onSuccess: (updated) => {
+      toast.success(lkT('toast_organization_updated', language));
+
+      qc.invalidateQueries({
+        queryKey: ['lk', 'organization-profiles', updated.client_id, updated.profile_type],
+      });
+
+      setPendingProfile(null);
+    },
+    onError: (e: any) => toast.error(e?.message || 'Не удалось обновить организацию'),
+  });
+
 
   const addItem = useMutation({
     mutationFn: () => lkApi.addShipmentItem(shipmentId),
@@ -212,6 +318,102 @@ const unregisterSaveAll = useCallback((itemId: number) => {
       return;
     }
     updateInfo.mutate(diff);
+  };
+
+  const applyOrganizationProfile = (
+    profileType: OrganizationProfileType,
+    profileId: string
+  ) => {
+    const profiles =
+      profileType === 'applicant'
+        ? applicantProfiles.data ?? []
+        : manufacturerProfiles.data ?? [];
+
+    const profile = profiles.find((item) => item.id === Number(profileId));
+
+    if (!profile) return;
+
+    if (profileType === 'applicant') {
+      setApplicantProfileId(profileId);
+
+      setRequestValues((prev) => ({
+        ...prev,
+        applicant_org: profile.name,
+        applicant_address: profile.address,
+        applicant_head: profile.head,
+        applicant_position: profile.position,
+        applicant_email: profile.email,
+      }));
+
+      return;
+    }
+
+    setManufacturerProfileId(profileId);
+
+    setRequestValues((prev) => ({
+      ...prev,
+      manufacturer_org: profile.name,
+      manufacturer_address: profile.address,
+      manufacturer_country: profile.country,
+    }));
+  };
+
+  const getOrganizationPayload = (
+    profileType: OrganizationProfileType
+  ) => {
+    if (profileType === 'applicant') {
+      return {
+        name: requestValues.applicant_org.trim(),
+        address: requestValues.applicant_address.trim(),
+        head: requestValues.applicant_head.trim(),
+        position: requestValues.applicant_position.trim(),
+        email: requestValues.applicant_email.trim(),
+        country: '',
+      };
+    }
+
+    return {
+      name: requestValues.manufacturer_org.trim(),
+      address: requestValues.manufacturer_address.trim(),
+      head: '',
+      position: '',
+      email: '',
+      country: requestValues.manufacturer_country.trim(),
+    };
+  };
+
+  const saveAsOrganization = async (profileType: OrganizationProfileType) => {
+    const payload = getOrganizationPayload(profileType);
+
+    if (!payload.name) {
+      toast.error(lkT('toast_select_organization', language));
+      return;
+    }
+
+    try {
+      const check = await lkApi.checkOrganizationProfile(
+        shipment.client_id,
+        profileType,
+        payload.name
+      );
+
+      if (check.exists && check.profile) {
+        setPendingProfile({
+          profileType,
+          profile: check.profile,
+          payload,
+        });
+        return;
+      }
+
+      createProfile.mutate({
+        client_id: shipment.client_id,
+        profile_type: profileType,
+        ...payload,
+      });
+    } catch (e: any) {
+      toast.error(e?.message || 'Не удалось проверить организацию');
+    }
   };
 
 
@@ -256,16 +458,63 @@ const unregisterSaveAll = useCallback((itemId: number) => {
       <Card className="p-4 space-y-3">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold">{lkT('section_applicant', language)}</h3>
+
           <Button
             size="sm"
             variant="outline"
-            onClick={() => saveRequestBlock(['applicant_org', 'applicant_address', 'applicant_head', 'applicant_position', 'applicant_email'])}
+            onClick={() =>
+              saveRequestBlock([
+                'applicant_org',
+                'applicant_address',
+                'applicant_head',
+                'applicant_position',
+                'applicant_email',
+              ])
+            }
             disabled={updateInfo.isPending}
           >
             <Save className="h-4 w-4 mr-1" />
             {lkT('btn_save_block', language)}
           </Button>
         </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <Select
+            value={applicantProfileId}
+            onValueChange={(value) => applyOrganizationProfile('applicant', value)}
+          >
+            <SelectTrigger className="w-full sm:w-[320px]">
+              <SelectValue
+                placeholder={lkT('placeholder_select_organization', language)}
+              />
+            </SelectTrigger>
+
+            <SelectContent>
+              {applicantProfiles.data?.length ? (
+                applicantProfiles.data.map((profile) => (
+                  <SelectItem key={profile.id} value={String(profile.id)}>
+                    {profile.name}
+                  </SelectItem>
+                ))
+              ) : (
+                <SelectItem value="__empty" disabled>
+                  {lkT('empty_no_saved_organizations', language)}
+                </SelectItem>
+              )}
+            </SelectContent>
+          </Select>
+
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            onClick={() => saveAsOrganization('applicant')}
+            disabled={createProfile.isPending || updateProfile.isPending}
+          >
+            {lkT('btn_save_as_organization', language)}
+          </Button>
+        </div>
+
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
             <Label>{lkT('field_org_name', language)}</Label>
@@ -275,6 +524,7 @@ const unregisterSaveAll = useCallback((itemId: number) => {
               onBlur={() => saveRequestField('applicant_org')}
             />
           </div>
+
           <div className="space-y-1">
             <Label>{lkT('field_legal_address', language)}</Label>
             <Input
@@ -283,6 +533,7 @@ const unregisterSaveAll = useCallback((itemId: number) => {
               onBlur={() => saveRequestField('applicant_address')}
             />
           </div>
+
           <div className="space-y-1">
             <Label>{lkT('field_head', language)}</Label>
             <Input
@@ -291,6 +542,7 @@ const unregisterSaveAll = useCallback((itemId: number) => {
               onBlur={() => saveRequestField('applicant_head')}
             />
           </div>
+
           <div className="space-y-1">
             <Label>{lkT('field_position', language)}</Label>
             <Input
@@ -299,6 +551,7 @@ const unregisterSaveAll = useCallback((itemId: number) => {
               onBlur={() => saveRequestField('applicant_position')}
             />
           </div>
+
           <div className="space-y-1">
             <Label>{lkT('field_email', language)}</Label>
             <Input
@@ -310,20 +563,68 @@ const unregisterSaveAll = useCallback((itemId: number) => {
         </div>
       </Card>
 
-
       <Card className="p-4 space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold">{lkT('section_manufacturer', language)}</h3>
+          <h3 className="font-semibold">
+            {lkT('section_manufacturer', language)}
+          </h3>
+
           <Button
             size="sm"
             variant="outline"
-            onClick={() => saveRequestBlock(['manufacturer_org', 'manufacturer_address', 'manufacturer_country'])}
+            onClick={() =>
+              saveRequestBlock([
+                'manufacturer_org',
+                'manufacturer_address',
+                'manufacturer_country',
+              ])
+            }
             disabled={updateInfo.isPending}
           >
             <Save className="h-4 w-4 mr-1" />
             {lkT('btn_save_block', language)}
           </Button>
         </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <Select
+            value={manufacturerProfileId}
+            onValueChange={(value) =>
+              applyOrganizationProfile('manufacturer', value)
+            }
+          >
+            <SelectTrigger className="w-full sm:w-[320px]">
+              <SelectValue
+                placeholder={lkT('placeholder_select_organization', language)}
+              />
+            </SelectTrigger>
+
+            <SelectContent>
+              {manufacturerProfiles.data?.length ? (
+                manufacturerProfiles.data.map((profile) => (
+                  <SelectItem key={profile.id} value={String(profile.id)}>
+                    {profile.name}
+                  </SelectItem>
+                ))
+              ) : (
+                <SelectItem value="__empty" disabled>
+                  {lkT('empty_no_saved_organizations', language)}
+                </SelectItem>
+              )}
+            </SelectContent>
+          </Select>
+
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            onClick={() => saveAsOrganization('manufacturer')}
+            disabled={createProfile.isPending || updateProfile.isPending}
+          >
+            {lkT('btn_save_as_organization', language)}
+          </Button>
+        </div>
+
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
             <Label>{lkT('field_org_name', language)}</Label>
@@ -333,19 +634,25 @@ const unregisterSaveAll = useCallback((itemId: number) => {
               onBlur={() => saveRequestField('manufacturer_org')}
             />
           </div>
+
           <div className="space-y-1">
             <Label>{lkT('field_address', language)}</Label>
             <Input
               value={requestValues.manufacturer_address}
-              onChange={(e) => setRequestField('manufacturer_address', e.target.value)}
+              onChange={(e) =>
+                setRequestField('manufacturer_address', e.target.value)
+              }
               onBlur={() => saveRequestField('manufacturer_address')}
             />
           </div>
+
           <div className="space-y-1">
             <Label>{lkT('field_country', language)}</Label>
             <Input
               value={requestValues.manufacturer_country}
-              onChange={(e) => setRequestField('manufacturer_country', e.target.value)}
+              onChange={(e) =>
+                setRequestField('manufacturer_country', e.target.value)
+              }
               onBlur={() => saveRequestField('manufacturer_country')}
             />
           </div>
@@ -479,6 +786,63 @@ const unregisterSaveAll = useCallback((itemId: number) => {
           }}
         />
       )}
+
+      <AlertDialog
+        open={pendingProfile !== null}
+        onOpenChange={(open) => {
+          if (!open) setPendingProfile(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {lkT('dialog_organization_exists_title', language)}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {lkT('dialog_organization_exists_desc', language)}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>
+              {lkT('btn_cancel', language)}
+            </AlertDialogCancel>
+
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                if (!pendingProfile) return;
+
+                createProfile.mutate({
+                  client_id: shipment.client_id,
+                  profile_type: pendingProfile.profileType,
+                  ...pendingProfile.payload,
+                });
+              }}
+              disabled={createProfile.isPending || updateProfile.isPending}
+            >
+              {lkT('btn_create_duplicate', language)}
+            </Button>
+
+            <AlertDialogAction
+              onClick={(event) => {
+                event.preventDefault();
+
+                if (!pendingProfile) return;
+
+                updateProfile.mutate({
+                  id: pendingProfile.profile.id,
+                  data: pendingProfile.payload,
+                });
+              }}
+              disabled={createProfile.isPending || updateProfile.isPending}
+            >
+              {lkT('btn_update_existing', language)}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

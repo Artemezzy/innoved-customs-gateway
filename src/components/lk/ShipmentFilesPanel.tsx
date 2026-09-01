@@ -102,32 +102,44 @@ export function ShipmentFilesPanel({ shipmentId, itemId }: Props) {
         return (
           <div key={f.id} className="flex items-center gap-2 rounded-md border p-2 text-sm">
             {isExternalLink ? <LinkIcon className="h-4 w-4 shrink-0" /> : <FileText className="h-4 w-4 shrink-0" />}
-            {isExternalLink ? (
-              <a href={f.url} target="_blank" rel="noopener noreferrer" className="flex-1 truncate underline">
-                {displayName}
-              </a>
-            ) : (
-              <span className="flex-1 truncate">{displayName}</span>
-            )}
-            {f.file_type === 'file' && (
-              <Button
-                size="icon"
-                variant="ghost"
-                onClick={(e) => download(e, f)}
-                title={lkT('btn_download', language)}
-                aria-label={lkT('btn_download', language)}
-              >
-                <Download className="h-4 w-4" />
-              </Button>
-            )}
+            <div className="flex min-w-0 flex-1 items-center gap-1">
+              {f.file_type === 'file' && (
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8 shrink-0"
+                  onClick={(e) => download(e, f)}
+                  title={lkT('btn_download', language)}
+                  aria-label={lkT('btn_download', language)}
+                >
+                  <Download className="h-4 w-4" />
+                </Button>
+              )}
+
+              {isExternalLink ? (
+                <a
+                  href={f.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="min-w-0 flex-1 truncate underline"
+                >
+                  {displayName}
+                </a>
+              ) : (
+                <span className="min-w-0 flex-1 truncate">{displayName}</span>
+              )}
+            </div>
+
             <Button
+              type="button"
               size="icon"
               variant="ghost"
+              className="h-8 w-8 shrink-0 text-destructive hover:bg-destructive/10 hover:text-destructive"
               onClick={(e) => handleDelete(e, f)}
               disabled={deleteFile.isPending}
               title={lkT('btn_delete', language)}
               aria-label={lkT('btn_delete', language)}
-              className="text-destructive hover:text-destructive hover:bg-destructive/10"
             >
               <Trash2 className="h-4 w-4" />
             </Button>

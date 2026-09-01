@@ -175,6 +175,71 @@ export const lkApi = {
     >
   ) => request<{ ok: boolean }>('PUT', `/shipments/${id}/info`, data),
 
+  organizationProfiles: (
+    clientId: number,
+    profileType: import('@/types/lk').OrganizationProfileType
+  ) => {
+    const qs = new URLSearchParams({
+      client_id: String(clientId),
+      type: profileType,
+    });
+
+    return request<import('@/types/lk').OrganizationProfile[]>(
+      'GET',
+      `/organization-profiles?${qs.toString()}`
+    );
+  },
+
+  checkOrganizationProfile: (
+    clientId: number,
+    profileType: import('@/types/lk').OrganizationProfileType,
+    name: string
+  ) => {
+    const qs = new URLSearchParams({
+      client_id: String(clientId),
+      type: profileType,
+      name,
+    });
+
+    return request<import('@/types/lk').OrganizationProfileCheck>(
+      'GET',
+      `/organization-profiles/check?${qs.toString()}`
+    );
+  },
+
+  createOrganizationProfile: (data: {
+    client_id: number;
+    profile_type: import('@/types/lk').OrganizationProfileType;
+    name: string;
+    address: string;
+    head?: string;
+    position?: string;
+    email?: string;
+    country?: string;
+  }) =>
+    request<import('@/types/lk').OrganizationProfile>(
+      'POST',
+      '/organization-profiles',
+      data
+    ),
+
+  updateOrganizationProfile: (
+    id: number,
+    data: {
+      name: string;
+      address: string;
+      head?: string;
+      position?: string;
+      email?: string;
+      country?: string;
+    }
+  ) =>
+    request<import('@/types/lk').OrganizationProfile>(
+      'PUT',
+      `/organization-profiles/${id}`,
+      data
+    ),
+
   shipmentItems: (shipmentId: number) =>
     request<import('@/types/lk').ShipmentItem[]>('GET', `/shipments/${shipmentId}/items`),
 
