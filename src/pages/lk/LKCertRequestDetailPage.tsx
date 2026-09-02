@@ -13,6 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { CertRequestStatusSelect } from '@/components/lk/CertRequestStatusSelect';
 import { CertChatPanel } from '@/components/lk/CertChatPanel';
 import { CertItemsPanel } from '@/components/lk/CertItemsPanel';
+import { TemplatesPanel } from '@/components/lk/TemplatesPanel';
 
 export default function LKCertRequestDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -89,9 +90,12 @@ export default function LKCertRequestDetailPage() {
             canEditHeader={isManager}
           />
         </div>
-        <Card className="p-0 overflow-hidden h-fit">
-          <CertChatPanel requestId={requestId} />
-        </Card>
+        <div className="space-y-4">
+          <Card className="p-0 overflow-hidden h-fit">
+            <CertChatPanel requestId={requestId} />
+          </Card>
+          <TemplatesPanel />
+        </div>
       </div>
     </div>
   );

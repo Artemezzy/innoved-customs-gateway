@@ -283,6 +283,10 @@ export const lkDict = {
     zh: '请选择组织',
   },
 
+  section_templates: { ru: 'Шаблоны', en: 'Templates', zh: '模板' },
+  template_dul: { ru: 'Шаблон ДУЛ', en: 'ID document template', zh: '身份证件模板' },
+  template_request: { ru: 'Шаблон заявки', en: 'Request template', zh: '申请模板' },
+
 } as const;
 
 export type LKDictKey = keyof typeof lkDict;

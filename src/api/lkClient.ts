@@ -574,6 +574,10 @@ export const lkApi = {
     URL.revokeObjectURL(url);
   },
 
+  downloadTemplate: async (key: 'dul' | 'request', filename: string) => {
+    await downloadBlob(`/templates/${key}/download`, filename);
+  },
+
   getNotificationSettings: () => request<import('@/types/lk').NotificationSettings>('GET', '/me/notifications'),
   updateNotificationSettings: (payload: { enabled: boolean; emails: string[] }) => request<{ ok: boolean }>('PUT', '/me/notifications', payload),
 };
