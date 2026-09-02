@@ -287,6 +287,9 @@ export const lkDict = {
   template_dul: { ru: 'Шаблон ДУЛ', en: 'ID document template', zh: '身份证件模板' },
   template_request: { ru: 'Шаблон заявки', en: 'Request template', zh: '申请模板' },
 
+  th_linked_cert_requests: { ru: 'Заявка на сертификацию', en: 'Certification request', zh: '认证申请' },
+  th_linked_shipment: { ru: 'Поставка', en: 'Shipment', zh: '货运' },
+
 } as const;
 
 export type LKDictKey = keyof typeof lkDict;

@@ -142,6 +142,7 @@ export default function LKShipmentsPage() {
                 <TableHead>{lkT('th_title', language)}</TableHead>
                 {isManager && <TableHead>{lkT('th_client', language)}</TableHead>}
                 <TableHead>{lkT('th_status', language)}</TableHead>
+                <TableHead>{lkT('th_linked_cert_requests', language)}</TableHead>
                 <TableHead>{lkT('th_updated', language)}</TableHead>
                 {isManager && <TableHead />}
               </TableRow>
@@ -160,6 +161,23 @@ export default function LKShipmentsPage() {
                   {isManager && <TableCell>{s.client_name}</TableCell>}
                   <TableCell>
                     <StatusBadge status={s.status} />
+                  </TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
+                    {s.linked_cert_requests_brief && s.linked_cert_requests_brief.length > 0 ? (
+                      <div className="flex flex-col gap-0.5">
+                        {s.linked_cert_requests_brief.map((r) => (
+                          <button
+                            key={r.id}
+                            className="text-primary hover:underline text-left"
+                            onClick={() => navigate(`/lk/cert-requests/${r.id}`)}
+                          >
+                            {r.number}
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
                   </TableCell>
                   <TableCell>{new Date(s.updated_at).toLocaleDateString('ru-RU')}</TableCell>
                   {isManager && (
@@ -181,7 +199,7 @@ export default function LKShipmentsPage() {
               ))}
               {shipments.data?.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={isManager ? 6 : 4} className="text-center text-muted-foreground py-8">
+                  <TableCell colSpan={isManager ? 7 : 5} className="text-center text-muted-foreground py-8">
                     {lkT('empty_no_shipments', language)}
                   </TableCell>
                 </TableRow>

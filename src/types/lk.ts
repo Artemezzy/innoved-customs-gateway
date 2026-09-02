@@ -71,6 +71,7 @@ export interface Shipment {
   manufacturer_country: string;
   linked_cert_requests?: LinkedCertRequest[];
   cert_requests_count?: number;
+  linked_cert_requests_brief?: { id: number; number: string }[];
 }
 
 export interface ShipmentItem {
@@ -247,6 +248,7 @@ export interface CertRequest {
   manufacturer_org: string;
   manufacturer_address: string;
   manufacturer_country: string;
+    linked_shipment?: { id: number; number: string } | null;
 }
 
 export interface CertRequestItem {

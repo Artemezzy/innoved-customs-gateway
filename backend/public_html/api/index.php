@@ -740,6 +740,7 @@ if ($method === 'DELETE' && $seg[0] === 'clients' && isset($seg[1]) && !isset($s
     out(['ok' => true]);
 }
 
+// GET /api/cert-requests
 if ($method === 'GET' && $seg[0] === 'cert-requests' && !isset($seg[1])) {
     $me = auth();
     $sql = "SELECT r.*, cc.name AS cert_center_name, (SELECT i.company FROM lk_cert_request_items i WHERE i.request_id = r.id ORDER BY i.position_no ASC, i.id ASC LIMIT 1) AS company FROM lk_cert_requests r JOIN lk_cert_centers cc ON cc.id = r.cert_center_id WHERE 1=1";
@@ -757,6 +758,20 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && !isset($seg[1])) {
             : (strtotime($row['updated_at']) > strtotime($row['center_seen_at'] ?? '1970-01-01'));
         $row['has_unread_messages'] = $row['has_unread'];
         $row['has_unread_changes'] = $row['has_unread'];
+
+        $linkedShipSt = db()->prepare(
+            'SELECT s.id, s.document_number
+             FROM lk_shipment_cert_requests sc
+             JOIN lk_shipments s ON s.id = sc.shipment_id
+             WHERE sc.cert_request_id=?
+             ORDER BY sc.id ASC
+             LIMIT 1'
+        );
+        $linkedShipSt->execute([$row['id']]);
+        $ls = $linkedShipSt->fetch();
+        $row['linked_shipment'] = $ls
+            ? ['id' => (int)$ls['id'], 'number' => document_number_label($ls['document_number'] ?? null)]
+            : null;
     }
     out($rows);
 }
@@ -1199,9 +1214,20 @@ if ($method === 'GET' && $seg[0] === 'shipments' && !isset($seg[1])) {
     $rows = $st->fetchAll();
     foreach ($rows as &$row) {
         $row['number'] = document_number_label($row['document_number'] ?? null);
-        $cntSt = db()->prepare('SELECT COUNT(*) FROM lk_shipment_cert_requests WHERE shipment_id=?');
-        $cntSt->execute([$row['id']]);
-        $row['cert_requests_count'] = (int)$cntSt->fetchColumn();
+        $certSt = db()->prepare(
+            'SELECT r.id, r.document_number
+             FROM lk_shipment_cert_requests sc
+             JOIN lk_cert_requests r ON r.id = sc.cert_request_id
+             WHERE sc.shipment_id=?
+             ORDER BY sc.id ASC'
+        );
+        $certSt->execute([$row['id']]);
+        $certRows = $certSt->fetchAll();
+        $row['cert_requests_count'] = count($certRows);
+        $row['linked_cert_requests_brief'] = array_map(
+            static fn($c) => ['id' => (int)$c['id'], 'number' => document_number_label($c['document_number'] ?? null)],
+            $certRows
+        );
     }
     out($rows);
 }

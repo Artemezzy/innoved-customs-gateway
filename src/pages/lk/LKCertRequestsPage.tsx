@@ -152,6 +152,7 @@ export default function LKCertRequestsPage() {
                 <TableHead>{lkT('th_company', language)}</TableHead>
                 <TableHead>{lkT('th_created_date', language)}</TableHead>
                 <TableHead>{lkT('th_cert_center', language)}</TableHead>
+                <TableHead>{lkT('th_linked_shipment', language)}</TableHead>
                 <TableHead>{lkT('label_status', language)}</TableHead>
                 <TableHead />
                 {isManager && <TableHead />}
@@ -169,6 +170,18 @@ export default function LKCertRequestsPage() {
                   <TableCell>{r.company}</TableCell>
                   <TableCell>{new Date(r.created_at).toLocaleDateString('ru-RU')}</TableCell>
                   <TableCell>{r.cert_center_name}</TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
+                    {r.linked_shipment ? (
+                      <button
+                        className="text-primary hover:underline"
+                        onClick={() => navigate(`/lk/shipments/${r.linked_shipment!.id}`)}
+                      >
+                        {r.linked_shipment.number}
+                      </button>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
+                  </TableCell>
                   <TableCell>
                     <CertStatusBadge status={r.status} />
                   </TableCell>
@@ -207,7 +220,7 @@ export default function LKCertRequestsPage() {
               ))}
               {requests.data?.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={isManager ? 7 : 6} className="text-center text-muted-foreground py-8">
+                  <TableCell colSpan={isManager ? 8 : 7} className="text-center text-muted-foreground py-8">
                     {lkT('empty_no_requests', language)}
                   </TableCell>
                 </TableRow>
