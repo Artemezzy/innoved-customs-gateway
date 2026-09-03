@@ -1,9 +1,3 @@
-owner: Artemezzy
-repo: innoved-customs-gateway
-path: docs/PROJECT_CONTEXT.md
-branch: main
-message: docs: add LK INNOVED project context
-content:
 # PROJECT_CONTEXT — ЛК ИННОВЭД
 
 > **Назначение документа:** постоянный технический контекст для разработки личного кабинета ИННОВЭД. Перед реализацией любой фичи нужно сверяться с этим документом, а затем — с актуальными файлами ветки `main`.
@@ -28,6 +22,7 @@ content:
 | Провайдер отправки email | Resend API |
 | Публичный URL ЛК | `https://www.innovedbroker.ru/lk` |
 | API URL | `https://www.innovedbroker.ru/api` |
+| БД | MySQL 8.0, схема `u3230321_v1_innoved`, движок InnoDB, charset `utf8mb4` |
 
 ### Ключевые каталоги
 
@@ -93,29 +88,31 @@ backend/public_html/api/
 | `lk_shipment_item_files` | Файлы и ссылки, привязанные к конкретной товарной позиции |
 | `lk_documents` | Документы поставки |
 | `lk_messages` | Чат менеджера и клиента по поставке |
-| `lk_shipment_cert_requests` | Связь поставки с созданными заявками на сертификацию |
+| `lk_shipment_cert_requests` | Связь поставки с созданными заявками на сертификацию (many-to-many, уникальна пара `shipment_id`+`cert_request_id`) |
 
-Ключевые поля поставки:
+Ключевые поля поставки (`lk_shipments`):
 
 ```text
-id, client_id, title, status, document_number,
+id, document_number, client_id, title,
 applicant_org, applicant_address, applicant_head,
 applicant_position, applicant_email,
 manufacturer_org, manufacturer_address, manufacturer_country,
-created_at, updated_at
+status, created_at, updated_at
 ```
 
-Статусы поставки:
+Статусы поставки (подтверждено дампом БД, `ENUM` в `lk_shipments.status`):
 
 ```text
 new
-notifications_requested
+documents_requested
 documents_received
 declaration_filed
 customs_inspection
 released
 on_hold
 ```
+
+> Ранее в этом документе статус ошибочно был указан как `notifications_requested`. Актуальное значение — `documents_requested`.
 
 > В коде API и frontend обязательно использовать фактические значения из `src/types/lk.ts` и `index.php`. Перед добавлением нового статуса проверить оба слоя.
 
@@ -127,21 +124,22 @@ on_hold
 |---|---|
 | `lk_cert_requests` | Карточка заявки на сертификацию |
 | `lk_cert_request_items` | Товарные позиции заявки |
-| `lk_cert_request_files` | Файлы и ссылки товарных позиций заявки |
+| `lk_cert_request_files` | Файлы и ссылки товарных позиций заявки (привязаны к `item_id`) |
 | `lk_cert_messages` | Чат менеджера и серт-центра по заявке |
+| `lk_cert_request_fields_old_backup` | Legacy-таблица старых плоских полей заявки (company/product/tn_ved и т.д.), сохранена как backup, в текущей логике не используется — актуальные поля живут в `lk_cert_request_items` |
 
-Ключевые поля заявки:
+Ключевые поля заявки (`lk_cert_requests`):
 
 ```text
-id, cert_center_id, status, document_number,
+id, document_number, cert_center_id, status,
+created_by, created_at, updated_at, updated_by_role,
 applicant_org, applicant_address, applicant_head,
 applicant_position, applicant_email,
 manufacturer_org, manufacturer_address, manufacturer_country,
-manager_seen_at, center_seen_at,
-created_at, updated_at, updated_by_role
+manager_seen_at, center_seen_at
 ```
 
-Статусы заявки:
+Статусы заявки (подтверждено дампом БД):
 
 ```text
 open
@@ -154,6 +152,19 @@ rejected
 closed
 ```
 
+Ключевые поля товарной позиции заявки (`lk_cert_request_items`):
+
+```text
+id, request_id, source_shipment_item_id, position_no, is_checked,
+company, product, tn_ved, contract_invoice, quantity,
+tech_description, model_article, trademark,
+tr_ts, cert_form, cert_scheme, cost,
+production_deadline, samples_required, samples_city,
+comment, created_at, updated_at
+```
+
+`source_shipment_item_id` хранит ссылку на исходную товарную позицию поставки (`lk_shipment_items.id`), из которой была сформирована позиция заявки при генерации сертификационной заявки менеджером.
+
 ### Клиенты и серт-центры
 
 | Сущность | Основная таблица | Связь с пользователем |
@@ -163,6 +174,24 @@ closed
 | Менеджер | `lk_users` | роль `manager` |
 
 Удаление клиентов и серт-центров реализовано как архивирование через `is_active=0` вместе с деактивацией соответствующего пользователя. Данные поставок, заявок, файлов и переписки сохраняются.
+
+### Организационные профили (шаблоны реквизитов)
+
+Таблица `lk_organization_profiles` хранит сохранённые шаблоны реквизитов заявителя/изготовителя клиента для быстрого повторного заполнения:
+
+```text
+id, client_id, profile_type ('applicant'|'manufacturer'),
+name, address, head, position, email, country,
+created_by_user_id, created_at, updated_at
+```
+
+### Нумерация документов
+
+Таблица `lk_document_sequence` — сквозной счётчик для генерации номеров документов (`document_number`) отдельно по типу сущности:
+
+```text
+id, entity_type ('shipment'|'cert_request'), entity_id, created_at
+```
 
 ---
 
@@ -188,6 +217,10 @@ closed
 ### Важное правило формы поставки
 
 Разделы **«Заявитель (импортёр)»**, **«Изготовитель»** и **«Продукция»** уже находятся внутри `ShipmentItemsPanel.tsx`. Нельзя создавать отдельный компонент формы для этих же полей, не проверив существующий `ShipmentItemsPanel.tsx`.
+
+### Связь поставки и заявки на сертификацию в списках
+
+В таблице поставок (`LKShipmentsPage.tsx`) выводится колонка со всеми связанными заявками на сертификацию (`shipment.linked_cert_requests_brief`), в таблице заявок (`LKCertRequestsPage.tsx`) — колонка со связанной поставкой (`certRequest.linked_shipment`). Оба поля вычисляются на backend через таблицу `lk_shipment_cert_requests` и не хранятся как отдельные колонки в `lk_shipments`/`lk_cert_requests`.
 
 ---
 
@@ -268,18 +301,20 @@ sub, role, name, client_id, cert_center_id, exp
 
 | Таблица | Назначение |
 |---|---|
-| `lk_notification_queue` | Очередь событий email-уведомлений |
-| `lk_notification_emails` | Дополнительные email-адреса пользователя |
+| `lk_notification_queue` | Очередь событий email-уведомлений: `entity_type`, `entity_id`, `recipient_role`, `event_summary`, `events_count`, `first_event_at`, `last_event_at`, `status`, `sent_at` |
+| `lk_notification_emails` | Дополнительные email-адреса пользователя (`user_id`+`email`, уникальная пара) |
 | `lk_users.notifications_enabled` | Индивидуальный переключатель рассылки |
 
 ### Типы сущностей очереди
+
+Актуальный `ENUM` в `lk_notification_queue.entity_type` (подтверждено дампом БД):
 
 ```text
 cert_request
 shipment
 ```
 
-При использовании строгого `ENUM` в `lk_notification_queue.entity_type` значение `shipment` должно быть добавлено SQL-миграцией.
+Миграция на `shipment` уже применена в БД — при добавлении нового `entity_type` требуется новая SQL-миграция.
 
 ### Правило адресации поставок
 
@@ -323,6 +358,8 @@ uploads/chat/shipments/{shipmentId}/
 ```
 
 Сервер генерирует техническое имя для хранения (`filename_stored`), но исходное пользовательское имя обязательно сохраняется в `filename_original`.
+
+В БД аналогичный паттерн `filename_original`/`filename_stored` используется в таблицах: `lk_documents`, `lk_cert_request_files`, `lk_shipment_item_files`, а также в чатах `lk_messages`/`lk_cert_messages` через пары `attachment_original`/`attachment_stored`.
 
 ### Правило отображения
 
@@ -384,7 +421,7 @@ zh
 - Сначала менять backend-права и endpoint, затем API-клиент и frontend.
 - Не ослаблять авторизацию без `shipment_guard()` или `cert_request_guard()`.
 - Не добавлять уведомление в UI вместо серверной очереди — email отправляет только backend cron.
-- Не менять схему БД без проверки фактической схемы в `backend/public_html/api/sql/`.
+- Не менять схему БД без проверки фактической схемы (см. раздел 3 и Приложение А ниже, либо свежий экспорт из phpMyAdmin).
 - При изменении сигнатуры общей функции, например `queue_notification()`, обновлять **все** существующие вызовы в `index.php`.
 
 ### После реализации
@@ -458,3 +495,157 @@ zh
 ### Сохранение имён файлов
 
 Показывать пользователю исходное имя загруженного файла. Техническое имя хранения предназначено только для файловой системы и не должно быть видно в UI.
+
+### Связка поставки и заявки на сертификацию в списках
+
+В таблицах `/lk/shipments` и `/lk/cert-requests` добавлена видимость перекрёстной связи (заявки на поставке, поставка на заявке) через существующую таблицу `lk_shipment_cert_requests`, без создания новых сущностей или колонок в основных таблицах.
+
+### Синхронизация PROJECT_CONTEXT.md со схемой БД (2026-09-03)
+
+Документ сверен с полным SQL-дампом `localhost.sql` (`u3230321_v1_innoved`, MySQL 8.0). Исправлена опечатка в статусе поставки (`documents_requested` вместо `notifications_requested`), добавлено описание фактических полей `lk_cert_request_items`, `lk_organization_profiles`, `lk_document_sequence`, `lk_notification_queue`, `lk_notification_emails`, `lk_cert_request_fields_old_backup`. Полная схема — см. Приложение А.
+
+---
+
+## Приложение А. Полная схема БД (по дампу `localhost.sql`, 2026-09-03)
+
+> Актуальность подтверждена SQL-дампом. При любом расхождении с фактическим `information_schema` на проде — приоритет у прода, документ обновить повторным экспортом.
+
+### Таблицы и назначение
+
+| Таблица | Назначение | Ключевые связи (FK) |
+|---|---|---|
+| `lk_users` | Пользователи всех трёх ролей | `client_id → lk_clients.id` (SET NULL), `cert_center_id → lk_cert_centers.id` (SET NULL) |
+| `lk_clients` | Клиенты (заказчики) | — |
+| `lk_cert_centers` | Сертификационные центры | — |
+| `lk_shipments` | Поставки | `client_id → lk_clients.id` (CASCADE) |
+| `lk_shipment_items` | Товарные позиции поставки | `shipment_id → lk_shipments.id` (индекс, без явного FK в дампе) |
+| `lk_shipment_item_files` | Файлы/ссылки позиции поставки | индексы по `shipment_id`, `item_id` |
+| `lk_documents` | Документы поставки | `shipment_id → lk_shipments.id` (CASCADE), `uploader_id → lk_users.id` (CASCADE) |
+| `lk_messages` | Чат менеджер/клиент по поставке | `shipment_id → lk_shipments.id` (CASCADE), `user_id → lk_users.id` (CASCADE) |
+| `lk_cert_requests` | Заявки на сертификацию | `cert_center_id → lk_cert_centers.id` |
+| `lk_cert_request_items` | Товарные позиции заявки | `request_id → lk_cert_requests.id` (CASCADE) |
+| `lk_cert_request_files` | Файлы/ссылки позиции заявки | `request_id → lk_cert_requests.id` (CASCADE) |
+| `lk_cert_messages` | Чат менеджер/серт-центр по заявке | `request_id → lk_cert_requests.id` (CASCADE) |
+| `lk_cert_request_fields_old_backup` | Legacy backup плоских полей заявки | `request_id → lk_cert_requests.id` (CASCADE) |
+| `lk_shipment_cert_requests` | Связь поставка ↔ заявка (many-to-many) | `shipment_id`, `cert_request_id`; уникальная пара |
+| `lk_organization_profiles` | Шаблоны реквизитов заявитель/изготовитель | `client_id → lk_clients.id` (CASCADE), `created_by_user_id → lk_users.id` (RESTRICT) |
+| `lk_document_sequence` | Сквозная нумерация документов | — |
+| `lk_notification_queue` | Очередь email-уведомлений | — |
+| `lk_notification_emails` | Доп. email пользователя | уникальная пара `user_id`+`email` |
+
+### Полные поля по таблицам
+
+```sql
+lk_users (
+  id, email, password_hash, name, role ENUM('manager','client','cert_center'),
+  client_id, cert_center_id, is_active, notifications_enabled,
+  created_at, updated_at
+)
+
+lk_clients (
+  id, name, inn, contact_person, phone, email, is_active, created_at
+)
+
+lk_cert_centers (
+  id, name, contact_person, phone, email, is_active, created_at, updated_at
+)
+
+lk_shipments (
+  id, document_number, client_id, title,
+  applicant_org, applicant_address, applicant_head, applicant_position, applicant_email,
+  manufacturer_org, manufacturer_address, manufacturer_country,
+  status ENUM('new','documents_requested','documents_received','declaration_filed',
+              'customs_inspection','released','on_hold'),
+  created_at, updated_at
+)
+
+lk_shipment_items (
+  id, shipment_id, position_no, product, tech_description, model_article, trademark,
+  tn_ved, contract_invoice, quantity, price, tr_ts, cert_form, cert_price, comment,
+  created_at, updated_at
+)
+
+lk_shipment_item_files (
+  id, shipment_id, item_id, file_type ENUM('file','link'), url,
+  filename_original, filename_stored, uploader_id, uploader_role, created_at
+)
+
+lk_documents (
+  id, shipment_id, filename_original, filename_stored,
+  doc_type ENUM('contract','invoice','packing_list','certificate','customs_declaration','other'),
+  uploader_id, uploader_role ENUM('manager','client'),
+  visible_to_client, editable_by_client, created_at
+)
+
+lk_messages (
+  id, shipment_id, user_id, role ENUM('manager','client'), text,
+  attachment_original, attachment_stored, attachment_size, reply_to_id, is_read, created_at
+)
+
+lk_cert_requests (
+  id, document_number, cert_center_id,
+  status ENUM('open','estimation','documents_pending','layout_approved','payment',
+              'certificate_issued','rejected','closed'),
+  created_by, created_at, updated_at, updated_by_role ENUM('manager','cert_center'),
+  applicant_org, applicant_address, applicant_head, applicant_position, applicant_email,
+  manufacturer_org, manufacturer_address, manufacturer_country,
+  manager_seen_at, center_seen_at
+)
+
+lk_cert_request_items (
+  id, request_id, source_shipment_item_id, position_no, is_checked,
+  company, product, tn_ved, contract_invoice, quantity, tech_description,
+  model_article, trademark, tr_ts, cert_form, cert_scheme, cost,
+  production_deadline, samples_required, samples_city, comment,
+  created_at, updated_at
+)
+
+lk_cert_request_files (
+  id, request_id, item_id, file_type ENUM('file','link'),
+  filename_original, filename_stored, url, uploader_id,
+  uploader_role ENUM('manager','cert_center'), created_at
+)
+
+lk_cert_messages (
+  id, request_id, user_id, role ENUM('manager','cert_center'), text,
+  attachment_original, attachment_stored, attachment_size, reply_to_id, is_read, created_at
+)
+
+lk_cert_request_fields_old_backup (
+  request_id, company, product, tn_ved, tech_description,
+  tr_ts, cert_form, cert_scheme, cost, comment
+)
+
+lk_shipment_cert_requests (
+  id, shipment_id, cert_request_id, created_at
+  -- UNIQUE (shipment_id, cert_request_id)
+)
+
+lk_organization_profiles (
+  id, client_id, profile_type ENUM('applicant','manufacturer'),
+  name, address, head, position, email, country,
+  created_by_user_id, created_at, updated_at
+)
+
+lk_document_sequence (
+  id, entity_type ENUM('shipment','cert_request'), entity_id, created_at
+)
+
+lk_notification_queue (
+  id, entity_type ENUM('cert_request','shipment'), entity_id,
+  recipient_role ENUM('manager','cert_center'), event_summary, events_count,
+  first_event_at, last_event_at, status ENUM('pending','sent','failed'), sent_at
+)
+
+lk_notification_emails (
+  id, user_id, email, created_at
+  -- UNIQUE (user_id, email)
+)
+```
+
+### Замечания к схеме
+
+- `lk_notification_queue.recipient_role` в текущей схеме — `ENUM('manager','cert_center')`, значения для роли `client` как получателя обрабатываются на уровне логики cron/PHP, а не через отдельное ENUM-значение в этой колонке — при работе с уведомлениями по поставкам проверить фактическую обработку в `index.php`/cron, а не только ENUM в БД.
+- `lk_cert_request_fields_old_backup` не участвует в текущих запросах приложения (legacy), но физически хранится и связана `FOREIGN KEY ... ON DELETE CASCADE` с `lk_cert_requests` — удаление заявки удалит и эту backup-запись.
+- В `lk_shipment_items` есть собственные поля `tr_ts`, `cert_form`, `cert_price`, которые дублируют по смыслу часть полей `lk_cert_request_items` (`tr_ts`, `cert_form`, `cost`) — это ожидаемо, так как данные копируются при генерации заявки из позиции поставки (`source_shipment_item_id`), а не хранятся как общая таблица.
+- Явных `FOREIGN KEY` для `lk_shipment_items`, `lk_shipment_item_files`, `lk_cert_request_items` (кроме `request_id`), `lk_notification_queue`, `lk_notification_emails`, `lk_document_sequence`, `lk_shipment_cert_requests` в дампе нет — целостность обеспечивается только на уровне индексов и логики приложения (`shipment_guard`/`cert_request_guard`), а не через FK constraint.
