@@ -26,6 +26,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AutoGrowTextarea } from '@/components/lk/AutoGrowTextarea';
+import { ResizableTh } from '@/components/lk/ResizableTh';
+import { useResizableColumns } from '@/hooks/useResizableColumns';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ShipmentFilesPanel } from '@/components/lk/ShipmentFilesPanel';
@@ -87,6 +89,7 @@ const toneClass = (tone: 'green' | 'yellow') =>
 
 
 const HIDDEN_COLUMNS_STORAGE_KEY = 'lk_shipment_items_hidden_columns';
+const COLUMN_WIDTHS_STORAGE_KEY = 'lk_shipment_items_column_widths';
 
 
 function loadHiddenColumns(): Set<string> {
@@ -129,6 +132,8 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
   const [savingAll, setSavingAll] = useState(false);
   const [checkedIds, setCheckedIds] = useState<Set<number>>(new Set());
   const [generateModalOpen, setGenerateModalOpen] = useState(false);
+
+  const { getWidth, startResize, resetWidths } = useResizableColumns(COLUMN_WIDTHS_STORAGE_KEY, 200);
 
   // ─────────────────────────────────────────────────────────────
   // Справочник сохранённых организаций — ВСТАВИТЬ ЭТОТ БЛОК
@@ -670,6 +675,9 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
         <div className="flex items-center justify-between flex-wrap gap-2">
           <h3 className="font-semibold text-lg">{lkT('section_products', language)}</h3>
           <div className="flex items-center gap-2">
+            <Button size="sm" variant="outline" onClick={resetWidths} title="Сбросить ширину колонок">
+              Сбросить ширину
+            </Button>
             <Button size="sm" variant="outline" onClick={saveAllItems} disabled={savingAll}>
               {savingAll ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Save className="h-4 w-4 mr-1" />}
               {savingAll ? 'Сохранение…' : lkT('btn_save', language)}
@@ -693,13 +701,17 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
 
 
         <div className="hidden md:block border rounded-md overflow-auto max-h-[70vh]">
-          <table className="w-full text-sm border-collapse">
+          <table className="text-sm border-collapse" style={{ tableLayout: 'fixed', width: 'max-content', minWidth: '100%' }}>
             <thead className="sticky top-0 z-10 bg-background shadow-sm">
               <tr>
                 <th className="p-2 border-b text-center w-10">{lkT('th_check', language)}</th>
                 <th className="p-2 border-b text-center w-10">{lkT('th_number', language)}</th>
                 {visibleFields.map((f) => (
-                  <th key={f.key as string} className="p-2 border-b text-left align-middle min-w-[180px]">
+                  <ResizableTh
+                    key={f.key as string}
+                    width={getWidth(f.key as string)}
+                    onResizeStart={(e) => startResize(f.key as string, e)}
+                  >
                     <div className="flex items-center justify-between gap-2">
                       <span>{lkT(f.labelKey, language)}</span>
                       <button
@@ -711,7 +723,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
                         <EyeOff className="h-3.5 w-3.5" />
                       </button>
                     </div>
-                  </th>
+                  </ResizableTh>
                 ))}
                 <th className="p-2 border-b text-center w-20">{lkT('th_actions', language)}</th>
               </tr>
@@ -729,6 +741,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
                   onCheckedChange={(c) => toggleChecked(item.id, c)}
                   onInvalidate={invalidate}
                   visibleFields={visibleFields}
+                  getWidth={getWidth}
                   registerSaveAll={registerSaveAll}
                   unregisterSaveAll={unregisterSaveAll}
                 />
@@ -769,6 +782,7 @@ export function ShipmentItemsPanel({ shipmentId, shipment, items, isManager }: P
               onCheckedChange={(c) => toggleChecked(item.id, c)}
               onInvalidate={invalidate}
               visibleFields={visibleFields}
+              getWidth={getWidth}
               registerSaveAll={registerSaveAll}
               unregisterSaveAll={unregisterSaveAll}
             />
@@ -863,6 +877,7 @@ interface RowProps {
   onCheckedChange: (checked: boolean) => void;
   onInvalidate: () => void;
   visibleFields: typeof PRODUCT_FIELD_KEYS;
+  getWidth: (key: string) => number;
   registerSaveAll: (itemId: number, fn: () => Promise<void>) => void;
   unregisterSaveAll: (itemId: number) => void;
 }
@@ -878,6 +893,7 @@ function ShipmentItemRow({
   onCheckedChange,
   onInvalidate,
   visibleFields,
+  getWidth,
   registerSaveAll,
   unregisterSaveAll,
 }: RowProps) {
@@ -977,14 +993,18 @@ function ShipmentItemRow({
             {busy && <Loader2 className="h-3 w-3 animate-spin inline ml-1" />}
           </td>
           {visibleFields.map((f) => (
-            <td key={f.key as string} className="p-2">
+            <td
+              key={f.key as string}
+              className="p-2"
+              style={{ width: getWidth(f.key as string), minWidth: getWidth(f.key as string), maxWidth: getWidth(f.key as string) }}
+            >
               {f.textarea ? (
                 <AutoGrowTextarea
                   rows={f.rows || 3}
                   value={(values as any)[f.key] || ''}
                   onChange={(e) => setField(f.key as keyof ShipmentItem, e.target.value)}
                   onBlur={() => saveIfChanged(f.key as keyof ShipmentItem)}
-                  className={`min-w-[240px] ${toneClass(f.tone)}`}
+                  className={`w-full ${toneClass(f.tone)}`}
                 />
               ) : (
                 <Input

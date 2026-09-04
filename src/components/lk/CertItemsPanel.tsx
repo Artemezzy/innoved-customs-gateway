@@ -22,6 +22,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AutoGrowTextarea } from '@/components/lk/AutoGrowTextarea';
+import { ResizableTh } from '@/components/lk/ResizableTh';
+import { useResizableColumns } from '@/hooks/useResizableColumns';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -83,6 +85,7 @@ const toneClass = (tone: 'green' | 'yellow') =>
     : 'bg-yellow-50 dark:bg-yellow-950/30 border-yellow-200 dark:border-yellow-900';
 
 const HIDDEN_COLUMNS_STORAGE_KEY = 'lk_cert_items_hidden_columns';
+const COLUMN_WIDTHS_STORAGE_KEY = 'lk_cert_items_column_widths';
 
 function loadHiddenColumns(): Set<string> {
   if (typeof window === 'undefined') return new Set();
@@ -117,6 +120,8 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
 
   const [hiddenColumns, setHiddenColumns] = useState<Set<string>>(() => loadHiddenColumns());
   const [savingAll, setSavingAll] = useState(false);
+
+  const { getWidth, startResize, resetWidths } = useResizableColumns(COLUMN_WIDTHS_STORAGE_KEY, 200);
 
   const saveAllFns = useRef<Record<number, () => Promise<void>>>({});
   const registerSaveAll = (itemId: number, fn: () => Promise<void>) => {
@@ -336,6 +341,9 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
         <div className="flex items-center justify-between flex-wrap gap-2">
           <h3 className="font-semibold text-lg">{lkT('section_products', language)}</h3>
           <div className="flex items-center gap-2">
+            <Button size="sm" variant="outline" onClick={resetWidths} title="Сбросить ширину колонок">
+              Сбросить ширину
+            </Button>
             <Button size="sm" variant="outline" onClick={saveAllItems} disabled={savingAll}>
               {savingAll ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Save className="h-4 w-4 mr-1" />}
               {savingAll ? 'Сохранение…' : lkT('btn_save', language)}
@@ -356,13 +364,17 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
         </div>
 
         <div className="hidden md:block border rounded-md overflow-auto max-h-[70vh]">
-          <table className="w-full text-sm border-collapse">
+          <table className="text-sm border-collapse" style={{ tableLayout: 'fixed', width: 'max-content', minWidth: '100%' }}>
             <thead className="sticky top-0 z-10 bg-background shadow-sm">
               <tr>
                 <th className="p-2 border-b text-center w-10">{lkT('th_check', language)}</th>
                 <th className="p-2 border-b text-center w-10">{lkT('th_number', language)}</th>
                 {visibleFields.map((f) => (
-                  <th key={f.key as string} className="p-2 border-b text-left align-middle min-w-[180px]">
+                  <ResizableTh
+                    key={f.key as string}
+                    width={getWidth(f.key as string)}
+                    onResizeStart={(e) => startResize(f.key as string, e)}
+                  >
                     <div className="flex items-center justify-between gap-2">
                       <span>{lkT(f.labelKey, language)}</span>
                       <button
@@ -374,7 +386,7 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
                         <EyeOff className="h-3.5 w-3.5" />
                       </button>
                     </div>
-                  </th>
+                  </ResizableTh>
                 ))}
                 <th className="p-2 border-b text-center w-24">{lkT('th_actions', language)}</th>
               </tr>
@@ -389,6 +401,7 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
                   canDelete={items.length > 1}
                   onInvalidate={invalidate}
                   visibleFields={visibleFields}
+                  getWidth={getWidth}
                   registerSaveAll={registerSaveAll}
                   unregisterSaveAll={unregisterSaveAll}
                 />
@@ -424,6 +437,7 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
               canDelete={items.length > 1}
               onInvalidate={invalidate}
               visibleFields={visibleFields}
+              getWidth={getWidth}
               registerSaveAll={registerSaveAll}
               unregisterSaveAll={unregisterSaveAll}
             />
@@ -443,6 +457,7 @@ interface RowProps {
   canDelete: boolean;
   onInvalidate: () => void;
   visibleFields: typeof PRODUCT_FIELD_KEYS;
+  getWidth: (key: string) => number;
   registerSaveAll: (itemId: number, fn: () => Promise<void>) => void;
   unregisterSaveAll: (itemId: number) => void;
 }
@@ -454,6 +469,7 @@ function CertItemRow({
   canDelete,
   onInvalidate,
   visibleFields,
+  getWidth,
   registerSaveAll,
   unregisterSaveAll,
 }: RowProps) {
@@ -552,14 +568,18 @@ function CertItemRow({
             {busy && <Loader2 className="h-3 w-3 animate-spin inline ml-1" />}
           </td>
           {visibleFields.map((f) => (
-            <td key={f.key as string} className="p-2">
+            <td
+              key={f.key as string}
+              className="p-2"
+              style={{ width: getWidth(f.key as string), minWidth: getWidth(f.key as string), maxWidth: getWidth(f.key as string) }}
+            >
               {f.textarea ? (
                 <AutoGrowTextarea
                   rows={f.rows || 3}
                   value={(values as any)[f.key] || ''}
                   onChange={(e) => setField(f.key as keyof CertRequestItem, e.target.value)}
                   onBlur={() => saveIfChanged(f.key as keyof CertRequestItem)}
-                  className={`min-w-[240px] ${toneClass(f.tone)}`}
+                  className={`w-full ${toneClass(f.tone)}`}
                 />
               ) : (
                 <Input
