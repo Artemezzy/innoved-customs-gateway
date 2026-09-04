@@ -21,7 +21,7 @@ import { CertRequest, CertRequestItem } from '@/types/lk';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
+import { AutoGrowTextarea } from '@/components/lk/AutoGrowTextarea';
 import { Card } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -554,7 +554,7 @@ function CertItemRow({
           {visibleFields.map((f) => (
             <td key={f.key as string} className="p-2">
               {f.textarea ? (
-                <Textarea
+                <AutoGrowTextarea
                   rows={f.rows || 3}
                   value={(values as any)[f.key] || ''}
                   onChange={(e) => setField(f.key as keyof CertRequestItem, e.target.value)}
@@ -651,7 +651,7 @@ function CertItemRow({
         <div key={f.key as string} className="space-y-1">
           <Label className="text-xs text-muted-foreground">{lkT(f.labelKey, language)}</Label>
           {f.textarea ? (
-            <Textarea
+            <AutoGrowTextarea
               rows={f.rows || 3}
               value={(values as any)[f.key] || ''}
               onChange={(e) => setField(f.key as keyof CertRequestItem, e.target.value)}
