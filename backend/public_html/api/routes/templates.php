@@ -13,7 +13,7 @@ if ($method === 'GET' && $seg[0] === 'templates' && isset($seg[1]) && ($seg[2] ?
     $key = (string)$seg[1];
     if (!isset($templates[$key])) err('Шаблон не найден', 404);
 
-    $path = __DIR__ . '/templates/' . $templates[$key]['file'];
+    $path = dirname(__DIR__) . '/templates/' . $templates[$key]['file'];
     if (!is_file($path) || !is_readable($path)) err('Файл шаблона отсутствует на сервере', 404);
 
     send_file_download(

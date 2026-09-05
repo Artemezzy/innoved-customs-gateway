@@ -292,7 +292,7 @@ function doc_table_xml(string $title, array $rows): string {
  * таблицы, колонтитулы, стили и изображения шаблона сохраняются.
  */
 function generate_cert_doc(array $request, array $item): string {
-    $templatePath = __DIR__ . '/templates/cert-request-template.docx';
+    $templatePath = dirname(__DIR__) . '/templates/cert-request-template.docx';
 
     if (!is_file($templatePath) || !is_readable($templatePath)) {
         err('Не найден или недоступен шаблон заявки: ' . $templatePath, 500);
