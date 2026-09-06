@@ -580,4 +580,57 @@ export const lkApi = {
 
   getNotificationSettings: () => request<import('@/types/lk').NotificationSettings>('GET', '/me/notifications'),
   updateNotificationSettings: (payload: { enabled: boolean; emails: string[] }) => request<{ ok: boolean }>('PUT', '/me/notifications', payload),
+
+  confirmCertRequestItem: (requestId: number, itemId: number) =>
+    request<{ id: number; suffix_no: number }>(
+      'POST',
+      `/cert-requests/${requestId}/items/${itemId}/confirm`
+    ),
+
+  confirmedItems: () => request<import('@/types/lk').ConfirmedItem[]>('GET', '/confirmed-items'),
+
+  updateConfirmedItem: (
+    id: number,
+    data: Partial<{
+      product: string;
+      tn_ved: string;
+      model_article: string;
+      trademark: string;
+      applicant_profile_id: number | null;
+      client_id: number | null;
+    }>
+  ) => request<{ ok: boolean }>('PUT', `/confirmed-items/${id}`, data),
+
+  updateConfirmedItemStatus: (id: number, status: import('@/types/lk').ConfirmedItemStatus) =>
+    request<{ ok: boolean }>('PUT', `/confirmed-items/${id}/status`, { status }),
+
+  allowConfirmedItemReupload: (id: number, slot: import('@/types/lk').ConfirmedItemFileSlot) =>
+    request<{ ok: boolean }>('PUT', `/confirmed-items/${id}/files/${slot}/allow-reupload`),
+
+  uploadConfirmedItemFile: (
+    id: number,
+    slot: import('@/types/lk').ConfirmedItemFileSlot,
+    form: FormData
+  ) => request<{ id: number }>('POST', `/confirmed-items/${id}/files/${slot}`, form, true),
+
+  downloadConfirmedItemFile: async (
+    id: number,
+    slot: import('@/types/lk').ConfirmedItemFileSlot,
+    filename?: string
+  ) => {
+    const token = getAuthToken();
+    const res = await fetch(`${BASE_URL}/confirmed-items/${id}/files/${slot}/download`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!res.ok) throw new Error(`Не удалось скачать (HTTP ${res.status})`);
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || `file-${id}-${slot}`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  },
 };

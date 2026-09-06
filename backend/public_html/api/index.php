@@ -22,6 +22,7 @@ require __DIR__ . '/routes/clients.php';
 require __DIR__ . '/routes/cert_requests.php';
 require __DIR__ . '/routes/shipments.php';
 require __DIR__ . '/routes/cert_centers.php';
+require __DIR__ . '/routes/confirmed_items.php';
 require __DIR__ . '/routes/templates.php';
 
 err('Маршрут не найден', 404);

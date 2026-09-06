@@ -209,6 +209,85 @@ function organization_profiles_guard(array $me, int $clientId): void {
     }
 }
 
+/** Сопоставление слота файла и статуса, который он подтверждает (см. docs/PROJECT_CONTEXT.md). */
+
+const CONFIRMED_ITEM_SLOT_STATUS_MAP = [
+    'agreed_application' => 'app_agreed',
+    'agreed_id_doc' => 'id_doc_provided',
+    'agreed_layout' => 'layout_agreed',
+    'payment_invoice' => 'cc_paid',
+    'cc_contract' => 'cc_contract_signed',
+    'import_letter' => 'import_letter_provided',
+    'samples_dt' => 'samples_dt_provided',
+    'final_document' => 'final_doc_received',
+];
+
+const CONFIRMED_ITEM_ALLOWED_SLOTS = [
+    'agreed_application', 'agreed_id_doc', 'agreed_layout', 'payment_invoice',
+    'cc_contract', 'import_letter', 'samples_dt', 'final_document',
+];
+
+const CONFIRMED_ITEM_ALLOWED_STATUSES = [
+    'confirmed', 'app_agreed', 'id_doc_provided', 'layout_agreed', 'cc_paid',
+    'cc_contract_signed', 'import_letter_provided', 'samples_dt_provided',
+    'final_doc_received', 'rejected',
+];
+
+/**
+ * Guard доступа к подтверждённой позиции.
+ *
+ * manager: полный доступ ко всем.
+ * cert_center: доступ только если позиция принадлежит заявке,
+ *   назначенной на этот серт-центр (через lk_confirmed_items.source_request_id
+ *   -> lk_cert_requests.cert_center_id).
+ * client: только чтение, только если confirmed_items.client_id совпадает
+ *   с client_id из JWT (проверяется отдельно в самих обработчиках GET-списка,
+ *   этот guard используется для мутирующих действий, где client всегда 403).
+ */
+
+function confirmed_item_guard(array $me, int $id): array {
+    $st = db()->prepare(
+        'SELECT ci.*, r.cert_center_id AS request_cert_center_id
+         FROM lk_confirmed_items ci
+         JOIN lk_cert_requests r ON r.id = ci.source_request_id
+         WHERE ci.id=?'
+    );
+    $st->execute([$id]);
+    $row = $st->fetch();
+    if (!$row) err('Подтверждённая позиция не найдена', 404);
+
+    if ($me['role'] === 'cert_center' && (int)$row['request_cert_center_id'] !== (int)($me['cert_center_id'] ?? 0)) {
+        err('Нет доступа', 403);
+    }
+    if ($me['role'] === 'client' && (int)($row['client_id'] ?? 0) !== (int)($me['client_id'] ?? 0)) {
+        err('Нет доступа', 403);
+    }
+    if (!in_array($me['role'], ['manager', 'cert_center', 'client'], true)) {
+        err('Нет доступа', 403);
+    }
+    return $row;
+}
+
+/** Человекочитаемые лейблы статусов подтверждённой позиции (для очереди уведомлений/логов). */
+
+function confirmed_item_status_label(string $status): string {
+    $labels = [
+        'confirmed' => 'Подтверждено',
+        'app_agreed' => 'Заявка согласована',
+        'id_doc_provided' => 'ДУЛ предоставлен',
+        'layout_agreed' => 'Макет согласован',
+        'cc_paid' => 'Проведена оплата в СЦ',
+        'cc_contract_signed' => 'Подписан договор с СЦ',
+        'import_letter_provided' => 'Предоставлено письмо на ввоз',
+        'samples_dt_provided' => 'ДТ образцов предоставлен',
+        'final_doc_received' => 'Финальный документ получен',
+        'rejected' => 'Отклонено',
+    ];
+    return $labels[$status] ?? $status;
+}
+
+
+
 /**
  * Проверяет тип профиля организации.
  */

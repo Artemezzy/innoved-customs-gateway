@@ -7,6 +7,7 @@ import {
   MessageSquare,
   Award,
   ClipboardList,
+  CheckCircle2,
   LogOut,
   Menu,
   Bell,
@@ -37,27 +38,29 @@ export function LKLayout({ children }: { children: ReactNode }) {
     return <Navigate to="/lk/login" replace />;
   }
 
-  const navItems: NavItem[] =
-    user?.role === 'manager'
+  const navItems: NavItem[] = user?.role === 'manager'
+    ? [
+      { to: '/lk/dashboard', label: lkT('nav_dashboard', language), icon: LayoutDashboard },
+      { to: '/lk/clients', label: lkT('nav_clients', language), icon: Users },
+      { to: '/lk/shipments', label: lkT('nav_shipments', language), icon: Package },
+      { to: '/lk/messages', label: lkT('nav_messages', language), icon: MessageSquare },
+      { to: '/lk/cert-centers', label: lkT('nav_cert_centers', language), icon: Award },
+      { to: '/lk/cert-requests', label: lkT('nav_cert_requests', language), icon: ClipboardList },
+      { to: '/lk/confirmed-items', label: lkT('nav_confirmed_items', language), icon: CheckCircle2 },
+      { to: '/lk/notifications', label: lkT('nav_notifications', language), icon: Bell },
+    ]
+    : user?.role === 'cert_center'
       ? [
-          { to: '/lk/dashboard', label: lkT('nav_dashboard', language), icon: LayoutDashboard },
-          { to: '/lk/clients', label: lkT('nav_clients', language), icon: Users },
-          { to: '/lk/shipments', label: lkT('nav_shipments', language), icon: Package },
-          { to: '/lk/messages', label: lkT('nav_messages', language), icon: MessageSquare },
-          { to: '/lk/cert-centers', label: lkT('nav_cert_centers', language), icon: Award },
-          { to: '/lk/cert-requests', label: lkT('nav_cert_requests', language), icon: ClipboardList },
-          { to: '/lk/notifications', label: lkT('nav_notifications', language), icon: Bell },
-        ]
-      : user?.role === 'cert_center'
-      ? [
-          { to: '/lk/cert-requests', label: lkT('nav_cert_requests', language), icon: ClipboardList },
-          { to: '/lk/notifications', label: lkT('nav_notifications', language), icon: Bell },
-        ]
+        { to: '/lk/cert-requests', label: lkT('nav_cert_requests', language), icon: ClipboardList },
+        { to: '/lk/confirmed-items', label: lkT('nav_confirmed_items', language), icon: CheckCircle2 },
+        { to: '/lk/notifications', label: lkT('nav_notifications', language), icon: Bell },
+      ]
       : [
-          { to: '/lk/shipments', label: lkT('nav_shipments', language), icon: Package },
-          { to: '/lk/messages', label: lkT('nav_messages', language), icon: MessageSquare },
-          { to: '/lk/notifications', label: lkT('nav_notifications', language), icon: Bell },
-        ];
+        { to: '/lk/shipments', label: lkT('nav_shipments', language), icon: Package },
+        { to: '/lk/messages', label: lkT('nav_messages', language), icon: MessageSquare },
+        { to: '/lk/confirmed-items', label: lkT('nav_confirmed_items', language), icon: CheckCircle2 },
+        { to: '/lk/notifications', label: lkT('nav_notifications', language), icon: Bell },
+      ];
 
   const handleLogout = () => {
     logout();

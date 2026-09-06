@@ -255,6 +255,7 @@ export interface CertRequestItem {
   id: number;
   position_no: number;
   is_checked: boolean;
+  is_confirmed: boolean;
   company: string;
   product: string;
   tech_description: string;
@@ -308,4 +309,103 @@ export interface CertMessage {
 export interface NotificationSettings {
   enabled: boolean;
   emails: string[];
+}
+
+export type ConfirmedItemStatus =
+  | 'confirmed'
+  | 'app_agreed'
+  | 'id_doc_provided'
+  | 'layout_agreed'
+  | 'cc_paid'
+  | 'cc_contract_signed'
+  | 'import_letter_provided'
+  | 'samples_dt_provided'
+  | 'final_doc_received'
+  | 'rejected';
+
+export const CONFIRMED_ITEM_STATUS_LABELS: Record<ConfirmedItemStatus, string> = {
+  confirmed: 'Подтверждено',
+  app_agreed: 'Заявка согласована',
+  id_doc_provided: 'ДУЛ предоставлен',
+  layout_agreed: 'Макет согласован',
+  cc_paid: 'Проведена оплата в СЦ',
+  cc_contract_signed: 'Подписан договор с СЦ',
+  import_letter_provided: 'Предоставлено письмо на ввоз',
+  samples_dt_provided: 'ДТ образцов предоставлен',
+  final_doc_received: 'Финальный документ получен',
+  rejected: 'Отклонено',
+};
+
+export const CONFIRMED_ITEM_STATUS_ORDER: ConfirmedItemStatus[] = [
+  'confirmed',
+  'app_agreed',
+  'id_doc_provided',
+  'layout_agreed',
+  'cc_paid',
+  'cc_contract_signed',
+  'import_letter_provided',
+  'samples_dt_provided',
+  'final_doc_received',
+  'rejected',
+];
+
+export type ConfirmedItemFileSlot =
+  | 'agreed_application'
+  | 'agreed_id_doc'
+  | 'agreed_layout'
+  | 'payment_invoice'
+  | 'cc_contract'
+  | 'import_letter'
+  | 'samples_dt'
+  | 'final_document';
+
+export const CONFIRMED_ITEM_SLOT_LABELS: Record<ConfirmedItemFileSlot, string> = {
+  agreed_application: 'Согласованная заявка',
+  agreed_id_doc: 'Согласованный ДУЛ',
+  agreed_layout: 'Согласованный макет',
+  payment_invoice: 'Счёт на оплату',
+  cc_contract: 'Договор с СЦ',
+  import_letter: 'Письмо на ввоз',
+  samples_dt: 'ДТ на ввоз',
+  final_document: 'Сертификат / Письмо',
+};
+
+export const CONFIRMED_ITEM_SLOT_ORDER: ConfirmedItemFileSlot[] = [
+  'agreed_application',
+  'agreed_id_doc',
+  'agreed_layout',
+  'payment_invoice',
+  'cc_contract',
+  'import_letter',
+  'samples_dt',
+  'final_document',
+];
+
+export interface ConfirmedItemFile {
+  id: number;
+  slot: ConfirmedItemFileSlot;
+  filename_original: string;
+  allow_center_reupload: number;
+  created_at: string;
+}
+
+export interface ConfirmedItem {
+  id: number;
+  source_request_id: number;
+  source_request_item_id: number;
+  suffix_no: number;
+  number: string;
+  source_number: string;
+  status: ConfirmedItemStatus;
+  applicant_profile_id: number | null;
+  applicant_name: string | null;
+  client_id: number | null;
+  client_name: string | null;
+  product: string;
+  tn_ved: string;
+  model_article: string;
+  trademark: string;
+  created_at: string;
+  updated_at: string;
+  files: ConfirmedItemFile[];
 }

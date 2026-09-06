@@ -65,7 +65,7 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && !isset
     $sti = db()->prepare('SELECT * FROM lk_cert_request_items WHERE request_id=? ORDER BY position_no ASC, id ASC');
     $sti->execute([$rid]); $items = $sti->fetchAll();
     foreach ($items as &$item) {
-        $item['is_checked'] = (bool)$item['is_checked'];
+        $item['is_checked'] = (bool)$item['is_checked']; $item['is_confirmed'] = (bool)$item['is_confirmed'];
     }
     $r['number'] = document_number_label($r['document_number'] ?? null);
     $r['has_unread'] = false;
@@ -107,7 +107,7 @@ if ($method === 'GET' && $seg[0] === 'cert-requests' && isset($seg[1]) && ($seg[
     $me = auth(); $rid = (int)$seg[1]; cert_request_guard($me, $rid);
     $st = db()->prepare('SELECT * FROM lk_cert_request_items WHERE request_id=? ORDER BY position_no ASC, id ASC');
     $st->execute([$rid]); $items = $st->fetchAll();
-    foreach ($items as &$item) $item['is_checked'] = (bool)$item['is_checked'];
+    foreach ($items as &$item) $item['is_checked'] = (bool)$item['is_checked']; $item['is_confirmed'] = (bool)$item['is_confirmed'];
     out($items);
 }
 

@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   ChevronDown,
   ChevronRight,
+  CheckCircle2,
   Eye,
   EyeOff,
   FileText,
@@ -16,6 +17,7 @@ import { CertFilesPanel } from '@/components/lk/CertFilesPanel';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
 import { useLKLanguage } from '@/contexts/LKLanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { lkT, LKDictKey } from '@/lib/lkTranslations';
 import { CertRequest, CertRequestItem } from '@/types/lk';
 import { Button } from '@/components/ui/button';
@@ -107,6 +109,8 @@ function saveHiddenColumns(cols: Set<string>) {
 export function CertItemsPanel({ requestId, request, items, canEditHeader = false }: Props) {
   const qc = useQueryClient();
   const { language } = useLKLanguage();
+  const { user } = useAuth();
+  const isManager = user?.role === 'manager';
   const [requestValues, setRequestValues] = useState({
     applicant_org: request.applicant_org || '',
     applicant_address: request.applicant_address || '',
@@ -399,6 +403,7 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
                   item={item}
                   variant="row"
                   canDelete={items.length > 1}
+                  isManager={isManager}
                   onInvalidate={invalidate}
                   visibleFields={visibleFields}
                   getWidth={getWidth}
@@ -435,6 +440,7 @@ export function CertItemsPanel({ requestId, request, items, canEditHeader = fals
               item={item}
               variant="card"
               canDelete={items.length > 1}
+              isManager={isManager}
               onInvalidate={invalidate}
               visibleFields={visibleFields}
               getWidth={getWidth}
@@ -455,6 +461,7 @@ interface RowProps {
   item: CertRequestItem;
   variant: 'row' | 'card';
   canDelete: boolean;
+  isManager: boolean;
   onInvalidate: () => void;
   visibleFields: typeof PRODUCT_FIELD_KEYS;
   getWidth: (key: string) => number;
@@ -467,6 +474,7 @@ function CertItemRow({
   item,
   variant,
   canDelete,
+  isManager,
   onInvalidate,
   visibleFields,
   getWidth,
@@ -500,6 +508,15 @@ function CertItemRow({
   const generateSingleDoc = useMutation({
     mutationFn: () => lkApi.generateCertRequestDoc(requestId, [item.id]),
     onError: (e: any) => toast.error(e?.message || 'Не удалось сформировать заявку'),
+  });
+
+  const confirmItem = useMutation({
+    mutationFn: () => lkApi.confirmCertRequestItem(requestId, item.id),
+    onSuccess: () => {
+      toast.success('Позиция перенесена в подтверждённые заявки');
+      onInvalidate();
+    },
+    onError: (e: any) => toast.error(e?.message || 'Не удалось перенести позицию'),
   });
 
   const setField = (key: keyof CertRequestItem, v: string | boolean) =>
@@ -606,6 +623,21 @@ function CertItemRow({
                   <FileText className="h-4 w-4" />
                 )}
               </Button>
+              {isManager && !item.is_confirmed && (
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  title="Перенести в подтверждённые заявки"
+                  onClick={() => confirmItem.mutate()}
+                  disabled={confirmItem.isPending}
+                >
+                  {confirmItem.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <CheckCircle2 className="h-4 w-4" />
+                  )}
+                </Button>
+              )}
               {deleteBtn}
             </div>
           </td>
@@ -663,6 +695,21 @@ function CertItemRow({
               <FileText className="h-4 w-4" />
             )}
           </Button>
+          {isManager && !item.is_confirmed && (
+            <Button
+              size="icon"
+              variant="ghost"
+              title="Перенести в подтверждённые заявки"
+              onClick={() => confirmItem.mutate()}
+              disabled={confirmItem.isPending}
+            >
+              {confirmItem.isPending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <CheckCircle2 className="h-4 w-4" />
+              )}
+            </Button>
+          )}
           {deleteBtn}
         </div>
       </div>

@@ -8,6 +8,9 @@ export const lkDict = {
   nav_messages: { ru: 'Сообщения', en: 'Messages', zh: '消息' },
   nav_cert_centers: { ru: 'Серт. центры', en: 'Cert. Centers', zh: '认证中心' },
   nav_cert_requests: { ru: 'Заявки на сертификацию', en: 'Certification Requests', zh: '认证申请' },
+  
+  nav_confirmed_items: { ru: 'Подтверждённые заявки', en: 'Confirmed Requests', zh: '已确认申请' },
+
   nav_notifications: { ru: 'Уведомления', en: 'Notifications', zh: '通知' },
   nav_logout: { ru: 'Выйти', en: 'Log out', zh: '退出登录' },
 
