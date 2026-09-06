@@ -1,5 +1,19 @@
+/**
+ * ОБНОВЛЕНО: src/pages/lk/LKConfirmedItemsPage.tsx
+ *
+ * Изменения относительно предыдущей версии:
+ * 1. Колонка «Источник» теперь кликабельная ссылка на /lk/cert-requests/{source_request_id}.
+ * 2. Слот payment_invoice («Счёт на оплату») скрыт от роли client — как в заголовке
+ *    таблицы, так и в самих строках. Видимые слоты вычисляются один раз через
+ *    visibleSlots и передаются в ConfirmedItemRow, чтобы <thead> и <tbody> не разъехались.
+ *
+ * ВАЖНО: используется `const { user } = useAuth();` (не `const user = useAuth();`) —
+ * см. исправление из-за ошибки TS2339 "Property 'role' does not exist on type 'AuthContextValue'".
+ */
+
 import { useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import { Download, Loader2, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
@@ -46,6 +60,7 @@ export default function LKConfirmedItemsPage() {
   const qc = useQueryClient();
   const isManager = user?.role === 'manager';
   const isCertCenter = user?.role === 'cert_center';
+  const isClient = user?.role === 'client';
 
   const { data, isLoading } = useQuery({
     queryKey: ['lk', 'confirmed-items'],
@@ -53,6 +68,11 @@ export default function LKConfirmedItemsPage() {
   });
 
   const rows = useMemo(() => sortRows(data ?? []), [data]);
+
+  const visibleSlots = useMemo(
+    () => CONFIRMED_ITEM_SLOT_ORDER.filter((slot) => !(isClient && slot === 'payment_invoice')),
+    [isClient]
+  );
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ['lk', 'confirmed-items'] });
 
@@ -75,7 +95,7 @@ export default function LKConfirmedItemsPage() {
               <th className="p-2 border-b text-left min-w-[140px]">ТН ВЭД</th>
               <th className="p-2 border-b text-left min-w-[160px]">Модель</th>
               <th className="p-2 border-b text-left min-w-[160px]">Торговая марка</th>
-              {CONFIRMED_ITEM_SLOT_ORDER.map((slot) => (
+              {visibleSlots.map((slot) => (
                 <th key={slot} className="p-2 border-b text-left min-w-[200px]">
                   {CONFIRMED_ITEM_SLOT_LABELS[slot]}
                 </th>
@@ -89,12 +109,13 @@ export default function LKConfirmedItemsPage() {
                 row={row}
                 isManager={isManager}
                 isCertCenter={isCertCenter}
+                visibleSlots={visibleSlots}
                 onInvalidate={invalidate}
               />
             ))}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={9 + CONFIRMED_ITEM_SLOT_ORDER.length} className="p-6 text-center text-muted-foreground">
+                <td colSpan={9 + visibleSlots.length} className="p-6 text-center text-muted-foreground">
                   Нет подтверждённых позиций
                 </td>
               </tr>
@@ -110,10 +131,11 @@ interface RowProps {
   row: ConfirmedItem;
   isManager: boolean;
   isCertCenter: boolean;
+  visibleSlots: ConfirmedItemFileSlot[];
   onInvalidate: () => void;
 }
 
-function ConfirmedItemRow({ row, isManager, isCertCenter, onInvalidate }: RowProps) {
+function ConfirmedItemRow({ row, isManager, isCertCenter, visibleSlots, onInvalidate }: RowProps) {
   const [values, setValues] = useState({
     product: row.product,
     tn_ved: row.tn_ved,
@@ -183,7 +205,15 @@ function ConfirmedItemRow({ row, isManager, isCertCenter, onInvalidate }: RowPro
         </Select>
       </td>
       <td className="p-2 whitespace-nowrap">{row.number}</td>
-      <td className="p-2 whitespace-nowrap">{row.source_number}</td>
+      <td className="p-2 whitespace-nowrap">
+        <Link
+          to={`/lk/cert-requests/${row.source_request_id}`}
+          className="text-primary underline-offset-2 hover:underline"
+          title="Открыть исходную заявку на сертификацию"
+        >
+          {row.source_number}
+        </Link>
+      </td>
       <td className="p-2 whitespace-nowrap">{new Date(row.updated_at).toLocaleString('ru-RU')}</td>
       <td className="p-2">
         {isManager ? (
@@ -249,7 +279,7 @@ function ConfirmedItemRow({ row, isManager, isCertCenter, onInvalidate }: RowPro
           disabled={!isManager}
         />
       </td>
-      {CONFIRMED_ITEM_SLOT_ORDER.map((slot) => (
+      {visibleSlots.map((slot) => (
         <FileSlotCell
           key={slot}
           confirmedItemId={row.id}
