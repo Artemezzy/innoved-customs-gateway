@@ -513,7 +513,7 @@ function CertItemRow({
   const confirmItem = useMutation({
     mutationFn: () => lkApi.confirmCertRequestItem(requestId, item.id),
     onSuccess: () => {
-      toast.success('Позиция перенесена в подтверждённые заявки');
+      toast.success(lkT('toast_item_confirmed', language));
       onInvalidate();
     },
     onError: (e: any) => toast.error(e?.message || 'Не удалось перенести позицию'),
@@ -627,7 +627,7 @@ function CertItemRow({
                 <Button
                   size="icon"
                   variant="ghost"
-                  title="Перенести в подтверждённые заявки"
+                  title={lkT('btn_confirm_transfer', language)}
                   onClick={() => confirmItem.mutate()}
                   disabled={confirmItem.isPending}
                 >

@@ -293,6 +293,55 @@ export const lkDict = {
   th_linked_cert_requests: { ru: 'Заявка на сертификацию', en: 'Certification request', zh: '认证申请' },
   th_linked_shipment: { ru: 'Поставка', en: 'Shipment', zh: '货运' },
 
+  page_confirmed_items_title: { ru: 'Подтверждённые заявки', en: 'Confirmed Requests', zh: '已确认申请' },
+
+  th_confirmed_status: { ru: 'Статус', en: 'Status', zh: '状态' },
+  th_confirmed_number: { ru: '№', en: 'No.', zh: '编号' },
+  th_confirmed_source: { ru: 'Источник', en: 'Source', zh: '来源' },
+  th_confirmed_updated: { ru: 'Дата изменения', en: 'Updated', zh: '更新日期' },
+  th_confirmed_applicant: { ru: 'Заявитель', en: 'Applicant', zh: '申请人' },
+  th_confirmed_product: { ru: 'Наименование товара', en: 'Product name', zh: '产品名称' },
+  th_confirmed_tn_ved: { ru: 'ТН ВЭД', en: 'HS code', zh: '商品编码' },
+  th_confirmed_model: { ru: 'Модель', en: 'Model', zh: '型号' },
+  th_confirmed_trademark: { ru: 'Торговая марка', en: 'Trademark', zh: '商标' },
+
+  empty_no_confirmed_items: { ru: 'Нет подтверждённых позиций', en: 'No confirmed items', zh: '暂无已确认商品' },
+  placeholder_select_applicant: { ru: 'Выберите заявителя', en: 'Select applicant', zh: '选择申请人' },
+  placeholder_select_client_first: { ru: 'Сначала выберите клиента', en: 'Select a client first', zh: '请先选择客户' },
+  label_file_not_uploaded: { ru: 'Не загружен', en: 'Not uploaded', zh: '未上传' },
+  btn_replace_file: { ru: 'Заменить файл', en: 'Replace file', zh: '替换文件' },
+  title_open_source_request: { ru: 'Открыть исходную заявку на сертификацию', en: 'Open the source certification request', zh: '打开源认证申请' },
+  btn_allow_center_reupload: { ru: 'Разрешить замену СЦ', en: 'Allow center to replace', zh: '允许中心替换' },
+  title_allow_center_reupload: { ru: 'Разрешить сертификационному центру заменить этот файл', en: 'Allow the certification center to replace this file', zh: '允许认证中心替换此文件' },
+  toast_confirmed_file_uploaded: { ru: 'Файл загружен', en: 'File uploaded', zh: '文件已上传' },
+  toast_confirmed_reupload_allowed: { ru: 'Разрешение выдано', en: 'Permission granted', zh: '权限已授予' },
+
+  // Статусы подтверждённой позиции
+  confirmed_status_confirmed: { ru: 'Подтверждено', en: 'Confirmed', zh: '已确认' },
+  confirmed_status_app_agreed: { ru: 'Заявка согласована', en: 'Request agreed', zh: '申请已确认' },
+  confirmed_status_id_doc_provided: { ru: 'ДУЛ предоставлен', en: 'ID document provided', zh: '身份证件已提供' },
+  confirmed_status_layout_agreed: { ru: 'Макет согласован', en: 'Layout agreed', zh: '版式已确认' },
+  confirmed_status_cc_paid: { ru: 'Проведена оплата в СЦ', en: 'Payment made to the center', zh: '已向中心付款' },
+  confirmed_status_cc_contract_signed: { ru: 'Подписан договор с СЦ', en: 'Contract with the center signed', zh: '已与中心签订合同' },
+  confirmed_status_import_letter_provided: { ru: 'Предоставлено письмо на ввоз', en: 'Import letter provided', zh: '已提供进口函' },
+  confirmed_status_samples_dt_provided: { ru: 'ДТ образцов предоставлен', en: 'Sample customs declaration provided', zh: '样品报关单已提供' },
+  confirmed_status_final_doc_received: { ru: 'Финальный документ получен', en: 'Final document received', zh: '已收到最终文件' },
+  confirmed_status_rejected: { ru: 'Отклонено', en: 'Rejected', zh: '已拒绝' },
+
+  // Названия файловых слотов
+  confirmed_slot_agreed_application: { ru: 'Согласованная заявка', en: 'Agreed request', zh: '已确认申请' },
+  confirmed_slot_agreed_id_doc: { ru: 'Согласованный ДУЛ', en: 'Agreed ID document', zh: '已确认身份证件' },
+  confirmed_slot_agreed_layout: { ru: 'Согласованный макет', en: 'Agreed layout', zh: '已确认版式' },
+  confirmed_slot_payment_invoice: { ru: 'Счёт на оплату', en: 'Payment invoice', zh: '付款发票' },
+  confirmed_slot_cc_contract: { ru: 'Договор с СЦ', en: 'Contract with the center', zh: '与中心的合同' },
+  confirmed_slot_import_letter: { ru: 'Письмо на ввоз', en: 'Import letter', zh: '进口函' },
+  confirmed_slot_samples_dt: { ru: 'ДТ на ввоз', en: 'Import customs declaration', zh: '进口报关单' },
+  confirmed_slot_final_document: { ru: 'Сертификат / Письмо', en: 'Certificate / Letter', zh: '证书/函件' },
+
+  // Кнопка переноса в CertItemsPanel
+  btn_confirm_transfer: { ru: 'Перенести в подтверждённые заявки', en: 'Move to confirmed requests', zh: '转移到已确认申请' },
+  toast_item_confirmed: { ru: 'Позиция перенесена в подтверждённые заявки', en: 'Item moved to confirmed requests', zh: '商品已转移到已确认申请' },
+
 } as const;
 
 export type LKDictKey = keyof typeof lkDict;

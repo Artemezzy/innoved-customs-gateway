@@ -1,16 +1,3 @@
-/**
- * ОБНОВЛЕНО: src/pages/lk/LKConfirmedItemsPage.tsx
- *
- * Изменения относительно предыдущей версии:
- * 1. Колонка «Источник» теперь кликабельная ссылка на /lk/cert-requests/{source_request_id}.
- * 2. Слот payment_invoice («Счёт на оплату») скрыт от роли client — как в заголовке
- *    таблицы, так и в самих строках. Видимые слоты вычисляются один раз через
- *    visibleSlots и передаются в ConfirmedItemRow, чтобы <thead> и <tbody> не разъехались.
- *
- * ВАЖНО: используется `const { user } = useAuth();` (не `const user = useAuth();`) —
- * см. исправление из-за ошибки TS2339 "Property 'role' does not exist on type 'AuthContextValue'".
- */
-
 import { useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
@@ -18,13 +5,13 @@ import { Download, Loader2, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
 import { useAuth } from '@/contexts/AuthContext';
+import { useLKLanguage } from '@/contexts/LKLanguageContext';
+import { lkT, LKDictKey } from '@/lib/lkTranslations';
 import {
   ConfirmedItem,
   ConfirmedItemFileSlot,
   ConfirmedItemStatus,
-  CONFIRMED_ITEM_SLOT_LABELS,
   CONFIRMED_ITEM_SLOT_ORDER,
-  CONFIRMED_ITEM_STATUS_LABELS,
   CONFIRMED_ITEM_STATUS_ORDER,
 } from '@/types/lk';
 import { Card } from '@/components/ui/card';
@@ -55,8 +42,15 @@ function sortRows(rows: ConfirmedItem[]): ConfirmedItem[] {
   return [...rows].sort((a, b) => weight(a) - weight(b) || b.id - a.id);
 }
 
+const statusDictKey = (status: ConfirmedItemStatus): LKDictKey =>
+  `confirmed_status_${status}` as LKDictKey;
+
+const slotDictKey = (slot: ConfirmedItemFileSlot): LKDictKey =>
+  `confirmed_slot_${slot}` as LKDictKey;
+
 export default function LKConfirmedItemsPage() {
   const { user } = useAuth();
+  const { language } = useLKLanguage();
   const qc = useQueryClient();
   const isManager = user?.role === 'manager';
   const isCertCenter = user?.role === 'cert_center';
@@ -80,24 +74,24 @@ export default function LKConfirmedItemsPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-semibold">Подтверждённые заявки</h1>
+      <h1 className="text-xl font-semibold">{lkT('page_confirmed_items_title', language)}</h1>
 
       <Card className="p-0 overflow-auto">
         <table className="w-full text-sm border-collapse">
           <thead className="sticky top-0 z-10 bg-background shadow-sm">
             <tr>
-              <th className="p-2 border-b text-left min-w-[220px]">Статус</th>
-              <th className="p-2 border-b text-left">№</th>
-              <th className="p-2 border-b text-left">Источник</th>
-              <th className="p-2 border-b text-left">Дата изменения</th>
-              <th className="p-2 border-b text-left min-w-[200px]">Заявитель</th>
-              <th className="p-2 border-b text-left min-w-[200px]">Наименование товара</th>
-              <th className="p-2 border-b text-left min-w-[140px]">ТН ВЭД</th>
-              <th className="p-2 border-b text-left min-w-[160px]">Модель</th>
-              <th className="p-2 border-b text-left min-w-[160px]">Торговая марка</th>
+              <th className="p-2 border-b text-left min-w-[220px]">{lkT('th_confirmed_status', language)}</th>
+              <th className="p-2 border-b text-left">{lkT('th_confirmed_number', language)}</th>
+              <th className="p-2 border-b text-left">{lkT('th_confirmed_source', language)}</th>
+              <th className="p-2 border-b text-left">{lkT('th_confirmed_updated', language)}</th>
+              <th className="p-2 border-b text-left min-w-[200px]">{lkT('th_confirmed_applicant', language)}</th>
+              <th className="p-2 border-b text-left min-w-[200px]">{lkT('th_confirmed_product', language)}</th>
+              <th className="p-2 border-b text-left min-w-[140px]">{lkT('th_confirmed_tn_ved', language)}</th>
+              <th className="p-2 border-b text-left min-w-[160px]">{lkT('th_confirmed_model', language)}</th>
+              <th className="p-2 border-b text-left min-w-[160px]">{lkT('th_confirmed_trademark', language)}</th>
               {visibleSlots.map((slot) => (
                 <th key={slot} className="p-2 border-b text-left min-w-[200px]">
-                  {CONFIRMED_ITEM_SLOT_LABELS[slot]}
+                  {lkT(slotDictKey(slot), language)}
                 </th>
               ))}
             </tr>
@@ -116,7 +110,7 @@ export default function LKConfirmedItemsPage() {
             {rows.length === 0 && (
               <tr>
                 <td colSpan={9 + visibleSlots.length} className="p-6 text-center text-muted-foreground">
-                  Нет подтверждённых позиций
+                  {lkT('empty_no_confirmed_items', language)}
                 </td>
               </tr>
             )}
@@ -136,6 +130,7 @@ interface RowProps {
 }
 
 function ConfirmedItemRow({ row, isManager, isCertCenter, visibleSlots, onInvalidate }: RowProps) {
+  const { language } = useLKLanguage();
   const [values, setValues] = useState({
     product: row.product,
     tn_ved: row.tn_ved,
@@ -198,7 +193,7 @@ function ConfirmedItemRow({ row, isManager, isCertCenter, visibleSlots, onInvali
           <SelectContent>
             {CONFIRMED_ITEM_STATUS_ORDER.map((s) => (
               <SelectItem key={s} value={s} disabled={s === 'rejected' && !isManager}>
-                {CONFIRMED_ITEM_STATUS_LABELS[s]}
+                {lkT(statusDictKey(s), language)}
               </SelectItem>
             ))}
           </SelectContent>
@@ -209,7 +204,7 @@ function ConfirmedItemRow({ row, isManager, isCertCenter, visibleSlots, onInvali
         <Link
           to={`/lk/cert-requests/${row.source_request_id}`}
           className="text-primary underline-offset-2 hover:underline"
-          title="Открыть исходную заявку на сертификацию"
+          title={lkT('title_open_source_request', language)}
         >
           {row.source_number}
         </Link>
@@ -223,7 +218,7 @@ function ConfirmedItemRow({ row, isManager, isCertCenter, visibleSlots, onInvali
               onValueChange={(v) => updateApplicant.mutate(Number(v))}
             >
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Выберите заявителя" />
+                <SelectValue placeholder={lkT('placeholder_select_applicant', language)} />
               </SelectTrigger>
               <SelectContent>
                 {(applicantProfiles.data ?? []).map((p) => (
@@ -234,7 +229,7 @@ function ConfirmedItemRow({ row, isManager, isCertCenter, visibleSlots, onInvali
           ) : (
             <Select onValueChange={(v) => updateClient.mutate(Number(v))}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Сначала выберите клиента" />
+                <SelectValue placeholder={lkT('placeholder_select_client_first', language)} />
               </SelectTrigger>
               <SelectContent>
                 {(clients.data ?? []).map((c) => (
@@ -304,6 +299,7 @@ interface FileSlotCellProps {
 }
 
 function FileSlotCell({ confirmedItemId, slot, file, isManager, isCertCenter, onInvalidate }: FileSlotCellProps) {
+  const { language } = useLKLanguage();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const upload = useMutation({
@@ -313,7 +309,7 @@ function FileSlotCell({ confirmedItemId, slot, file, isManager, isCertCenter, on
       return lkApi.uploadConfirmedItemFile(confirmedItemId, slot, fd);
     },
     onSuccess: () => {
-      toast.success('Файл загружен');
+      toast.success(lkT('toast_confirmed_file_uploaded', language));
       onInvalidate();
     },
     onError: (e: any) => toast.error(e?.message || 'Не удалось загрузить файл'),
@@ -322,7 +318,7 @@ function FileSlotCell({ confirmedItemId, slot, file, isManager, isCertCenter, on
   const allowReupload = useMutation({
     mutationFn: () => lkApi.allowConfirmedItemReupload(confirmedItemId, slot),
     onSuccess: () => {
-      toast.success('Разрешение выдано');
+      toast.success(lkT('toast_confirmed_reupload_allowed', language));
       onInvalidate();
     },
     onError: (e: any) => toast.error(e?.message || 'Не удалось выдать разрешение'),
@@ -344,7 +340,7 @@ function FileSlotCell({ confirmedItemId, slot, file, isManager, isCertCenter, on
             <span className="truncate">{file.filename_original}</span>
           </Button>
         ) : (
-          <span className="text-xs text-muted-foreground">Не загружен</span>
+          <span className="text-xs text-muted-foreground">{lkT('label_file_not_uploaded', language)}</span>
         )}
 
         {canUpload && (
@@ -364,7 +360,7 @@ function FileSlotCell({ confirmedItemId, slot, file, isManager, isCertCenter, on
               variant="ghost"
               onClick={() => inputRef.current?.click()}
               disabled={upload.isPending}
-              title={file ? 'Заменить файл' : 'Загрузить файл'}
+              title={file ? lkT('btn_replace_file', language) : lkT('btn_upload', language)}
             >
               {upload.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
             </Button>
@@ -378,9 +374,9 @@ function FileSlotCell({ confirmedItemId, slot, file, isManager, isCertCenter, on
             className="text-xs"
             onClick={() => allowReupload.mutate()}
             disabled={allowReupload.isPending}
-            title="Разрешить сертификационному центру заменить этот файл"
+            title={lkT('title_allow_center_reupload', language)}
           >
-            Разрешить замену СЦ
+            {lkT('btn_allow_center_reupload', language)}
           </Button>
         )}
       </div>
