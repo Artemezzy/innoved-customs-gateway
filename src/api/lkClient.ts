@@ -337,6 +337,34 @@ export const lkApi = {
       ? mock.mockDeleteDocument(shipmentId, docId)
       : request<void>('DELETE', `/shipments/${shipmentId}/documents/${docId}`),
 
+  downloadDocument: async (shipmentId: number, docId: number, filename?: string) => {
+    const token = getAuthToken();
+    const res = await fetch(`${BASE_URL}/shipments/${shipmentId}/documents/${docId}/download`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+    if (!res.ok) throw new Error(`Не удалось скачать (HTTP ${res.status})`);
+
+    const contentDisposition = res.headers.get('content-disposition') || '';
+    let serverFilename: string | undefined;
+    const utfMatch = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i);
+    const asciiMatch = contentDisposition.match(/filename="?([^"]+)"?/i);
+    if (utfMatch) {
+      try { serverFilename = decodeURIComponent(utfMatch[1]); } catch { serverFilename = utfMatch[1]; }
+    } else if (asciiMatch) {
+      serverFilename = asciiMatch[1];
+    }
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename || serverFilename || `document-${docId}`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  },
+
   messages: (shipmentId: number, since?: number) =>
     USE_MOCK
       ? mock.mockMessages(shipmentId, since)

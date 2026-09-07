@@ -77,6 +77,12 @@ export function DocumentsPanel({ shipmentId }: Props) {
     onError: (e: any) => toast.error(e.message || 'Ошибка загрузки'),
   });
 
+  const download = useMutation({
+    mutationFn: ({ docId, filename }: { docId: number; filename: string }) =>
+      lkApi.downloadDocument(shipmentId, docId, filename),
+    onError: (e: any) => toast.error(e?.message || 'Не удалось скачать документ'),
+  });
+
   const remove = useMutation({
     mutationFn: (docId: number) => lkApi.deleteDocument(shipmentId, docId),
     onSuccess: () => {
@@ -182,7 +188,8 @@ export function DocumentsPanel({ shipmentId }: Props) {
                 )}
               </div>
             </div>
-            <Button variant="ghost" size="icon" title="Скачать">
+            <Button variant="ghost" size="icon" title="Скачать" onClick={() => download.mutate({ docId: d.id, filename: d.filename_original })}
+              disabled={download.isPending}>
               <Download className="h-4 w-4" />
             </Button>
             {user?.role === 'manager' && (
