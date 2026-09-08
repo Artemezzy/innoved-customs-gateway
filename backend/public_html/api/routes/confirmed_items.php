@@ -1,16 +1,29 @@
 <?php
 /**
- * НОВЫЙ ФАЙЛ: backend/public_html/api/routes/confirmed_items.php
+ * ОБНОВЛЕНО: backend/public_html/api/routes/confirmed_items.php
  *
- * Роуты раздела «Подтверждённые заявки».
- * Использует confirmed_item_guard() и константы CONFIRMED_ITEM_* из lib/helpers.php
- * (см. helpers_patch_confirmed_items.php — добавить его содержимое в helpers.php ДО деплоя этого файла).
+ * Изменения относительно предыдущей версии:
+ * 1. lk_confirmed_items теперь имеет собственное поле cert_center_id
+ *    (см. migration_confirmed_items_cert_center_v2.sql). Видимость для
+ *    роли cert_center определяется этим полем, а не cert_center_id
+ *    заявки-источника — это позволяет менеджеру переназначить СЦ для
+ *    конкретной подтверждённой позиции независимо от исходной заявки.
+ * 2. confirmed_item_guard() обновлён: JOIN на lk_cert_requests больше не
+ *    нужен для проверки владения СЦ — сравнение идёт напрямую по
+ *    ci.cert_center_id. JOIN оставлен только для получения
+ *    source_document_number в других местах, где это требуется.
+ * 3. GET /confirmed-items: для ролей cert_center и client поля
+ *    cert_center_id / cert_center_name не включаются в ответ вообще
+ *    (не только скрываются в UI) — согласно требованию, что эти роли
+ *    не должны видеть назначенный СЦ.
+ * 4. PUT /confirmed-items/:id: добавлено поле cert_center_id в allowed,
+ *    редактируется только менеджером (как applicant_profile_id/client_id).
+ * 5. POST /cert-requests/:id/items/:itemId/confirm: cert_center_id
+ *    копируется из заявки-источника при переносе (разовое копирование).
  *
- * ВАЖНО: этот файл нужно подключить в index.php:
- *   require __DIR__ . '/routes/confirmed_items.php';
- * добавить ПОСЛЕ require .../routes/cert_requests.php и ДО require .../routes/templates.php
- * (порядок внутри index.php не критичен для этого файла, так как все условия ниже
- *  проверяют $seg[0] === 'confirmed-items', что не пересекается с другими роутами).
+ * ВАЖНО: этот файл заменяет routes/confirmed_items.php целиком.
+ * confirmed_item_guard() в lib/helpers.php тоже нужно обновить —
+ * см. helpers_patch_confirmed_items_v2.php.
  */
 
 declare(strict_types=1);
@@ -18,9 +31,11 @@ declare(strict_types=1);
 /**
  * GET /confirmed-items
  *
- * manager: все подтверждённые позиции.
- * cert_center: только позиции, чья заявка-источник назначена на этот серт-центр.
- * client: только позиции, где client_id совпадает с client_id из JWT.
+ * manager: все подтверждённые позиции, включая cert_center_id/cert_center_name.
+ * cert_center: только позиции, где ci.cert_center_id совпадает с назначенным СЦ;
+ *   поля cert_center_id/cert_center_name не возвращаются в ответе.
+ * client: только позиции, где client_id совпадает с client_id из JWT;
+ *   поля cert_center_id/cert_center_name не возвращаются в ответе.
  */
 if ($method === 'GET' && $seg[0] === 'confirmed-items' && !isset($seg[1])) {
     $me = auth();
@@ -28,16 +43,18 @@ if ($method === 'GET' && $seg[0] === 'confirmed-items' && !isset($seg[1])) {
     $sql = "SELECT ci.*,
                    r.document_number AS source_document_number,
                    op.name AS applicant_name,
-                   c.name AS client_name
+                   c.name AS client_name,
+                   cc.name AS cert_center_name
             FROM lk_confirmed_items ci
             JOIN lk_cert_requests r ON r.id = ci.source_request_id
+            JOIN lk_cert_centers cc ON cc.id = ci.cert_center_id
             LEFT JOIN lk_organization_profiles op ON op.id = ci.applicant_profile_id
             LEFT JOIN lk_clients c ON c.id = ci.client_id
             WHERE 1=1";
     $p = [];
 
     if ($me['role'] === 'cert_center') {
-        $sql .= ' AND r.cert_center_id=?';
+        $sql .= ' AND ci.cert_center_id=?';
         $p[] = $me['cert_center_id'];
     } elseif ($me['role'] === 'client') {
         $sql .= ' AND ci.client_id=?';
@@ -51,9 +68,15 @@ if ($method === 'GET' && $seg[0] === 'confirmed-items' && !isset($seg[1])) {
     $st->execute($p);
     $rows = $st->fetchAll();
 
+    $isManager = $me['role'] === 'manager';
+
     foreach ($rows as &$row) {
         $row['number'] = document_number_label((int)$row['source_document_number']) . '-' . (int)$row['suffix_no'];
         $row['source_number'] = document_number_label((int)$row['source_document_number']);
+
+        if (!$isManager) {
+            unset($row['cert_center_id'], $row['cert_center_name']);
+        }
 
         $filesSt = db()->prepare(
             'SELECT slot, id, filename_original, allow_center_reupload, created_at
@@ -73,8 +96,8 @@ if ($method === 'GET' && $seg[0] === 'confirmed-items' && !isset($seg[1])) {
  * POST /cert-requests/:id/items/:itemId/confirm
  *
  * Перенос позиции заявки на сертификацию в «Подтверждённые заявки».
- * Доступно только менеджеру. Помечает исходную позицию is_confirmed=1,
- * не даёт перенести повторно.
+ * Доступно только менеджеру. cert_center_id копируется из заявки-источника
+ * разово в момент переноса (дальше редактируется независимо через PUT).
  */
 if (
     $method === 'POST'
@@ -87,15 +110,13 @@ if (
     $me = auth(true);
     $rid = (int)$seg[1];
     $iid = (int)$seg[3];
-    cert_request_guard($me, $rid);
+    $request = cert_request_guard($me, $rid);
 
     $st = db()->prepare('SELECT * FROM lk_cert_request_items WHERE id=? AND request_id=?');
     $st->execute([$iid, $rid]);
     $item = $st->fetch();
     if (!$item) err('Позиция не найдена', 404);
     if ((int)$item['is_confirmed'] === 1) err('Позиция уже перенесена в подтверждённые заявки', 409);
-
-    $request = cert_request_guard($me, $rid);
 
     db()->beginTransaction();
     try {
@@ -105,14 +126,15 @@ if (
 
         $ins = db()->prepare(
             'INSERT INTO lk_confirmed_items
-                (source_request_id, source_request_item_id, suffix_no, status,
+                (source_request_id, source_request_item_id, cert_center_id, suffix_no, status,
                  product, tn_ved, model_article, trademark,
                  created_by, created_at, updated_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())'
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())'
         );
         $ins->execute([
             $rid,
             $iid,
+            (int)$request['cert_center_id'],
             $suffixNo,
             'confirmed',
             (string)($item['product'] ?? ''),
@@ -138,9 +160,8 @@ if (
 /**
  * PUT /confirmed-items/:id
  *
- * Правка переносимых/редактируемых полей позиции, заявителя и клиента.
- * Доступно только менеджеру (правило: только манагер работает с составом карточки,
- * cert_center работает только со статусом/файлами — см. ниже).
+ * Правка переносимых/редактируемых полей позиции, заявителя, клиента и
+ * назначенного сертификационного центра. Доступно только менеджеру.
  */
 if ($method === 'PUT' && $seg[0] === 'confirmed-items' && isset($seg[1]) && !isset($seg[2])) {
     $me = auth(true);
@@ -165,6 +186,15 @@ if ($method === 'PUT' && $seg[0] === 'confirmed-items' && isset($seg[1]) && !iss
     if (array_key_exists('client_id', $b)) {
         $set[] = 'client_id=?';
         $vals[] = $b['client_id'] !== null ? (int)$b['client_id'] : null;
+    }
+    if (array_key_exists('cert_center_id', $b)) {
+        $newCertCenterId = (int)$b['cert_center_id'];
+        $ccSt = db()->prepare('SELECT id FROM lk_cert_centers WHERE id=? AND is_active=1 LIMIT 1');
+        $ccSt->execute([$newCertCenterId]);
+        if (!$ccSt->fetch()) err('Сертификационный центр не найден', 404);
+
+        $set[] = 'cert_center_id=?';
+        $vals[] = $newCertCenterId;
     }
 
     if (!$set) err('Нет данных для обновления');
@@ -254,7 +284,7 @@ if (
  * manager: всегда может перезаливать.
  * cert_center: может только если слот пуст, либо если allow_center_reupload=1
  *   у текущей версии (разрешение одноразовое — сбрасывается после использования).
- * client: не имеет доступа (это не в списке допустимых ролей ниже).
+ * client: не имеет доступа (нет в списке допустимых ролей ниже).
  */
 if (
     $method === 'POST'

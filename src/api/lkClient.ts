@@ -626,6 +626,7 @@ export const lkApi = {
       trademark: string;
       applicant_profile_id: number | null;
       client_id: number | null;
+      cert_center_id: number;
     }>
   ) => request<{ ok: boolean }>('PUT', `/confirmed-items/${id}`, data),
 

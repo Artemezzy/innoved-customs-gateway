@@ -246,17 +246,12 @@ const CONFIRMED_ITEM_ALLOWED_STATUSES = [
  */
 
 function confirmed_item_guard(array $me, int $id): array {
-    $st = db()->prepare(
-        'SELECT ci.*, r.cert_center_id AS request_cert_center_id
-         FROM lk_confirmed_items ci
-         JOIN lk_cert_requests r ON r.id = ci.source_request_id
-         WHERE ci.id=?'
-    );
+    $st = db()->prepare('SELECT * FROM lk_confirmed_items WHERE id=?');
     $st->execute([$id]);
     $row = $st->fetch();
     if (!$row) err('Подтверждённая позиция не найдена', 404);
 
-    if ($me['role'] === 'cert_center' && (int)$row['request_cert_center_id'] !== (int)($me['cert_center_id'] ?? 0)) {
+    if ($me['role'] === 'cert_center' && (int)$row['cert_center_id'] !== (int)($me['cert_center_id'] ?? 0)) {
         err('Нет доступа', 403);
     }
     if ($me['role'] === 'client' && (int)($row['client_id'] ?? 0) !== (int)($me['client_id'] ?? 0)) {

@@ -393,6 +393,8 @@ export interface ConfirmedItem {
   id: number;
   source_request_id: number;
   source_request_item_id: number;
+  cert_center_id?: number;      // ДОБАВИТЬ — только для роли manager
+  cert_center_name?: string;    // ДОБАВИТЬ — только для роли manager
   suffix_no: number;
   number: string;
   source_number: string;

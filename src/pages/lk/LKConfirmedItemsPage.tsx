@@ -61,6 +61,12 @@ export default function LKConfirmedItemsPage() {
     queryFn: () => lkApi.confirmedItems(),
   });
 
+  const certCenters = useQuery({
+    queryKey: ['lk', 'cert-centers'],
+    queryFn: () => lkApi.certCenters(),
+    enabled: isManager,
+  });
+
   const rows = useMemo(() => sortRows(data ?? []), [data]);
 
   const visibleSlots = useMemo(
@@ -84,6 +90,9 @@ export default function LKConfirmedItemsPage() {
               <th className="p-2 border-b text-left">{lkT('th_confirmed_number', language)}</th>
               <th className="p-2 border-b text-left">{lkT('th_confirmed_source', language)}</th>
               <th className="p-2 border-b text-left">{lkT('th_confirmed_updated', language)}</th>
+              {isManager && (
+                <th className="p-2 border-b text-left min-w-[200px]">{lkT('th_confirmed_cert_center', language)}</th>
+              )}
               <th className="p-2 border-b text-left min-w-[200px]">{lkT('th_confirmed_applicant', language)}</th>
               <th className="p-2 border-b text-left min-w-[200px]">{lkT('th_confirmed_product', language)}</th>
               <th className="p-2 border-b text-left min-w-[140px]">{lkT('th_confirmed_tn_ved', language)}</th>
@@ -104,12 +113,13 @@ export default function LKConfirmedItemsPage() {
                 isManager={isManager}
                 isCertCenter={isCertCenter}
                 visibleSlots={visibleSlots}
+                certCenterOptions={certCenters.data ?? []}
                 onInvalidate={invalidate}
               />
             ))}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={9 + visibleSlots.length} className="p-6 text-center text-muted-foreground">
+                <td colSpan={9 + visibleSlots.length + (isManager ? 1 : 0)} className="p-6 text-center text-muted-foreground">
                   {lkT('empty_no_confirmed_items', language)}
                 </td>
               </tr>
@@ -126,10 +136,11 @@ interface RowProps {
   isManager: boolean;
   isCertCenter: boolean;
   visibleSlots: ConfirmedItemFileSlot[];
+  certCenterOptions: { id: number; name: string }[];
   onInvalidate: () => void;
 }
 
-function ConfirmedItemRow({ row, isManager, isCertCenter, visibleSlots, onInvalidate }: RowProps) {
+function ConfirmedItemRow({ row, isManager, isCertCenter, visibleSlots, certCenterOptions, onInvalidate }: RowProps) {
   const { language } = useLKLanguage();
   const [values, setValues] = useState({
     product: row.product,
@@ -158,6 +169,12 @@ function ConfirmedItemRow({ row, isManager, isCertCenter, visibleSlots, onInvali
 
   const updateClient = useMutation({
     mutationFn: (clientId: number) => lkApi.updateConfirmedItem(row.id, { client_id: clientId, applicant_profile_id: null }),
+    onSuccess: onInvalidate,
+    onError: (e: any) => toast.error(e?.message || 'Не удалось сохранить'),
+  });
+
+  const updateCertCenter = useMutation({
+    mutationFn: (certCenterId: number) => lkApi.updateConfirmedItem(row.id, { cert_center_id: certCenterId }),
     onSuccess: onInvalidate,
     onError: (e: any) => toast.error(e?.message || 'Не удалось сохранить'),
   });
@@ -210,6 +227,25 @@ function ConfirmedItemRow({ row, isManager, isCertCenter, visibleSlots, onInvali
         </Link>
       </td>
       <td className="p-2 whitespace-nowrap">{new Date(row.updated_at).toLocaleString('ru-RU')}</td>
+      
+      {isManager && (
+        <td className="p-2">
+          <Select
+            value={row.cert_center_id ? String(row.cert_center_id) : ''}
+            onValueChange={(v) => updateCertCenter.mutate(Number(v))}
+          >
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder={lkT('placeholder_select_cert_center', language)} />
+            </SelectTrigger>
+            <SelectContent>
+              {certCenterOptions.map((cc) => (
+                <SelectItem key={cc.id} value={String(cc.id)}>{cc.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </td>
+      )}
+
       <td className="p-2">
         {isManager ? (
           row.client_id ? (

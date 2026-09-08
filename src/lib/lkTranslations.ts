@@ -299,6 +299,9 @@ export const lkDict = {
   th_confirmed_number: { ru: '№', en: 'No.', zh: '编号' },
   th_confirmed_source: { ru: 'Источник', en: 'Source', zh: '来源' },
   th_confirmed_updated: { ru: 'Дата изменения', en: 'Updated', zh: '更新日期' },
+
+  th_confirmed_cert_center: { ru: 'Сертификационный центр', en: 'Certification Center', zh: '认证中心' },
+
   th_confirmed_applicant: { ru: 'Заявитель', en: 'Applicant', zh: '申请人' },
   th_confirmed_product: { ru: 'Наименование товара', en: 'Product name', zh: '产品名称' },
   th_confirmed_tn_ved: { ru: 'ТН ВЭД', en: 'HS code', zh: '商品编码' },
@@ -308,6 +311,7 @@ export const lkDict = {
   empty_no_confirmed_items: { ru: 'Нет подтверждённых позиций', en: 'No confirmed items', zh: '暂无已确认商品' },
   placeholder_select_applicant: { ru: 'Выберите заявителя', en: 'Select applicant', zh: '选择申请人' },
   placeholder_select_client_first: { ru: 'Сначала выберите клиента', en: 'Select a client first', zh: '请先选择客户' },
+  placeholder_select_cert_center: { ru: 'Выберите сертификационный центр', en: 'Select certification center', zh: '选择认证中心' },
   label_file_not_uploaded: { ru: 'Не загружен', en: 'Not uploaded', zh: '未上传' },
   btn_replace_file: { ru: 'Заменить файл', en: 'Replace file', zh: '替换文件' },
   title_open_source_request: { ru: 'Открыть исходную заявку на сертификацию', en: 'Open the source certification request', zh: '打开源认证申请' },
