@@ -17,9 +17,31 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-// Глобальные ссылки, чтобы lkClient.ts мог получить токен и вызвать logout
+const TOKEN_STORAGE_KEY = 'lk_token';
+const USER_STORAGE_KEY = 'lk_user';
+
+function readStoredToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem(TOKEN_STORAGE_KEY);
+}
+
+function readStoredUser(): LKUser | null {
+  if (typeof window === 'undefined') return null;
+  const raw = localStorage.getItem(USER_STORAGE_KEY);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as LKUser;
+  } catch {
+    return null;
+  }
+}
+
+// Глобальные ссылки, чтобы lkClient.ts мог получить токен и вызвать logout.
+// Инициализируются из localStorage сразу при загрузке модуля (не только
+// при монтировании AuthProvider), чтобы getAuthToken() отдавал верный
+// токен даже если вызван раньше первого рендера AuthProvider.
 let _logoutRef: (() => void) | null = null;
-let _tokenRef: string | null = null;
+let _tokenRef: string | null = readStoredToken();
 
 export function getAuthToken() {
   return _tokenRef;
@@ -30,24 +52,26 @@ export function triggerLogout() {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [token, setToken] = useState<string | null>(null);
-  const [user, setUser] = useState<LKUser | null>(null);
+  const [token, setToken] = useState<string | null>(() => readStoredToken());
+  const [user, setUser] = useState<LKUser | null>(() => readStoredUser());
 
   const login = useCallback(async (email: string, password: string) => {
-    console.log('AUTH login() called', { email });
     const res = await lkLogin(email, password);
-    console.log('AUTH login() result', res);
+
+    localStorage.setItem(TOKEN_STORAGE_KEY, res.token);
+    localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(res.user));
 
     setToken(res.token);
     setUser(res.user);
     _tokenRef = res.token;
 
-    console.log('AUTH token set to', _tokenRef);
     return res.user;
   }, []);
 
   const logout = useCallback(() => {
-    console.log('AUTH logout() called');
+    localStorage.removeItem(TOKEN_STORAGE_KEY);
+    localStorage.removeItem(USER_STORAGE_KEY);
+
     setToken(null);
     setUser(null);
     _tokenRef = null;
