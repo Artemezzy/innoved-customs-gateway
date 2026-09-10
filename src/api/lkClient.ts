@@ -627,6 +627,8 @@ export const lkApi = {
       applicant_profile_id: number | null;
       client_id: number | null;
       cert_center_id: number;
+      buyer_invoice_paid: boolean;
+      innoved_invoice_paid: boolean;
     }>
   ) => request<{ ok: boolean }>('PUT', `/confirmed-items/${id}`, data),
 

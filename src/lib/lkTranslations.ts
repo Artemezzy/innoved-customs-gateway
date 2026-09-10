@@ -346,6 +346,8 @@ export const lkDict = {
   btn_confirm_transfer: { ru: 'Перенести в подтверждённые заявки', en: 'Move to confirmed requests', zh: '转移到已确认申请' },
   toast_item_confirmed: { ru: 'Позиция перенесена в подтверждённые заявки', en: 'Item moved to confirmed requests', zh: '商品已转移到已确认申请' },
 
+  th_confirmed_buyer_paid: { ru: 'Счёт оплачен покупателем', en: 'Invoice paid by buyer', zh: '买方已付款' },
+  th_confirmed_innoved_paid: { ru: 'Счёт оплачен ИННОВЭД', en: 'Invoice paid by INNOVED', zh: 'INNOVED已付款' },
 } as const;
 
 export type LKDictKey = keyof typeof lkDict;

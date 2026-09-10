@@ -393,8 +393,8 @@ export interface ConfirmedItem {
   id: number;
   source_request_id: number;
   source_request_item_id: number;
-  cert_center_id?: number;      // ДОБАВИТЬ — только для роли manager
-  cert_center_name?: string;    // ДОБАВИТЬ — только для роли manager
+  cert_center_id?: number;     
+  cert_center_name?: string;    
   suffix_no: number;
   number: string;
   source_number: string;
@@ -407,6 +407,8 @@ export interface ConfirmedItem {
   tn_ved: string;
   model_article: string;
   trademark: string;
+  buyer_invoice_paid?: boolean;    
+  innoved_invoice_paid?: boolean;  
   created_at: string;
   updated_at: string;
   files: ConfirmedItemFile[];

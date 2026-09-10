@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { Fragment, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { Download, Loader2, Upload } from 'lucide-react';
@@ -99,9 +99,21 @@ export default function LKConfirmedItemsPage() {
               <th className="p-2 border-b text-left min-w-[160px]">{lkT('th_confirmed_model', language)}</th>
               <th className="p-2 border-b text-left min-w-[160px]">{lkT('th_confirmed_trademark', language)}</th>
               {visibleSlots.map((slot) => (
-                <th key={slot} className="p-2 border-b text-left min-w-[200px]">
-                  {lkT(slotDictKey(slot), language)}
-                </th>
+                <Fragment key={slot}>
+                  <th className="p-2 border-b text-left min-w-[200px]">
+                    {lkT(slotDictKey(slot), language)}
+                  </th>
+                  {slot === 'payment_invoice' && isManager && (
+                    <th className="p-2 border-b text-left min-w-[160px]">
+                      {lkT('th_confirmed_buyer_paid', language)}
+                    </th>
+                  )}
+                  {slot === 'payment_invoice' && (isManager || isCertCenter) && (
+                    <th className="p-2 border-b text-left min-w-[160px]">
+                      {lkT('th_confirmed_innoved_paid', language)}
+                    </th>
+                  )}
+                </Fragment>
               ))}
             </tr>
           </thead>
@@ -119,7 +131,7 @@ export default function LKConfirmedItemsPage() {
             ))}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={9 + visibleSlots.length + (isManager ? 1 : 0)} className="p-6 text-center text-muted-foreground">
+                <td colSpan={9 + visibleSlots.length + (isManager ? 1 : 0) + (isManager ? 1 : 0) + (isManager || isCertCenter ? 1 : 0)} className="p-6 text-center text-muted-foreground">
                   {lkT('empty_no_confirmed_items', language)}
                 </td>
               </tr>
@@ -310,16 +322,35 @@ function ConfirmedItemRow({ row, isManager, isCertCenter, visibleSlots, certCent
           disabled={!isManager}
         />
       </td>
-      {visibleSlots.map((slot) => (
-        <FileSlotCell
-          key={slot}
-          confirmedItemId={row.id}
-          slot={slot}
-          file={row.files.find((f) => f.slot === slot)}
-          isManager={isManager}
-          isCertCenter={isCertCenter}
-          onInvalidate={onInvalidate}
-        />
+       {visibleSlots.map((slot) => (
+        <Fragment key={slot}>
+          <FileSlotCell
+            confirmedItemId={row.id}
+            slot={slot}
+            file={row.files.find((f) => f.slot === slot)}
+            isManager={isManager}
+            isCertCenter={isCertCenter}
+            onInvalidate={onInvalidate}
+          />
+          {slot === 'payment_invoice' && isManager && (
+            <PaymentFlagCell
+              confirmedItemId={row.id}
+              field="buyer_invoice_paid"
+              checked={!!row.buyer_invoice_paid}
+              editable
+              onInvalidate={onInvalidate}
+            />
+          )}
+          {slot === 'payment_invoice' && (isManager || isCertCenter) && (
+            <PaymentFlagCell
+              confirmedItemId={row.id}
+              field="innoved_invoice_paid"
+              checked={!!row.innoved_invoice_paid}
+              editable={isManager}
+              onInvalidate={onInvalidate}
+            />
+          )}
+        </Fragment>
       ))}
     </tr>
   );
@@ -416,6 +447,34 @@ function FileSlotCell({ confirmedItemId, slot, file, isManager, isCertCenter, on
           </Button>
         )}
       </div>
+    </td>
+  );
+}
+
+interface PaymentFlagCellProps {
+  confirmedItemId: number;
+  field: 'buyer_invoice_paid' | 'innoved_invoice_paid';
+  checked: boolean;
+  editable: boolean;
+  onInvalidate: () => void;
+}
+
+function PaymentFlagCell({ confirmedItemId, field, checked, editable, onInvalidate }: PaymentFlagCellProps) {
+  const updateFlag = useMutation({
+    mutationFn: (value: boolean) => lkApi.updateConfirmedItem(confirmedItemId, { [field]: value }),
+    onSuccess: onInvalidate,
+    onError: (e: any) => toast.error(e?.message || 'Не удалось сохранить'),
+  });
+
+  return (
+    <td className="p-2 text-center">
+      <input
+        type="checkbox"
+        className="h-4 w-4 cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+        checked={checked}
+        disabled={!editable || updateFlag.isPending}
+        onChange={(e) => updateFlag.mutate(e.target.checked)}
+      />
     </td>
   );
 }

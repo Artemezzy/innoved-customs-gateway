@@ -74,8 +74,15 @@ if ($method === 'GET' && $seg[0] === 'confirmed-items' && !isset($seg[1])) {
         $row['number'] = document_number_label((int)$row['source_document_number']) . '-' . (int)$row['suffix_no'];
         $row['source_number'] = document_number_label((int)$row['source_document_number']);
 
+        $row['buyer_invoice_paid'] = (bool)$row['buyer_invoice_paid'];
+        $row['innoved_invoice_paid'] = (bool)$row['innoved_invoice_paid'];
+
         if (!$isManager) {
             unset($row['cert_center_id'], $row['cert_center_name']);
+        }
+
+        if ($isClient) {
+            unset($row['buyer_invoice_paid'], $row['innoved_invoice_paid']);
         }
 
         $filesSt = db()->prepare(
@@ -178,6 +185,14 @@ if ($method === 'PUT' && $seg[0] === 'confirmed-items' && isset($seg[1]) && !iss
             $vals[] = (string)$b[$f];
         }
     }
+
+    foreach (['buyer_invoice_paid', 'innoved_invoice_paid'] as $flagField) {
+        if (array_key_exists($flagField, $b)) {
+            $set[] = "$flagField=?";
+            $vals[] = !empty($b[$flagField]) ? 1 : 0;
+        }
+    }
+
 
     if (array_key_exists('applicant_profile_id', $b)) {
         $set[] = 'applicant_profile_id=?';
