@@ -389,6 +389,13 @@ export interface ConfirmedItemFile {
   created_at: string;
 }
 
+export interface ConfirmedItemOtherDocument {
+  id: number;
+  filename_original: string;
+  created_at: string;
+  can_delete: boolean;
+}
+
 export interface ConfirmedItem {
   id: number;
   source_request_id: number;
@@ -408,7 +415,10 @@ export interface ConfirmedItem {
   model_article: string;
   trademark: string;
   buyer_invoice_paid?: boolean;    
-  innoved_invoice_paid?: boolean;  
+  innoved_invoice_paid?: boolean;
+  certificate_url: string;
+  certificate_published: boolean;
+  other_documents: ConfirmedItemOtherDocument[];
   created_at: string;
   updated_at: string;
   files: ConfirmedItemFile[];

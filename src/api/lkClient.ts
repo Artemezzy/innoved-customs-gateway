@@ -629,6 +629,8 @@ export const lkApi = {
       cert_center_id: number;
       buyer_invoice_paid: boolean;
       innoved_invoice_paid: boolean;
+      certificate_url: string;
+      certificate_published: boolean;
     }>
   ) => request<{ ok: boolean }>('PUT', `/confirmed-items/${id}`, data),
 
@@ -664,4 +666,18 @@ export const lkApi = {
     a.remove();
     URL.revokeObjectURL(url);
   },
+
+  uploadConfirmedItemOtherDocument: (id: number, form: FormData) =>
+    request<{ id: number }>('POST', `/confirmed-items/${id}/other-documents`, form, true),
+
+  downloadConfirmedItemOtherDocument: async (id: number, fileId: number, filename?: string) => {
+    await downloadBlob(
+      `/confirmed-items/${id}/other-documents/${fileId}/download`,
+      filename || `other-document-${fileId}`
+    );
+  },
+
+  deleteConfirmedItemOtherDocument: (id: number, fileId: number) =>
+    request<{ ok: boolean }>('DELETE', `/confirmed-items/${id}/other-documents/${fileId}`),
+
 };

@@ -348,6 +348,14 @@ export const lkDict = {
 
   th_confirmed_buyer_paid: { ru: 'Счёт оплачен покупателем', en: 'Invoice paid by buyer', zh: '买方已付款' },
   th_confirmed_innoved_paid: { ru: 'Счёт оплачен ИННОВЭД', en: 'Invoice paid by INNOVED', zh: 'INNOVED已付款' },
+  th_confirmed_certificate_url: { ru: 'Ссылка на сертификат', en: 'Certificate link', zh: '证书链接' },
+  th_confirmed_certificate_published: { ru: 'Сертификат опубликован', en: 'Certificate published', zh: '证书已发布' },
+  th_confirmed_other_documents: { ru: 'Иные документы', en: 'Other documents', zh: '其他文件' },
+  placeholder_certificate_url: { ru: 'https://...', en: 'https://...', zh: 'https://...' },
+  btn_open_certificate: { ru: 'Открыть', en: 'Open', zh: '打开' },
+  btn_delete_file: { ru: 'Удалить файл', en: 'Delete file', zh: '删除文件' },
+  label_files_limit: { ru: 'До 5 файлов', en: 'Up to 5 files', zh: '最多5个文件' },
+  toast_other_document_deleted: { ru: 'Файл удалён', en: 'File deleted', zh: '文件已删除' },
 } as const;
 
 export type LKDictKey = keyof typeof lkDict;

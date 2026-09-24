@@ -1,7 +1,7 @@
 import { Fragment, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
-import { Download, Loader2, Upload } from 'lucide-react';
+import { Download, ExternalLink, Loader2, Trash2, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 import { lkApi } from '@/api/lkClient';
 import { useAuth } from '@/contexts/AuthContext';
@@ -10,6 +10,7 @@ import { lkT, LKDictKey } from '@/lib/lkTranslations';
 import {
   ConfirmedItem,
   ConfirmedItemFileSlot,
+  ConfirmedItemOtherDocument,
   ConfirmedItemStatus,
   CONFIRMED_ITEM_SLOT_ORDER,
   CONFIRMED_ITEM_STATUS_ORDER,
@@ -113,6 +114,19 @@ export default function LKConfirmedItemsPage() {
                       {lkT('th_confirmed_innoved_paid', language)}
                     </th>
                   )}
+                  {slot === 'final_document' && (
+                    <>
+                      <th className="p-2 border-b text-left min-w-[260px]">
+                        {lkT('th_confirmed_certificate_url', language)}
+                      </th>
+                      <th className="p-2 border-b text-left min-w-[160px]">
+                        {lkT('th_confirmed_certificate_published', language)}
+                      </th>
+                      <th className="p-2 border-b text-left min-w-[260px]">
+                        {lkT('th_confirmed_other_documents', language)}
+                      </th>
+                    </>
+                  )}
                 </Fragment>
               ))}
             </tr>
@@ -131,7 +145,7 @@ export default function LKConfirmedItemsPage() {
             ))}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={9 + visibleSlots.length + (isManager ? 1 : 0) + (isManager ? 1 : 0) + (isManager || isCertCenter ? 1 : 0)} className="p-6 text-center text-muted-foreground">
+                <td colSpan={12 + visibleSlots.length + (isManager ? 1 : 0) + (isManager ? 1 : 0) + (isManager || isCertCenter ? 1 : 0)} className="p-6 text-center text-muted-foreground">
                   {lkT('empty_no_confirmed_items', language)}
                 </td>
               </tr>
@@ -350,6 +364,30 @@ function ConfirmedItemRow({ row, isManager, isCertCenter, visibleSlots, certCent
               onInvalidate={onInvalidate}
             />
           )}
+          {slot === 'final_document' && (
+            <>
+              <CertificateUrlCell
+                confirmedItemId={row.id}
+                value={row.certificate_url || ''}
+                editable={isManager || isCertCenter}
+                onInvalidate={onInvalidate}
+              />
+              <PaymentFlagCell
+                confirmedItemId={row.id}
+                field="certificate_published"
+                checked={!!row.certificate_published}
+                editable={isManager}
+                onInvalidate={onInvalidate}
+              />
+              <OtherDocumentsCell
+                confirmedItemId={row.id}
+                files={row.other_documents || []}
+                isManager={isManager}
+                isCertCenter={isCertCenter}
+                onInvalidate={onInvalidate}
+              />
+            </>
+          )}
         </Fragment>
       ))}
     </tr>
@@ -453,7 +491,7 @@ function FileSlotCell({ confirmedItemId, slot, file, isManager, isCertCenter, on
 
 interface PaymentFlagCellProps {
   confirmedItemId: number;
-  field: 'buyer_invoice_paid' | 'innoved_invoice_paid';
+  field: 'buyer_invoice_paid' | 'innoved_invoice_paid' | 'certificate_published';
   checked: boolean;
   editable: boolean;
   onInvalidate: () => void;
@@ -478,3 +516,164 @@ function PaymentFlagCell({ confirmedItemId, field, checked, editable, onInvalida
     </td>
   );
 }
+
+interface CertificateUrlCellProps {
+  confirmedItemId: number;
+  value: string;
+  editable: boolean;
+  onInvalidate: () => void;
+}
+
+function CertificateUrlCell({ confirmedItemId, value, editable, onInvalidate }: CertificateUrlCellProps) {
+  const { language } = useLKLanguage();
+  const [draft, setDraft] = useState(value);
+
+  const updateUrl = useMutation({
+    mutationFn: (certificateUrl: string) =>
+      lkApi.updateConfirmedItem(confirmedItemId, { certificate_url: certificateUrl }),
+    onSuccess: onInvalidate,
+    onError: (e: any) => {
+      setDraft(value);
+      toast.error(e?.message || 'Не удалось сохранить ссылку');
+    },
+  });
+
+  const save = () => {
+    const normalized = draft.trim();
+    if (normalized !== value) updateUrl.mutate(normalized);
+  };
+
+  return (
+    <td className="p-2">
+      <div className="flex items-center gap-1">
+        <Input
+          type="url"
+          value={draft}
+          placeholder={lkT('placeholder_certificate_url', language)}
+          onChange={(e) => setDraft(e.target.value)}
+          onBlur={save}
+          disabled={!editable || updateUrl.isPending}
+        />
+        {value && (
+          <Button size="icon" variant="ghost" asChild title={lkT('btn_open_certificate', language)}>
+            <a href={value} target="_blank" rel="noopener noreferrer">
+              <ExternalLink className="h-4 w-4" />
+            </a>
+          </Button>
+        )}
+      </div>
+    </td>
+  );
+}
+
+interface OtherDocumentsCellProps {
+  confirmedItemId: number;
+  files: ConfirmedItemOtherDocument[];
+  isManager: boolean;
+  isCertCenter: boolean;
+  onInvalidate: () => void;
+}
+
+function OtherDocumentsCell({
+  confirmedItemId,
+  files,
+  isManager,
+  isCertCenter,
+  onInvalidate,
+}: OtherDocumentsCellProps) {
+  const { language } = useLKLanguage();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const upload = useMutation({
+    mutationFn: (file: File) => {
+      const form = new FormData();
+      form.append('file', file);
+      return lkApi.uploadConfirmedItemOtherDocument(confirmedItemId, form);
+    },
+    onSuccess: () => {
+      toast.success(lkT('toast_confirmed_file_uploaded', language));
+      onInvalidate();
+    },
+    onError: (e: any) => toast.error(e?.message || 'Не удалось загрузить файл'),
+  });
+
+  const download = useMutation({
+    mutationFn: (file: ConfirmedItemOtherDocument) =>
+      lkApi.downloadConfirmedItemOtherDocument(confirmedItemId, file.id, file.filename_original),
+    onError: (e: any) => toast.error(e?.message || 'Не удалось скачать файл'),
+  });
+
+  const remove = useMutation({
+    mutationFn: (fileId: number) => lkApi.deleteConfirmedItemOtherDocument(confirmedItemId, fileId),
+    onSuccess: () => {
+      toast.success(lkT('toast_other_document_deleted', language));
+      onInvalidate();
+    },
+    onError: (e: any) => toast.error(e?.message || 'Не удалось удалить файл'),
+  });
+
+  const canUpload = (isManager || isCertCenter) && files.length < 5;
+  const canDelete = (file: ConfirmedItemOtherDocument) => file.can_delete;
+
+  return (
+    <td className="p-2">
+      <div className="space-y-1">
+        {files.map((file) => (
+          <div key={file.id} className="flex items-center gap-1">
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-8 min-w-0 flex-1 justify-start"
+              onClick={() => download.mutate(file)}
+              title={file.filename_original}
+            >
+              <Download className="h-3.5 w-3.5 mr-1 shrink-0" />
+              <span className="truncate">{file.filename_original}</span>
+            </Button>
+            {canDelete(file) && (
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-8 w-8 shrink-0"
+                disabled={remove.isPending}
+                onClick={() => remove.mutate(file.id)}
+                title={lkT('btn_delete_file', language)}
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </Button>
+            )}
+          </div>
+        ))}
+
+        {canUpload && (
+          <>
+            <input
+              ref={inputRef}
+              type="file"
+              className="hidden"
+              accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) upload.mutate(file);
+                e.currentTarget.value = '';
+              }}
+            />
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={upload.isPending}
+              onClick={() => inputRef.current?.click()}
+            >
+              {upload.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
+              <span className="ml-1">{files.length}/5</span>
+            </Button>
+          </>
+        )}
+        {files.length === 0 && !canUpload && (
+          <span className="text-muted-foreground">{lkT('label_file_not_uploaded', language)}</span>
+        )}
+      </div>
+    </td>
+  );
+}
+

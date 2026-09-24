@@ -69,6 +69,8 @@ if ($method === 'GET' && $seg[0] === 'confirmed-items' && !isset($seg[1])) {
     $rows = $st->fetchAll();
 
     $isManager = $me['role'] === 'manager';
+    $isCertCenter = $me['role'] === 'cert_center';
+    $isClient = $me['role'] === 'client';
 
     foreach ($rows as &$row) {
         $row['number'] = document_number_label((int)$row['source_document_number']) . '-' . (int)$row['suffix_no'];
@@ -76,6 +78,8 @@ if ($method === 'GET' && $seg[0] === 'confirmed-items' && !isset($seg[1])) {
 
         $row['buyer_invoice_paid'] = (bool)$row['buyer_invoice_paid'];
         $row['innoved_invoice_paid'] = (bool)$row['innoved_invoice_paid'];
+        $row['certificate_url'] = (string)($row['certificate_url'] ?? '');
+        $row['certificate_published'] = (bool)$row['certificate_published'];
 
         if (!$isManager) {
             unset($row['cert_center_id'], $row['cert_center_name']);
@@ -93,6 +97,24 @@ if ($method === 'GET' && $seg[0] === 'confirmed-items' && !isset($seg[1])) {
         );
         $filesSt->execute([$row['id']]);
         $row['files'] = $filesSt->fetchAll();
+
+        $otherDocsSt = db()->prepare(
+            'SELECT id, filename_original, uploader_id, uploader_role, created_at
+             FROM lk_confirmed_item_other_documents
+             WHERE confirmed_item_id=?
+             ORDER BY created_at ASC, id ASC'
+        );
+        $otherDocsSt->execute([$row['id']]);
+        $row['other_documents'] = $otherDocsSt->fetchAll();
+        foreach ($row['other_documents'] as &$otherDocument) {
+            $otherDocument['can_delete'] = $isManager || (
+                $isCertCenter
+                && $otherDocument['uploader_role'] === 'cert_center'
+                && (int)$otherDocument['uploader_id'] === (int)$me['sub']
+            );
+            unset($otherDocument['uploader_id'], $otherDocument['uploader_role']);
+        }
+        unset($otherDocument);
     }
     unset($row);
 
@@ -171,11 +193,24 @@ if (
  * назначенного сертификационного центра. Доступно только менеджеру.
  */
 if ($method === 'PUT' && $seg[0] === 'confirmed-items' && isset($seg[1]) && !isset($seg[2])) {
-    $me = auth(true);
+    $me = auth();
     $id = (int)$seg[1];
     confirmed_item_guard($me, $id);
 
+    if (!in_array($me['role'], ['manager', 'cert_center'], true)) err('Нет доступа', 403);
+
     $b = body();
+    $managerOnlyFields = [
+        'product', 'tn_ved', 'model_article', 'trademark',
+        'buyer_invoice_paid', 'innoved_invoice_paid', 'certificate_published',
+        'applicant_profile_id', 'client_id', 'cert_center_id',
+    ];
+    if ($me['role'] !== 'manager') {
+        foreach ($managerOnlyFields as $field) {
+            if (array_key_exists($field, $b)) err('Нет доступа к изменению поля', 403);
+        }
+    }
+
     $allowed = ['product', 'tn_ved', 'model_article', 'trademark'];
     $set = [];
     $vals = [];
@@ -186,13 +221,24 @@ if ($method === 'PUT' && $seg[0] === 'confirmed-items' && isset($seg[1]) && !iss
         }
     }
 
-    foreach (['buyer_invoice_paid', 'innoved_invoice_paid'] as $flagField) {
+    foreach (['buyer_invoice_paid', 'innoved_invoice_paid', 'certificate_published'] as $flagField) {
         if (array_key_exists($flagField, $b)) {
             $set[] = "$flagField=?";
             $vals[] = !empty($b[$flagField]) ? 1 : 0;
         }
     }
 
+    if (array_key_exists('certificate_url', $b)) {
+        $certificateUrl = trim((string)$b['certificate_url']);
+        if (strlen($certificateUrl) > 2048) err('Ссылка слишком длинная', 422);
+        if ($certificateUrl !== '') {
+            if (!filter_var($certificateUrl, FILTER_VALIDATE_URL)) err('Некорректная ссылка', 422);
+            $scheme = strtolower((string)parse_url($certificateUrl, PHP_URL_SCHEME));
+            if (!in_array($scheme, ['http', 'https'], true)) err('Допустимы только ссылки http:// или https://', 422);
+        }
+        $set[] = 'certificate_url=?';
+        $vals[] = $certificateUrl;
+    }
 
     if (array_key_exists('applicant_profile_id', $b)) {
         $set[] = 'applicant_profile_id=?';
@@ -398,4 +444,117 @@ if (
     if (!file_exists($path)) err('Файл не найден', 404);
 
     send_file_download($path, $f['filename_original']);
+}
+/**
+ * POST /confirmed-items/:id/other-documents
+ * manager и назначенный cert_center могут загрузить до 5 файлов.
+ */
+if (
+    $method === 'POST'
+    && $seg[0] === 'confirmed-items'
+    && isset($seg[1])
+    && ($seg[2] ?? '') === 'other-documents'
+    && !isset($seg[3])
+) {
+    $me = auth();
+    $id = (int)$seg[1];
+    confirmed_item_guard($me, $id);
+
+    if (!in_array($me['role'], ['manager', 'cert_center'], true)) err('Нет доступа', 403);
+
+    $countSt = db()->prepare('SELECT COUNT(*) FROM lk_confirmed_item_other_documents WHERE confirmed_item_id=?');
+    $countSt->execute([$id]);
+    if ((int)$countSt->fetchColumn() >= 5) err('Можно загрузить не более 5 файлов', 422);
+
+    if (empty($_FILES['file']) || $_FILES['file']['error'] !== UPLOAD_ERR_OK) err('Файл не загружен');
+    $file = $_FILES['file'];
+    if ($file['size'] > MAX_FILE_SIZE) err('Файл слишком большой (макс. 20 МБ)');
+    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    if (!in_array($ext, ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'jpg', 'jpeg', 'png'], true)) err('Недопустимый тип файла');
+
+    $dir = UPLOAD_PATH . '/confirmed/' . $id . '/other';
+    if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) err('Ошибка создания каталога', 500);
+    $stored = uniqid('cio_', true) . '.' . $ext;
+    if (!move_uploaded_file($file['tmp_name'], $dir . '/' . $stored)) err('Ошибка сохранения файла');
+
+    try {
+        db()->prepare(
+            'INSERT INTO lk_confirmed_item_other_documents
+                (confirmed_item_id, filename_original, filename_stored, uploader_id, uploader_role, created_at)
+             VALUES (?, ?, ?, ?, ?, NOW())'
+        )->execute([$id, $file['name'], $stored, (int)$me['sub'], $me['role']]);
+        $newFileId = (int)db()->lastInsertId();
+        db()->prepare('UPDATE lk_confirmed_items SET updated_at=NOW() WHERE id=?')->execute([$id]);
+    } catch (\Throwable $e) {
+        @unlink($dir . '/' . $stored);
+        err('Ошибка БД: ' . $e->getMessage());
+    }
+
+    out(['id' => $newFileId], 201);
+}
+
+/**
+ * GET /confirmed-items/:id/other-documents/:fileId/download
+ */
+if (
+    $method === 'GET'
+    && $seg[0] === 'confirmed-items'
+    && isset($seg[1])
+    && ($seg[2] ?? '') === 'other-documents'
+    && isset($seg[3])
+    && ($seg[4] ?? '') === 'download'
+) {
+    $me = auth();
+    $id = (int)$seg[1];
+    $fileId = (int)$seg[3];
+    confirmed_item_guard($me, $id);
+
+    $st = db()->prepare('SELECT * FROM lk_confirmed_item_other_documents WHERE id=? AND confirmed_item_id=? LIMIT 1');
+    $st->execute([$fileId, $id]);
+    $file = $st->fetch();
+    if (!$file) err('Файл не найден', 404);
+
+    $path = UPLOAD_PATH . '/confirmed/' . $id . '/other/' . $file['filename_stored'];
+    if (!file_exists($path)) err('Файл не найден', 404);
+
+    send_file_download($path, $file['filename_original']);
+}
+
+/**
+ * DELETE /confirmed-items/:id/other-documents/:fileId
+ * manager удаляет любой файл; cert_center — только загруженный им.
+ */
+if (
+    $method === 'DELETE'
+    && $seg[0] === 'confirmed-items'
+    && isset($seg[1])
+    && ($seg[2] ?? '') === 'other-documents'
+    && isset($seg[3])
+    && !isset($seg[4])
+) {
+    $me = auth();
+    $id = (int)$seg[1];
+    $fileId = (int)$seg[3];
+    confirmed_item_guard($me, $id);
+
+    if (!in_array($me['role'], ['manager', 'cert_center'], true)) err('Нет доступа', 403);
+
+    $st = db()->prepare('SELECT * FROM lk_confirmed_item_other_documents WHERE id=? AND confirmed_item_id=? LIMIT 1');
+    $st->execute([$fileId, $id]);
+    $file = $st->fetch();
+    if (!$file) err('Файл не найден', 404);
+
+    if (
+        $me['role'] === 'cert_center'
+        && ($file['uploader_role'] !== 'cert_center' || (int)$file['uploader_id'] !== (int)$me['sub'])
+    ) {
+        err('Можно удалять только загруженные вами файлы', 403);
+    }
+
+    db()->prepare('DELETE FROM lk_confirmed_item_other_documents WHERE id=? AND confirmed_item_id=?')
+        ->execute([$fileId, $id]);
+    @unlink(UPLOAD_PATH . '/confirmed/' . $id . '/other/' . $file['filename_stored']);
+    db()->prepare('UPDATE lk_confirmed_items SET updated_at=NOW() WHERE id=?')->execute([$id]);
+
+    out(['ok' => true]);
 }
